@@ -1,0 +1,292 @@
+/* ─── Math Puzzle Grid Tool ──────────────────────────────────────────────── */
+
+.mp-tool {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-height));
+}
+
+/* ── Compact Sticky Toolbar ─────────────────────────────────────────────── */
+
+.mp-toolbar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.mp-tb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 40px;
+}
+
+/* .op-ranges, .op-pill, .op-tag, .op-chk, .op-sym, .tb-sep, .tb-op etc.
+   are defined in components.css (globally available) */
+
+.mp-sol-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.mp-sol-toggle .toggle-switch {
+  width: 32px !important;
+  height: 18px !important;
+}
+
+.mp-sol-toggle .toggle-track::after {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.mp-sol-toggle input:checked + .toggle-track::after {
+  transform: translateX(14px) !important;
+}
+
+/* ── Output area ────────────────────────────────────────────────────────── */
+
+.mp-output {
+  flex: 1;
+  background: radial-gradient(circle at top right, #ede9fe 0, transparent 34%), var(--bg-body);
+  padding: var(--space-5) var(--space-5) var(--space-10);
+}
+
+[data-theme="dark"] .mp-output {
+  background: radial-gradient(circle at top right, #1e1b4b 0, transparent 34%), var(--bg-body);
+}
+
+/* ── Puzzle page ────────────────────────────────────────────────────────── */
+
+.mp-puzzle-page {
+  background: white;
+  color: #0f172a;
+  border-radius: var(--radius-lg);
+  padding: 16px 18px 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ── Puzzle header ──────────────────────────────────────────────────────── */
+
+.mp-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 2px solid #222;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  width: 100%;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14pt;
+  font-weight: 500;
+  flex-wrap: nowrap;
+}
+
+.mp-header-field {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.mp-underline {
+  display: inline-block;
+  border-bottom: 2px solid #000;
+  height: 1.2em;
+}
+
+.mp-underline-lg { width: 200px; }
+.mp-underline-md { width: 120px; }
+
+.mp-header-var {
+  margin-left: auto;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* ── Grid ───────────────────────────────────────────────────────────────── */
+
+.mp-grid-wrap {
+  overflow-x: auto;  /* allow horizontal scroll on narrow screens */
+}
+
+.mp-grid {
+  display: grid;
+  gap: 2px;
+  background: #444;
+  border: 2px solid #444;
+  border-radius: 3px;
+  --mp-cell-size: 32px;  /* screen default; overridden in @media print */
+}
+
+.mp-cell {
+  width: var(--mp-cell-size, 32px);
+  height: var(--mp-cell-size, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', var(--font-ui), sans-serif;
+  font-size: calc(var(--mp-cell-size, 32px) * 0.44);
+  font-weight: 700;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.mp-cell-black {
+  background: #2a2a2a;
+}
+
+.mp-cell-value {
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.mp-cell-blank {
+  background: #fff;
+  border-bottom: 2.5px solid #333;
+  position: relative;
+}
+
+.mp-cell-op {
+  font-size: calc(var(--mp-cell-size, 32px) * 0.52);
+}
+
+.mp-cell-eq {
+  color: #666;
+  font-size: calc(var(--mp-cell-size, 32px) * 0.50);
+}
+
+/* Op colors matching Math Tests */
+.mp-cell-op[data-v="+"] { color: var(--color-add, #3b82f6); }
+.mp-cell-op[data-v="−"] { color: var(--color-sub, #ef4444); }
+.mp-cell-op[data-v="×"] { color: var(--color-mul, #0f766e); }
+.mp-cell-op[data-v="÷"] { color: var(--color-div, #7c3aed); }
+
+/* Solution text (teacher view) */
+.mp-sol {
+  color: #94a3b8;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+/* ── Print ──────────────────────────────────────────────────────────────── */
+
+@page { size: Letter; margin: 0.35in 0.4in; }
+
+@media print {
+  .mp-toolbar { display: none !important; }
+
+  .mp-output {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  /* overflow:auto creates a scroll context that swallows page breaks */
+  .mp-tool {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .mp-output {
+    display: block !important;
+    flex: none !important;
+    overflow: visible !important;
+  }
+
+  .mp-puzzle-page {
+    display: block !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+    page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    width: 100%;
+    max-width: none;
+  }
+
+  .mp-puzzle-page:last-child {
+    page-break-after: avoid;
+    break-after: auto;
+  }
+
+  .mp-header {
+    font-size: 16pt;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom-width: 2.5px;
+  }
+
+  .mp-underline-lg { width: 220px; }
+  .mp-underline-md { width: 130px; }
+
+  /* Cell size fills the printable width: Letter minus margins = 7.3in / cols */
+  .mp-grid {
+    --mp-cell-size: calc(7.3in / var(--mp-cols));
+    gap: 0;
+    background: white !important;
+    border: none !important;
+  }
+
+  .mp-cell {
+    width: var(--mp-cell-size);
+    height: var(--mp-cell-size);
+    font-size: calc(var(--mp-cell-size) * 0.42);
+  }
+
+  .mp-cell-op {
+    font-size: calc(var(--mp-cell-size) * 0.50);
+  }
+
+  .mp-cell-eq {
+    font-size: calc(var(--mp-cell-size) * 0.48);
+  }
+
+  /* Empty cells are invisible — no ink wasted */
+  .mp-cell-black {
+    background: white !important;
+    border: none !important;
+  }
+
+  /* Equation cells get a light outline so they read as a box */
+  .mp-cell-value {
+    background: white !important;
+    color: #000 !important;
+    border: 1px solid #bbb !important;
+  }
+
+  /* Blank answer cells: subtle box + strong bottom underline */
+  .mp-cell-blank {
+    background: white !important;
+    border: 1px solid #ccc !important;
+    border-bottom: 2.5px solid #222 !important;
+  }
+
+  .mp-cell-op[data-v="+"] { color: #3b82f6 !important; }
+  .mp-cell-op[data-v="−"] { color: #ef4444 !important; }
+  .mp-cell-op[data-v="×"] { color: #0f766e !important; }
+  .mp-cell-op[data-v="÷"] { color: #7c3aed !important; }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .mp-tb-row .op-ranges { flex-direction: column; align-items: flex-start; }
+}

@@ -1,0 +1,235 @@
+/* ─── Sudoku Tool ───────────────────────────────────────────────────────── */
+
+.sdk-tool {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-height));
+}
+
+/* ── Toolbar ────────────────────────────────────────────────────────────── */
+
+.sdk-toolbar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.sdk-tb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 40px;
+}
+
+/* ── Output area ────────────────────────────────────────────────────────── */
+
+.sdk-output {
+  flex: 1;
+  background: radial-gradient(circle at top right, #d1fae5 0, transparent 34%), var(--bg-body);
+  padding: var(--space-5) var(--space-5) var(--space-10);
+}
+
+[data-theme="dark"] .sdk-output {
+  background: radial-gradient(circle at top right, #064e3b 0, transparent 34%), var(--bg-body);
+}
+
+/* ── Puzzle page ────────────────────────────────────────────────────────── */
+
+.sdk-puzzle-page {
+  background: white;
+  color: #0f172a;
+  border-radius: var(--radius-lg);
+  padding: 16px 18px 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.sdk-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 2px solid #222;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  width: 100%;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14pt;
+  font-weight: 500;
+  flex-wrap: nowrap;
+}
+
+.sdk-header-field {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.sdk-underline {
+  display: inline-block;
+  border-bottom: 2px solid #000;
+  height: 1.2em;
+}
+
+.sdk-underline-lg { width: 200px; }
+.sdk-underline-md { width: 120px; }
+
+.sdk-header-meta {
+  margin-left: auto;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* ── Grid ───────────────────────────────────────────────────────────────── */
+
+.sdk-grid-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Table-based grid — border-collapse is the most print-reliable border approach */
+.sdk-grid-table {
+  border-collapse: collapse;
+}
+
+.sdk-cell {
+  width: var(--sdk-cell-size, 44px);
+  height: var(--sdk-cell-size, 44px);
+  min-width: var(--sdk-cell-size, 44px);
+  text-align: center;
+  vertical-align: middle;
+  font-size: var(--sdk-font-size, 20px);
+  font-weight: 700;
+  border: 1px solid #ccc;
+  user-select: none;
+  padding: 0;
+}
+
+/* Box boundary — thick borders; with border-collapse the thicker side always wins */
+.sdk-cell.sdk-bt { border-top: 2.5px solid #333; }
+.sdk-cell.sdk-bl { border-left: 2.5px solid #333; }
+.sdk-cell.sdk-bb { border-bottom: 2.5px solid #333; }
+.sdk-cell.sdk-br { border-right: 2.5px solid #333; }
+
+.sdk-given {
+  background: white;
+  color: #1a1a1a;
+}
+
+.sdk-blank {
+  background: #f8fafc;
+}
+
+.sdk-sol {
+  color: #7c3aed;
+  font-weight: 500;
+}
+
+/* ── Instructions ───────────────────────────────────────────────────────── */
+
+.sdk-instructions {
+  margin-top: 12px;
+  font-size: 10pt;
+  color: #777;
+  font-style: italic;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ── Print ──────────────────────────────────────────────────────────────── */
+
+@page { size: Letter; margin: 0.4in 0.45in; }
+
+@media print {
+  .sdk-toolbar { display: none !important; }
+
+  .sdk-tool {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .sdk-output {
+    display: block !important;
+    flex: none !important;
+    overflow: visible !important;
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  .sdk-puzzle-page {
+    display: block !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+    page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .sdk-puzzle-page:last-child {
+    page-break-after: avoid;
+    break-after: auto;
+  }
+
+  .sdk-header {
+    font-size: 16pt !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .sdk-underline-lg { width: 220px !important; }
+  .sdk-underline-md { width: 130px !important; }
+
+  /* Override inline cell-size so the grid fills the printable width */
+  .sdk-grid-wrap {
+    --sdk-cell-size: calc(6.3in / 9) !important;
+    --sdk-font-size: calc(6.3in / 9 * 0.44) !important;
+  }
+
+  .sdk-cell {
+    border: 1px solid #999 !important;
+    background: white !important;
+  }
+
+  .sdk-cell.sdk-bt { border-top: 2.5px solid #111 !important; }
+  .sdk-cell.sdk-bl { border-left: 2.5px solid #111 !important; }
+  .sdk-cell.sdk-bb { border-bottom: 2.5px solid #111 !important; }
+  .sdk-cell.sdk-br { border-right: 2.5px solid #111 !important; }
+
+  .sdk-given { color: #000 !important; }
+  .sdk-blank  { background: white !important; }
+  .sdk-sol    { color: #7c3aed !important; }
+
+  .sdk-instructions {
+    font-size: 9pt !important;
+    margin-top: 8px !important;
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 500px) {
+  .sdk-grid-wrap {
+    --sdk-cell-size: calc((100vw - 40px) / 9);
+    --sdk-font-size: calc((100vw - 40px) / 9 * 0.44);
+  }
+}

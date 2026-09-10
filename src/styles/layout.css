@@ -1,0 +1,208 @@
+/* ─── Portal Shell Layout ───────────────────────────────────────────────── */
+
+.portal-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar ----------------------------------------------------------------- */
+
+.portal-sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 200;
+  transition: width var(--transition);
+  overflow: hidden;
+}
+
+.portal-sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-toggle {
+  width: 100%;
+  height: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 var(--space-4);
+  color: var(--sidebar-text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--sidebar-border);
+  cursor: pointer;
+  font-size: var(--text-lg);
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: var(--sidebar-hover);
+  color: #fff;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3) 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-4);
+  color: var(--sidebar-text);
+  text-decoration: none;
+  border-radius: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
+  border-left: 3px solid transparent;
+  min-height: 44px;
+}
+
+.nav-item:hover {
+  background: var(--sidebar-hover);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: color-mix(in srgb, var(--sidebar-active) 15%, transparent);
+  color: #fff;
+  border-left-color: var(--sidebar-active);
+}
+
+.nav-icon {
+  font-size: var(--text-md);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  opacity: 1;
+  transition: opacity var(--transition);
+  overflow: hidden;
+}
+
+.portal-sidebar.collapsed .nav-label {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+/* Main area --------------------------------------------------------------- */
+
+.portal-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition);
+  height: 100vh;   /* fixed height so .portal-content can scroll independently */
+  overflow: hidden;
+}
+
+.portal-shell:has(.portal-sidebar.collapsed) .portal-main {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* Topbar ------------------------------------------------------------------ */
+
+.portal-topbar {
+  height: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-6);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-name {
+  font-family: var(--font-brand);
+  font-size: var(--text-xl);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.theme-toggle {
+  font-size: var(--text-md);
+}
+
+/* Content area ------------------------------------------------------------ */
+
+.portal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  min-height: 0;  /* required for flex child to shrink below content height */
+}
+
+/* Mobile overlay ---------------------------------------------------------- */
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .portal-sidebar {
+    left: calc(-1 * var(--sidebar-width));
+    width: var(--sidebar-width) !important;
+    transition: left var(--transition);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .portal-sidebar.mobile-open {
+    left: 0;
+  }
+
+  .portal-main {
+    margin-left: 0 !important;
+  }
+
+  .sidebar-overlay.visible {
+    display: block;
+  }
+
+  .portal-topbar {
+    padding: 0 var(--space-4);
+  }
+}

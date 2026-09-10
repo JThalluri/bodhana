@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bodhana — Learning Tools</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&family=Patrick+Hand&family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <link rel="stylesheet" href="/src/styles/base.css" />
+  <link rel="stylesheet" href="/src/styles/components.css" />
+  <link rel="stylesheet" href="/src/styles/layout.css" />
+  <link rel="stylesheet" href="/src/styles/print.css" />
+</head>
+<body>
+
+  <!-- Portal Shell -->
+  <div class="portal-shell" id="portalShell">
+
+    <!-- Sidebar -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="#/" class="nav-item" data-route="/">
+          <i class="fas fa-home nav-icon"></i>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="#/math" class="nav-item" data-route="/math">
+          <i class="fas fa-calculator nav-icon"></i>
+          <span class="nav-label">Math Tests</span>
+        </a>
+        <a href="#/word-puzzles" class="nav-item" data-route="/word-puzzles">
+          <i class="fas fa-puzzle-piece nav-icon"></i>
+          <span class="nav-label">Word Puzzles</span>
+        </a>
+        <a href="#/math-puzzles" class="nav-item" data-route="/math-puzzles">
+          <i class="fas fa-hashtag nav-icon"></i>
+          <span class="nav-label">Math Puzzles</span>
+        </a>
+        <a href="#/sudoku" class="nav-item" data-route="/sudoku">
+          <i class="fas fa-th nav-icon"></i>
+          <span class="nav-label">Sudoku</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main area -->
+    <div class="portal-main">
+
+      <!-- Top bar -->
+      <header class="portal-topbar" id="portalTopbar">
+        <div class="topbar-brand">
+          <span class="brand-name">Bodhana</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn-icon theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="themeIcon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Tool / page content -->
+      <main class="portal-content" id="portalContent">
+        <!-- Injected by router -->
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

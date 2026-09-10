@@ -1,0 +1,261 @@
+/* ─── Math Tool ─────────────────────────────────────────────────────────── */
+
+.math-tool {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-height));
+}
+
+/* ── Compact Sticky Toolbar ─────────────────────────────────────────────── */
+
+.math-toolbar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;                /* stick at top of .portal-content scroll container */
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.math-tb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 40px;
+}
+
+/* Op range pills ---------------------------------------------------------  */
+
+.op-ranges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.op-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 3px 10px 3px 6px;
+  white-space: nowrap;
+}
+
+.op-tag {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  padding-right: 4px;
+  border-right: 1px solid var(--border);
+  margin-right: 4px;
+  line-height: 1;
+}
+
+.add-tag { color: var(--color-add); }
+.sub-tag { color: var(--color-sub); }
+.mul-tag { color: var(--color-mul); }
+.div-tag { color: var(--color-div); }
+
+/* tb-num, tb-select, tb-vdiv, tb-count-lbl, tb-actions, tb-status, btn-sm
+   are defined in components.css */
+
+.tb-sep {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.tb-op {
+  font-size: 14px;
+  font-weight: 800;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.add-op { color: var(--color-add); }
+.sub-op { color: var(--color-sub); }
+.mul-op { color: var(--color-mul); }
+.div-op { color: var(--color-div); }
+
+/* Op toggles -------------------------------------------------------------- */
+
+.op-checks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.op-chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.op-chk input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.op-sym {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.op-sym.add { color: var(--color-add); }
+.op-sym.sub { color: var(--color-sub); }
+.op-sym.mul { color: var(--color-mul); }
+.op-sym.div { color: var(--color-div); }
+
+/* Mode + counts ----------------------------------------------------------- */
+
+.tb-counts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Papers wrap ------------------------------------------------------------- */
+
+.math-papers-wrap {
+  flex: 1;
+  background: radial-gradient(circle at top left, #dbeafe 0, transparent 34%), var(--bg-body);
+  padding: var(--space-5) var(--space-5) var(--space-10);
+}
+
+[data-theme="dark"] .math-papers-wrap {
+  background: radial-gradient(circle at top left, #1e3a5f 0, transparent 34%), var(--bg-body);
+}
+
+.math-papers {
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+/* Paper pages ------------------------------------------------------------- */
+
+.paper-page {
+  background: white;
+  color: #0f172a;
+  border-radius: var(--radius-lg);
+  padding: 16px 18px 10px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.paper-header {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  border-bottom: 2px solid #222;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 16pt;
+  font-weight: 500;
+}
+
+.header-name  { flex: 0 0 38%; white-space: nowrap; }
+.header-score { flex: 0 0 12%; text-align: center; white-space: nowrap; }
+.header-time  { flex: 0 0 5%; text-align: right; white-space: nowrap; margin-left: 10px; }
+.header-var   { flex: 0 0 auto; margin-left: 14px; font-size: 12pt; font-weight: 600; color: #555; white-space: nowrap; }
+
+.paper-header .underline-sm {
+  display: inline-block;
+  width: 450px;
+  border-bottom: 2px solid #000;
+  margin-left: 8px;
+  height: 1.2em;
+}
+
+.paper-header .underline-vsm {
+  display: inline-block;
+  width: 100px;
+  border-bottom: 2px solid #000;
+  margin-left: 8px;
+  height: 1.2em;
+}
+
+.paper-header .score-underline {
+  display: inline-block;
+  width: 36px;
+  border-bottom: 2px solid #000;
+  margin-left: 4px;
+  height: 1.2em;
+}
+
+.paper-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  flex: 1 1 auto;
+}
+
+.paper-table td {
+  width: 33.33%;
+  padding: 2px 6px;
+  vertical-align: middle;
+}
+
+.question {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-print);
+  font-size: 20pt;
+  line-height: 2;
+  white-space: nowrap;
+}
+
+.q-num  { font-weight: bold; min-width: 34px; color: #1a3a5c; }
+.q-expr { font-weight: 500; margin-right: 2px; }
+.q-line { display: inline-block; width: 70px; border-bottom: 2.5px solid #000; margin-left: 6px; height: 1.2em; }
+
+/* Print ------------------------------------------------------------------- */
+
+@page { size: Letter; margin: 0.3in 0.4in; }
+
+@media print {
+  .math-toolbar { display: none !important; }
+
+  .math-papers-wrap { background: white !important; padding: 0 !important; }
+  .math-papers { max-width: none; }
+
+  .paper-page {
+    box-shadow: none; border-radius: 0; padding: 0; margin: 0;
+    page-break-after: always; break-after: page;
+    height: 100vh; max-height: 100vh; overflow: hidden; background: white;
+  }
+  .paper-page:last-child { page-break-after: avoid; break-after: auto; }
+
+  .paper-header { font-size: 18pt; padding-bottom: 10px; margin-bottom: 8px; border-bottom-width: 3px; flex: 0 0 auto; min-height: 70px; align-items: flex-end; }
+  .paper-header .underline-sm  { width: 120px; border-bottom-width: 2.5px; height: 1.4em; }
+  .paper-header .score-underline { width: 40px; border-bottom-width: 2.5px; height: 1.4em; }
+  .header-var { font-size: 14pt; }
+
+  .paper-table { flex: 1 1 auto; height: 100%; }
+  .paper-table td { padding: 1px 6px; }
+  .paper-table tr { height: 5.88%; max-height: 5.88%; }
+
+  .question { font-size: 16pt; line-height: 1.5; }
+  .q-num  { min-width: 28px; font-size: 16pt; }
+  .q-expr { font-size: 16pt; }
+  .q-line { width: 60px; border-bottom-width: 2px; height: 1.2em; }
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .op-ranges { flex-direction: column; align-items: flex-start; }
+}

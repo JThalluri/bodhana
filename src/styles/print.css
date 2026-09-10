@@ -1,0 +1,34 @@
+/* ─── Print: Hide Portal Chrome ─────────────────────────────────────────── */
+
+@media print {
+  .portal-sidebar,
+  .portal-topbar,
+  .sidebar-overlay,
+  .no-print {
+    display: none !important;
+  }
+
+  /* portal-main has height:100vh + overflow:hidden from layout.css — both
+     must be reset or only the first viewport's worth of content prints */
+  .portal-shell {
+    display: block !important;
+  }
+
+  .portal-main {
+    margin-left: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .portal-content {
+    overflow: visible !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
