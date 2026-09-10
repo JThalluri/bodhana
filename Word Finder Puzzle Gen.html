@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Finder Puzzle Generator</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Patrick+Hand&family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ─── CSS Variables (themes) ─── */
+        :root {
+            --bg-body: #12121f;
+            --bg-card: #1a1a2e;
+            --bg-input: #1e1e32;
+            --border-color: #2e2e4a;
+            --text-primary: #f0f0f5;
+            --text-secondary: #b0b0cc;
+            --text-muted: #8888bb;
+            --accent: #5b4fcf;
+            --accent-hover: #6f63e0;
+            --danger: #a14242;
+            --danger-hover: #c44f4f;
+            --cell-bg: #1a1a2e;
+            --cell-border: #3a3a5a;
+            --cell-solution: #5b4fcf55;
+            --header-border: #2a2a44;
+            --shadow: none;
+        }
+
+        body.light-theme {
+            --bg-body: #f5f3f0;
+            --bg-card: #ffffff;
+            --bg-input: #eae8e4;
+            --border-color: #d0cdc7;
+            --text-primary: #1e1e2a;
+            --text-secondary: #3a3a4a;
+            --text-muted: #6a6a7a;
+            --accent: #5b4fcf;
+            --accent-hover: #4a3fb0;
+            --danger: #b33c3c;
+            --danger-hover: #992e2e;
+            --cell-bg: #faf8f5;
+            --cell-border: #c8c4bc;
+            --cell-solution: #d0c8ff;
+            --header-border: #d0cdc7;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* ─── Reset & base ─── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+            font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+            padding: 16px;
+            min-height: 100vh;
+            transition: background 0.25s, color 0.25s;
+        }
+        button,
+        input,
+        select,
+        label {
+            font: inherit;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            background: var(--border-color);
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        button.primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        button.primary:hover {
+            background: var(--accent-hover);
+        }
+        button.danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        button.danger:hover {
+            background: var(--danger-hover);
+        }
+        input[type="file"] {
+            display: none;
+        }
+        select,
+        input[type="number"] {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: var(--text-primary);
+            width: 100%;
+            transition: border 0.2s, background 0.2s;
+        }
+        select:focus,
+        input[type="number"]:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
+        }
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        label .hint {
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ─── Layout ─── */
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ─── Header ─── */
+        .header-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--header-border);
+            margin-bottom: 16px;
+        }
+        .header-top .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .header-top .brand h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.7rem;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+        .header-top .brand span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        .header-top .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .header-top .actions button {
+            padding: 8px 18px;
+            font-size: 0.95rem;
+        }
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            font-size: 1.2rem;
+            padding: 6px 12px;
+            border-radius: 30px;
+        }
+        .theme-toggle:hover {
+            background: var(--bg-input);
+        }
+
+        /* ─── Cards row ─── */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px 16px 16px;
+            border: 1px solid var(--border-color);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: var(--shadow);
+            transition: background 0.25s, border 0.25s;
+        }
+        .card h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .card .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            align-items: end;
+        }
+        .card .row label {
+            flex: 1 0 70px;
+            min-width: 60px;
+        }
+        .card .row label.small {
+            flex: 1 0 50px;
+            min-width: 50px;
+        }
+        .card .row label.tall {
+            flex: 2 0 100px;
+        }
+
+        /* ─── Puzzle area ─── */
+        .puzzles {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 12px;
+        }
+        .puzzle-block {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px 24px 24px;
+            border: 1px solid var(--border-color);
+            page-break-after: always;
+            page-break-inside: avoid;
+            box-shadow: var(--shadow);
+            transition: background 0.25s, border 0.25s;
+            display: flex;
+            flex-direction: column;
+        }
+        .puzzle-block .puzzle-header {
+            display: grid;
+            grid-template-columns: 50% 25% 25%;
+            gap: 8px;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            border-bottom: 3px solid var(--header-border);
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .puzzle-block .puzzle-header .field {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+        .puzzle-block .puzzle-header .field span.label {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .puzzle-block .puzzle-header .field .dash-line {
+            flex: 1;
+            border-bottom: 2px dashed var(--border-color);
+            min-width: 30px;
+            height: 1.2em;
+        }
+
+        .puzzle-block .grid-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0 16px;
+            flex-shrink: 0;
+        }
+        .puzzle-block .grid-wrapper .grid {
+            display: inline-grid;
+            gap: 0;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+        }
+        .puzzle-block .grid-wrapper .grid.no-border {
+            border: none;
+        }
+        .puzzle-block .grid-wrapper .grid .cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--cell-border);
+            background: var(--cell-bg);
+            font-weight: 700;
+            user-select: none;
+            transition: background 0.15s, border 0.15s;
+            text-transform: none;
+        }
+        .puzzle-block .grid-wrapper .grid .cell.hint-cell {
+            background: var(--cell-solution);
+            border-color: var(--accent);
+        }
+        .puzzle-block .grid-wrapper .grid .cell.solution-cell {
+            background: var(--cell-solution);
+            border-color: var(--accent);
+        }
+
+        /* New 5-column bordered word list */
+        .puzzle-block .word-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+            border: 1px solid var(--border-color);
+            margin-top: 4px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .puzzle-block .word-grid .word-item {
+            padding: 4px 6px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            background: var(--cell-bg);
+            transition: background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .puzzle-block .word-grid .word-item:nth-child(5n) {
+            border-right: 1px solid var(--border-color);
+        }
+        .puzzle-block .word-grid .word-item:last-child {
+            border-right: 1px solid var(--border-color);
+        }
+
+        /* ─── Status / empty ─── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+        .empty-state .big-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        /* ─── Toggle switch for solutions ─── */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .toggle-wrap input[type="checkbox"] {
+            width: 40px;
+            height: 22px;
+            appearance: none;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            position: relative;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.2s, border 0.2s;
+            flex-shrink: 0;
+        }
+        .toggle-wrap input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .toggle-wrap input[type="checkbox"]:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .toggle-wrap input[type="checkbox"]:checked::after {
+            transform: translateX(18px);
+            background: #fff;
+        }
+        .toggle-wrap input[type="checkbox"]:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 700px) {
+            .puzzle-block .word-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 450px) {
+            .puzzle-block .word-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header-top .brand h1 {
+                font-size: 1.2rem;
+            }
+            .cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            .puzzle-block .puzzle-header {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 12px;
+            }
+            .puzzle-block .puzzle-header .field:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* ─── Print styles ─── */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #111 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .puzzles {
+                gap: 0 !important;
+                margin: 0 !important;
+            }
+            .puzzle-block {
+                background: #fff !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 20px 24px 30px !important;
+                margin: 0 !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+            }
+            .puzzle-block .puzzle-header {
+                border-bottom-color: #aaa !important;
+                color: #222 !important;
+            }
+            .puzzle-block .puzzle-header .field {
+                color: #222 !important;
+            }
+            .puzzle-block .puzzle-header .field span.label {
+                color: #666 !important;
+            }
+            .puzzle-block .puzzle-header .field .dash-line {
+                border-bottom-color: #999 !important;
+            }
+            .puzzle-block .grid-wrapper .grid {
+                border-color: #999 !important;
+                background: #fff !important;
+            }
+            .puzzle-block .grid-wrapper .grid.no-border {
+                border: none !important;
+            }
+            .puzzle-block .grid-wrapper .grid .cell {
+                border-color: #bbb !important;
+                background: #fff !important;
+                color: #111 !important;
+            }
+            .puzzle-block .grid-wrapper .grid .cell.hint-cell {
+                background: #d0c8ff !important;
+                border-color: #888 !important;
+            }
+            .puzzle-block .grid-wrapper .grid .cell.solution-cell {
+                background: #d0c8ff !important;
+                border-color: #888 !important;
+            }
+            .puzzle-block .word-grid {
+                border-color: #999 !important;
+            }
+            .puzzle-block .word-grid .word-item {
+                border-color: #ccc !important;
+                background: #fff !important;
+                color: #222 !important;
+            }
+            .empty-state {
+                display: none !important;
+            }
+            .card {
+                background: #f5f5f5 !important;
+                border-color: #ddd !important;
+            }
+            .card h3 {
+                color: #555 !important;
+            }
+            select,
+            input[type="number"] {
+                background: #eee !important;
+                border-color: #ccc !important;
+                color: #111 !important;
+            }
+            label {
+                color: #444 !important;
+            }
+            label .hint {
+                color: #777 !important;
+            }
+            button {
+                background: #ddd !important;
+                color: #111 !important;
+            }
+            button.primary {
+                background: #5b4fcf !important;
+                color: #fff !important;
+            }
+            button.danger {
+                background: #a14242 !important;
+                color: #fff !important;
+            }
+            .puzzle-block:last-child {
+                page-break-after: avoid;
+            }
+        }
+
+        /* ─── Misc ─── */
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-input);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+        .file-label:hover {
+            background: var(--border-color);
+        }
+        .file-label .badge {
+            background: var(--accent);
+            color: #fff;
+            padding: 0 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .status-msg {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 4px 0;
+        }
+        .status-msg.error {
+            color: var(--danger);
+        }
+        .status-msg.success {
+            color: #70d0a0;
+        }
+        .print-margin-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .print-margin-group select {
+            width: auto;
+            min-width: 70px;
+        }
+        input[type="number"] {
+            width: 100%;
+            max-width: 80px;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+
+    <div class="app" id="app">
+        <!-- ─── HEADER TOP ─── -->
+        <header class="header-top no-print">
+            <div class="brand">
+                <h1><i class="fas fa-puzzle-piece" style="color:var(--accent);"></i> Word Finder</h1>
+                <span>puzzle generator</span>
+            </div>
+            <div class="actions">
+                <button class="primary" id="btnGenerate"><i class="fas fa-play"></i> Generate</button>
+                <button id="btnPrint"><i class="fas fa-print"></i> Print / PDF</button>
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme"><i class="fas fa-moon"></i></button>
+            </div>
+        </header>
+
+        <!-- ─── CARDS ─── -->
+        <div class="cards no-print">
+            <!-- Puzzle Settings -->
+            <div class="card">
+                <h3><i class="fas fa-sliders-h"></i> Puzzle Settings</h3>
+                <div class="row">
+                    <label>Mode
+                        <select id="mode">
+                            <option value="wordsearch">Word Search</option>
+                            <option value="crisscross">Criss Cross</option>
+                        </select>
+                    </label>
+                    <label>Words/puzzle <input type="number" id="wordsPerPuzzle" value="10" min="1" max="50" /></label>
+                </div>
+                <div class="row">
+                    <label>Rows <input type="number" id="rows" value="12" min="10" max="26" /></label>
+                    <label>Cols <input type="number" id="cols" value="12" min="10" max="26" /></label>
+                </div>
+                <div class="row">
+                    <label>Puzzles <input type="number" id="puzzleCount" value="2" min="1" max="8" /></label>
+                    <label>Difficulty
+                        <select id="difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="row">
+                    <label>Min letters
+                        <select id="minWordLength">
+                            <option value="3">3</option>
+                            <option value="4" selected>4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Appearance -->
+            <div class="card">
+                <h3><i class="fas fa-palette"></i> Appearance</h3>
+                <div class="row">
+                    <label>Font
+                        <select id="fontFamily">
+                            <option value="'Nunito', sans-serif">Nunito</option>
+                            <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                            <option value="'Fredoka One', cursive">Fredoka</option>
+                            <option value="'Patrick Hand', cursive">Patrick Hand</option>
+                            <option value="'Quicksand', sans-serif">Quicksand</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="row">
+                    <label class="small">Size <input type="number" id="fontSize" value="20" min="10" max="48" /></label>
+                    <label class="small">Padding <input type="number" id="cellPadding" value="6" min="0" max="20" /></label>
+                    <label class="small">Case
+                        <select id="caseMode">
+                            <option value="lowercase">lower</option>
+                            <option value="uppercase">UPPER</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Dictionary & Actions -->
+            <div class="card">
+                <h3><i class="fas fa-book"></i> Dictionary</h3>
+                <div class="row">
+                    <label class="tall">
+                        <span>Words file <span class="hint">(.txt, one per line)</span></span>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <span class="file-label" id="fileLabel"><i class="fas fa-folder-open"></i> Choose file <span class="badge" id="fileBadge">0</span></span>
+                            <input type="file" id="fileInput" accept=".txt,.text" />
+                            <button class="danger" id="btnClearDict" style="padding:4px 12px;font-size:0.8rem;"><i class="fas fa-times"></i> clear</button>
+                        </div>
+                    </label>
+                </div>
+                <div class="status-msg" id="dictStatus">No dictionary loaded.</div>
+            </div>
+
+            <!-- Print -->
+            <div class="card">
+                <h3><i class="fas fa-print"></i> Print</h3>
+                <div class="row">
+                    <label>Margin
+                        <select id="printMargin">
+                            <option value="6mm">6 mm</option>
+                            <option value="10mm" selected>10 mm</option>
+                            <option value="16mm">16 mm</option>
+                        </select>
+                    </label>
+                    <div class="toggle-wrap">
+                        <input type="checkbox" id="showSolutionsToggle" />
+                        <span><i class="fas fa-eye"></i> solutions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── PUZZLE AREA ─── -->
+        <div id="puzzleArea">
+            <div class="empty-state" id="emptyState">
+                <div class="big-icon"><i class="fas fa-file-alt"></i></div>
+                <p>Load a dictionary and click <strong>Generate</strong> to create puzzles.</p>
+            </div>
+            <div class="puzzles" id="puzzlesContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  STATE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const state = {
+            dictionary: [],
+            puzzles: [],
+            showSolutions: false,
+        };
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DOM REFS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const $ = (sel) => document.querySelector(sel);
+        const $$ = (sel) => document.querySelectorAll(sel);
+
+        const rowsEl = $('#rows');
+        const colsEl = $('#cols');
+        const wordsPerPuzzleEl = $('#wordsPerPuzzle');
+        const puzzleCountEl = $('#puzzleCount');
+        const difficultyEl = $('#difficulty');
+        const minWordLengthEl = $('#minWordLength');
+        const fontFamilyEl = $('#fontFamily');
+        const fontSizeEl = $('#fontSize');
+        const cellPaddingEl = $('#cellPadding');
+        const caseModeEl = $('#caseMode');
+        const printMarginEl = $('#printMargin');
+        const showSolutionsToggle = $('#showSolutionsToggle');
+        const fileInput = $('#fileInput');
+        const fileBadge = $('#fileBadge');
+        const dictStatus = $('#dictStatus');
+        const btnGenerate = $('#btnGenerate');
+        const btnPrint = $('#btnPrint');
+        const btnClearDict = $('#btnClearDict');
+        const puzzlesContainer = $('#puzzlesContainer');
+        const emptyState = $('#emptyState');
+        const themeToggle = $('#themeToggle');
+        const modeEl = $('#mode');
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DIFFICULTY PRESETS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const DIFFICULTY = {
+            easy: { minLen: 3, maxLen: 6, attempts: 80 },
+            medium: { minLen: 4, maxLen: 8, attempts: 150 },
+            hard: { minLen: 5, maxLen: 12, attempts: 300 },
+        };
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  UTILITY
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function pick(arr) { return arr[rand(0, arr.length - 1)]; }
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = rand(0, i);
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function randomLetter() { return String.fromCharCode(97 + rand(0, 25)); }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DICTIONARY
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function loadDictionaryFromFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    const words = text.split(/\r?\n/)
+                        .map(w => w.trim().toLowerCase())
+                        .filter(w => w.length > 0 && /^[a-z]+$/.test(w));
+                    resolve(Array.from(new Set(words)));
+                };
+                reader.onerror = () => reject(new Error('Failed to read file.'));
+                reader.readAsText(file);
+            });
+        }
+
+        function updateDictStatus(words) {
+            if (words.length === 0) {
+                dictStatus.textContent = '⚠️ No valid words found (need a-z only).';
+                dictStatus.className = 'status-msg error';
+                fileBadge.textContent = '0';
+                return;
+            }
+            dictStatus.textContent = `✅ ${words.length} words loaded.`;
+            dictStatus.className = 'status-msg success';
+            fileBadge.textContent = words.length;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PUZZLE GENERATION (WORD SEARCH)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const DIRS = [
+            [0, 1],
+            [1, 0],
+            [1, 1],
+            [-1, 1],
+            [0, -1],
+            [-1, 0],
+            [-1, -1],
+            [1, -1]
+        ];
+
+        function generatePuzzle(rows, cols, wordPool, wordCount, diff, minLenOverride) {
+            const grid = Array.from({ length: rows }, () => Array(cols).fill(''));
+            const placements = [];
+
+            let minLen = minLenOverride;
+            let maxLen = diff.maxLen;
+            if (minLen > maxLen) maxLen = minLen;
+
+            const pool = wordPool.filter(w => w.length >= minLen && w.length <= maxLen);
+            let finalPool = pool.length > 0 ? pool : wordPool;
+            const shuffled = shuffle([...finalPool]);
+            const chosen = shuffled.slice(0, Math.min(wordCount, shuffled.length));
+            chosen.sort((a, b) => b.length - a.length);
+
+            for (const word of chosen) {
+                const placed = tryPlaceWord(grid, rows, cols, word, diff.attempts);
+                if (placed) placements.push(placed);
+            }
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c] === '') grid[r][c] = randomLetter();
+                }
+            }
+
+            return {
+                grid,
+                words: placements.map(p => p.word),
+                placements,
+            };
+        }
+
+        function tryPlaceWord(grid, rows, cols, word, maxAttempts) {
+            const len = word.length;
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const dir = pick(DIRS);
+                const [dr, dc] = dir;
+                const startR = rand(0, rows - 1);
+                const startC = rand(0, cols - 1);
+
+                const endR = startR + dr * (len - 1);
+                const endC = startC + dc * (len - 1);
+                if (endR < 0 || endR >= rows || endC < 0 || endC >= cols) continue;
+
+                let fits = true;
+                for (let i = 0; i < len; i++) {
+                    const r = startR + dr * i;
+                    const c = startC + dc * i;
+                    const cell = grid[r][c];
+                    if (cell !== '' && cell !== word[i]) {
+                        fits = false;
+                        break;
+                    }
+                }
+                if (!fits) continue;
+
+                for (let i = 0; i < len; i++) {
+                    const r = startR + dr * i;
+                    const c = startC + dc * i;
+                    grid[r][c] = word[i];
+                }
+                return {
+                    word,
+                    start: { r: startR, c: startC },
+                    dir: { dr, dc },
+                    length: len,
+                };
+            }
+            return null;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PUZZLE GENERATION (CRISS CROSS)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function generateCrissCrossPuzzle(rows, cols, wordPool, wordCount, diff, minLenOverride) {
+            const grid = Array.from({ length: rows }, () => Array(cols).fill(null));
+            const placements = [];
+
+            let minLen = minLenOverride;
+            let maxLen = diff.maxLen;
+            if (minLen > maxLen) maxLen = minLen;
+
+            const pool = wordPool.filter(w => w.length >= minLen && w.length <= maxLen);
+            let finalPool = pool.length > 0 ? pool : wordPool;
+            const shuffled = shuffle([...finalPool]);
+            shuffled.sort((a, b) => b.length - a.length);
+            const chosen = shuffled.slice(0, Math.min(wordCount, shuffled.length));
+
+            // Place first word (longest) at center
+            if (chosen.length > 0) {
+                const firstWord = chosen[0];
+                let placed = false;
+                // Try horizontal
+                const startC = Math.floor(cols / 2) - Math.floor(firstWord.length / 2);
+                const startR = Math.floor(rows / 2);
+                if (startC >= 0 && startC + firstWord.length - 1 < cols) {
+                    for (let i = 0; i < firstWord.length; i++) {
+                        grid[startR][startC + i] = firstWord[i];
+                    }
+                    placements.push({
+                        word: firstWord,
+                        start: { r: startR, c: startC },
+                        dir: { dr: 0, dc: 1 },
+                        length: firstWord.length
+                    });
+                    placed = true;
+                }
+                // If horizontal didn't fit, try vertical
+                if (!placed) {
+                    const startR2 = Math.floor(rows / 2) - Math.floor(firstWord.length / 2);
+                    const startC2 = Math.floor(cols / 2);
+                    if (startR2 >= 0 && startR2 + firstWord.length - 1 < rows) {
+                        for (let i = 0; i < firstWord.length; i++) {
+                            grid[startR2 + i][startC2] = firstWord[i];
+                        }
+                        placements.push({
+                            word: firstWord,
+                            start: { r: startR2, c: startC2 },
+                            dir: { dr: 1, dc: 0 },
+                            length: firstWord.length
+                        });
+                        placed = true;
+                    }
+                }
+            }
+
+            // Place subsequent words
+            for (let i = 1; i < chosen.length; i++) {
+                const word = chosen[i];
+                const placed = tryPlaceCrissCrossWord(grid, rows, cols, word);
+                if (placed) placements.push(placed);
+            }
+
+            return {
+                grid,
+                words: placements.map(p => p.word),
+                placements,
+            };
+        }
+
+        function tryPlaceCrissCrossWord(grid, rows, cols, word) {
+            const len = word.length;
+            const dirs = [
+                { dr: 0, dc: 1 }, // right
+                { dr: 1, dc: 0 }  // down
+            ];
+
+            // Try to place with intersection first
+            let attempts = 200;
+            for (let a = 0; a < attempts; a++) {
+                const dir = dirs[Math.floor(Math.random() * dirs.length)];
+                const dr = dir.dr, dc = dir.dc;
+                
+                let startR = Math.floor(Math.random() * rows);
+                let startC = Math.floor(Math.random() * cols);
+
+                let intersects = false;
+                let fits = true;
+                for (let i = 0; i < len; i++) {
+                    const r = startR + dr * i;
+                    const c = startC + dc * i;
+                    if (r < 0 || r >= rows || c < 0 || c >= cols) {
+                        fits = false;
+                        break;
+                    }
+                    const cell = grid[r][c];
+                    if (cell !== null && cell !== word[i]) {
+                        fits = false;
+                        break;
+                    }
+                    if (cell !== null) {
+                        intersects = true;
+                    }
+                }
+
+                if (fits && intersects) {
+                    for (let i = 0; i < len; i++) {
+                        const r = startR + dr * i;
+                        const c = startC + dc * i;
+                        grid[r][c] = word[i];
+                    }
+                    return {
+                        word,
+                        start: { r: startR, c: startC },
+                        dir: { dr, dc },
+                        length: len
+                    };
+                }
+            }
+
+            // Fallback: place anywhere even without intersection
+            for (let a = 0; a < attempts; a++) {
+                const dir = dirs[Math.floor(Math.random() * dirs.length)];
+                const dr = dir.dr, dc = dir.dc;
+                
+                let startR = Math.floor(Math.random() * rows);
+                let startC = Math.floor(Math.random() * cols);
+
+                let fits = true;
+                for (let i = 0; i < len; i++) {
+                    const r = startR + dr * i;
+                    const c = startC + dc * i;
+                    if (r < 0 || r >= rows || c < 0 || c >= cols) {
+                        fits = false;
+                        break;
+                    }
+                    const cell = grid[r][c];
+                    if (cell !== null) {
+                        fits = false;
+                        break;
+                    }
+                }
+
+                if (fits) {
+                    for (let i = 0; i < len; i++) {
+                        const r = startR + dr * i;
+                        const c = startC + dc * i;
+                        grid[r][c] = word[i];
+                    }
+                    return {
+                        word,
+                        start: { r: startR, c: startC },
+                        dir: { dr, dc },
+                        length: len
+                    };
+                }
+            }
+            return null;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function renderPuzzles() {
+            const container = puzzlesContainer;
+            const empty = emptyState;
+
+            if (!state.puzzles || state.puzzles.length === 0) {
+                container.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            const fontSize = parseInt(fontSizeEl.value, 10) || 20;
+            const padding = parseInt(cellPaddingEl.value, 10) || 6;
+            const fontFamily = fontFamilyEl.value;
+            const caseMode = caseModeEl.value;
+            const showSol = state.showSolutions;
+            const margin = printMarginEl.value;
+
+            document.documentElement.style.setProperty('--print-margin', margin);
+
+            let html = '';
+            for (let idx = 0; idx < state.puzzles.length; idx++) {
+                const puzzle = state.puzzles[idx];
+                const { grid, words, placements } = puzzle;
+                const rows = grid.length;
+                const cols = grid[0].length;
+
+                const solSet = new Set();
+                if (showSol) {
+                    for (const p of placements) {
+                        const { start, dir, length } = p;
+                        for (let i = 0; i < length; i++) {
+                            const r = start.r + dir.dr * i;
+                            const c = start.c + dir.dc * i;
+                            solSet.add(`${r},${c}`);
+                        }
+                    }
+                }
+
+                let gridHtml = '';
+                if (puzzle.mode === 'crisscross') {
+                    // Find bounding box of occupied cells
+                    let minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            if (grid[r][c] !== null) {
+                                if (r < minR) minR = r;
+                                if (r > maxR) maxR = r;
+                                if (c < minC) minC = c;
+                                if (c > maxC) maxC = c;
+                            }
+                        }
+                    }
+                    if (maxR >= minR && maxC >= minC) {
+                        const gridHeight = maxR - minR + 1;
+                        const gridWidth = maxC - minC + 1;
+                        gridHtml += `<div class="grid no-border" style="grid-template-columns: repeat(${gridWidth}, auto); grid-template-rows: repeat(${gridHeight}, auto);">`;
+                        
+                        // Precompute hint cells
+                        const hintCells = new Set();
+                        const occupancyCount = {};
+                        for (const p of placements) {
+                            const { start, dir, length } = p;
+                            hintCells.add(`${start.r},${start.c}`);
+                            hintCells.add(`${start.r + (length - 1) * dir.dr},${start.c + (length - 1) * dir.dc}`);
+                            for (let i = 0; i < length; i++) {
+                                const r = start.r + dir.dr * i;
+                                const c = start.c + dir.dc * i;
+                                const key = `${r},${c}`;
+                                if (!occupancyCount[key]) occupancyCount[key] = 0;
+                                occupancyCount[key]++;
+                                if (occupancyCount[key] > 1) {
+                                    hintCells.add(key);
+                                }
+                            }
+                        }
+
+                        for (let r = minR; r <= maxR; r++) {
+                            for (let c = minC; c <= maxC; c++) {
+                                const letter = grid[r][c];
+                                if (letter === null) continue;
+                                
+                                const isHint = hintCells.has(`${r},${c}`);
+                                const isSol = solSet.has(`${r},${c}`);
+                                const cls = `cell${isHint ? ' hint-cell' : ''}${isSol ? ' solution-cell' : ''}`;
+                                
+                                let displayLetter = '';
+                                if (showSol || isHint) {
+                                    displayLetter = letter;
+                                }
+                                if (caseMode === 'uppercase') displayLetter = displayLetter.toUpperCase();
+
+                                gridHtml += `<div class="${cls}" style="grid-row:${r - minR + 1};grid-column:${c - minC + 1};width:${fontSize + padding*2}px;height:${fontSize + padding*2}px;font-size:${fontSize}px;padding:${padding}px;">${displayLetter}</div>`;
+                            }
+                        }
+                        gridHtml += `</div>`;
+                    } else {
+                        gridHtml = `<div style="color:var(--text-muted);font-style:italic;">No words could be placed.</div>`;
+                    }
+                } else {
+                    // Word Search: full grid
+                    gridHtml += `<div class="grid" style="grid-template-columns: repeat(${cols}, auto);">`;
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            let letter = grid[r][c] || '';
+                            if (caseMode === 'uppercase') letter = letter.toUpperCase();
+                            const isSol = solSet.has(`${r},${c}`);
+                            const cls = `cell${isSol ? ' solution-cell' : ''}`;
+                            gridHtml += `<div class="${cls}" style="width:${fontSize + padding*2}px;height:${fontSize + padding*2}px;font-size:${fontSize}px;padding:${padding}px;">${letter}</div>`;
+                        }
+                    }
+                    gridHtml += `</div>`;
+                }
+
+                // Build 5-column word grid
+                const wordItems = words.map(w => {
+                    const display = caseMode === 'uppercase' ? w.toUpperCase() : w;
+                    return `<div class="word-item">${display}</div>`;
+                }).join('');
+
+                html += `
+                    <div class="puzzle-block" style="font-family:${fontFamily};">
+                        <div class="puzzle-header">
+                            <div class="field"><span class="label">Name</span> <span class="dash-line"></span></div>
+                            <div class="field"><span class="label">Time</span> <span class="dash-line"></span></div>
+                            <div class="field"><span class="label">Score</span> <span class="dash-line"></span></div>
+                        </div>
+                        <div class="grid-wrapper">
+                            ${gridHtml}
+                        </div>
+                        <div class="word-grid">
+                            ${wordItems}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            showSolutionsToggle.checked = state.showSolutions;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  GENERATE ACTION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function generatePuzzles() {
+            const dict = state.dictionary;
+            if (dict.length === 0) {
+                dictStatus.textContent = '⚠️ Load a dictionary first.';
+                dictStatus.className = 'status-msg error';
+                return;
+            }
+
+            let rows = parseInt(rowsEl.value, 10) || 12;
+            let cols = parseInt(colsEl.value, 10) || 12;
+            rows = Math.min(26, Math.max(10, rows));
+            cols = Math.min(26, Math.max(10, cols));
+            rowsEl.value = rows;
+            colsEl.value = cols;
+
+            const wordsPerPuzzle = parseInt(wordsPerPuzzleEl.value, 10) || 10;
+            const puzzleCount = parseInt(puzzleCountEl.value, 10) || 2;
+            const diffKey = difficultyEl.value;
+            const diff = { ...DIFFICULTY[diffKey] || DIFFICULTY.medium };
+            const minLenOverride = parseInt(minWordLengthEl.value, 10) || 3;
+            const mode = modeEl.value;
+
+            diff.minLen = minLenOverride;
+            if (diff.maxLen < diff.minLen) diff.maxLen = diff.minLen;
+
+            if (puzzleCount < 1 || puzzleCount > 8) {
+                dictStatus.textContent = '⚠️ Puzzle count must be 1–8.';
+                dictStatus.className = 'status-msg error';
+                return;
+            }
+
+            const puzzles = [];
+            for (let i = 0; i < puzzleCount; i++) {
+                let p;
+                if (mode === 'crisscross') {
+                    p = generateCrissCrossPuzzle(rows, cols, dict, wordsPerPuzzle, diff, minLenOverride);
+                } else {
+                    p = generatePuzzle(rows, cols, dict, wordsPerPuzzle, diff, minLenOverride);
+                }
+                p.mode = mode;
+                puzzles.push(p);
+            }
+
+            state.puzzles = puzzles;
+            state.showSolutions = false;
+            renderPuzzles();
+            dictStatus.textContent = `✅ Generated ${puzzleCount} puzzle${puzzleCount>1?'s':''} (${dict.length} unique words).`;
+            dictStatus.className = 'status-msg success';
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  TOGGLE SOLUTIONS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function setSolutions(show) {
+            state.showSolutions = show;
+            renderPuzzles();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PRINT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function printPuzzles() {
+            if (!state.puzzles || state.puzzles.length === 0) {
+                dictStatus.textContent = '⚠️ Generate puzzles before printing.';
+                dictStatus.className = 'status-msg error';
+                return;
+            }
+            const margin = printMarginEl.value;
+            document.documentElement.style.setProperty('--print-margin', margin);
+            window.print();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  THEME TOGGLE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-theme');
+            body.classList.toggle('dark-theme');
+            const isLight = body.classList.contains('light-theme');
+            themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'light') {
+                document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  EVENT BINDING
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                const words = await loadDictionaryFromFile(file);
+                state.dictionary = words;
+                updateDictStatus(words);
+                state.puzzles = [];
+                renderPuzzles();
+            } catch (err) {
+                dictStatus.textContent = `❌ ${err.message}`;
+                dictStatus.className = 'status-msg error';
+                state.dictionary = [];
+                state.puzzles = [];
+                renderPuzzles();
+                fileBadge.textContent = '0';
+            }
+            fileInput.value = '';
+        });
+
+        btnClearDict.addEventListener('click', () => {
+            state.dictionary = [];
+            state.puzzles = [];
+            fileBadge.textContent = '0';
+            dictStatus.textContent = 'No dictionary loaded.';
+            dictStatus.className = 'status-msg';
+            renderPuzzles();
+        });
+
+        btnGenerate.addEventListener('click', generatePuzzles);
+
+        showSolutionsToggle.addEventListener('change', (e) => {
+            setSolutions(e.target.checked);
+        });
+
+        btnPrint.addEventListener('click', printPuzzles);
+
+        // Appearance controls re-render
+        [fontFamilyEl, fontSizeEl, cellPaddingEl, caseModeEl, printMarginEl, minWordLengthEl, modeEl].forEach(el => {
+            el.addEventListener('change', () => {
+                if (state.puzzles.length > 0) renderPuzzles();
+            });
+            el.addEventListener('input', () => {
+                if (state.puzzles.length > 0) renderPuzzles();
+            });
+        });
+
+        themeToggle.addEventListener('click', toggleTheme);
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                generatePuzzles();
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        loadTheme();
+
+        const DEMO_WORDS = [
+            'apple', 'banana', 'cherry', 'dragon', 'eagle', 'forest', 'garden',
+            'happy', 'island', 'jungle', 'kayak', 'lemon', 'mango', 'night',
+            'ocean', 'puzzle', 'queen', 'river', 'sunny', 'tiger', 'unicorn',
+            'violet', 'water', 'xenon', 'yummy', 'zebra', 'butter', 'cloud',
+            'dream', 'ember', 'flame', 'grace', 'heart', 'ivory', 'jolly',
+            'koala', 'lunar', 'magic', 'noble', 'orbit', 'peace', 'quiet',
+            'radar', 'solar', 'tulip', 'ultra', 'vivid', 'whale', 'youth'
+        ];
+        state.dictionary = Array.from(new Set(DEMO_WORDS));
+        updateDictStatus(state.dictionary);
+
+        // Generate a default puzzle (Word Search)
+        generatePuzzles();
+
+        console.log('🧩 Word Finder Puzzle Generator ready.');
+        console.log('📖 Load a .txt dictionary (duplicates are removed).');
+        console.log('⌨️  Ctrl+Enter to generate.');
+        console.log('🌓 Click the moon/sun icon to toggle theme.');
+    </script>
+</body>
+</html>

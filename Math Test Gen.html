@@ -1,0 +1,4041 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Test Generator</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      /* ----- global reset ----- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+        background: #f0f4f8;
+        color: #1e293b;
+        padding-top: 80px; /* space for fixed header */
+      }
+
+      /* ----- Fixed top toolbar (for screen only) ----- */
+      .fixed-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: #f8fafc;
+        padding: 12px 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 18px;
+      }
+      .fixed-header .brand {
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .fixed-header .brand i {
+        color: #3b82f6;
+      }
+      .config-item {
+        display: flex;
+        align-items: center;
+        gap: 4px 8px;
+        background: white;
+        padding: 4px 12px;
+        border-radius: 30px;
+        border: 1px solid #e2e8f0;
+        white-space: nowrap;
+        font-size: 0.85rem;
+      }
+      .config-item .label {
+        font-weight: 600;
+        color: #475569;
+      }
+      .config-item input[type="number"] {
+        width: 44px;
+        padding: 4px 2px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        text-align: center;
+        font-size: 0.9rem;
+        background: #f8fafc;
+      }
+      .config-item input:focus {
+        border-color: #3b82f6;
+        outline: none;
+        background: white;
+      }
+      .config-item .to {
+        font-weight: 500;
+        color: #64748b;
+      }
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .checkbox-group label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .checkbox-group input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #3b82f6;
+      }
+      .btn {
+        padding: 6px 16px;
+        border: none;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: 0.15s;
+        white-space: nowrap;
+      }
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+      .btn-success {
+        background: #22c55e;
+        color: white;
+      }
+      .btn-success:hover {
+        background: #16a34a;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 2px solid #94a3b8;
+        color: #334155;
+      }
+      .btn-outline:hover {
+        background: #f1f5f9;
+      }
+      #statusMsg {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #475569;
+        margin-left: 4px;
+      }
+      .print-tip {
+        font-size: 0.7rem;
+        color: #64748b;
+        margin-left: 4px;
+      }
+
+      /* ----- polished controls and print-safe layout ----- */
+      .fixed-header {
+        background: rgba(248, 250, 252, 0.96);
+        backdrop-filter: blur(14px);
+        padding: 14px 22px;
+        gap: 10px;
+      }
+      .fixed-header .brand {
+        color: #0f172a;
+        letter-spacing: -0.03em;
+      }
+      .fixed-header .brand i {
+        color: #0f766e;
+      }
+      .fixed-header {
+        align-items: stretch;
+      }
+      .toolbar-left,
+      .toolbar-right {
+        min-width: 0;
+      }
+      .toolbar-left {
+        flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: auto repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, auto);
+        align-items: center;
+        gap: 8px;
+      }
+      .toolbar-left .brand {
+        grid-row: 1 / span 2;
+        align-self: center;
+        padding: 0 10px 0 0;
+      }
+      .toolbar-left .config-item {
+        min-width: 0;
+        justify-content: flex-start;
+      }
+      .toolbar-right {
+        flex: 0 0 auto;
+        display: grid;
+        grid-template-columns: auto auto;
+        align-content: center;
+        align-items: center;
+        gap: 8px 12px;
+        padding-left: 12px;
+        border-left: 1px solid #cbd5e1;
+      }
+      .toolbar-right .checkbox-group {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 7px 10px;
+      }
+      .toolbar-right .action-buttons {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .toolbar-right #statusMsg {
+        margin-left: 0;
+      }
+      .toolbar-right .print-tip {
+        display: none;
+      }
+      @media (min-width: 801px) and (max-width: 1200px) {
+        .fixed-header {
+          flex-wrap: nowrap;
+        }
+        body {
+          padding-top: 150px;
+        }
+      }
+      @media (max-width: 800px) {
+        .fixed-header {
+          align-items: stretch;
+        }
+        .toolbar-left {
+          flex-basis: 100%;
+        }
+        .toolbar-right {
+          flex-basis: 100%;
+          border-left: 0;
+          border-top: 1px solid #cbd5e1;
+          padding: 10px 0 0;
+        }
+      }
+      .config-item {
+        border-radius: 10px;
+        padding: 7px 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .config-item input[type="number"] {
+        width: 42px;
+        border-color: #cbd5e1;
+      }
+      .config-item .label {
+        min-width: 42px;
+      }
+      .btn {
+        border-radius: 9px;
+        padding: 8px 13px;
+      }
+      .btn-primary {
+        background: #0f766e;
+      }
+      .btn-primary:hover {
+        background: #115e59;
+      }
+      .btn-success {
+        background: #d97706;
+      }
+      .btn-success:hover {
+        background: #b45309;
+      }
+      #papersContainer {
+        padding: 24px 22px 40px;
+        background: radial-gradient(circle at top left, #e0f2fe 0, transparent 34%), #f1f5f9;
+      }
+      .paper-page {
+        max-width: 1050px;
+        margin: 0 auto 28px;
+        padding: 24px 28px 20px;
+        border: 1px solid #e2e8f0;
+      }
+      .paper-header {
+        color: #0f172a;
+      }
+      .question .num {
+        color: #0f766e;
+      }
+      .mode-select {
+        appearance: none;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 600;
+        padding: 6px 26px 6px 9px;
+      }
+      .empty-state {
+        max-width: 620px;
+        margin: 70px auto;
+        padding: 36px;
+        text-align: center;
+        color: #475569;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+      }
+      @media print {
+        #papersContainer {
+          padding: 0;
+          background: white;
+        }
+        .paper-page {
+          width: 100%;
+          max-width: none;
+          height: calc(100vh - 0.6in);
+          min-height: 0;
+          max-height: none;
+          margin: 0;
+          padding: 0;
+          break-after: page;
+          page-break-after: always;
+        }
+        .paper-page:last-child {
+          break-after: auto;
+          page-break-after: auto;
+        }
+      }
+
+      /* ----- final worksheet geometry ----- */
+      .paper-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 1.35in 1.25in 0.72in;
+        align-items: end;
+        gap: 0.1in;
+        min-height: 0.62in;
+        padding: 0 0 0.12in;
+        margin-bottom: 0.12in;
+        font-size: 15pt;
+      }
+      .header-name,
+      .header-score,
+      .header-time,
+      .header-var {
+        min-width: 0;
+        margin: 0;
+      }
+      .header-score,
+      .header-time,
+      .header-var {
+        text-align: left;
+      }
+      .header-var {
+        font-size: 11pt;
+        font-weight: 700;
+        color: #475569;
+      }
+      .paper-header .underline-sm {
+        width: calc(100% - 0.58in);
+        min-width: 1.7in;
+        margin-left: 0.08in;
+        transform: scaleX(0.9);
+        transform-origin: left center;
+      }
+      .paper-header .underline-vsm {
+        width: 0.68in;
+        margin-left: 0.06in;
+      }
+      .paper-page {
+        border: none;
+        box-shadow: none;
+      }
+      .paper-header .score-underline {
+        width: 0.46in;
+        margin-left: 0.04in;
+      }
+      .paper-table td {
+        padding: 0 0.08in;
+      }
+      .question {
+        display: grid;
+        grid-template-columns: 0.42in 1.22in 0.18in 0.66in;
+        align-items: baseline;
+        gap: 0;
+        font-size: 18pt;
+        line-height: 1.55;
+      }
+      .question .num {
+        min-width: 0;
+        padding-right: 0.1in;
+        text-align: right;
+        font-size: 1em;
+      }
+      .question .expr {
+        margin: 0;
+        white-space: nowrap;
+      }
+      .question .equals {
+        text-align: center;
+        padding-right: 0.06in;
+      }
+      .question .underline {
+        width: 0.62in;
+        margin: 0;
+      }
+      @media print {
+        .paper-page {
+          height: 10.4in;
+          overflow: hidden;
+        }
+        .paper-header {
+          grid-template-columns: minmax(0, 1fr) 1.22in 1.12in 0.62in;
+          gap: 0.08in;
+          min-height: 0.68in;
+          margin-bottom: 0.06in;
+          padding-bottom: 0.1in;
+          font-size: 15pt;
+        }
+        .header-var {
+          font-size: 9.5pt;
+          font-weight: 700;
+        }
+        .paper-header .underline-sm {
+          width: calc(100% - 0.55in);
+          min-width: 2.3in;
+        }
+        .paper-header .underline-vsm {
+          width: 0.52in;
+        }
+        .paper-table td {
+          padding: 0 0.05in;
+        }
+        .question {
+          grid-template-columns: 0.36in 1.14in 0.17in 0.58in;
+          font-size: 15.5pt;
+          line-height: 1.42;
+        }
+        .question .underline {
+          width: 0.56in;
+        }
+      }
+
+      /* ----- Scrollable papers container (screen only) ----- */
+      #papersContainer {
+        max-width: 100%;
+        padding: 10px 20px 30px;
+      }
+
+      /* ============================================================ */
+      /*            PAPER STYLES – both screen and print              */
+      /* ============================================================ */
+      .paper-page {
+        background: white;
+        border-radius: 16px;
+        padding: 16px 18px 10px;
+        margin-bottom: 28px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        /* On screen, we just let it grow; print will fix height */
+        display: flex;
+        flex-direction: column;
+      }
+      .paper-page:last-child {
+        page-break-after: avoid;
+      }
+
+      /* ----- Header row: Name (50%), Score (15%), Time (35%), Var (right) ----- */
+      .paper-header {
+        display: flex;
+        width: 100%;
+        flex-wrap: nowrap;
+        align-items: baseline;
+        border-bottom: 2px solid #222;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+        font-family: "Segoe UI", Roboto, sans-serif;
+        font-size: 16pt;
+        font-weight: 500;
+      }
+      .header-name {
+        flex: 0 0 38%;
+        white-space: nowrap;
+      }
+      .header-score {
+        flex: 0 0 12%;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .header-time {
+        flex: 0 0 5%;
+        text-align: right;
+        white-space: nowrap;
+        margin-left: 10px;
+      }
+      .header-var {
+        flex: 0 0 auto;
+        margin-left: 14px;
+        font-size: 12pt;
+        font-weight: 600;
+        color: #555;
+        white-space: nowrap;
+      }
+      .paper-header .underline-vsm {
+        display: inline-block;
+        width: 100px;
+        border-bottom: 2px solid #000;
+        margin-left: 8px;
+        height: 1.2em;
+      }
+      .paper-header .underline-sm {
+        display: inline-block;
+        width: 450px;
+        border-bottom: 2px solid #000;
+        margin-left: 8px;
+        height: 1.2em;
+      }
+      .paper-header .score-underline {
+        display: inline-block;
+        width: 36px;
+        border-bottom: 2px solid #000;
+        margin-left: 4px;
+        height: 1.2em;
+      }
+
+      /* ----- Questions table ----- */
+      .paper-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        flex: 1 1 auto;
+      }
+      .paper-table td {
+        width: 33.33%;
+        padding: 2px 6px;
+        vertical-align: middle;
+      }
+      .question {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        font-family:
+          "Comic Sans MS", "Chalkboard SE", "Arial Rounded MT Bold", sans-serif;
+        font-size: 20pt; /* large on screen */
+        line-height: 2;
+        white-space: nowrap;
+      }
+      .question .num {
+        font-weight: bold;
+        min-width: 34px;
+        color: #1a3a5c;
+      }
+      .question .expr {
+        font-weight: 500;
+        margin-right: 2px;
+      }
+      .question .underline {
+        display: inline-block;
+        width: 70px;
+        border-bottom: 2.5px solid #000;
+        margin-left: 6px;
+        height: 1.2em;
+      }
+
+      /* ============================================================ */
+      /*                     PRINT STYLES (LETTER)                     */
+      /* ============================================================ */
+      @page {
+        size: Letter;
+        margin: 0.3in 0.4in; /* balanced margins */
+      }
+
+      @media print {
+        /* Hide UI, show only papers */
+        .fixed-header,
+        .btn,
+        .btn-group,
+        #statusMsg,
+        .print-tip,
+        .checkbox-group {
+          display: none !important;
+        }
+        body {
+          padding-top: 0 !important;
+          background: white;
+          margin: 0;
+        }
+        #papersContainer {
+          padding: 0 !important;
+          background: white;
+        }
+
+        .paper-page {
+          box-shadow: none;
+          border-radius: 0;
+          padding: 0; /* no extra padding, we use margins from @page */
+          margin: 0;
+          page-break-after: always;
+          display: flex;
+          flex-direction: column;
+          height: 100vh; /* fill the page height */
+          max-height: 100vh;
+          overflow: hidden;
+          background: white;
+        }
+        .paper-page:last-child {
+          page-break-after: avoid;
+        }
+
+        /* Make header taller and more prominent */
+        .paper-header {
+          font-size: 18pt; /* larger than screen */
+          padding-bottom: 10px;
+          margin-bottom: 8px;
+          border-bottom-width: 3px;
+          flex: 0 0 auto; /* do not grow */
+          min-height: 70px; /* explicit height */
+          align-items: flex-end; /* keep underlines at bottom */
+        }
+        .paper-header .underline-sm {
+          width: 120px;
+          border-bottom-width: 2.5px;
+          height: 1.4em;
+        }
+        .paper-header .score-underline {
+          width: 40px;
+          border-bottom-width: 2.5px;
+          height: 1.4em;
+        }
+        .header-var {
+          font-size: 14pt;
+        }
+
+        /* Table fills remaining space */
+        .paper-table {
+          flex: 1 1 auto;
+          height: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+        .paper-table td {
+          padding: 1px 6px;
+          height: auto;
+        }
+        /* Distribute rows evenly: each row gets 1/17 of the remaining height */
+        .paper-table tr {
+          height: 5.88%; /* ~ 1/17 */
+          max-height: 5.88%;
+        }
+
+        .question {
+          font-size: 16pt; /* comfortable for kids */
+          line-height: 1.5; /* tighter to fit */
+          white-space: nowrap;
+        }
+        .question .num {
+          min-width: 28px;
+          font-size: 16pt;
+        }
+        .question .expr {
+          font-size: 16pt;
+        }
+        .question .underline {
+          width: 60px;
+          border-bottom-width: 2px;
+          height: 1.2em;
+        }
+      }
+
+      /* small screen fallback */
+      @media (max-width: 1200px) {
+        .fixed-header {
+          flex-wrap: wrap;
+        }
+        body {
+          padding-top: 360px;
+        }
+      }
+    </style>
+    <style>
+      /* Final worksheet geometry must follow the legacy screen rules. */
+      .paper-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 1.35in 1.25in 0.72in;
+        align-items: end;
+        gap: 0.16in;
+        min-height: 0.62in;
+        padding: 0 0 0.12in;
+        margin-bottom: 0.12in;
+        font-size: 15pt;
+      }
+      .header-name,
+      .header-score,
+      .header-time,
+      .header-var {
+        min-width: 0;
+        margin: 0;
+      }
+      .header-score,
+      .header-time,
+      .header-var {
+        text-align: left;
+      }
+      .header-var {
+        font-size: 11pt;
+        font-weight: 700;
+        color: #475569;
+      }
+      .paper-header .underline-sm {
+        width: calc(100% - 0.58in);
+        min-width: 1.7in;
+        margin-left: 0.08in;
+      }
+      .paper-header .underline-vsm {
+        width: 0.52in;
+        margin-left: 0.06in;
+      }
+      .paper-header .score-underline {
+        width: 0.46in;
+        margin-left: 0.04in;
+      }
+      .paper-table td {
+        width: 33.333%;
+        padding: 0 0.08in;
+      }
+      .question {
+        display: grid;
+        width: 2.48in;
+        grid-template-columns: 0.42in 1.1in 0.24in 0.72in;
+        align-items: baseline;
+        gap: 0;
+        font-size: 18pt;
+        line-height: 1.55;
+      }
+      .question .num {
+        min-width: 0;
+        padding-right: 0.06in;
+        text-align: right;
+        font-size: 0.82em;
+      }
+      .question .expr {
+        margin: 0;
+        white-space: nowrap;
+        text-align: right;
+        padding-right: 0.04in;
+      }
+      .question .equals {
+        text-align: left;
+        padding-left: 0.02in;
+      }
+      .question .underline {
+        width: 0.62in;
+        margin: 0;
+      }
+      @media print {
+        .paper-page {
+          height: 10.4in;
+          overflow: hidden;
+        }
+        .paper-header {
+          grid-template-columns: minmax(0, 1fr) 1.22in 1.12in 0.62in;
+          min-height: 0.68in;
+          margin-bottom: 0.06in;
+          padding-bottom: 0.1in;
+          font-size: 15pt;
+        }
+        .paper-header .underline-sm {
+          width: calc(100% - 0.55in);
+          min-width: 2.3in;
+        }
+        .paper-table td {
+          padding: 0 0.05in;
+        }
+        .question {
+          width: 2.25in;
+          grid-template-columns: 0.36in 1.02in 0.22in 0.65in;
+          font-size: 15.5pt;
+          line-height: 1.42;
+        }
+        .question .num {
+          padding-right: 0.08in;
+          font-size: 1em;
+        }
+        .question .expr {
+          padding-right: 0.03in;
+        }
+        .question .equals {
+          padding-left: 0.02in;
+        }
+        .question .underline {
+          width: 0.56in;
+        }
+      }
+    </style>
+    <style>
+      @media screen and (min-width: 801px) {
+        .fixed-header {
+          flex-wrap: nowrap;
+        }
+        body {
+          padding-top: 150px;
+        }
+      }
+      @media screen and (max-width: 800px) {
+        body {
+          padding-top: 360px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== FIXED TOP TOOLBAR ===== -->
+    <div class="fixed-header">
+      <div class="toolbar-left">
+        <div class="brand"><i class="fas fa-calculator"></i> Math Test Generator</div>
+
+      <div class="config-item">
+        <span class="label" style="color: #3b82f6"
+          ><i class="fas fa-plus-circle"></i> Addition</span
+        >
+        <input type="number" id="addAmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="addAmax" value="9" min="0" />
+        <span class="to">+</span>
+        <input type="number" id="addBmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="addBmax" value="9" min="0" />
+      </div>
+
+      <div class="config-item">
+        <span class="label" style="color: #ef4444"
+          ><i class="fas fa-minus-circle"></i> Subtraction</span
+        >
+        <input type="number" id="subMmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="subMmax" value="20" min="0" />
+        <span class="to">−</span>
+        <input type="number" id="subSmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="subSmax" value="9" min="0" />
+      </div>
+
+      <div class="config-item">
+        <span class="label" style="color: #2563eb"
+          ><i class="fas fa-times-circle"></i> Multiplication</span
+        >
+        <input type="number" id="mulAmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="mulAmax" value="10" min="0" />
+        <span class="to">×</span>
+        <input type="number" id="mulBmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="mulBmax" value="10" min="0" />
+      </div>
+
+      <div class="config-item">
+        <span class="label" style="color: #7c3aed"
+          ><i class="fas fa-divide"></i> Division</span
+        >
+        <input type="number" id="divQmin" value="0" min="0" />
+        <span class="to">to</span>
+        <input type="number" id="divQmax" value="10" min="0" />
+        <span class="to">÷</span>
+        <input type="number" id="divDmin" value="1" min="1" />
+        <span class="to">to</span>
+        <input type="number" id="divDmax" value="10" min="1" />
+      </div>
+
+      </div>
+
+      <div class="toolbar-right">
+        <div class="checkbox-group">
+        <label><input type="checkbox" id="includeAdd" checked="" /> +</label>
+        <label><input type="checkbox" id="includeSub" checked="" /> −</label>
+        <label><input type="checkbox" id="includeMul" /> ×</label>
+        <label><input type="checkbox" id="includeDiv" /> ÷</label>
+        <label
+          >Mode
+          <select id="questionMode" class="mode-select">
+            <option value="mix">Mix selected</option>
+            <option value="single">One type only</option>
+          </select>
+        </label>
+        <label
+          >Papers
+          <input
+            type="number"
+            id="numPapers"
+            value="8"
+            min="1"
+            max="20"
+            style="width: 40px"
+        /></label>
+        <label
+          >Q
+          <input
+            type="number"
+            id="qPerPaper"
+            value="50"
+            min="1"
+            max="100"
+            style="width: 44px"
+        /></label>
+        </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="generateBtn">
+          <i class="fas fa-sync-alt"></i> Generate
+        </button>
+        <button class="btn btn-success" id="printBtn">
+          <i class="fas fa-print"></i> Print PDF
+        </button>
+        <button class="btn btn-outline" id="resetBtn">
+          <i class="fas fa-undo-alt"></i> Reset
+        </button>
+      </div>
+
+      <span id="statusMsg"
+        ><span style="color: #16a34a">220 unique. 8 × 50.</span></span
+      >
+      </div>
+    </div>
+
+    <!-- ===== GENERATED PAPERS ===== -->
+    <div id="papersContainer">
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 1</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">2 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">5 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">6 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">6 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">1 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">6 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">9 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">5 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">12 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">10 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">1 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">20 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">16 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">4 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">12 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">1 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">7 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">0 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">8 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">17 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">0 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">19 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">20 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">11 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">1 + 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">13 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">13 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">13 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">3 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">3 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">5 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">3 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">8 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">17 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">3 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">13 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">9 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">1 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">19 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">8 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">4 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">12 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">9 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">16 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">8 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">9 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">15 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">17 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">18 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">0 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 2</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">9 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">11 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">3 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">15 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">12 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">15 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">7 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">13 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">9 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">14 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">10 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">18 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">20 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">16 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">20 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">20 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">12 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">11 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">9 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">19 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">18 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">17 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">17 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">3 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">0 + 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">1 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">20 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">5 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">17 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">7 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">7 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">11 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">17 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">0 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">15 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">5 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">5 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">10 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">4 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">7 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">13 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">8 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">16 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">5 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">15 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">16 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">9 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">1 + 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">14 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">10 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 3</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">10 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">14 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">2 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">6 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">6 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">12 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">13 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">0 + 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">9 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">7 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">15 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">4 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">2 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">17 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">9 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">4 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">0 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">9 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">4 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">18 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">9 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">14 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">6 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">4 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">18 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">3 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">0 + 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">2 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">0 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">20 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">16 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">9 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">0 + 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">19 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">1 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">14 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">6 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">5 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">12 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">13 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">3 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">10 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">2 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">4 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">5 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">6 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">18 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">19 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">1 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">14 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 4</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">8 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">1 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">11 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">4 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">11 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">10 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">19 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">9 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">13 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">10 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">4 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">15 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">19 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">14 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">19 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">18 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">0 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">2 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">2 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">4 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">1 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">18 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">11 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">7 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">19 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">12 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">6 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">9 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">17 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">6 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">13 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">6 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">17 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">12 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">17 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">10 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">9 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">20 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">12 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">0 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">14 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">9 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">9 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">17 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">15 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">7 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">5 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">13 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">6 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">6 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 5</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">14 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">9 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">7 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">20 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">8 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">18 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">11 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">19 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">6 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">10 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">3 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">7 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">11 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">6 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">4 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">19 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">3 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">5 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">9 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">8 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">20 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">11 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">15 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">2 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">18 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">9 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">15 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">13 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">4 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">16 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">1 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">14 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">2 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">7 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">9 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">3 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">12 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">10 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">20 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">6 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">8 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">6 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">0 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">0 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">12 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">10 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">16 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">11 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">4 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">2 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 6</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">20 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">2 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">5 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">20 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">3 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">6 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">15 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">15 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">7 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">3 + 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">18 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">19 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">5 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">8 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">3 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">13 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">7 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">13 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">2 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">13 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">4 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">11 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">18 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">16 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">6 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">5 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">5 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">9 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">8 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">0 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">17 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">3 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">10 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">20 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">10 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">6 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">1 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">12 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">15 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">0 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">12 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">0 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">18 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">7 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">7 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">10 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">20 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">9 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">16 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">16 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 7</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">10 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">4 + 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">12 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">6 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">1 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">12 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">19 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">10 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">20 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">8 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">16 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">19 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">5 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">16 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">14 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">12 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">11 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">17 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">3 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">17 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">15 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">11 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">7 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">10 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">19 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">7 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">5 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">10 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">3 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">19 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">8 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">6 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">9 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">7 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">3 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">9 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">18 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">6 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">8 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">16 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">5 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">13 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">7 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">6 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">17 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">13 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">5 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">5 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">0 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">2 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-page">
+        <div class="paper-header">
+          <span class="header-name"
+            >Name <span class="underline-sm"></span></span
+          ><span class="header-score"
+            >Score <span class="score-underline"></span> / 50</span
+          ><span class="header-time"
+            >Time <span class="underline-vsm"></span></span
+          ><span class="header-var">Variation 8</span>
+        </div>
+        <table class="paper-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">1.</span><span class="expr">11 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">18.</span><span class="expr">16 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">35.</span><span class="expr">8 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">2.</span><span class="expr">19 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">19.</span><span class="expr">18 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">36.</span><span class="expr">0 + 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">3.</span><span class="expr">20 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">20.</span><span class="expr">18 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">37.</span><span class="expr">13 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">4.</span><span class="expr">8 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">21.</span><span class="expr">7 + 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">38.</span><span class="expr">2 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">5.</span><span class="expr">16 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">22.</span><span class="expr">9 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">39.</span><span class="expr">18 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">6.</span><span class="expr">12 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">23.</span><span class="expr">9 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">40.</span><span class="expr">4 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">7.</span><span class="expr">6 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">24.</span><span class="expr">12 - 8 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">41.</span><span class="expr">10 - 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">8.</span><span class="expr">10 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">25.</span><span class="expr">3 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">42.</span><span class="expr">16 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">9.</span><span class="expr">17 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">26.</span><span class="expr">7 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">43.</span><span class="expr">14 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">10.</span><span class="expr">19 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">27.</span><span class="expr">5 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">44.</span><span class="expr">12 - 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">11.</span><span class="expr">14 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">28.</span><span class="expr">6 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">45.</span><span class="expr">5 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">12.</span><span class="expr">2 + 2 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">29.</span><span class="expr">4 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">46.</span><span class="expr">12 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">13.</span><span class="expr">15 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">30.</span><span class="expr">1 + 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">47.</span><span class="expr">5 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">14.</span><span class="expr">18 - 1 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">31.</span><span class="expr">17 - 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">48.</span><span class="expr">8 + 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">15.</span><span class="expr">13 - 0 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">32.</span><span class="expr">6 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">49.</span><span class="expr">12 - 5 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">16.</span><span class="expr">5 + 6 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">33.</span><span class="expr">0 + 7 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">50.</span><span class="expr">4 - 4 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="question">
+                  <span class="num">17.</span><span class="expr">17 - 9 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td>
+                <div class="question">
+                  <span class="num">34.</span><span class="expr">17 - 3 =</span
+                  ><span class="underline"></span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // ----- DOM refs -----
+        const addAmin = document.getElementById("addAmin");
+        const addAmax = document.getElementById("addAmax");
+        const addBmin = document.getElementById("addBmin");
+        const addBmax = document.getElementById("addBmax");
+        const subMmin = document.getElementById("subMmin");
+        const subMmax = document.getElementById("subMmax");
+        const subSmin = document.getElementById("subSmin");
+        const subSmax = document.getElementById("subSmax");
+        const includeAdd = document.getElementById("includeAdd");
+        const includeSub = document.getElementById("includeSub");
+        const numPapers = document.getElementById("numPapers");
+        const qPerPaper = document.getElementById("qPerPaper");
+        const generateBtn = document.getElementById("generateBtn");
+        const printBtn = document.getElementById("printBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const statusMsg = document.getElementById("statusMsg");
+        const container = document.getElementById("papersContainer");
+
+        function getInt(el, fallback) {
+          const v = parseInt(el.value, 10);
+          return isNaN(v) ? fallback : v;
+        }
+
+        // ----- generate papers -----
+        function generatePapers() {
+          const aMin = getInt(addAmin, 0);
+          const aMax = getInt(addAmax, 9);
+          const bMin = getInt(addBmin, 0);
+          const bMax = getInt(addBmax, 9);
+          const mMin = getInt(subMmin, 0);
+          const mMax = getInt(subMmax, 20);
+          const sMin = getInt(subSmin, 0);
+          const sMax = getInt(subSmax, 9);
+          const inclAdd = includeAdd.checked;
+          const inclSub = includeSub.checked;
+          let nPapers = getInt(numPapers, 8);
+          let qPer = getInt(qPerPaper, 50);
+          if (nPapers < 1) nPapers = 1;
+          if (qPer < 1) qPer = 1;
+
+          const pool = [];
+          const addSet = new Set();
+
+          if (inclAdd) {
+            for (let a = aMin; a <= aMax; a++) {
+              for (let b = bMin; b <= bMax; b++) {
+                const key = a <= b ? `${a},${b}` : `${b},${a}`;
+                if (!addSet.has(key)) {
+                  addSet.add(key);
+                  pool.push(`${a} + ${b}`);
+                }
+              }
+            }
+          }
+
+          if (inclSub) {
+            for (let m = mMin; m <= mMax; m++) {
+              for (let s = sMin; s <= sMax; s++) {
+                if (m >= s) pool.push(`${m} - ${s}`);
+              }
+            }
+          }
+
+          if (pool.length === 0) {
+            statusMsg.innerHTML =
+              '<span style="color:#dc2626;"><i class="fas fa-exclamation-triangle"></i> No questions.</span>';
+            container.innerHTML = "";
+            return;
+          }
+
+          if (pool.length < qPer) {
+            statusMsg.innerHTML = `<span style="color:#b45309;">Pool ${pool.length} → reducing to ${pool.length}.</span>`;
+            qPer = pool.length;
+          } else {
+            statusMsg.innerHTML = `<span style="color:#16a34a;">${pool.length} unique. ${nPapers} × ${qPer}.</span>`;
+          }
+
+          const papers = [];
+          for (let p = 0; p < nPapers; p++) {
+            const shuffled = [...pool];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            papers.push(shuffled.slice(0, qPer));
+          }
+
+          renderPapers(papers, qPer);
+        }
+
+        // ----- render -----
+        function renderPapers(papers, qPer) {
+          let html = "";
+          papers.forEach((paper, idx) => {
+            const colSize = Math.ceil(qPer / 3);
+            const c1 = paper.slice(0, colSize);
+            const c2 = paper.slice(colSize, colSize * 2);
+            const c3 = paper.slice(colSize * 2);
+            const maxRows = Math.max(c1.length, c2.length, c3.length);
+
+            html += `<div class="paper-page">`;
+            // Header
+            html += `<div class="paper-header">`;
+            html += `<span class="header-name">Name <span class="underline-sm"></span></span>`;
+            html += `<span class="header-score">Score <span class="score-underline"></span> / ${qPer}</span>`;
+            html += `<span class="header-time">Time <span class="underline-vsm"></span></span>`;
+            html += `<span class="header-var">Variation ${idx + 1}</span>`;
+            html += `</div>`;
+
+            // Table
+            html += `<table class="paper-table">`;
+            for (let row = 0; row < maxRows; row++) {
+              html += `<tr>`;
+              if (row < c1.length) {
+                const q = c1[row];
+                const num = row + 1;
+                html += `<td><div class="question"><span class="num">${num}.</span><span class="expr">${q} =</span><span class="underline"></span></div></td>`;
+              } else {
+                html += `<td></td>`;
+              }
+              if (row < c2.length) {
+                const q = c2[row];
+                const num = row + 1 + c1.length;
+                html += `<td><div class="question"><span class="num">${num}.</span><span class="expr">${q} =</span><span class="underline"></span></div></td>`;
+              } else {
+                html += `<td></td>`;
+              }
+              if (row < c3.length) {
+                const q = c3[row];
+                const num = row + 1 + c1.length + c2.length;
+                html += `<td><div class="question"><span class="num">${num}.</span><span class="expr">${q} =</span><span class="underline"></span></div></td>`;
+              } else {
+                html += `<td></td>`;
+              }
+              html += `</tr>`;
+            }
+            html += `</table></div>`;
+          });
+          container.innerHTML = html;
+        }
+
+        // ----- reset -----
+        function resetDefaults() {
+          addAmin.value = "0";
+          addAmax.value = "9";
+          addBmin.value = "0";
+          addBmax.value = "9";
+          subMmin.value = "0";
+          subMmax.value = "20";
+          subSmin.value = "0";
+          subSmax.value = "9";
+          includeAdd.checked = true;
+          includeSub.checked = true;
+          numPapers.value = "8";
+          qPerPaper.value = "50";
+          statusMsg.innerHTML = "";
+        }
+
+        // ----- events -----
+        generateBtn.addEventListener("click", generatePapers);
+        resetBtn.addEventListener("click", resetDefaults);
+
+        window.addEventListener("load", () => {
+          resetDefaults();
+          generatePapers();
+        });
+      })();
+    </script>
+    <script>
+      (function () {
+        const ids = (names) => Object.fromEntries(names.map((name) => [name, document.getElementById(name)]));
+        const fields = ids([
+          "addAmin", "addAmax", "addBmin", "addBmax", "subMmin", "subMmax", "subSmin", "subSmax",
+          "mulAmin", "mulAmax", "mulBmin", "mulBmax", "divQmin", "divQmax", "divDmin", "divDmax",
+          "includeAdd", "includeSub", "includeMul", "includeDiv", "questionMode", "numPapers", "qPerPaper",
+          "generateBtn", "printBtn", "resetBtn", "statusMsg", "papersContainer"
+        ]);
+
+        const number = (name, fallback) => {
+          const value = Number.parseInt(fields[name].value, 10);
+          return Number.isFinite(value) ? value : fallback;
+        };
+
+        function range(minName, maxName, defaults) {
+          let min = Math.max(0, number(minName, defaults[0]));
+          let max = Math.max(0, number(maxName, defaults[1]));
+          if (min > max) [min, max] = [max, min];
+          return [min, max];
+        }
+
+        function addUnique(pool, seen, expression) {
+          if (!seen.has(expression)) {
+            seen.add(expression);
+            pool.push(expression);
+          }
+        }
+
+        function buildPools() {
+          const pools = {};
+          const [addAMin, addAMax] = range("addAmin", "addAmax", [0, 9]);
+          const [addBMin, addBMax] = range("addBmin", "addBmax", [0, 9]);
+          const [subMMin, subMMax] = range("subMmin", "subMmax", [0, 20]);
+          const [subSMin, subSMax] = range("subSmin", "subSmax", [0, 9]);
+          const [mulAMin, mulAMax] = range("mulAmin", "mulAmax", [0, 10]);
+          const [mulBMin, mulBMax] = range("mulBmin", "mulBmax", [0, 10]);
+          const [divQMin, divQMax] = range("divQmin", "divQmax", [0, 10]);
+          const [divDMin, divDMax] = range("divDmin", "divDmax", [1, 10]);
+
+          pools.add = [];
+          pools.sub = [];
+          pools.mul = [];
+          pools.div = [];
+          const addSeen = new Set();
+          const mulSeen = new Set();
+
+          for (let a = addAMin; a <= addAMax; a++) {
+            for (let b = addBMin; b <= addBMax; b++) {
+              addUnique(pools.add, addSeen, `${Math.min(a, b)} + ${Math.max(a, b)}`);
+            }
+          }
+          for (let minuend = subMMin; minuend <= subMMax; minuend++) {
+            for (let subtrahend = subSMin; subtrahend <= subSMax; subtrahend++) {
+              if (minuend >= subtrahend) pools.sub.push(`${minuend} - ${subtrahend}`);
+            }
+          }
+          for (let a = mulAMin; a <= mulAMax; a++) {
+            for (let b = mulBMin; b <= mulBMax; b++) {
+              addUnique(pools.mul, mulSeen, `${Math.min(a, b)} × ${Math.max(a, b)}`);
+            }
+          }
+          for (let quotient = divQMin; quotient <= divQMax; quotient++) {
+            for (let divisor = Math.max(1, divDMin); divisor <= Math.max(1, divDMax); divisor++) {
+              pools.div.push(`${quotient * divisor} ÷ ${divisor}`);
+            }
+          }
+          return pools;
+        }
+
+        function shuffle(items) {
+          const copy = [...items];
+          for (let index = copy.length - 1; index > 0; index--) {
+            const swapIndex = Math.floor(Math.random() * (index + 1));
+            [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+          }
+          return copy;
+        }
+
+        function selectedTypes() {
+          const selected = [
+            fields.includeAdd.checked && "add",
+            fields.includeSub.checked && "sub",
+            fields.includeMul.checked && "mul",
+            fields.includeDiv.checked && "div"
+          ].filter(Boolean);
+          return fields.questionMode.value === "single" ? selected.slice(0, 1) : selected;
+        }
+
+        function questionMarkup(expression, numberValue) {
+          return `<td><div class="question"><span class="num">${numberValue}.</span><span class="expr">${expression}</span><span class="equals">=</span><span class="underline"></span></div></td>`;
+        }
+
+        function render(papers, questionCount) {
+          fields.papersContainer.innerHTML = papers.map((paper, paperIndex) => {
+            const columns = [paper.slice(0, Math.ceil(questionCount / 3))];
+            columns.push(paper.slice(columns[0].length, columns[0].length * 2));
+            columns.push(paper.slice(columns[0].length * 2));
+            const rows = Math.max(...columns.map((column) => column.length));
+            const tableRows = Array.from({ length: rows }, (_, row) =>
+              `<tr>${columns.map((column, columnIndex) => {
+                const offset = columns.slice(0, columnIndex).reduce((sum, current) => sum + current.length, 0);
+                return column[row] ? questionMarkup(column[row], offset + row + 1) : "<td></td>";
+              }).join("")}</tr>`
+            ).join("");
+            return `<section class="paper-page"><div class="paper-header"><span class="header-name">Name <span class="underline-sm"></span></span><span class="header-score">Score <span class="score-underline"></span></span><span class="header-time">Time <span class="underline-vsm"></span></span><span class="header-var">Test-${paperIndex + 1}</span></div><table class="paper-table"><tbody>${tableRows}</tbody></table></section>`;
+          }).join("");
+        }
+
+        function generate() {
+          const pools = buildPools();
+          const types = selectedTypes();
+          const combined = types.flatMap((type) => pools[type]);
+          let paperCount = Math.max(1, Math.min(20, number("numPapers", 8)));
+          let questionCount = Math.max(1, Math.min(100, number("qPerPaper", 50)));
+
+          if (!combined.length) {
+            fields.statusMsg.innerHTML = '<span style="color:#dc2626"><i class="fas fa-exclamation-triangle"></i> Choose at least one operation.</span>';
+            fields.papersContainer.innerHTML = '<div class="empty-state"><i class="fas fa-list-ol fa-2x"></i><h2>No operations selected</h2><p>Select addition, subtraction, multiplication, or division to build a test.</p></div>';
+            return;
+          }
+          questionCount = Math.min(questionCount, combined.length);
+          const papers = Array.from({ length: paperCount }, () => shuffle(combined).slice(0, questionCount));
+          fields.statusMsg.innerHTML = `<span style="color:#0f766e"><i class="fas fa-check-circle"></i> ${combined.length} unique · ${paperCount} × ${questionCount}</span>`;
+          render(papers, questionCount);
+        }
+
+        function reset() {
+          const defaults = {
+            addAmin: 0, addAmax: 9, addBmin: 0, addBmax: 9, subMmin: 0, subMmax: 20, subSmin: 0, subSmax: 9,
+            mulAmin: 0, mulAmax: 10, mulBmin: 0, mulBmax: 10, divQmin: 0, divQmax: 10, divDmin: 1, divDmax: 10,
+            numPapers: 8, qPerPaper: 50
+          };
+          Object.entries(defaults).forEach(([name, value]) => { fields[name].value = value; });
+          fields.includeAdd.checked = true;
+          fields.includeSub.checked = true;
+          fields.includeMul.checked = false;
+          fields.includeDiv.checked = false;
+          fields.questionMode.value = "mix";
+          generate();
+        }
+
+        fields.generateBtn.addEventListener("click", generate);
+        fields.printBtn.addEventListener("click", () => window.print());
+        fields.resetBtn.addEventListener("click", reset);
+        ["includeAdd", "includeSub", "includeMul", "includeDiv", "questionMode"].forEach((name) => {
+          fields[name].addEventListener("change", generate);
+        });
+        window.addEventListener("load", reset);
+      })();
+    </script>
+  </body>
+</html>
