@@ -1,10 +1,14 @@
 import { toggleTheme } from '../shared/theme.js';
+import { BANNER_URL } from './banner.js';
 
 export function initShell() {
   const sidebar  = document.getElementById('portalSidebar');
   const toggle   = document.getElementById('sidebarToggle');
   const overlay  = document.getElementById('sidebarOverlay');
   const themBtn  = document.getElementById('themeToggle');
+
+  const brandImg = document.getElementById('brandBanner');
+  if (brandImg) brandImg.src = BANNER_URL;
 
   const isMobile = () => window.innerWidth <= 768;
 

@@ -25,6 +25,7 @@ async function handleRoute() {
 
   content.innerHTML = '';
   updateActiveNav(hash);
+  document.body.classList.toggle('route-home', hash === '/');
 
   const loader = routes[hash] ?? routes['/'];
   try {

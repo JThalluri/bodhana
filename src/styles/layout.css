@@ -144,12 +144,15 @@
   gap: var(--space-3);
 }
 
-.brand-name {
-  font-family: var(--font-brand);
-  font-size: var(--text-xl);
-  color: var(--accent);
-  letter-spacing: 0.02em;
+.brand-banner {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: var(--radius-md);
 }
+
+.route-home .brand-banner { display: none; }
 
 .topbar-actions {
   display: flex;

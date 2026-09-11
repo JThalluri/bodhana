@@ -7,20 +7,34 @@
 }
 
 .home-hero {
-  text-align: center;
   margin-bottom: var(--space-10);
 }
 
-.home-title {
-  font-family: var(--font-brand);
-  font-size: var(--text-3xl);
-  color: var(--accent);
-  margin-bottom: var(--space-2);
+.home-banner {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  line-height: 0;
+}
+
+.home-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .home-subtitle {
-  font-size: var(--text-lg);
-  color: var(--text-muted);
+  position: absolute;
+  right: 5%;
+  top: 68%;
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: right;
+  pointer-events: none;
+  line-height: 1.4;
 }
 
 .tools-grid {

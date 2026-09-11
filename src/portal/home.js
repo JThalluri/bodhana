@@ -1,11 +1,14 @@
 import './home.css';
+import { BANNER_URL } from './banner.js';
 
 export function mount(container) {
   container.innerHTML = `
     <div class="home-view">
       <div class="home-hero">
-        <h1 class="home-title">Bodhana</h1>
-        <p class="home-subtitle">Learning tools for curious minds</p>
+        <div class="home-banner">
+          <img src="${BANNER_URL}" alt="Bodhana" class="home-banner-img" />
+          <p class="home-subtitle">Learning tools for curious minds</p>
+        </div>
       </div>
 
       <div class="tools-grid">
