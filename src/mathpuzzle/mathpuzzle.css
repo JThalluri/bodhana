@@ -119,12 +119,13 @@
 /* ── Grid ───────────────────────────────────────────────────────────────── */
 
 .mp-grid-wrap {
-  overflow-x: auto;  /* allow horizontal scroll on narrow screens */
+  overflow-x: auto;
 }
 
-.mp-grid {
-  display: grid;
-  gap: 2px;
+/* Table-based grid — border-collapse is the most print-reliable border approach */
+.mp-grid-table {
+  border-collapse: separate;
+  border-spacing: 2px;
   background: #444;
   border: 2px solid #444;
   border-radius: 3px;
@@ -134,9 +135,10 @@
 .mp-cell {
   width: var(--mp-cell-size, 32px);
   height: var(--mp-cell-size, 32px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-width: var(--mp-cell-size, 32px);
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
   font-family: 'Nunito', var(--font-ui), sans-serif;
   font-size: calc(var(--mp-cell-size, 32px) * 0.44);
   font-weight: 700;
@@ -238,9 +240,10 @@
   .mp-underline-md { width: 130px; }
 
   /* Cell size fills the printable width: Letter minus margins = 7.3in / cols */
-  .mp-grid {
+  .mp-grid-table {
     --mp-cell-size: calc(7.3in / var(--mp-cols));
-    gap: 0;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
     background: white !important;
     border: none !important;
   }
@@ -248,7 +251,9 @@
   .mp-cell {
     width: var(--mp-cell-size);
     height: var(--mp-cell-size);
+    min-width: var(--mp-cell-size);
     font-size: calc(var(--mp-cell-size) * 0.42);
+    border: none !important;
   }
 
   .mp-cell-op {
@@ -259,25 +264,24 @@
     font-size: calc(var(--mp-cell-size) * 0.48);
   }
 
-  /* Empty cells are invisible — no ink wasted */
+  /* Non-equation cells: completely invisible. */
   .mp-cell-black {
     background: white !important;
-    border: none !important;
   }
 
-  /* Equation cells get a light outline so they read as a box */
-  .mp-cell-value {
-    background: white !important;
-    color: #000 !important;
-    border: 1px solid #bbb !important;
-  }
-
-  /* Blank answer cells: subtle box + strong bottom underline */
+  /* Equation cells: border only on sides computed by renderer.
+     mp-br + mp-bb are always present; mp-bt / mp-bl only on open edges.
+     With border-spacing: 0, each junction gets exactly one 2px line. */
+  .mp-cell-value,
   .mp-cell-blank {
     background: white !important;
-    border: 1px solid #ccc !important;
-    border-bottom: 2.5px solid #222 !important;
+    color: #000 !important;
   }
+
+  .mp-cell-value.mp-bt, .mp-cell-blank.mp-bt { border-top:    2px solid #333 !important; }
+  .mp-cell-value.mp-br, .mp-cell-blank.mp-br { border-right:  2px solid #333 !important; }
+  .mp-cell-value.mp-bb, .mp-cell-blank.mp-bb { border-bottom: 2px solid #333 !important; }
+  .mp-cell-value.mp-bl, .mp-cell-blank.mp-bl { border-left:   2px solid #333 !important; }
 
   .mp-cell-op[data-v="+"] { color: #3b82f6 !important; }
   .mp-cell-op[data-v="−"] { color: #ef4444 !important; }

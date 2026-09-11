@@ -15,34 +15,49 @@ function puzzleHTML(puzzle, idx, opts) {
         <span class="mp-header-var">Puzzle ${idx + 1}</span>
       </div>
       <div class="mp-grid-wrap">
-        <div class="mp-grid"
-          style="--mp-cols:${cols};grid-template-columns:repeat(${cols},var(--mp-cell-size))"
-          role="img" aria-label="Math puzzle grid ${idx + 1}">
+        <table class="mp-grid-table" style="--mp-cols:${cols}"
+               role="img" aria-label="Math puzzle grid ${idx + 1}">
           ${gridToHTML(grid, rows, cols, showSolutions)}
-        </div>
+        </table>
       </div>
     </section>
   `;
 }
 
 function gridToHTML(grid, rows, cols, showSolutions) {
-  let html = '';
+  let html = '<tbody>';
   for (let r = 0; r < rows; r++) {
+    html += '<tr>';
     for (let c = 0; c < cols; c++) {
       const cell = grid[r][c];
       if (!cell) {
-        html += `<div class="mp-cell mp-cell-black"></div>`;
-      } else if (cell.blank) {
-        const solSpan = showSolutions
-          ? `<span class="mp-sol">${esc(cell.value)}</span>`
-          : '';
-        html += `<div class="mp-cell mp-cell-blank">${solSpan}</div>`;
+        html += `<td class="mp-cell mp-cell-black"></td>`;
       } else {
-        const extra = cell.type === 'op' ? ` mp-cell-op` : cell.type === 'eq' ? ` mp-cell-eq` : '';
-        html += `<div class="mp-cell mp-cell-value${extra}" data-v="${esc(cell.value)}">${esc(cell.value)}</div>`;
+        // Directional border classes:
+        // mp-br and mp-bb are always applied to equation cells.
+        // mp-bt / mp-bl are added only when the adjacent cell is non-equation
+        // (null or out-of-bounds). This ensures exactly one 2px line per edge —
+        // no double-borders at junctions between adjacent equation cells.
+        const bCls = [
+          'mp-br', 'mp-bb',
+          !grid[r - 1]?.[c] ? 'mp-bt' : '',
+          !grid[r]?.[c - 1] ? 'mp-bl' : '',
+        ].filter(Boolean).join(' ');
+
+        if (cell.blank) {
+          const solSpan = showSolutions
+            ? `<span class="mp-sol">${esc(cell.value)}</span>`
+            : '';
+          html += `<td class="mp-cell mp-cell-blank ${bCls}">${solSpan}</td>`;
+        } else {
+          const extra = cell.type === 'op' ? ` mp-cell-op` : cell.type === 'eq' ? ` mp-cell-eq` : '';
+          html += `<td class="mp-cell mp-cell-value${extra} ${bCls}" data-v="${esc(cell.value)}">${esc(cell.value)}</td>`;
+        }
       }
     }
+    html += '</tr>';
   }
+  html += '</tbody>';
   return html;
 }
 
