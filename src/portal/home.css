@@ -81,6 +81,11 @@
   color: #16a34a;
 }
 
+.dictbuilder-icon {
+  background: color-mix(in srgb, #d97706 12%, transparent);
+  color: #d97706;
+}
+
 .tool-info { flex: 1; min-width: 0; }
 
 .tool-name {

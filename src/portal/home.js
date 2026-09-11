@@ -90,6 +90,27 @@ export function mount(container) {
           </div>
           <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
         </a>
+
+        <a href="#/dict-builder" class="tool-card">
+          <div class="tool-icon dictbuilder-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <div class="tool-info">
+            <h2 class="tool-name">Dictionary Builder</h2>
+            <p class="tool-desc">
+              Extract vocabulary from stories, fables, and documents to build
+              a custom word list. Upload PDF, DOCX, ODT, TXT, or CSV files,
+              filter by word length, and download a ready-to-use puzzle dictionary.
+            </p>
+            <div class="tool-tags">
+              <span class="tag">PDF</span>
+              <span class="tag">DOCX</span>
+              <span class="tag">TXT</span>
+              <span class="tag">ODT</span>
+            </div>
+          </div>
+          <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
+        </a>
       </div>
     </div>
   `;
