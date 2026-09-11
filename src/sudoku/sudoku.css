@@ -26,16 +26,22 @@
   min-height: 40px;
 }
 
+.sdk-tb-row ~ .sdk-tb-row {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
 /* ── Output area ────────────────────────────────────────────────────────── */
 
 .sdk-output {
   flex: 1;
-  background: radial-gradient(circle at top right, #d1fae5 0, transparent 34%), var(--bg-body);
+  background: radial-gradient(
+    ellipse at 85% 0,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    transparent 45%
+  ), var(--bg-body);
   padding: var(--space-5) var(--space-5) var(--space-10);
-}
-
-[data-theme="dark"] .sdk-output {
-  background: radial-gradient(circle at top right, #064e3b 0, transparent 34%), var(--bg-body);
 }
 
 /* ── Puzzle page ────────────────────────────────────────────────────────── */
@@ -62,7 +68,7 @@
   padding-bottom: 8px;
   margin-bottom: 14px;
   width: 100%;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-header);
   font-size: 14pt;
   font-weight: 500;
   flex-wrap: nowrap;
@@ -135,7 +141,7 @@
 }
 
 .sdk-sol {
-  color: #7c3aed;
+  color: #0d9488;
   font-weight: 500;
 }
 
@@ -146,7 +152,7 @@
   font-size: 10pt;
   color: #777;
   font-style: italic;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-header);
 }
 
 /* ── Print ──────────────────────────────────────────────────────────────── */
@@ -217,7 +223,7 @@
 
   .sdk-given { color: #000 !important; }
   .sdk-blank  { background: white !important; }
-  .sdk-sol    { color: #7c3aed !important; }
+  .sdk-sol    { color: #0d9488 !important; }
 
   .sdk-instructions {
     font-size: 9pt !important;

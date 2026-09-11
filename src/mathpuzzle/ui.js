@@ -17,8 +17,10 @@ export function buildMathPuzzleUI(container) {
   container.innerHTML = `
     <div class="mp-tool">
 
-      <!-- Compact single-row sticky toolbar -->
+      <!-- Two-row sticky toolbar -->
       <div class="mp-toolbar no-print">
+
+        <!-- Row 1: operation range pills + op toggles -->
         <div class="mp-tb-row">
 
           <!-- Operation range pills -->
@@ -78,7 +80,10 @@ export function buildMathPuzzleUI(container) {
             <label class="op-chk"><input type="checkbox" id="mpIncludeDiv" /><span class="op-sym div">÷</span></label>
           </div>
 
-          <span class="tb-vdiv"></span>
+        </div>
+
+        <!-- Row 2: difficulty / counts + solutions toggle + actions right-aligned -->
+        <div class="mp-tb-row">
 
           <!-- Difficulty + counts -->
           <div class="tb-counts">
@@ -106,10 +111,8 @@ export function buildMathPuzzleUI(container) {
             <span class="tb-count-lbl" style="color:var(--text-secondary)"><i class="fas fa-eye"></i> Solutions</span>
           </label>
 
-          <span class="tb-vdiv"></span>
-
           <!-- Actions -->
-          <div class="tb-actions">
+          <div class="tb-actions" style="margin-left:auto">
             <button class="btn btn-primary btn-sm" id="mpBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>

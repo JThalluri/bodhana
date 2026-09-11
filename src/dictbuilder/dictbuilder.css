@@ -26,13 +26,23 @@
   min-height: 40px;
 }
 
+.db-tb-row ~ .db-tb-row {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
 /* Main layout -------------------------------------------------------------- */
 
 .db-main {
   flex: 1;
   display: flex;
   overflow: hidden;
-  background: var(--bg-body);
+  background: radial-gradient(
+    ellipse at 85% 0,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    transparent 45%
+  ), var(--bg-body);
 }
 
 .db-left {

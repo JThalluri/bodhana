@@ -11,7 +11,7 @@ export function mount(container) {
       <div class="tools-grid">
         <a href="#/math" class="tool-card">
           <div class="tool-icon math-icon">
-            <i class="fas fa-calculator"></i>
+            <i class="fas fa-pencil-alt"></i>
           </div>
           <div class="tool-info">
             <h2 class="tool-name">Math Test Generator</h2>
@@ -52,7 +52,7 @@ export function mount(container) {
 
         <a href="#/math-puzzles" class="tool-card">
           <div class="tool-icon mathpuzzle-icon">
-            <i class="fas fa-hashtag"></i>
+            <i class="fas fa-superscript"></i>
           </div>
           <div class="tool-info">
             <h2 class="tool-name">Math Puzzle Grid</h2>
@@ -72,7 +72,7 @@ export function mount(container) {
 
         <a href="#/sudoku" class="tool-card">
           <div class="tool-icon sudoku-icon">
-            <i class="fas fa-th"></i>
+            <i class="fas fa-border-all"></i>
           </div>
           <div class="tool-info">
             <h2 class="tool-name">Sudoku Generator</h2>

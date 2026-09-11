@@ -11,8 +11,10 @@ export function buildSudokuUI(container) {
   container.innerHTML = `
     <div class="sdk-tool">
 
-      <!-- Compact sticky toolbar -->
+      <!-- Two-row sticky toolbar -->
       <div class="sdk-toolbar no-print">
+
+        <!-- Row 1: puzzle settings + style settings -->
         <div class="sdk-tb-row">
 
           <!-- Puzzle settings -->
@@ -49,7 +51,10 @@ export function buildSudokuUI(container) {
             </label>
           </div>
 
-          <span class="tb-vdiv"></span>
+        </div>
+
+        <!-- Row 2: solutions toggle + actions right-aligned -->
+        <div class="sdk-tb-row">
 
           <!-- Solutions toggle -->
           <label class="mp-sol-toggle" title="Show solutions">
@@ -62,10 +67,8 @@ export function buildSudokuUI(container) {
             </span>
           </label>
 
-          <span class="tb-vdiv"></span>
-
           <!-- Actions -->
-          <div class="tb-actions">
+          <div class="tb-actions" style="margin-left:auto">
             <button class="btn btn-primary btn-sm" id="sdkBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>

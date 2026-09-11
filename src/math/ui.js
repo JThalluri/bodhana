@@ -5,8 +5,10 @@ export function buildUI(container) {
   container.innerHTML = `
     <div class="math-tool">
 
-      <!-- Compact single-row sticky toolbar -->
+      <!-- Two-row sticky toolbar -->
       <div class="math-toolbar no-print">
+
+        <!-- Row 1: operation range pills + op toggles -->
         <div class="math-tb-row">
 
           <!-- 4 operation range pills -->
@@ -66,7 +68,10 @@ export function buildUI(container) {
             <label class="op-chk"><input type="checkbox" id="includeDiv" /><span class="op-sym div">÷</span></label>
           </div>
 
-          <span class="tb-vdiv"></span>
+        </div>
+
+        <!-- Row 2: mode / counts + actions right-aligned -->
+        <div class="math-tb-row">
 
           <!-- Mode + counts -->
           <div class="tb-counts">
@@ -82,10 +87,8 @@ export function buildUI(container) {
             </label>
           </div>
 
-          <span class="tb-vdiv"></span>
-
           <!-- Actions -->
-          <div class="tb-actions">
+          <div class="tb-actions" style="margin-left:auto">
             <button class="btn btn-primary btn-sm" id="mathGenerateBtn">
               <i class="fas fa-sync-alt"></i> Generate
             </button>

@@ -95,7 +95,11 @@
 
 .wp-output {
   flex: 1;
-  background: var(--bg-body);
+  background: radial-gradient(
+    ellipse at 85% 0,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    transparent 45%
+  ), var(--bg-body);
   padding: var(--space-6);
   overflow-y: auto;
 }
@@ -273,7 +277,7 @@
 }
 
 .wp-jumble-sol {
-  color: #7c3aed;
+  color: #0d9488;
 }
 
 /* Responsive --------------------------------------------------------------- */
@@ -378,5 +382,5 @@
 
   .wp-jumble-list  { flex-direction: column; gap: 2px; }
   .wp-jumble-box   { border: 1.5px solid #333 !important; background: white !important; }
-  .wp-jumble-sol   { color: #7c3aed !important; }
+  .wp-jumble-sol   { color: #0d9488 !important; }
 }

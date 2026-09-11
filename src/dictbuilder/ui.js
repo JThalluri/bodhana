@@ -14,7 +14,10 @@ export function buildDictBuilderUI(container) {
   container.innerHTML = `
     <div class="db-tool">
 
+      <!-- Two-row sticky toolbar -->
       <div class="db-toolbar no-print">
+
+        <!-- Row 1: filter settings + sort -->
         <div class="db-tb-row">
 
           <div class="wp-tb-group">
@@ -43,6 +46,11 @@ export function buildDictBuilderUI(container) {
               <option value="freq">By frequency</option>
             </select>
           </div>
+
+        </div>
+
+        <!-- Row 2: actions right-aligned -->
+        <div class="db-tb-row">
 
           <div class="tb-actions" style="margin-left:auto">
             <button class="btn btn-primary btn-sm" id="dbBtnExtract">

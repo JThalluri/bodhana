@@ -10,17 +10,17 @@
 
   /* Borders */
   --border:         #e2e8f0;
-  --border-focus:   #6366f1;
+  --border-focus:   #c2410c;
 
   /* Text */
   --text-primary:   #1e293b;
   --text-secondary: #475569;
   --text-muted:     #94a3b8;
 
-  /* Accent (indigo) */
-  --accent:         #6366f1;
-  --accent-hover:   #4f46e5;
-  --accent-light:   #eef2ff;
+  /* Accent (burnt orange) */
+  --accent:         #c2410c;
+  --accent-hover:   #9a3412;
+  --accent-light:   #fff7ed;
   --accent-text:    #ffffff;
 
   /* Danger */
@@ -34,7 +34,7 @@
   --sidebar-bg:     #1e293b;
   --sidebar-border: #334155;
   --sidebar-text:   #cbd5e1;
-  --sidebar-active: #6366f1;
+  --sidebar-active: #c2410c;
   --sidebar-hover:  #334155;
 
   /* Shadows */
@@ -46,7 +46,7 @@
   --color-add:      #3b82f6;
   --color-sub:      #ef4444;
   --color-mul:      #0f766e;
-  --color-div:      #7c3aed;
+  --color-div:      #6366f1;
 
   /* Spacing scale */
   --space-1:  4px;
@@ -67,9 +67,10 @@
   --radius-full: 9999px;
 
   /* Typography */
-  --font-ui:    'Nunito', system-ui, sans-serif;
-  --font-brand: 'Fredoka One', cursive;
-  --font-print: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+  --font-ui:     'Nunito', system-ui, sans-serif;
+  --font-brand:  'Fredoka One', cursive;
+  --font-print:  'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+  --font-header: 'Segoe UI', Roboto, var(--font-ui), sans-serif;
 
   /* Font sizes */
   --text-xs:   11px;
@@ -99,15 +100,15 @@
   --bg-hover:       #263450;
 
   --border:         #334155;
-  --border-focus:   #818cf8;
+  --border-focus:   #fb923c;
 
   --text-primary:   #f1f5f9;
   --text-secondary: #cbd5e1;
   --text-muted:     #64748b;
 
-  --accent:         #818cf8;
-  --accent-hover:   #6366f1;
-  --accent-light:   #1e1b4b;
+  --accent:         #fb923c;
+  --accent-hover:   #f97316;
+  --accent-light:   #431407;
   --accent-text:    #ffffff;
 
   --danger:         #f87171;
@@ -118,7 +119,7 @@
   --sidebar-bg:     #0f172a;
   --sidebar-border: #1e293b;
   --sidebar-text:   #94a3b8;
-  --sidebar-active: #818cf8;
+  --sidebar-active: #fb923c;
   --sidebar-hover:  #1e293b;
 
   --shadow-sm:      0 1px 3px rgba(0,0,0,0.3);

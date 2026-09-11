@@ -36,7 +36,7 @@
           <span class="nav-label">Home</span>
         </a>
         <a href="#/math" class="nav-item" data-route="/math">
-          <i class="fas fa-calculator nav-icon"></i>
+          <i class="fas fa-pencil-alt nav-icon"></i>
           <span class="nav-label">Math Tests</span>
         </a>
         <a href="#/word-puzzles" class="nav-item" data-route="/word-puzzles">
@@ -44,11 +44,11 @@
           <span class="nav-label">Word Puzzles</span>
         </a>
         <a href="#/math-puzzles" class="nav-item" data-route="/math-puzzles">
-          <i class="fas fa-hashtag nav-icon"></i>
+          <i class="fas fa-superscript nav-icon"></i>
           <span class="nav-label">Math Puzzles</span>
         </a>
         <a href="#/sudoku" class="nav-item" data-route="/sudoku">
-          <i class="fas fa-th nav-icon"></i>
+          <i class="fas fa-border-all nav-icon"></i>
           <span class="nav-label">Sudoku</span>
         </a>
         <a href="#/dict-builder" class="nav-item" data-route="/dict-builder">
@@ -67,9 +67,11 @@
           <span class="brand-name">Bodhana</span>
         </div>
         <div class="topbar-actions">
-          <button class="btn-icon theme-toggle" id="themeToggle" aria-label="Toggle theme">
-            <i class="fas fa-moon" id="themeIcon"></i>
-          </button>
+          <div class="theme-pill" id="themeToggle" role="button" tabindex="0" aria-label="Toggle theme">
+            <i class="fas fa-sun theme-sun"></i>
+            <span class="theme-pill-track"><span class="theme-pill-thumb"></span></span>
+            <i class="fas fa-moon theme-moon"></i>
+          </div>
         </div>
       </header>
 
