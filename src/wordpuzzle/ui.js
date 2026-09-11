@@ -1,6 +1,7 @@
 import { loadDictionaryFromFile, DEMO_WORDS } from './dictionary.js';
 import { generateWordSearch } from './wordsearch.js';
 import { generateCrissCross } from './crisscross.js';
+import { generateJumble } from './jumble.js';
 import { renderPuzzles } from './renderer.js';
 
 export const DIFFICULTY = {
@@ -15,28 +16,33 @@ const state = {
   showSolutions: false,
 };
 
+const minLens = [3,4,5,6,7,8,9,10,11,12,13,14,15];
+const maxLens = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+
 export function buildWordPuzzleUI(container) {
   container.innerHTML = `
     <div class="wp-tool">
 
-      <!-- Compact single-row sticky settings bar -->
+      <!-- Compact two-row sticky toolbar -->
       <div class="wp-toolbar no-print">
+
+        <!-- Row 1: puzzle settings, style, dictionary -->
         <div class="wp-tb-row">
 
-          <!-- Puzzle settings group -->
           <div class="wp-tb-group">
             <span class="wp-tb-grouplabel">Puzzle</span>
             <select class="tb-select" id="wpMode" title="Mode">
               <option value="wordsearch">Word Search</option>
               <option value="crisscross">Criss Cross</option>
+              <option value="jumble">Word Jumble</option>
             </select>
             <label class="tb-count-lbl" title="Words per puzzle">Words
               <input class="tb-num" type="number" id="wpWordsPerPuzzle" value="10" min="1" max="50" />
             </label>
-            <label class="tb-count-lbl" title="Grid rows">Rows
+            <label class="tb-count-lbl" title="Grid rows" id="wpRowsLabel">Rows
               <input class="tb-num" type="number" id="wpRows" value="12" min="10" max="26" />
             </label>
-            <label class="tb-count-lbl" title="Grid columns">Cols
+            <label class="tb-count-lbl" title="Grid columns" id="wpColsLabel">Cols
               <input class="tb-num" type="number" id="wpCols" value="12" min="10" max="26" />
             </label>
             <label class="tb-count-lbl">Puzzles
@@ -47,16 +53,10 @@ export function buildWordPuzzleUI(container) {
               <option value="medium" selected>Medium</option>
               <option value="hard">Hard</option>
             </select>
-            <label class="tb-count-lbl" title="Minimum word length">Min
-              <select class="tb-select" id="wpMinWordLength" style="padding-left:4px;">
-                ${[3,4,5,6,7,8,9,10,11,12,13,14,15].map(n => `<option value="${n}"${n===4?' selected':''}>${n}</option>`).join('')}
-              </select>
-            </label>
           </div>
 
           <span class="tb-vdiv"></span>
 
-          <!-- Appearance group -->
           <div class="wp-tb-group">
             <span class="wp-tb-grouplabel">Style</span>
             <select class="tb-select" id="wpFontFamily" title="Font family" style="min-width:100px;">
@@ -80,7 +80,6 @@ export function buildWordPuzzleUI(container) {
 
           <span class="tb-vdiv"></span>
 
-          <!-- Dictionary group -->
           <div class="wp-tb-group">
             <span class="wp-tb-grouplabel">Dictionary</span>
             <label class="wp-file-btn btn btn-secondary btn-sm" for="wpFileInput" title="Load word list (.txt)">
@@ -94,9 +93,27 @@ export function buildWordPuzzleUI(container) {
             <span class="tb-status status-msg info" id="wpDictStatus">Demo (49 words)</span>
           </div>
 
+        </div>
+
+        <!-- Row 2: word length controls + print options + actions right-aligned -->
+        <div class="wp-tb-row wp-tb-row2">
+
+          <div class="wp-tb-group">
+            <span class="wp-tb-grouplabel">Letters</span>
+            <label class="tb-count-lbl" title="Minimum word length">Min
+              <select class="tb-select" id="wpMinWordLength" style="padding-left:4px;">
+                ${minLens.map(n => `<option value="${n}"${n===4?' selected':''}>${n}</option>`).join('')}
+              </select>
+            </label>
+            <label class="tb-count-lbl" title="Maximum word length">Max
+              <select class="tb-select" id="wpMaxWordLength" style="padding-left:4px;">
+                ${maxLens.map(n => `<option value="${n}"${n===10?' selected':''}>${n}</option>`).join('')}
+              </select>
+            </label>
+          </div>
+
           <span class="tb-vdiv"></span>
 
-          <!-- Print group -->
           <div class="wp-tb-group">
             <span class="wp-tb-grouplabel">Print</span>
             <select class="tb-select" id="wpPrintMargin" title="Print margin">
@@ -115,8 +132,8 @@ export function buildWordPuzzleUI(container) {
 
           <span class="tb-vdiv"></span>
 
-          <!-- Actions -->
-          <div class="tb-actions">
+          <!-- Actions pushed to right via margin-left:auto -->
+          <div class="tb-actions" style="margin-left:auto">
             <button class="btn btn-primary btn-sm" id="wpBtnGenerate">
               <i class="fas fa-play"></i> Generate
             </button>
@@ -143,6 +160,7 @@ export function buildWordPuzzleUI(container) {
   `;
 
   state.dictionary = Array.from(new Set(DEMO_WORDS));
+  onModeChange();
   wireEvents();
   runGenerate();
 }
@@ -151,19 +169,32 @@ function readOpts() {
   const n = (id, fb) => { const v = parseInt(document.getElementById(id)?.value ?? '', 10); return isNaN(v) ? fb : v; };
   const v = (id) => document.getElementById(id)?.value ?? '';
   return {
-    mode: v('wpMode') || 'wordsearch',
+    mode:           v('wpMode') || 'wordsearch',
     wordsPerPuzzle: n('wpWordsPerPuzzle', 10),
-    rows: n('wpRows', 12),
-    cols: n('wpCols', 12),
-    puzzleCount: n('wpPuzzleCount', 2),
-    difficulty: v('wpDifficulty') || 'medium',
-    minWordLength: n('wpMinWordLength', 4),
-    fontFamily: v('wpFontFamily') || "'Nunito', sans-serif",
-    fontSize: n('wpFontSize', 20),
-    cellPadding: n('wpCellPadding', 6),
-    caseMode: v('wpCaseMode') || 'lowercase',
-    printMargin: v('wpPrintMargin') || '10mm',
+    rows:           n('wpRows', 12),
+    cols:           n('wpCols', 12),
+    puzzleCount:    n('wpPuzzleCount', 2),
+    difficulty:     v('wpDifficulty') || 'medium',
+    minWordLength:  n('wpMinWordLength', 4),
+    maxWordLength:  n('wpMaxWordLength', 10),
+    fontFamily:     v('wpFontFamily') || "'Nunito', sans-serif",
+    fontSize:       n('wpFontSize', 20),
+    cellPadding:    n('wpCellPadding', 6),
+    caseMode:       v('wpCaseMode') || 'lowercase',
+    printMargin:    v('wpPrintMargin') || '10mm',
   };
+}
+
+function onModeChange() {
+  const isJumble = document.getElementById('wpMode')?.value === 'jumble';
+  ['wpRows', 'wpCols'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = isJumble;
+  });
+  ['wpRowsLabel', 'wpColsLabel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.opacity = isJumble ? '0.4' : '';
+  });
 }
 
 function runGenerate() {
@@ -182,14 +213,24 @@ function runGenerate() {
 
   const diff = { ...(DIFFICULTY[opts.difficulty] ?? DIFFICULTY.medium) };
   diff.minLen = opts.minWordLength;
+  diff.maxLen = Math.min(diff.maxLen, opts.maxWordLength);
   if (diff.maxLen < diff.minLen) diff.maxLen = diff.minLen;
 
   const puzzles = [];
   for (let i = 0; i < puzzleCount; i++) {
-    let p = opts.mode === 'crisscross'
-      ? generateCrissCross(rows, cols, dict, opts.wordsPerPuzzle, diff, opts.minWordLength)
-      : generateWordSearch(rows, cols, dict, opts.wordsPerPuzzle, diff, opts.minWordLength);
-    p.mode = opts.mode;
+    let p;
+    if (opts.mode === 'jumble') {
+      p = generateJumble(dict, {
+        wordsPerPuzzle: opts.wordsPerPuzzle,
+        minWordLength:  opts.minWordLength,
+        maxWordLength:  opts.maxWordLength,
+      });
+    } else {
+      p = opts.mode === 'crisscross'
+        ? generateCrissCross(rows, cols, dict, opts.wordsPerPuzzle, diff, opts.minWordLength)
+        : generateWordSearch(rows, cols, dict, opts.wordsPerPuzzle, diff, opts.minWordLength);
+      p.mode = opts.mode;
+    }
     puzzles.push(p);
   }
 
@@ -231,6 +272,10 @@ function doRender() {
 
 function wireEvents() {
   document.getElementById('wpBtnGenerate')?.addEventListener('click', runGenerate);
+
+  document.getElementById('wpMode')?.addEventListener('change', () => {
+    onModeChange();
+  });
 
   document.getElementById('wpBtnPrint')?.addEventListener('click', () => {
     if (!state.puzzles.length) return;

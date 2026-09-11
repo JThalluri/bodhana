@@ -9,9 +9,29 @@ export function renderPuzzles(puzzles, opts) {
   return puzzles.map((puzzle, idx) => puzzleHTML(puzzle, idx, { fontSize, cellPadding, fontFamily, caseMode, showSolutions })).join('');
 }
 
+function puzzleHeader() {
+  return `
+    <div class="wp-puzzle-header">
+      <div class="wp-field"><span class="wp-label">Name</span> <span class="wp-dash-line"></span></div>
+      <div class="wp-field"><span class="wp-label">Time</span> <span class="wp-dash-line"></span></div>
+      <div class="wp-field"><span class="wp-label">Score</span> <span class="wp-dash-line"></span></div>
+    </div>`;
+}
+
 function puzzleHTML(puzzle, idx, opts) {
   const { fontSize, cellPadding, fontFamily, caseMode, showSolutions } = opts;
-  const { grid, words, placements, mode } = puzzle;
+  const { mode } = puzzle;
+  const cellSize = fontSize + cellPadding * 2;
+
+  if (mode === 'jumble') {
+    return `
+      <div class="wp-puzzle-block" style="font-family:${fontFamily};--wp-cell-size:${cellSize}px;--wp-font-size:${fontSize}px;">
+        ${puzzleHeader()}
+        ${jumbleHtml(puzzle, opts)}
+      </div>`;
+  }
+
+  const { grid, words, placements } = puzzle;
   const rows = grid.length;
   const cols = grid[0].length;
 
@@ -27,15 +47,30 @@ function puzzleHTML(puzzle, idx, opts) {
 
   return `
     <div class="wp-puzzle-block" style="font-family:${fontFamily};">
-      <div class="wp-puzzle-header">
-        <div class="wp-field"><span class="wp-label">Name</span> <span class="wp-dash-line"></span></div>
-        <div class="wp-field"><span class="wp-label">Time</span> <span class="wp-dash-line"></span></div>
-        <div class="wp-field"><span class="wp-label">Score</span> <span class="wp-dash-line"></span></div>
-      </div>
+      ${puzzleHeader()}
       <div class="wp-grid-wrapper">${gridHtml}</div>
       <div class="wp-word-grid">${wordListHtml}</div>
-    </div>
-  `;
+    </div>`;
+}
+
+function jumbleHtml(puzzle, opts) {
+  const { words } = puzzle;
+  const { caseMode, showSolutions } = opts;
+  const fmt = w => caseMode === 'uppercase' ? w.toUpperCase() : w.toLowerCase();
+
+  const rows = words.map(({ original, jumbled }) => {
+    const boxes = original.split('').map(letter => {
+      const inner = showSolutions ? `<span class="wp-jumble-sol">${fmt(letter)}</span>` : '';
+      return `<span class="wp-jumble-box">${inner}</span>`;
+    }).join('');
+    return `
+      <div class="wp-jumble-row">
+        <span class="wp-jumble-word">${fmt(jumbled)}</span>
+        <span class="wp-jumble-boxes">${boxes}</span>
+      </div>`;
+  }).join('');
+
+  return `<div class="wp-jumble-list">${rows}</div>`;
 }
 
 function buildSolutionSet(placements, showSolutions) {

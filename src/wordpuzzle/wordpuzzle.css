@@ -223,6 +223,59 @@
   text-overflow: ellipsis;
 }
 
+/* Toolbar row separator ---------------------------------------------------- */
+
+.wp-tb-row ~ .wp-tb-row {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+/* ── Word Jumble layout ─────────────────────────────────────────────────── */
+
+.wp-jumble-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.wp-jumble-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.wp-jumble-word {
+  font-weight: 700;
+  min-width: 130px;
+  letter-spacing: 2px;
+  font-size: var(--wp-font-size, 20px);
+}
+
+.wp-jumble-boxes {
+  display: flex;
+  gap: 4px;
+}
+
+.wp-jumble-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--wp-cell-size, 28px);
+  height: var(--wp-cell-size, 28px);
+  border: 1.5px solid #999;
+  border-radius: 3px;
+  font-size: calc(var(--wp-cell-size, 28px) * 0.55);
+  font-weight: 700;
+}
+
+.wp-jumble-sol {
+  color: #7c3aed;
+}
+
 /* Responsive --------------------------------------------------------------- */
 
 @media (max-width: 700px) {
@@ -322,4 +375,8 @@
   }
 
   #wpEmptyState { display: none !important; }
+
+  .wp-jumble-list  { flex-direction: column; gap: 2px; }
+  .wp-jumble-box   { border: 1.5px solid #333 !important; background: white !important; }
+  .wp-jumble-sol   { color: #7c3aed !important; }
 }
