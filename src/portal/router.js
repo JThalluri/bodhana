@@ -5,6 +5,7 @@ const routes = {
   '/math-puzzles': () => import('../mathpuzzle/index.js'),
   '/sudoku':       () => import('../sudoku/index.js'),
   '/dict-builder': () => import('../dictbuilder/index.js'),
+  '/worksheets':   () => import('../worksheets/index.js'),
 };
 
 let currentUnmount = null;

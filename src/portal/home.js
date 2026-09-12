@@ -40,13 +40,14 @@ export function mount(container) {
           <div class="tool-info">
             <h2 class="tool-name">Word Puzzle Generator</h2>
             <p class="tool-desc">
-              Build word search and criss-cross puzzles from your own word
-              list. Adjust grid size, difficulty, font, and print multiple
-              puzzles at once.
+              Build word search, criss-cross puzzles, and word jumbles from 
+              your own word list. Adjust grid size, difficulty, font, and 
+              print multiple puzzles at once.
             </p>
             <div class="tool-tags">
               <span class="tag">Word Search</span>
               <span class="tag">Criss Cross</span>
+              <span class="tag">Word Jumble</span>
               <span class="tag">Printable</span>
             </div>
           </div>
@@ -110,6 +111,28 @@ export function mount(container) {
               <span class="tag">DOCX</span>
               <span class="tag">TXT</span>
               <span class="tag">ODT</span>
+            </div>
+          </div>
+          <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="#/worksheets" class="tool-card">
+          <div class="tool-icon worksheets-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <div class="tool-info">
+            <h2 class="tool-name">Worksheet Generator</h2>
+            <p class="tool-desc">
+              Create printable Seyès (French ruled) handwriting practice sheets.
+              Type a sentence, set font size and margins, and print a grid
+              where each character sits in its own 8&thinsp;mm cell with
+              blank rows below for learners to copy.
+            </p>
+            <div class="tool-tags">
+              <span class="tag">Seyès</span>
+              <span class="tag">Handwriting</span>
+              <span class="tag">French Ruled</span>
+              <span class="tag">Printable</span>
             </div>
           </div>
           <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>

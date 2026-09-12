@@ -43,9 +43,7 @@
   gap: var(--space-5);
 }
 
-.tool-card:last-child {
-  grid-column: 1 / -1;
-}
+/* 6 cards fill 2×3 evenly — no last-child span needed */
 
 .tool-card {
   display: flex;
@@ -102,6 +100,11 @@
 .dictbuilder-icon {
   background: color-mix(in srgb, #d97706 12%, transparent);
   color: #d97706;
+}
+
+.worksheets-icon {
+  background: color-mix(in srgb, #0891b2 12%, transparent);
+  color: #0891b2;
 }
 
 .tool-info { flex: 1; min-width: 0; }
