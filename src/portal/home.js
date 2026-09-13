@@ -12,42 +12,21 @@ export function mount(container) {
       </div>
 
       <div class="tools-grid">
-        <a href="#/math" class="tool-card">
+        <a href="#/math-worksheets" class="tool-card">
           <div class="tool-icon math-icon">
             <i class="fas fa-pencil-alt"></i>
           </div>
           <div class="tool-info">
-            <h2 class="tool-name">Math Test Generator</h2>
+            <h2 class="tool-name">Math Worksheets</h2>
             <p class="tool-desc">
-              Create printable math worksheets with addition, subtraction,
-              multiplication, and division. Customize number ranges, mix
-              operations, and generate multiple variations.
+              Printable math worksheets for arithmetic drills and place value
+              concepts. Mix operations or target place value with 10 worksheet
+              types covering digits, expanded form, word form, rounding, and more.
             </p>
             <div class="tool-tags">
-              <span class="tag">Addition</span>
-              <span class="tag">Subtraction</span>
-              <span class="tag">Multiplication</span>
-              <span class="tag">Division</span>
-            </div>
-          </div>
-          <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
-        </a>
-
-        <a href="#/word-puzzles" class="tool-card">
-          <div class="tool-icon puzzle-icon">
-            <i class="fas fa-puzzle-piece"></i>
-          </div>
-          <div class="tool-info">
-            <h2 class="tool-name">Word Puzzle Generator</h2>
-            <p class="tool-desc">
-              Build word search, criss-cross puzzles, and word jumbles from 
-              your own word list. Adjust grid size, difficulty, font, and 
-              print multiple puzzles at once.
-            </p>
-            <div class="tool-tags">
-              <span class="tag">Word Search</span>
-              <span class="tag">Criss Cross</span>
-              <span class="tag">Word Jumble</span>
+              <span class="tag">Arithmetic</span>
+              <span class="tag">Place Value</span>
+              <span class="tag">Grades 2–5</span>
               <span class="tag">Printable</span>
             </div>
           </div>
@@ -95,22 +74,22 @@ export function mount(container) {
           <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
         </a>
 
-        <a href="#/dict-builder" class="tool-card">
-          <div class="tool-icon dictbuilder-icon">
-            <i class="fas fa-book-open"></i>
+        <a href="#/word-puzzles" class="tool-card">
+          <div class="tool-icon puzzle-icon">
+            <i class="fas fa-puzzle-piece"></i>
           </div>
           <div class="tool-info">
-            <h2 class="tool-name">Dictionary Builder</h2>
+            <h2 class="tool-name">Word Puzzle Generator</h2>
             <p class="tool-desc">
-              Extract vocabulary from stories, fables, and documents to build
-              a custom word list. Upload PDF, DOCX, ODT, TXT, or CSV files,
-              filter by word length, and download a ready-to-use puzzle dictionary.
+              Build word search, criss-cross puzzles, and word jumbles from
+              your own word list. Adjust grid size, difficulty, font, and
+              print multiple puzzles at once.
             </p>
             <div class="tool-tags">
-              <span class="tag">PDF</span>
-              <span class="tag">DOCX</span>
-              <span class="tag">TXT</span>
-              <span class="tag">ODT</span>
+              <span class="tag">Word Search</span>
+              <span class="tag">Criss Cross</span>
+              <span class="tag">Word Jumble</span>
+              <span class="tag">Printable</span>
             </div>
           </div>
           <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
@@ -133,6 +112,27 @@ export function mount(container) {
               <span class="tag">Handwriting</span>
               <span class="tag">French Ruled</span>
               <span class="tag">Printable</span>
+            </div>
+          </div>
+          <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="#/dict-builder" class="tool-card">
+          <div class="tool-icon dictbuilder-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <div class="tool-info">
+            <h2 class="tool-name">Dictionary Builder</h2>
+            <p class="tool-desc">
+              Extract vocabulary from stories, fables, and documents to build
+              a custom word list. Upload PDF, DOCX, ODT, TXT, or CSV files,
+              filter by word length, and download a ready-to-use puzzle dictionary.
+            </p>
+            <div class="tool-tags">
+              <span class="tag">PDF</span>
+              <span class="tag">DOCX</span>
+              <span class="tag">TXT</span>
+              <span class="tag">ODT</span>
             </div>
           </div>
           <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>

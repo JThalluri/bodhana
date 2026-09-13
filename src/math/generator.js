@@ -97,5 +97,5 @@ export const DEFAULTS = {
   includeAdd: true, includeSub: true, includeMul: false, includeDiv: false,
   questionMode: 'mix',
   numPapers: 8,
-  qPerPaper: 50,
+  qPerPaper: 51,
 };

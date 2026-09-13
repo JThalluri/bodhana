@@ -1,11 +1,12 @@
 const routes = {
-  '/':             () => import('./home.js'),
-  '/math':         () => import('../math/index.js'),
-  '/word-puzzles': () => import('../wordpuzzle/index.js'),
-  '/math-puzzles': () => import('../mathpuzzle/index.js'),
-  '/sudoku':       () => import('../sudoku/index.js'),
-  '/dict-builder': () => import('../dictbuilder/index.js'),
-  '/worksheets':   () => import('../worksheets/index.js'),
+  '/':                 () => import('./home.js'),
+  '/math':             () => import('../math-worksheets/index.js'),
+  '/math-worksheets':  () => import('../math-worksheets/index.js'),
+  '/word-puzzles':     () => import('../wordpuzzle/index.js'),
+  '/math-puzzles':     () => import('../mathpuzzle/index.js'),
+  '/sudoku':           () => import('../sudoku/index.js'),
+  '/dict-builder':     () => import('../dictbuilder/index.js'),
+  '/worksheets':       () => import('../worksheets/index.js'),
 };
 
 let currentUnmount = null;

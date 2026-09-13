@@ -45,10 +45,10 @@ export function buildWorksheetsUI(container) {
           <div class="ws-tb-group">
             <span class="ws-tb-grouplabel">Settings</span>
 
-            <label class="tb-count-lbl" title="Font size in px (28–50). Default 40 px is calibrated for Consolas on the 8 mm Seyès grid.">
+            <label class="tb-count-lbl" title="Font size in px (28–50). Default 38 px is calibrated for Andika on the 8 mm Seyès grid.">
               Font px
               <input class="tb-num" type="number" id="wsFontSize"
-                     min="28" max="50" step="0.5" value="40" style="width:42px;">
+                     min="28" max="50" step="0.5" value="38" style="width:42px;">
             </label>
 
             <label class="tb-count-lbl" title="Baseline offset in mm (−6 to +12). Nudge text up or down to seat characters on the grid line.">
@@ -290,6 +290,7 @@ function buildPrintHTML(pages, vars) {
 <head>
 <meta charset="UTF-8">
 <title>Seyès Worksheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
 <style>
   :root {
     --s-baseline:  ${vars.baseline}mm;
@@ -337,19 +338,13 @@ function buildPrintHTML(pages, vars) {
     print-color-adjust: exact;
   }
 
-  /*
-   * Font: Consolas — monospace, every glyph same advance width (= 8 mm cell).
-   * At ${vars.fontSize} px (user-calibrated), cap-height aligns to the upper
-   * thick Seyès line, x-height sits in the middle band, descenders fill the
-   * lower 2 mm band.  No Google Fonts → no font embedding → small PDF.
-   */
   .text-area {
     position: absolute;
     inset: 0;
     box-sizing: border-box;
     padding: var(--s-top-pad) 4mm 0 var(--s-left-pad);
     transform: translateY(var(--s-baseline));
-    font-family: "Consolas", "Lucida Console", "Courier New", monospace;
+    font-family: "Andika", "Comic Sans MS", "Chalkboard SE", sans-serif;
     font-size: var(--s-font-size);
     line-height: calc((var(--s-row-gap) + 1) * 8mm);
     color: #111;

@@ -1,17 +1,16 @@
 /* ─── Worksheets Module ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap');
 /*
- * Font: Consolas (system monospace, Windows built-in).
- * Monospace → every glyph has identical advance width → each character
- * naturally fills one 8 mm Seyès cell without needing extra adjustment.
+ * Font: Andika (Google Fonts) — designed for emerging readers and handwriting
+ * practice. Letter forms closely match print handwriting conventions taught
+ * in schools, making it the correct choice for Seyès practice sheets.
  *
- * At 40 px on a 96 dpi display:
- *   cap-height  ≈ 40 × 0.711 = 28.4 px ≈ 7.5 mm  (lands on Seyès upper line)
- *   x-height    ≈ 40 × 0.480 = 19.2 px ≈ 5.1 mm  (middle 4 mm band)
- *   descenders  ≈ 40 × 0.197 =  7.9 px ≈ 2.1 mm  (lower 2 mm band)
+ * At 38 px on a 96 dpi display the cap-height fills the upper Seyès band,
+ * x-height sits in the middle 4 mm zone, and descenders use the lower 2 mm.
+ * Baseline offset control in the toolbar compensates for screen DPI variation.
  *
- * No Google Fonts import → no font embedding in the PDF → small file size.
- * The same font stack is used in both the screen preview and the print window
- * so baseline calibration set in the preview applies unchanged to print.
+ * Note: Google Fonts embeds Andika in the PDF (~400 KB); accepted tradeoff.
+ * See docs/DECISIONS.md for full context.
  */
 
 /* ─── Tool shell ─────────────────────────────────────────────────────────── */
@@ -150,7 +149,7 @@
 .seyes-page {
   /* CSS variables are overridden per-element by JS */
   --seyes-baseline-offset: 0mm;
-  --seyes-font-size: 40px;
+  --seyes-font-size: 38px;
   --seyes-left-pad: 8mm;
   --seyes-top-pad: 8mm;
   --seyes-row-gap: 3;
@@ -217,7 +216,7 @@
   box-sizing: border-box;
   padding: var(--seyes-top-pad) 4mm 0 var(--seyes-left-pad);
   transform: translateY(var(--seyes-baseline-offset));
-  font-family: "Consolas", "Lucida Console", "Courier New", monospace;
+  font-family: "Andika", "Comic Sans MS", "Chalkboard SE", sans-serif;
   font-size: var(--seyes-font-size);
   line-height: calc((var(--seyes-row-gap) + 1) * 8mm);
   color: #111;

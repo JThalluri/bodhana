@@ -1,120 +1,137 @@
 import { generate, DEFAULTS } from './generator.js';
 import { renderPapers } from './renderer.js';
+import './math.css';
 
 export function buildUI(container) {
   container.innerHTML = `
     <div class="math-tool">
 
-      <!-- Two-row sticky toolbar -->
-      <div class="math-toolbar no-print">
+      <!-- Left: settings pane -->
+      <div class="math-settings-pane no-print">
 
-        <!-- Row 1: operation range pills + op toggles -->
-        <div class="math-tb-row">
+        <div class="math-settings-section">
+          <div class="math-section-title">Operations &amp; Ranges</div>
 
-          <!-- 4 operation range pills -->
-          <div class="op-ranges">
-            <div class="op-pill">
-              <span class="op-tag add-tag"><i class="fas fa-plus-circle"></i> Add</span>
-              <input class="tb-num" type="number" id="addAmin" value="0" min="0" />
+          <div class="math-op-row">
+            <label class="op-chk" title="Include Addition">
+              <input type="checkbox" id="includeAdd" checked>
+              <span class="op-sym add">+</span>
+            </label>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="addAmin" value="0" min="0">
               <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="addAmax" value="9" min="0" />
-              <span class="tb-op add-op">+</span>
-              <input class="tb-num" type="number" id="addBmin" value="0" min="0" />
+              <input class="tb-num math-range-num" type="number" id="addAmax" value="9" min="0">
+            </span>
+            <span class="tb-op add-op">+</span>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="addBmin" value="0" min="0">
               <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="addBmax" value="9" min="0" />
-            </div>
-
-            <div class="op-pill">
-              <span class="op-tag sub-tag"><i class="fas fa-minus-circle"></i> Sub</span>
-              <input class="tb-num" type="number" id="subMmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="subMmax" value="20" min="0" />
-              <span class="tb-op sub-op">−</span>
-              <input class="tb-num" type="number" id="subSmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="subSmax" value="9" min="0" />
-            </div>
-
-            <div class="op-pill">
-              <span class="op-tag mul-tag"><i class="fas fa-times-circle"></i> Mul</span>
-              <input class="tb-num" type="number" id="mulAmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mulAmax" value="10" min="0" />
-              <span class="tb-op mul-op">×</span>
-              <input class="tb-num" type="number" id="mulBmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mulBmax" value="10" min="0" />
-            </div>
-
-            <div class="op-pill">
-              <span class="op-tag div-tag"><i class="fas fa-divide"></i> Div</span>
-              <input class="tb-num" type="number" id="divQmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="divQmax" value="10" min="0" />
-              <span class="tb-op div-op">÷</span>
-              <input class="tb-num" type="number" id="divDmin" value="1" min="1" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="divDmax" value="10" min="1" />
-            </div>
+              <input class="tb-num math-range-num" type="number" id="addBmax" value="9" min="0">
+            </span>
           </div>
 
-          <span class="tb-vdiv"></span>
-
-          <!-- Op toggles -->
-          <div class="op-checks">
-            <label class="op-chk"><input type="checkbox" id="includeAdd" checked /><span class="op-sym add">+</span></label>
-            <label class="op-chk"><input type="checkbox" id="includeSub" checked /><span class="op-sym sub">−</span></label>
-            <label class="op-chk"><input type="checkbox" id="includeMul" /><span class="op-sym mul">×</span></label>
-            <label class="op-chk"><input type="checkbox" id="includeDiv" /><span class="op-sym div">÷</span></label>
+          <div class="math-op-row">
+            <label class="op-chk" title="Include Subtraction">
+              <input type="checkbox" id="includeSub" checked>
+              <span class="op-sym sub">−</span>
+            </label>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="subMmin" value="0" min="0">
+              <span class="tb-sep">–</span>
+              <input class="tb-num math-range-num" type="number" id="subMmax" value="20" min="0">
+            </span>
+            <span class="tb-op sub-op">−</span>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="subSmin" value="0" min="0">
+              <span class="tb-sep">–</span>
+              <input class="tb-num math-range-num" type="number" id="subSmax" value="9" min="0">
+            </span>
           </div>
 
+          <div class="math-op-row">
+            <label class="op-chk" title="Include Multiplication">
+              <input type="checkbox" id="includeMul">
+              <span class="op-sym mul">×</span>
+            </label>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="mulAmin" value="0" min="0">
+              <span class="tb-sep">–</span>
+              <input class="tb-num math-range-num" type="number" id="mulAmax" value="10" min="0">
+            </span>
+            <span class="tb-op mul-op">×</span>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="mulBmin" value="0" min="0">
+              <span class="tb-sep">–</span>
+              <input class="tb-num math-range-num" type="number" id="mulBmax" value="10" min="0">
+            </span>
+          </div>
+
+          <div class="math-op-row">
+            <label class="op-chk" title="Include Division">
+              <input type="checkbox" id="includeDiv">
+              <span class="op-sym div">÷</span>
+            </label>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="divQmin" value="0" min="0">
+              <span class="tb-sep">–</span>
+              <input class="tb-num math-range-num" type="number" id="divQmax" value="10" min="0">
+            </span>
+            <span class="tb-op div-op">÷</span>
+            <span class="math-range-group">
+              <input class="tb-num math-range-num" type="number" id="divDmin" value="1" min="1">
+              <span class="tb-sep">–</span>
+              <input class="tb-num math-range-num" type="number" id="divDmax" value="10" min="1">
+            </span>
+          </div>
         </div>
 
-        <!-- Row 2: mode / counts + actions right-aligned -->
-        <div class="math-tb-row">
+        <div class="math-settings-section">
+          <div class="math-section-title">Options</div>
 
-          <!-- Mode + counts -->
-          <div class="tb-counts">
-            <select class="tb-select" id="questionMode">
+          <div class="math-opt-field">
+            <label for="questionMode">Mode</label>
+            <select class="tb-select" id="questionMode" style="width:80px;">
               <option value="mix">Mix</option>
               <option value="single">Single</option>
             </select>
-            <label class="tb-count-lbl">Papers
-              <input class="tb-num" type="number" id="numPapers" value="8" min="1" max="20" />
-            </label>
-            <label class="tb-count-lbl">Q
-              <input class="tb-num" type="number" id="qPerPaper" value="50" min="1" max="100" />
-            </label>
           </div>
+          <div class="math-opt-field">
+            <label for="numPapers">Papers</label>
+            <input class="tb-num" type="number" id="numPapers" value="8" min="1" max="20" style="width:52px;">
+          </div>
+          <div class="math-opt-field">
+            <label for="qPerPaper">Q per paper</label>
+            <input class="tb-num" type="number" id="qPerPaper" value="51" min="1" max="100" style="width:52px;">
+          </div>
+        </div>
 
-          <!-- Actions -->
-          <div class="tb-actions" style="margin-left:auto">
-            <button class="btn btn-primary btn-sm" id="mathGenerateBtn">
-              <i class="fas fa-sync-alt"></i> Generate
-            </button>
-            <button class="btn btn-secondary btn-sm" id="mathPrintBtn">
+        <div class="math-actions">
+          <button class="btn btn-primary btn-sm" id="mathGenerateBtn" style="width:100%;">
+            <i class="fas fa-sync-alt"></i> Generate
+          </button>
+          <div style="display:flex;gap:6px;margin-top:6px;">
+            <button class="btn btn-secondary btn-sm" id="mathPrintBtn" style="flex:1;">
               <i class="fas fa-print"></i> Print
             </button>
-            <button class="btn btn-ghost btn-sm" id="mathResetBtn">
+            <button class="btn btn-ghost btn-sm" id="mathResetBtn" style="flex:1;">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
           </div>
-
-          <!-- Status -->
-          <div id="mathStatus" class="tb-status status-msg info"></div>
-
+          <div id="mathStatus" class="tb-status status-msg info" style="margin-top:8px;"></div>
         </div>
+
       </div>
 
-      <!-- Papers output -->
-      <div class="math-papers-wrap">
+      <!-- Right: papers output -->
+      <div class="math-papers-pane">
         <div id="mathPapersContainer" class="math-papers">
           <div class="empty-state">
             <i class="fas fa-list-ol"></i>
-            <p>Configure options above and click Generate.</p>
+            <p>Configure options and click Generate.</p>
           </div>
         </div>
       </div>
+
     </div>
   `;
 
@@ -141,7 +158,7 @@ function readConfig() {
     includeMul: chk('includeMul'), includeDiv: chk('includeDiv'),
     questionMode: document.getElementById('questionMode')?.value ?? 'mix',
     numPapers: n('numPapers', 8),
-    qPerPaper: n('qPerPaper', 50),
+    qPerPaper: n('qPerPaper', 51),
   };
 }
 
@@ -149,7 +166,7 @@ function runGenerate() {
   const config = readConfig();
   const result = generate(config);
   const status = document.getElementById('mathStatus');
-  const out = document.getElementById('mathPapersContainer');
+  const out    = document.getElementById('mathPapersContainer');
 
   if (!result) {
     if (status) { status.className = 'tb-status status-msg error'; status.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Choose at least one operation.'; }
