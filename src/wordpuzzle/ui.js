@@ -23,137 +23,163 @@ export function buildWordPuzzleUI(container) {
   container.innerHTML = `
     <div class="wp-tool">
 
-      <!-- Compact two-row sticky toolbar -->
+      <!-- Toolbar -->
       <div class="wp-toolbar no-print">
-
-        <!-- Row 1: puzzle settings, style, dictionary -->
         <div class="wp-tb-row">
-
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Puzzle</span>
-            <select class="tb-select" id="wpMode" title="Mode">
-              <option value="wordsearch">Word Search</option>
-              <option value="crisscross">Criss Cross</option>
-              <option value="jumble">Word Jumble</option>
-            </select>
-            <label class="tb-count-lbl" title="Words per puzzle">Words
-              <input class="tb-num" type="number" id="wpWordsPerPuzzle" value="10" min="1" max="50" />
-            </label>
-            <label class="tb-count-lbl" title="Grid rows" id="wpRowsLabel">Rows
-              <input class="tb-num" type="number" id="wpRows" value="12" min="10" max="26" />
-            </label>
-            <label class="tb-count-lbl" title="Grid columns" id="wpColsLabel">Cols
-              <input class="tb-num" type="number" id="wpCols" value="12" min="10" max="26" />
-            </label>
-            <label class="tb-count-lbl">Puzzles
-              <input class="tb-num" type="number" id="wpPuzzleCount" value="2" min="1" max="8" />
-            </label>
-            <select class="tb-select" id="wpDifficulty" title="Difficulty">
-              <option value="easy">Easy</option>
-              <option value="medium" selected>Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-          </div>
-
+          <span class="mw-typebar-label">Word Puzzles</span>
           <span class="tb-vdiv"></span>
+          <span class="tb-status status-msg info" id="wpGenStatus"></span>
 
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Style</span>
-            <select class="tb-select" id="wpFontFamily" title="Font family" style="min-width:100px;">
-              <option value="'Nunito', sans-serif">Nunito</option>
-              <option value="'Comic Sans MS', cursive">Comic Sans</option>
-              <option value="'Fredoka One', cursive">Fredoka</option>
-              <option value="'Patrick Hand', cursive">Patrick Hand</option>
-              <option value="'Quicksand', sans-serif">Quicksand</option>
-            </select>
-            <label class="tb-count-lbl" title="Cell font size">Size
-              <input class="tb-num" type="number" id="wpFontSize" value="20" min="10" max="48" />
-            </label>
-            <label class="tb-count-lbl" title="Cell padding">Pad
-              <input class="tb-num" type="number" id="wpCellPadding" value="6" min="0" max="20" />
-            </label>
-            <select class="tb-select" id="wpCaseMode" title="Letter case">
-              <option value="lowercase">lower</option>
-              <option value="uppercase">UPPER</option>
-            </select>
-          </div>
-
-          <span class="tb-vdiv"></span>
-
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Dictionary</span>
-            <label class="wp-file-btn btn btn-secondary btn-sm" for="wpFileInput" title="Load word list (.txt)">
-              <i class="fas fa-folder-open"></i>
-              <span class="badge badge-accent" id="wpFileBadge">49</span>
-            </label>
-            <input type="file" id="wpFileInput" accept=".txt,.text" style="display:none;" />
-            <button class="btn btn-danger btn-sm" id="wpBtnClearDict" title="Clear dictionary">
-              <i class="fas fa-times"></i>
-            </button>
-            <span class="tb-status status-msg info" id="wpDictStatus">Demo (49 words)</span>
-          </div>
-
-        </div>
-
-        <!-- Row 2: word length controls + print options + actions right-aligned -->
-        <div class="wp-tb-row wp-tb-row2">
-
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Letters</span>
-            <label class="tb-count-lbl" title="Minimum word length">Min
-              <select class="tb-select" id="wpMinWordLength" style="padding-left:4px;">
-                ${minLens.map(n => `<option value="${n}"${n===4?' selected':''}>${n}</option>`).join('')}
-              </select>
-            </label>
-            <label class="tb-count-lbl" title="Maximum word length">Max
-              <select class="tb-select" id="wpMaxWordLength" style="padding-left:4px;">
-                ${maxLens.map(n => `<option value="${n}"${n===10?' selected':''}>${n}</option>`).join('')}
-              </select>
-            </label>
-          </div>
-
-          <span class="tb-vdiv"></span>
-
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Print</span>
-            <select class="tb-select" id="wpPrintMargin" title="Print margin">
-              <option value="6mm">6 mm</option>
-              <option value="10mm" selected>10 mm</option>
-              <option value="16mm">16 mm</option>
-            </select>
-            <label class="wp-sol-toggle" title="Show solutions">
-              <span class="toggle-switch" style="width:32px;height:18px;">
-                <input type="checkbox" id="wpShowSolutions" />
-                <span class="toggle-track"></span>
-              </span>
-              <span class="tb-count-lbl" style="color:var(--text-secondary)"><i class="fas fa-eye"></i> Solutions</span>
-            </label>
-          </div>
-
-          <span class="tb-vdiv"></span>
-
-          <!-- Actions pushed to right via margin-left:auto -->
-          <div class="tb-actions" style="margin-left:auto">
+          <div class="tb-actions" style="margin-left:auto;gap:6px;">
             <button class="btn btn-primary btn-sm" id="wpBtnGenerate">
-              <i class="fas fa-play"></i> Generate
+              <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="wpBtnPrint">
               <i class="fas fa-print"></i> Print
             </button>
           </div>
-
-          <span class="tb-status status-msg info" id="wpGenStatus"></span>
-
         </div>
       </div>
 
-      <!-- Puzzles output -->
-      <div class="wp-output" id="wpOutput">
-        <div class="empty-state" id="wpEmptyState">
-          <i class="fas fa-file-alt"></i>
-          <p>Click <strong>Generate</strong> to create puzzles.</p>
+      <!-- Two-pane body -->
+      <div class="wp-body">
+
+        <!-- Left: settings pane -->
+        <div class="wp-settings-pane no-print">
+
+          <div class="wp-settings-section">
+            <div class="wp-section-title">Puzzle</div>
+
+            <div class="wp-set-field">
+              <label for="wpMode">Type</label>
+              <select class="tb-select" id="wpMode">
+                <option value="wordsearch">Word Search</option>
+                <option value="crisscross">Criss Cross</option>
+                <option value="jumble">Word Jumble</option>
+              </select>
+            </div>
+            <div class="wp-set-field">
+              <label for="wpDifficulty">Difficulty</label>
+              <select class="tb-select" id="wpDifficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="wp-set-field">
+              <label for="wpPuzzleCount">Puzzles</label>
+              <input class="tb-num" type="number" id="wpPuzzleCount" value="2" min="1" max="8" />
+            </div>
+            <div class="wp-set-field">
+              <label for="wpWordsPerPuzzle">Words per puzzle</label>
+              <input class="tb-num" type="number" id="wpWordsPerPuzzle" value="10" min="1" max="50" />
+            </div>
+            <div class="wp-set-field" id="wpRowsLabel">
+              <label for="wpRows">Grid rows</label>
+              <input class="tb-num" type="number" id="wpRows" value="12" min="10" max="26" />
+            </div>
+            <div class="wp-set-field" id="wpColsLabel">
+              <label for="wpCols">Grid columns</label>
+              <input class="tb-num" type="number" id="wpCols" value="12" min="10" max="26" />
+            </div>
+          </div>
+
+          <div class="wp-settings-section">
+            <div class="wp-section-title">Word Length</div>
+
+            <div class="wp-set-field">
+              <label for="wpMinWordLength">Min letters</label>
+              <select class="tb-select" id="wpMinWordLength">
+                ${minLens.map(n => `<option value="${n}"${n===4?' selected':''}>${n}</option>`).join('')}
+              </select>
+            </div>
+            <div class="wp-set-field">
+              <label for="wpMaxWordLength">Max letters</label>
+              <select class="tb-select" id="wpMaxWordLength">
+                ${maxLens.map(n => `<option value="${n}"${n===10?' selected':''}>${n}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="wp-settings-section">
+            <div class="wp-section-title">Appearance</div>
+
+            <div class="wp-set-field">
+              <label for="wpFontFamily">Font</label>
+              <select class="tb-select" id="wpFontFamily">
+                <option value="'Nunito', sans-serif">Nunito</option>
+                <option value="'Andika', sans-serif">Andika</option>
+                <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                <option value="'Patrick Hand', cursive">Patrick Hand</option>
+                <option value="'Quicksand', sans-serif">Quicksand</option>
+              </select>
+            </div>
+            <div class="wp-set-field">
+              <label for="wpFontSize">Font size</label>
+              <input class="tb-num" type="number" id="wpFontSize" value="20" min="10" max="48" />
+            </div>
+            <div class="wp-set-field">
+              <label for="wpCellPadding">Cell padding</label>
+              <input class="tb-num" type="number" id="wpCellPadding" value="6" min="0" max="20" />
+            </div>
+            <div class="wp-set-field">
+              <label for="wpCaseMode">Letter case</label>
+              <select class="tb-select" id="wpCaseMode">
+                <option value="lowercase">lower</option>
+                <option value="uppercase">UPPER</option>
+              </select>
+            </div>
+            <div class="wp-set-field">
+              <label for="wpPrintMargin">Print margin</label>
+              <select class="tb-select" id="wpPrintMargin">
+                <option value="6mm">6 mm</option>
+                <option value="10mm" selected>10 mm</option>
+                <option value="16mm">16 mm</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="wp-settings-section">
+            <div class="wp-section-title">Dictionary</div>
+
+            <div class="wp-set-field">
+              <label class="wp-file-btn btn btn-secondary btn-sm" for="wpFileInput" title="Load word list (.txt)">
+                <i class="fas fa-folder-open"></i> Load
+                <span class="badge badge-accent" id="wpFileBadge">49</span>
+              </label>
+              <input type="file" id="wpFileInput" accept=".txt,.text" style="display:none;" />
+              <button class="btn btn-danger btn-sm" id="wpBtnClearDict" title="Clear dictionary">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="wp-set-field">
+              <span class="tb-status status-msg info" id="wpDictStatus">Demo (49 words)</span>
+            </div>
+          </div>
+
+          <div class="wp-settings-section">
+            <div class="wp-section-title">Answers</div>
+
+            <div class="wp-set-field">
+              <label for="wpShowSolutions">Show solutions</label>
+              <label class="toggle-switch toggle-sm" for="wpShowSolutions">
+                <input type="checkbox" id="wpShowSolutions" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
         </div>
-        <div id="wpPuzzlesContainer"></div>
+
+        <!-- Right: rendered pages -->
+        <div class="wp-output" id="wpOutput">
+          <div class="empty-state" id="wpEmptyState">
+            <i class="fas fa-file-alt"></i>
+            <p>Click <strong>Generate</strong> to create puzzles.</p>
+          </div>
+          <div id="wpPuzzlesContainer"></div>
+        </div>
+
       </div>
 
     </div>

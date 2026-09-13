@@ -235,6 +235,22 @@
   transform: translateX(18px);
 }
 
+/* Small toggle variant — for settings panes / toolbars */
+.toggle-switch.toggle-sm {
+  width: 32px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.toggle-switch.toggle-sm .toggle-track::after {
+  width: 14px;
+  height: 14px;
+}
+
+.toggle-switch.toggle-sm input:checked + .toggle-track::after {
+  transform: translateX(14px);
+}
+
 /* Divider ----------------------------------------------------------------- */
 
 .divider {

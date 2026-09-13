@@ -60,7 +60,6 @@ const routes = {
 | `--space-1` … `--space-12` | 4px–48px spacing scale |
 | `--radius-sm/md/lg/xl/full` | Border radius |
 | `--font-ui` | Nunito (body text) |
-| `--font-brand` | Fredoka One (headings) |
 | `--font-print` | Comic Sans MS stack (printed worksheets) |
 | `--text-xs` … `--text-3xl` | Font size scale |
 
@@ -76,7 +75,7 @@ Shared across all modules — no need to re-define in module CSS:
 - `.empty-state` — centered icon + message placeholder
 
 ## Two-Pane Layout Pattern
-Used by Worksheets and Math Worksheets. Sticky toolbar + full-height split body:
+**All tool modules use this.** Sticky toolbar (actions right-aligned via `.tb-actions { margin-left:auto }`) + full-height split body. Settings live in the left pane; the right pane renders white printable pages.
 ```css
 .tool { display:flex; flex-direction:column; height:100%; min-height:0 }
 .toolbar { position:sticky; top:0; flex-shrink:0; background:var(--bg-surface); border-bottom:1px solid var(--border) }
@@ -103,7 +102,7 @@ Used by Worksheets and Math Worksheets. Sticky toolbar + full-height split body:
 
 ## Known Constraints
 - **vite-plugin-singlefile**: all imports inlined → watch bundle size. Google Fonts loaded via CDN link tag (not inlined).
-- **Andika font**: loaded via Google Fonts CDN for Seyès worksheets. Adds ~400KB to PDF when printing — accepted tradeoff for handwriting-practice quality.
+- **Andika font**: loaded globally via the Google Fonts link in `index.html`, so every module can offer it (Seyès worksheets, Place Value, Word Puzzles, Sudoku). Adds ~400KB to PDF when printing — accepted tradeoff for handwriting-practice quality.
 - **html2pdf.js**: loaded from CDN dynamically on demand for Place Value worksheet PDF export.
 - **No backend**: all logic runs client-side. No persistence beyond `localStorage`.
 - **Minimum width**: 1024px (desktop/tablet teacher tool).

@@ -6,6 +6,30 @@ export function buildUI(container) {
   container.innerHTML = `
     <div class="math-tool">
 
+      <!-- Toolbar -->
+      <div class="math-toolbar no-print">
+        <div class="math-tb-row">
+          <span class="mw-typebar-label">Arithmetic Tests</span>
+          <span class="tb-vdiv"></span>
+          <span class="tb-status status-msg info" id="mathStatus"></span>
+
+          <div class="tb-actions" style="margin-left:auto;gap:6px;">
+            <button class="btn btn-primary btn-sm" id="mathGenerateBtn">
+              <i class="fas fa-sync-alt"></i> Generate
+            </button>
+            <button class="btn btn-secondary btn-sm" id="mathPrintBtn">
+              <i class="fas fa-print"></i> Print
+            </button>
+            <button class="btn btn-ghost btn-sm" id="mathResetBtn">
+              <i class="fas fa-undo-alt"></i> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-pane body -->
+      <div class="math-body">
+
       <!-- Left: settings pane -->
       <div class="math-settings-pane no-print">
 
@@ -18,15 +42,15 @@ export function buildUI(container) {
               <span class="op-sym add">+</span>
             </label>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="addAmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="addAmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="addAmax" value="9" min="0">
+              <input class="tb-num math-range-num" type="number" id="addAmax" value="9" min="0" max="9999" />
             </span>
             <span class="tb-op add-op">+</span>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="addBmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="addBmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="addBmax" value="9" min="0">
+              <input class="tb-num math-range-num" type="number" id="addBmax" value="9" min="0" max="9999" />
             </span>
           </div>
 
@@ -36,15 +60,15 @@ export function buildUI(container) {
               <span class="op-sym sub">−</span>
             </label>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="subMmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="subMmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="subMmax" value="20" min="0">
+              <input class="tb-num math-range-num" type="number" id="subMmax" value="20" min="0" max="9999" />
             </span>
             <span class="tb-op sub-op">−</span>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="subSmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="subSmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="subSmax" value="9" min="0">
+              <input class="tb-num math-range-num" type="number" id="subSmax" value="9" min="0" max="9999" />
             </span>
           </div>
 
@@ -54,15 +78,15 @@ export function buildUI(container) {
               <span class="op-sym mul">×</span>
             </label>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="mulAmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="mulAmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="mulAmax" value="10" min="0">
+              <input class="tb-num math-range-num" type="number" id="mulAmax" value="10" min="0" max="9999" />
             </span>
             <span class="tb-op mul-op">×</span>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="mulBmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="mulBmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="mulBmax" value="10" min="0">
+              <input class="tb-num math-range-num" type="number" id="mulBmax" value="10" min="0" max="9999" />
             </span>
           </div>
 
@@ -72,15 +96,15 @@ export function buildUI(container) {
               <span class="op-sym div">÷</span>
             </label>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="divQmin" value="0" min="0">
+              <input class="tb-num math-range-num" type="number" id="divQmin" value="0" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="divQmax" value="10" min="0">
+              <input class="tb-num math-range-num" type="number" id="divQmax" value="10" min="0" max="9999" />
             </span>
             <span class="tb-op div-op">÷</span>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="divDmin" value="1" min="1">
+              <input class="tb-num math-range-num" type="number" id="divDmin" value="1" min="1" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="divDmax" value="10" min="1">
+              <input class="tb-num math-range-num" type="number" id="divDmax" value="10" min="1" max="9999" />
             </span>
           </div>
         </div>
@@ -105,21 +129,6 @@ export function buildUI(container) {
           </div>
         </div>
 
-        <div class="math-actions">
-          <button class="btn btn-primary btn-sm" id="mathGenerateBtn" style="width:100%;">
-            <i class="fas fa-sync-alt"></i> Generate
-          </button>
-          <div style="display:flex;gap:6px;margin-top:6px;">
-            <button class="btn btn-secondary btn-sm" id="mathPrintBtn" style="flex:1;">
-              <i class="fas fa-print"></i> Print
-            </button>
-            <button class="btn btn-ghost btn-sm" id="mathResetBtn" style="flex:1;">
-              <i class="fas fa-undo-alt"></i> Reset
-            </button>
-          </div>
-          <div id="mathStatus" class="tb-status status-msg info" style="margin-top:8px;"></div>
-        </div>
-
       </div>
 
       <!-- Right: papers output -->
@@ -130,6 +139,8 @@ export function buildUI(container) {
             <p>Configure options and click Generate.</p>
           </div>
         </div>
+      </div>
+
       </div>
 
     </div>

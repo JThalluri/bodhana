@@ -68,7 +68,6 @@
 
   /* Typography */
   --font-ui:     'Nunito', system-ui, sans-serif;
-  --font-brand:  'Fredoka One', cursive;
   --font-print:  'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
   --font-header: 'Segoe UI', Roboto, var(--font-ui), sans-serif;
 

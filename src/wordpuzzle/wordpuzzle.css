@@ -21,9 +21,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
 }
 
-/* Compact sticky toolbar --------------------------------------------------- */
+/* Sticky toolbar ----------------------------------------------------------- */
 
 .wp-toolbar {
   background: var(--bg-surface);
@@ -33,6 +34,7 @@
   top: 0;
   z-index: 50;
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
 }
 
 .wp-tb-row {
@@ -43,30 +45,77 @@
   min-height: 40px;
 }
 
-.wp-tb-group {
+/* Two-pane body ------------------------------------------------------------ */
+
+.wp-body {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
 }
 
-.wp-tb-grouplabel {
-  font-size: 10px;
+/* Left: settings pane ------------------------------------------------------ */
+
+.wp-settings-pane {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.wp-settings-section {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.wp-settings-section:last-child {
+  border-bottom: none;
+}
+
+.wp-section-title {
+  font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
-  white-space: nowrap;
-  padding-right: 4px;
-  border-right: 1px solid var(--border);
-  margin-right: 2px;
-  line-height: 1;
-  align-self: center;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.wp-set-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.wp-set-field:last-child {
+  margin-bottom: 0;
+}
+
+.wp-set-field > label:not(.btn):not(.toggle-switch) {
+  flex: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wp-set-field input[type="number"],
+.wp-set-field select {
+  width: 110px;
+  flex-shrink: 0;
 }
 
 .wp-file-btn {
   cursor: pointer;
   padding: 4px 10px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .wp-sol-toggle {
@@ -100,8 +149,9 @@
     color-mix(in srgb, var(--accent) 10%, transparent),
     transparent 45%
   ), var(--bg-body);
-  padding: var(--space-6);
+  padding: var(--space-5) var(--space-5) var(--space-10);
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 #wpPuzzlesContainer {
@@ -112,14 +162,14 @@
   margin: 0 auto;
 }
 
-/* Puzzle block ------------------------------------------------------------- */
+/* Puzzle block — rendered as a white printable page ------------------------ */
 
 .wp-puzzle-block {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
+  background: white;
+  color: #0f172a;
   border-radius: var(--radius-lg);
   padding: 20px 24px 24px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   page-break-after: always;
@@ -134,7 +184,7 @@
   gap: var(--space-2);
   padding-bottom: 10px;
   margin-bottom: 14px;
-  border-bottom: 3px solid var(--border);
+  border-bottom: 2px solid #222;
   font-weight: 700;
   font-size: 1rem;
   flex-shrink: 0;
@@ -144,19 +194,19 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--text-secondary);
+  color: #0f172a;
 }
 
 .wp-label {
   font-weight: 400;
-  color: var(--text-muted);
+  color: #555;
   font-size: var(--text-sm);
   white-space: nowrap;
 }
 
 .wp-dash-line {
   flex: 1;
-  border-bottom: 2px dashed var(--border);
+  border-bottom: 2px dashed #888;
   min-width: 30px;
   height: 1.2em;
 }
@@ -173,8 +223,8 @@
 .wp-grid {
   display: inline-grid;
   gap: 0;
-  border: 2px solid var(--border);
-  background: var(--bg-surface);
+  border: 2px solid #222;
+  background: white;
 }
 
 .wp-grid-no-border {
@@ -185,21 +235,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--wp-cell-border);
-  background: var(--wp-cell-bg);
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #0f172a;
   font-weight: 700;
   user-select: none;
-  transition: background var(--transition), border-color var(--transition);
 }
 
 .wp-cell.wp-hint-cell,
 .wp-cell.wp-solution-cell {
-  background: var(--wp-cell-sol);
-  border-color: var(--accent);
+  background: #fde68a;
+  border-color: #b45309;
 }
 
 .wp-no-words {
-  color: var(--text-muted);
+  color: #64748b;
   font-style: italic;
   padding: var(--space-4);
 }
@@ -210,7 +260,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 0;
-  border: 1px solid var(--border);
+  border: 1px solid #cbd5e1;
   margin-top: 4px;
   font-size: var(--text-sm);
   flex-shrink: 0;
@@ -218,21 +268,13 @@
 
 .wp-word-item {
   padding: 4px 6px;
-  border: 1px solid var(--border);
+  border: 1px solid #cbd5e1;
   text-align: center;
-  color: var(--text-secondary);
-  background: var(--wp-cell-bg);
+  color: #0f172a;
+  background: white;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Toolbar row separator ---------------------------------------------------- */
-
-.wp-tb-row ~ .wp-tb-row {
-  border-top: 1px solid var(--border);
-  padding-top: 8px;
-  margin-top: 4px;
 }
 
 /* ── Word Jumble layout ─────────────────────────────────────────────────── */
@@ -304,12 +346,18 @@
 }
 
 @media print {
-  .wp-settings { display: none !important; }
+  .wp-settings-pane { display: none !important; }
+  .wp-toolbar { display: none !important; }
 
   /* overflow:auto creates a scroll context that swallows page breaks */
   .wp-tool {
     display: block !important;
     height: auto !important;
+  }
+
+  .wp-body {
+    display: block !important;
+    overflow: visible !important;
   }
 
   .wp-output {

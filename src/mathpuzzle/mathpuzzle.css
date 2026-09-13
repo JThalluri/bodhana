@@ -3,10 +3,11 @@
 .mp-tool {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - var(--topbar-height));
+  height: 100%;
+  min-height: 0;
 }
 
-/* ── Compact Sticky Toolbar ─────────────────────────────────────────────── */
+/* ── Sticky Toolbar ─────────────────────────────────────────────────────── */
 
 .mp-toolbar {
   background: var(--bg-surface);
@@ -16,6 +17,7 @@
   top: 0;
   z-index: 50;
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
 }
 
 .mp-tb-row {
@@ -26,14 +28,91 @@
   min-height: 40px;
 }
 
-.mp-tb-row ~ .mp-tb-row {
-  border-top: 1px solid var(--border);
-  padding-top: 8px;
-  margin-top: 4px;
+/* ── Two-pane body ──────────────────────────────────────────────────────── */
+
+.mp-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
 }
 
-/* .op-ranges, .op-pill, .op-tag, .op-chk, .op-sym, .tb-sep, .tb-op etc.
-   are defined in components.css (globally available) */
+/* ── Left: settings pane ────────────────────────────────────────────────── */
+
+.mp-settings-pane {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.mp-settings-section {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.mp-settings-section:last-child {
+  border-bottom: none;
+}
+
+.mp-section-title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.mp-op-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.mp-op-row:last-child {
+  margin-bottom: 0;
+}
+
+.mp-range-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mp-range-num {
+  width: 46px !important;
+}
+
+.mp-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.mp-field:last-child {
+  margin-bottom: 0;
+}
+
+.mp-field > label:not(.toggle-switch) {
+  flex: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mp-field input[type="number"],
+.mp-field select {
+  width: 80px;
+  flex-shrink: 0;
+}
 
 .mp-sol-toggle {
   display: inline-flex;
@@ -56,10 +135,12 @@
   transform: translateX(14px) !important;
 }
 
-/* ── Output area ────────────────────────────────────────────────────────── */
+/* ── Right: rendered pages ──────────────────────────────────────────────── */
 
 .mp-output {
   flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
   background: radial-gradient(
     ellipse at 85% 0,
     color-mix(in srgb, var(--accent) 10%, transparent),
@@ -195,6 +276,7 @@
 
 @media print {
   .mp-toolbar { display: none !important; }
+  .mp-settings-pane { display: none !important; }
 
   .mp-output {
     background: white !important;
@@ -205,6 +287,11 @@
   .mp-tool {
     display: block !important;
     min-height: 0 !important;
+  }
+
+  .mp-body {
+    display: block !important;
+    overflow: visible !important;
   }
 
   .mp-output {

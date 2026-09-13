@@ -173,12 +173,6 @@ export function buildPlaceValueUI(container) {
             </div>
           </div>
 
-          <div class="pv-actions">
-            <button class="btn btn-primary btn-sm" id="pvGenerateBtn2" style="width:100%;">
-              <i class="fas fa-sync-alt"></i> Generate Worksheets
-            </button>
-          </div>
-
         </div>
 
         <!-- Right: preview pane -->
@@ -219,7 +213,6 @@ export function buildPlaceValueUI(container) {
   const seedEl          = c('#pvSeed');
   const revealBtn       = c('#pvRevealBtn');
   const generateBtn     = c('#pvGenerateBtn');
-  const generateBtn2    = c('#pvGenerateBtn2');
   const printBtn        = c('#pvPrintBtn');
   const pdfBtn          = c('#pvPdfBtn');
   const preview         = c('#pvWorksheetsContainer');
@@ -350,7 +343,6 @@ export function buildPlaceValueUI(container) {
   on(includeAKEl, 'change', updateConditional);
 
   on(generateBtn, 'click', generate);
-  on(generateBtn2, 'click', generate);
   on(printBtn, 'click', () => window.print());
 
   on(revealBtn, 'click', () => {

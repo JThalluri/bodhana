@@ -11,64 +11,14 @@ export function buildSudokuUI(container) {
   container.innerHTML = `
     <div class="sdk-tool">
 
-      <!-- Two-row sticky toolbar -->
+      <!-- Toolbar -->
       <div class="sdk-toolbar no-print">
-
-        <!-- Row 1: puzzle settings + style settings -->
         <div class="sdk-tb-row">
-
-          <!-- Puzzle settings -->
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Puzzle</span>
-            <select class="tb-select" id="sdkDifficulty" title="Difficulty">
-              <option value="easy">Easy</option>
-              <option value="medium" selected>Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-            <label class="tb-count-lbl">Puzzles
-              <input class="tb-num" type="number" id="sdkPuzzleCount" value="2" min="1" max="8" />
-            </label>
-          </div>
-
+          <span class="mw-typebar-label">Sudoku</span>
           <span class="tb-vdiv"></span>
+          <span class="tb-status status-msg info" id="sdkStatus"></span>
 
-          <!-- Style settings -->
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Style</span>
-            <select class="tb-select" id="sdkFontFamily" title="Font" style="min-width:110px;">
-              <option value="'Nunito', sans-serif">Nunito</option>
-              <option value="'Comic Sans MS', cursive">Comic Sans</option>
-              <option value="'Fredoka One', cursive">Fredoka</option>
-              <option value="'Patrick Hand', cursive">Patrick Hand</option>
-              <option value="'Courier New', monospace">Courier New</option>
-              <option value="Arial, sans-serif">Arial</option>
-            </select>
-            <label class="tb-count-lbl" title="Font size (px)">Size
-              <input class="tb-num" type="number" id="sdkFontSize" value="20" min="10" max="36" />
-            </label>
-            <label class="tb-count-lbl" title="Cell padding (px)">Pad
-              <input class="tb-num" type="number" id="sdkCellPadding" value="12" min="4" max="28" />
-            </label>
-          </div>
-
-        </div>
-
-        <!-- Row 2: solutions toggle + actions right-aligned -->
-        <div class="sdk-tb-row">
-
-          <!-- Solutions toggle -->
-          <label class="mp-sol-toggle" title="Show solutions">
-            <span class="toggle-switch" style="width:32px;height:18px;">
-              <input type="checkbox" id="sdkShowSolutions" />
-              <span class="toggle-track"></span>
-            </span>
-            <span class="tb-count-lbl" style="color:var(--text-secondary)">
-              <i class="fas fa-eye"></i> Solutions
-            </span>
-          </label>
-
-          <!-- Actions -->
-          <div class="tb-actions" style="margin-left:auto">
+          <div class="tb-actions" style="margin-left:auto;gap:6px;">
             <button class="btn btn-primary btn-sm" id="sdkBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
@@ -79,18 +29,79 @@ export function buildSudokuUI(container) {
               <i class="fas fa-undo-alt"></i> Reset
             </button>
           </div>
-
-          <span class="tb-status status-msg info" id="sdkStatus"></span>
         </div>
       </div>
 
-      <!-- Output -->
-      <div class="sdk-output" id="sdkOutput">
-        <div class="empty-state" id="sdkEmptyState">
-          <i class="fas fa-th"></i>
-          <p>Click <strong>Generate</strong> to create Sudoku puzzles.</p>
+      <!-- Two-pane body -->
+      <div class="sdk-body">
+
+        <!-- Left: settings pane -->
+        <div class="sdk-settings-pane no-print">
+
+          <div class="sdk-settings-section">
+            <div class="sdk-section-title">Puzzle</div>
+
+            <div class="sdk-field">
+              <label for="sdkDifficulty">Difficulty</label>
+              <select class="tb-select" id="sdkDifficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="sdk-field">
+              <label for="sdkPuzzleCount">Puzzles</label>
+              <input class="tb-num" type="number" id="sdkPuzzleCount" value="2" min="1" max="8" />
+            </div>
+          </div>
+
+          <div class="sdk-settings-section">
+            <div class="sdk-section-title">Style</div>
+
+            <div class="sdk-field">
+              <label for="sdkFontFamily">Font</label>
+              <select class="tb-select" id="sdkFontFamily">
+                <option value="'Nunito', sans-serif">Nunito</option>
+                <option value="'Andika', sans-serif">Andika</option>
+                <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                <option value="'Patrick Hand', cursive">Patrick Hand</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="Arial, sans-serif">Arial</option>
+              </select>
+            </div>
+            <div class="sdk-field">
+              <label for="sdkFontSize">Font size</label>
+              <input class="tb-num" type="number" id="sdkFontSize" value="20" min="10" max="36" />
+            </div>
+            <div class="sdk-field">
+              <label for="sdkCellPadding">Cell padding</label>
+              <input class="tb-num" type="number" id="sdkCellPadding" value="12" min="4" max="28" />
+            </div>
+          </div>
+
+          <div class="sdk-settings-section">
+            <div class="sdk-section-title">Answers</div>
+
+            <div class="sdk-field">
+              <label for="sdkShowSolutions">Show solutions</label>
+              <label class="toggle-switch toggle-sm" for="sdkShowSolutions">
+                <input type="checkbox" id="sdkShowSolutions" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
         </div>
-        <div id="sdkPuzzlesContainer"></div>
+
+        <!-- Right: rendered pages -->
+        <div class="sdk-output" id="sdkOutput">
+          <div class="empty-state" id="sdkEmptyState">
+            <i class="fas fa-th"></i>
+            <p>Click <strong>Generate</strong> to create Sudoku puzzles.</p>
+          </div>
+          <div id="sdkPuzzlesContainer"></div>
+        </div>
+
       </div>
 
     </div>
@@ -182,6 +193,14 @@ function wireEvents() {
   document.getElementById('sdkShowSolutions')?.addEventListener('change', (e) => {
     state.showSolutions = e.target.checked;
     if (state.puzzles.length) doRender();
+  });
+
+  ['sdkFontFamily', 'sdkFontSize', 'sdkCellPadding'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const handler = () => { if (state.puzzles.length) doRender(); };
+    el.addEventListener('change', handler);
+    el.addEventListener('input', handler);
   });
 
   document.addEventListener('keydown', handleKeydown);

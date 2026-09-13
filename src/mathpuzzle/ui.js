@@ -17,102 +17,14 @@ export function buildMathPuzzleUI(container) {
   container.innerHTML = `
     <div class="mp-tool">
 
-      <!-- Two-row sticky toolbar -->
+      <!-- Toolbar -->
       <div class="mp-toolbar no-print">
-
-        <!-- Row 1: operation range pills + op toggles -->
         <div class="mp-tb-row">
-
-          <!-- Operation range pills -->
-          <div class="op-ranges">
-            <div class="op-pill">
-              <span class="op-tag add-tag"><i class="fas fa-plus-circle"></i> Add</span>
-              <input class="tb-num" type="number" id="mpAddAmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpAddAmax" value="9" min="0" />
-              <span class="tb-op add-op">+</span>
-              <input class="tb-num" type="number" id="mpAddBmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpAddBmax" value="9" min="0" />
-            </div>
-
-            <div class="op-pill">
-              <span class="op-tag sub-tag"><i class="fas fa-minus-circle"></i> Sub</span>
-              <input class="tb-num" type="number" id="mpSubMmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpSubMmax" value="20" min="0" />
-              <span class="tb-op sub-op">−</span>
-              <input class="tb-num" type="number" id="mpSubSmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpSubSmax" value="9" min="0" />
-            </div>
-
-            <div class="op-pill">
-              <span class="op-tag mul-tag"><i class="fas fa-times-circle"></i> Mul</span>
-              <input class="tb-num" type="number" id="mpMulAmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpMulAmax" value="10" min="0" />
-              <span class="tb-op mul-op">×</span>
-              <input class="tb-num" type="number" id="mpMulBmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpMulBmax" value="10" min="0" />
-            </div>
-
-            <div class="op-pill">
-              <span class="op-tag div-tag"><i class="fas fa-divide"></i> Div</span>
-              <input class="tb-num" type="number" id="mpDivQmin" value="0" min="0" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpDivQmax" value="10" min="0" />
-              <span class="tb-op div-op">÷</span>
-              <input class="tb-num" type="number" id="mpDivDmin" value="1" min="1" />
-              <span class="tb-sep">–</span>
-              <input class="tb-num" type="number" id="mpDivDmax" value="10" min="1" />
-            </div>
-          </div>
-
+          <span class="mw-typebar-label">Math Puzzle Grid</span>
           <span class="tb-vdiv"></span>
+          <span class="tb-status status-msg info" id="mpStatus"></span>
 
-          <!-- Op toggles -->
-          <div class="op-checks">
-            <label class="op-chk"><input type="checkbox" id="mpIncludeAdd" checked /><span class="op-sym add">+</span></label>
-            <label class="op-chk"><input type="checkbox" id="mpIncludeSub" checked /><span class="op-sym sub">−</span></label>
-            <label class="op-chk"><input type="checkbox" id="mpIncludeMul" /><span class="op-sym mul">×</span></label>
-            <label class="op-chk"><input type="checkbox" id="mpIncludeDiv" /><span class="op-sym div">÷</span></label>
-          </div>
-
-        </div>
-
-        <!-- Row 2: difficulty / counts + solutions toggle + actions right-aligned -->
-        <div class="mp-tb-row">
-
-          <!-- Difficulty + counts -->
-          <div class="tb-counts">
-            <select class="tb-select" id="mpDifficulty" title="Difficulty">
-              <option value="easy">Easy</option>
-              <option value="medium" selected>Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-            <label class="tb-count-lbl">Puzzles
-              <input class="tb-num" type="number" id="mpPuzzleCount" value="2" min="1" max="8" />
-            </label>
-            <label class="tb-count-lbl">Equations
-              <input class="tb-num" type="number" id="mpEquations" value="${DIFFICULTY_SETTINGS.medium.targetDefault}" min="1" max="40" style="width:44px;" />
-            </label>
-          </div>
-
-          <span class="tb-vdiv"></span>
-
-          <!-- Solutions toggle -->
-          <label class="mp-sol-toggle" title="Show solutions">
-            <span class="toggle-switch" style="width:32px;height:18px;">
-              <input type="checkbox" id="mpShowSolutions" />
-              <span class="toggle-track"></span>
-            </span>
-            <span class="tb-count-lbl" style="color:var(--text-secondary)"><i class="fas fa-eye"></i> Solutions</span>
-          </label>
-
-          <!-- Actions -->
-          <div class="tb-actions" style="margin-left:auto">
+          <div class="tb-actions" style="margin-left:auto;gap:6px;">
             <button class="btn btn-primary btn-sm" id="mpBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
@@ -123,18 +35,135 @@ export function buildMathPuzzleUI(container) {
               <i class="fas fa-undo-alt"></i> Reset
             </button>
           </div>
-
-          <span class="tb-status status-msg info" id="mpStatus"></span>
         </div>
       </div>
 
-      <!-- Puzzle output -->
-      <div class="mp-output" id="mpOutput">
-        <div class="empty-state" id="mpEmptyState">
-          <i class="fas fa-hashtag"></i>
-          <p>Click <strong>Generate</strong> to create math puzzles.</p>
+      <!-- Two-pane body -->
+      <div class="mp-body">
+
+        <!-- Left: settings pane -->
+        <div class="mp-settings-pane no-print">
+
+          <div class="mp-settings-section">
+            <div class="mp-section-title">Operations</div>
+
+            <div class="mp-op-row">
+              <label class="op-chk" title="Include Addition">
+                <input type="checkbox" id="mpIncludeAdd" checked />
+                <span class="op-sym add">+</span>
+              </label>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpAddAmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpAddAmax" value="9" min="0" max="9999" />
+              </span>
+              <span class="tb-op add-op">+</span>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpAddBmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpAddBmax" value="9" min="0" max="9999" />
+              </span>
+            </div>
+
+            <div class="mp-op-row">
+              <label class="op-chk" title="Include Subtraction">
+                <input type="checkbox" id="mpIncludeSub" checked />
+                <span class="op-sym sub">−</span>
+              </label>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpSubMmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpSubMmax" value="20" min="0" max="9999" />
+              </span>
+              <span class="tb-op sub-op">−</span>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpSubSmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpSubSmax" value="9" min="0" max="9999" />
+              </span>
+            </div>
+
+            <div class="mp-op-row">
+              <label class="op-chk" title="Include Multiplication">
+                <input type="checkbox" id="mpIncludeMul" />
+                <span class="op-sym mul">×</span>
+              </label>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpMulAmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpMulAmax" value="10" min="0" max="9999" />
+              </span>
+              <span class="tb-op mul-op">×</span>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpMulBmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpMulBmax" value="10" min="0" max="9999" />
+              </span>
+            </div>
+
+            <div class="mp-op-row">
+              <label class="op-chk" title="Include Division">
+                <input type="checkbox" id="mpIncludeDiv" />
+                <span class="op-sym div">÷</span>
+              </label>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpDivQmin" value="0" min="0" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpDivQmax" value="10" min="0" max="9999" />
+              </span>
+              <span class="tb-op div-op">÷</span>
+              <span class="mp-range-group">
+                <input class="tb-num mp-range-num" type="number" id="mpDivDmin" value="1" min="1" max="9999" />
+                <span class="tb-sep">–</span>
+                <input class="tb-num mp-range-num" type="number" id="mpDivDmax" value="10" min="1" max="9999" />
+              </span>
+            </div>
+          </div>
+
+          <div class="mp-settings-section">
+            <div class="mp-section-title">Puzzle Options</div>
+
+            <div class="mp-field">
+              <label for="mpDifficulty">Difficulty</label>
+              <select class="tb-select" id="mpDifficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="mp-field">
+              <label for="mpPuzzleCount">Puzzles</label>
+              <input class="tb-num" type="number" id="mpPuzzleCount" value="2" min="1" max="8" />
+            </div>
+            <div class="mp-field">
+              <label for="mpEquations">Equations</label>
+              <input class="tb-num" type="number" id="mpEquations" value="${DIFFICULTY_SETTINGS.medium.targetDefault}" min="1" max="40" />
+            </div>
+          </div>
+
+          <div class="mp-settings-section">
+            <div class="mp-section-title">Answers</div>
+
+            <div class="mp-field">
+              <label for="mpShowSolutions">Show solutions</label>
+              <label class="toggle-switch toggle-sm" for="mpShowSolutions">
+                <input type="checkbox" id="mpShowSolutions" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+
         </div>
-        <div id="mpPuzzlesContainer"></div>
+
+        <!-- Right: rendered pages -->
+        <div class="mp-output" id="mpOutput">
+          <div class="empty-state" id="mpEmptyState">
+            <i class="fas fa-hashtag"></i>
+            <p>Click <strong>Generate</strong> to create math puzzles.</p>
+          </div>
+          <div id="mpPuzzlesContainer"></div>
+        </div>
+
       </div>
 
     </div>
