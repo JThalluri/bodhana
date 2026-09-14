@@ -4,6 +4,34 @@ Non-obvious decisions, with context so they can be revisited intelligently.
 
 ---
 
+## Seyès Worksheets: Grid drawn as SVG vector (not CSS gradients)
+
+**Decision:** Render the Seyès rules as one `<line>` per rule via `seyesGridSVG()` in `src/worksheets/seyes-grid.js`, shared by the screen preview and the print window.
+
+**Rejected:** Three `repeating-linear-gradient` layers. They looked correct but intermittently dropped a minor rule — reported as a missing 2nd minor line in the 3rd block, 1st in the 6th, 2nd in the 19th. The browser rasterises a gradient into one tile and repeats the bitmap; because the rules fall on fractional device pixels (2mm = 7.559px, 8mm = 30.236px at 96dpi) the per-tile rounding error accumulates until a rule collides with its neighbour's pixel row and vanishes.
+
+**Also rejected:** baking all four rules into a single 8mm tile, and giving each minor rule its own 8mm-period layer. Both reduced the frequency but neither eliminated it — any repeated tile at a fractional period accumulates the same error.
+
+**Benefit:** Printing now emits true vector at the printer's native resolution instead of an upscaled bitmap tile.
+
+**How to apply:** Do not reintroduce tiled gradients for the grid. If the geometry changes, change the constants in `seyes-grid.js` — both renderers consume it.
+
+---
+
+## Place Value Worksheets: Measurement-based pagination
+
+**Decision:** Build pages by appending question nodes into a fixed 11in page and measuring `scrollHeight` vs `clientHeight` of the flexible `.pv-ws-content` area, starting a new page when the next item would overflow (`flowIntoPages` in `pv-ui.js`).
+
+**Rejected:** A fixed questions-per-page count. Item height varies enormously by worksheet type — a one-line rounding prompt vs. a multi-row place value chart — so any single number either overflows the tall types (charts were being split through the middle of their boxes) or wastes most of the page on short ones.
+
+**Details:**
+- Pages are measured with the preview `zoom: 0.75` temporarily removed (`.pv-measuring`), because text does not scale perfectly linearly under `zoom`; a page that just fits at 0.75 could overflow on paper.
+- A 4px safety margin absorbs remaining screen/print rounding differences.
+- Overflow flows onto "continued" pages rather than being clipped, so the requested question count is always fully delivered.
+- An item taller than a whole page is kept rather than skipped, otherwise the packing loop could not advance.
+
+---
+
 ## Seyès Worksheets: Font — Andika (not Consolas)
 
 **Decision:** Use `"Andika", "Comic Sans MS", "Chalkboard SE", sans-serif` for Seyès text.

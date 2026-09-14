@@ -1,3 +1,5 @@
+import { seyesGridSVG } from './seyes-grid.js';
+
 let _listeners = [];
 
 function on(el, evt, fn) {
@@ -255,9 +257,10 @@ function applyPageVars(el, vars) {
 }
 
 function renderPagesDOM(container, pages, vars) {
+  const gridSVG = seyesGridSVG();
   container.innerHTML = pages.map(() => `
     <div class="seyes-page">
-      <div class="seyes-grid"></div>
+      <div class="seyes-grid">${gridSVG}</div>
       <div class="seyes-guide-h"></div>
       <div class="seyes-guide-v"></div>
       <div class="seyes-text-area"></div>
@@ -279,9 +282,10 @@ function renderPagesDOM(container, pages, vars) {
 // time so the printed output exactly matches the on-screen calibration.
 //
 function buildPrintHTML(pages, vars) {
+  const gridSVG = seyesGridSVG();
   const pagesHTML = pages.map(lines => `
 <div class="page">
-  <div class="grid"></div>
+  <div class="grid">${gridSVG}</div>
   <div class="text-area">${pageLinesToHTML(lines)}</div>
 </div>`).join('\n');
 
@@ -320,22 +324,15 @@ function buildPrintHTML(pages, vars) {
     inset: 0;
     pointer-events: none;
     background-color: #fff;
-    background-image:
-      repeating-linear-gradient(to right,
-        #5a8fbd 0, #5a8fbd 0.4mm,
-        transparent 0.4mm, transparent 8mm),
-      repeating-linear-gradient(to bottom,
-        #2c5f94 0, #2c5f94 0.6mm,
-        transparent 0.6mm, transparent 8mm),
-      repeating-linear-gradient(to bottom,
-        #6b9ec8 0, #6b9ec8 0.3mm,
-        transparent 0.3mm, transparent 2mm);
-    background-size: 8mm 100%, 100% 8mm, 100% 2mm;
-    background-position: 0 0, 0 8mm, 0 8mm;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .grid svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    shape-rendering: crispEdges;
   }
 
   .text-area {

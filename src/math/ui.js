@@ -72,6 +72,11 @@ export function buildUI(container) {
             </span>
           </div>
 
+          <div class="math-subopt-row">
+            <label for="subMinDiff" title="Exclude subtraction questions whose answer is smaller than this. Stops trivial pairs like 8 − 8 and 8 − 7.">Min difference</label>
+            <input class="tb-num" type="number" id="subMinDiff" value="2" min="0" max="9999" style="width:52px;" />
+          </div>
+
           <div class="math-op-row">
             <label class="op-chk" title="Include Multiplication">
               <input type="checkbox" id="includeMul">
@@ -161,6 +166,7 @@ function readConfig() {
     addBmin: n('addBmin', 0), addBmax: n('addBmax', 9),
     subMmin: n('subMmin', 0), subMmax: n('subMmax', 20),
     subSmin: n('subSmin', 0), subSmax: n('subSmax', 9),
+    subMinDiff: n('subMinDiff', 2),
     mulAmin: n('mulAmin', 0), mulAmax: n('mulAmax', 10),
     mulBmin: n('mulBmin', 0), mulBmax: n('mulBmax', 10),
     divQmin: n('divQmin', 0), divQmax: n('divQmax', 10),
@@ -202,6 +208,7 @@ function runReset() {
   set('addBmin', d.addBmin); set('addBmax', d.addBmax);
   set('subMmin', d.subMmin); set('subMmax', d.subMmax);
   set('subSmin', d.subSmin); set('subSmax', d.subSmax);
+  set('subMinDiff', d.subMinDiff);
   set('mulAmin', d.mulAmin); set('mulAmax', d.mulAmax);
   set('mulBmin', d.mulBmin); set('mulBmax', d.mulBmax);
   set('divQmin', d.divQmin); set('divQmax', d.divQmax);
@@ -218,7 +225,7 @@ function wireEvents() {
   document.getElementById('mathGenerateBtn')?.addEventListener('click', runGenerate);
   document.getElementById('mathPrintBtn')?.addEventListener('click', () => window.print());
   document.getElementById('mathResetBtn')?.addEventListener('click', runReset);
-  ['includeAdd', 'includeSub', 'includeMul', 'includeDiv', 'questionMode'].forEach(id => {
+  ['includeAdd', 'includeSub', 'includeMul', 'includeDiv', 'questionMode', 'subMinDiff'].forEach(id => {
     document.getElementById(id)?.addEventListener('change', runGenerate);
   });
 }

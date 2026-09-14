@@ -260,6 +260,88 @@ export function buildPlaceValueUI(container) {
     };
   }
 
+  // ── Pagination helpers ───────────────────────────────────────────────────────
+
+  /**
+   * Build an empty worksheet page shell and return { page, content }.
+   * `.pv-worksheet` is a fixed 11in flex column; `.pv-ws-content` is the
+   * flexible remainder, so its box is exactly the space left after the header.
+   */
+  function newPage(state, titleHTML, typeLabel) {
+    const page = document.createElement('div');
+    page.className = 'pv-worksheet';
+    page.style.fontFamily = state.fontFamily;
+    page.style.fontSize = state.fontSize;
+    page.innerHTML = `
+      <div class="pv-ws-header">
+        <div class="pv-ws-namedate">${titleHTML}</div>
+        <div class="pv-ws-typelabel">${typeLabel}</div>
+      </div>
+      <div class="pv-ws-content"></div>`;
+    return { page, content: page.querySelector('.pv-ws-content') };
+  }
+
+  // Treat a few px of slack as full, absorbing rounding differences between
+  // the browser's screen layout and the print layout.
+  const FIT_SAFETY_PX = 4;
+  function overflows(el) {
+    const last = el.lastElementChild;
+    if (!last) return false;
+
+    const contentRect = el.getBoundingClientRect();
+    const lastRect = last.getBoundingClientRect();
+    const lastStyle = getComputedStyle(last);
+    const lastMargin = parseFloat(lastStyle.marginBottom) || 0;
+
+    return lastRect.bottom + lastMargin > contentRect.bottom - FIT_SAFETY_PX;
+  }
+
+  /**
+   * Append `nodes` into as many pages as needed, packing each page greedily so
+   * no vertical space is wasted and no item is ever split across a break.
+   *
+   * A fixed questions-per-page count cannot work here: item height varies a lot
+   * by worksheet type (a one-line rounding prompt vs. a multi-row place value
+   * chart), so any single number either overflows tall types or leaves tall
+   * gaps on short ones. Measuring the real rendered height is the only approach
+   * that holds for every type.
+   */
+  function flowIntoPages(host, state, nodes, makeTitle, typeLabel) {
+    const pages = [];
+    let idx = 0;
+
+    while (idx < nodes.length) {
+      const { page, content } = newPage(state, makeTitle(pages.length), typeLabel);
+      host.appendChild(page);
+      pages.push(page);
+
+      let placed = 0;
+      while (idx < nodes.length) {
+        content.appendChild(nodes[idx]);
+        if (overflows(content)) {
+          // Never leave a page empty — an item taller than a full page has to
+          // stay put and be clipped, otherwise this loop would never advance.
+          if (placed === 0) { idx++; placed++; continue; }
+          content.removeChild(nodes[idx]);
+          break;
+        }
+        idx++;
+        placed++;
+      }
+    }
+
+    return pages;
+  }
+
+  function questionNode(num, questionHTML) {
+    const el = document.createElement('div');
+    el.className = 'pv-question';
+    el.innerHTML = `
+      <span class="pv-q-num">${num}.</span>
+      <span class="pv-q-body">${questionHTML}</span>`;
+    return el;
+  }
+
   // ── Generate worksheets ──────────────────────────────────────────────────────
 
   function generate() {
@@ -269,71 +351,80 @@ export function buildPlaceValueUI(container) {
     const gen = TYPE_GENERATORS[state.type];
     if (!gen) return;
 
-    let html = '';
+    const typeLabel = TYPE_NAMES[state.type];
+
+    // Measure against the real layout, but keep the half-built pages invisible
+    // so the user never sees items being appended and removed.
+    preview.innerHTML = '';
+    preview.style.visibility = 'hidden';
+    preview.classList.add('pv-measuring');
+
+    const allAnswers = [];
 
     for (let w = 1; w <= state.worksheetCount; w++) {
       const answerRows = [];
-      let questionsHTML = '';
+      const nodes = [];
 
       if (state.type === 'type9') {
-        questionsHTML += `<p class="pv-instruction">Fill in the missing numbers. Count by ${state.skipCountStep}s:</p>`;
+        const note = document.createElement('p');
+        note.className = 'pv-instruction';
+        note.textContent = `Fill in the missing numbers. Count by ${state.skipCountStep}s:`;
+        nodes.push(note);
       }
 
       for (let q = 1; q <= state.questionsPerWorksheet; q++) {
         const { question, answer } = gen(state);
-        questionsHTML += `
-          <div class="pv-question">
-            <span class="pv-q-num">${q}.</span>
-            <span class="pv-q-body">${question}</span>
-          </div>`;
+        nodes.push(questionNode(q, question));
         answerRows.push(`<div class="pv-answer-key-item">${q}. ${answer}</div>`);
       }
 
-      let answerKeyHTML = '';
+      const label = state.worksheetCount > 1 ? ` ${w}` : '';
+      const makeTitle = pageIdx => pageIdx === 0
+        ? `<span class="pv-name-line">Name: ___________________________</span>
+           <span class="pv-date-line">Date: ________________</span>`
+        : `<span class="pv-name-line">Worksheet${label} — continued</span>`;
+
+      const pages = flowIntoPages(preview, state, nodes, makeTitle, typeLabel);
+
+      // Answer key at the bottom: try to tuck it onto the last page, and only
+      // spill to a fresh page when it genuinely does not fit.
       if (state.includeAnswerKey && state.answerKeyPlacement === 'bottom') {
-        answerKeyHTML = `
-          <div class="pv-answer-key">
-            <div class="pv-answer-key-title">Answer Key</div>
-            <div class="pv-answer-key-grid">${answerRows.join('')}</div>
-          </div>`;
-      }
+        const key = document.createElement('div');
+        key.className = 'pv-answer-key';
+        key.innerHTML = `
+          <div class="pv-answer-key-title">Answer Key</div>
+          <div class="pv-answer-key-grid">${answerRows.join('')}</div>`;
 
-      html += `
-        <div class="pv-worksheet" style="font-family:${state.fontFamily};font-size:${state.fontSize};">
-          <div class="pv-ws-header">
-            <div class="pv-ws-namedate">
-              <span class="pv-name-line">Name: ___________________________</span>
-              <span class="pv-date-line">Date: ________________</span>
-            </div>
-            <div class="pv-ws-typelabel">${TYPE_NAMES[state.type]}</div>
-          </div>
-          ${questionsHTML}
-          ${answerKeyHTML}
-        </div>`;
-    }
-
-    if (state.includeAnswerKey && state.answerKeyPlacement === 'separate') {
-      // Re-run generation with the same seed to collect answers again
-      setSeed(state.randomSeed);
-      for (let w = 1; w <= state.worksheetCount; w++) {
-        const answerRows = [];
-        for (let q = 1; q <= state.questionsPerWorksheet; q++) {
-          const { answer } = gen(state);
-          answerRows.push(`<div class="pv-answer-key-item">${q}. ${answer}</div>`);
+        const lastContent = pages[pages.length - 1].querySelector('.pv-ws-content');
+        lastContent.appendChild(key);
+        if (overflows(lastContent)) {
+          lastContent.removeChild(key);
+          const { page, content } = newPage(
+            state, `<span class="pv-name-line">Worksheet${label} — Answer Key</span>`, typeLabel);
+          content.appendChild(key);
+          preview.appendChild(page);
         }
-        html += `
-          <div class="pv-worksheet" style="font-family:${state.fontFamily};font-size:${state.fontSize};">
-            <div class="pv-ws-header">
-              <div class="pv-ws-namedate"><span class="pv-name-line">Answer Key – Worksheet ${w}</span></div>
-              <div class="pv-ws-typelabel">${TYPE_NAMES[state.type]}</div>
-            </div>
-            <div class="pv-answer-key-grid">${answerRows.join('')}</div>
-          </div>`;
+      }
+
+      allAnswers.push({ label, answerRows });
+    }
+
+    // Separate answer key pages, flowed the same way so long keys break cleanly.
+    if (state.includeAnswerKey && state.answerKeyPlacement === 'separate') {
+      for (const { label, answerRows } of allAnswers) {
+        const grid = document.createElement('div');
+        grid.className = 'pv-answer-key-grid';
+        grid.innerHTML = answerRows.join('');
+        flowIntoPages(
+          preview, state, [grid],
+          () => `<span class="pv-name-line">Answer Key – Worksheet${label}</span>`,
+          typeLabel);
       }
     }
 
-    preview.innerHTML = html;
-    if (revealActive) preview.classList.add('reveal-solutions');
+    preview.classList.remove('pv-measuring');
+    preview.style.visibility = '';
+    preview.classList.toggle('reveal-solutions', revealActive);
   }
 
   // ── Event handlers ───────────────────────────────────────────────────────────

@@ -174,13 +174,31 @@
   color: #111;
   box-shadow: 0 0 16px rgba(0,0,0,0.18);
   box-sizing: border-box;
-  padding: 0.45in 0.5in 0.4in;
+  padding: 0.35in 0.45in 0.32in;
   flex-shrink: 0;
   font-size: 14px;
   line-height: 1.5;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   /* Scale down for screen preview */
   zoom: 0.75;
+}
+
+/* Flexible remainder below the header — its clientHeight is the exact space
+   available for questions, which is what pagination measures against. */
+.pv-ws-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* While paginating, drop the preview zoom so pages are measured in exactly the
+   geometry they will be printed at. Text does not scale perfectly linearly
+   under `zoom`, so measuring at 0.75 could let a page that just fits on screen
+   overflow on paper. */
+#pvWorksheetsContainer.pv-measuring .pv-worksheet {
+  zoom: 1;
 }
 
 /* ─── Compact header: type label right, name+date left, all one row ────── */
@@ -192,7 +210,8 @@
   gap: 12px;
   border-bottom: 1.5px solid #333;
   padding-bottom: 5px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .pv-ws-namedate {
@@ -228,7 +247,7 @@
 }
 
 .pv-question {
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   display: flex;
   gap: 8px;
   align-items: baseline;
@@ -243,6 +262,10 @@
 
 .pv-q-body {
   flex: 1;
+}
+
+.pv-question:has(.pv-chart) {
+  line-height: 1.35;
 }
 
 /* Answer blanks and solution text */
@@ -272,6 +295,17 @@
   border-collapse: collapse;
   margin: 8px 0;
   font-size: 13px;
+  break-inside: avoid;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.pv-chart thead,
+.pv-chart tbody,
+.pv-chart tr {
+  break-inside: avoid;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
 }
 
 .pv-chart th,
@@ -418,6 +452,14 @@
     overflow: hidden !important;
     page-break-after: always;
     break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Pagination already fitted the content to the page, so the content area
+     must not introduce a second, conflicting break. */
+  .pv-ws-content {
+    overflow: visible !important;
   }
 
   .pv-worksheet:last-child {

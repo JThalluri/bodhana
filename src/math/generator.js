@@ -44,9 +44,14 @@ function buildPools(c) {
     }
   }
 
+  // Minimum difference keeps subtraction meaningful: without it the pool is
+  // dominated by trivial pairs such as n − n = 0 and n − (n−1) = 1, which stay
+  // easy no matter how large the operands are.
+  const subMinDiff = Math.max(0, c.subMinDiff ?? 0);
+
   for (let m = subMMin; m <= subMMax; m++) {
     for (let s = subSMin; s <= subSMax; s++) {
-      if (m >= s) pools.sub.push(`${m} − ${s}`);
+      if (m - s >= subMinDiff) pools.sub.push(`${m} − ${s}`);
     }
   }
 
@@ -91,7 +96,7 @@ function normalizeRange(a, b) {
 
 export const DEFAULTS = {
   addAmin: 0, addAmax: 9, addBmin: 0, addBmax: 9,
-  subMmin: 0, subMmax: 20, subSmin: 0, subSmax: 9,
+  subMmin: 0, subMmax: 20, subSmin: 0, subSmax: 9, subMinDiff: 2,
   mulAmin: 0, mulAmax: 10, mulBmin: 0, mulBmax: 10,
   divQmin: 0, divQmax: 10, divDmin: 1, divDmax: 10,
   includeAdd: true, includeSub: true, includeMul: false, includeDiv: false,

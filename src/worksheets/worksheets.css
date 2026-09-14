@@ -172,24 +172,18 @@
 
   background-color: #fff;
 
-  background-image:
-    repeating-linear-gradient(to right,
-      #5a8fbd 0, #5a8fbd 0.4mm,
-      transparent 0.4mm, transparent 8mm),
-    repeating-linear-gradient(to bottom,
-      #2c5f94 0, #2c5f94 0.6mm,
-      transparent 0.6mm, transparent 8mm),
-    repeating-linear-gradient(to bottom,
-      #6b9ec8 0, #6b9ec8 0.3mm,
-      transparent 0.3mm, transparent 2mm);
-
-  background-size: 8mm 100%, 100% 8mm, 100% 2mm;
-  background-position: 0 0, 0 8mm, 0 8mm;
-
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+}
+
+/* The rules are drawn as vector <line>s (see seyes-grid.js) rather than tiled
+   CSS gradients, which intermittently dropped a minor rule to sub-pixel
+   rounding. */
+.seyes-grid-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
 }
 
 .seyes-guide-h {
