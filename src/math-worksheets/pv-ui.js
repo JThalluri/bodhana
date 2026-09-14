@@ -38,6 +38,7 @@ export function buildPlaceValueUI(container) {
               <option value="type8">8. Base-Ten Blocks</option>
               <option value="type9">9. Skip Counting</option>
               <option value="type10">10. Powers of 10</option>
+              <option value="type11">11. Place Value Hints</option>
             </select>
           </div>
 
@@ -72,11 +73,19 @@ export function buildPlaceValueUI(container) {
 
             <div class="pv-field">
               <label for="pvMinDigits">Min integer digits</label>
-              <input class="tb-num" type="number" id="pvMinDigits" min="1" max="7" value="2" style="width:52px;">
+              <input class="tb-num" type="number" id="pvMinDigits" min="1" max="7" value="4" style="width:52px;">
             </div>
             <div class="pv-field">
               <label for="pvMaxDigits">Max integer digits</label>
-              <input class="tb-num" type="number" id="pvMaxDigits" min="1" max="7" value="4" style="width:52px;">
+              <input class="tb-num" type="number" id="pvMaxDigits" min="1" max="7" value="6" style="width:52px;">
+            </div>
+            <div class="pv-field hidden" id="pvHintDifficultyRow">
+              <label for="pvHintDifficulty">Difficulty</label>
+              <select class="tb-select" id="pvHintDifficulty" style="width:140px;">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
             </div>
 
             <div class="pv-field">
@@ -100,7 +109,7 @@ export function buildPlaceValueUI(container) {
               <label for="pvWorksheetCount">Number of worksheets</label>
               <input class="tb-num" type="number" id="pvWorksheetCount" min="1" max="10" value="2" style="width:52px;">
             </div>
-            <div class="pv-field">
+            <div class="pv-field" id="pvQuestionsPerWsRow">
               <label for="pvQuestionsPerWs">Questions per worksheet</label>
               <input class="tb-num" type="number" id="pvQuestionsPerWs" min="1" max="30" value="25" style="width:52px;">
             </div>
@@ -127,6 +136,7 @@ export function buildPlaceValueUI(container) {
               <select class="tb-select" id="pvFontFamily" style="width:120px;">
                 <option value="'Andika', sans-serif">Andika</option>
                 <option value="'Nunito', sans-serif">Nunito</option>
+                <option value="var(--font-print)">Friendly</option>
                 <option value="monospace">Monospace</option>
               </select>
             </div>
@@ -136,7 +146,7 @@ export function buildPlaceValueUI(container) {
                 <option value="12px">Small</option>
                 <option value="14px">Medium</option>
                 <option value="16px">Large</option>
-                <option value="20px" selected>X-Large</option>
+                <option value="21px" selected>X-Large</option>
               </select>
             </div>
             <div class="pv-field">
@@ -200,8 +210,11 @@ export function buildPlaceValueUI(container) {
   const decMixEl        = c('#pvDecimalMix');
   const decPlacesRow    = c('#pvDecPlacesRow');
   const decMixRow       = c('#pvDecMixRow');
+  const hintDifficultyEl = c('#pvHintDifficulty');
+  const hintDifficultyRow = c('#pvHintDifficultyRow');
   const wsCountEl       = c('#pvWorksheetCount');
   const qPerWsEl        = c('#pvQuestionsPerWs');
+  const qPerWsRow       = c('#pvQuestionsPerWsRow');
   const skipStepEl      = c('#pvSkipStep');
   const skipStepRow     = c('#pvSkipStepRow');
   const fontFamilyEl    = c('#pvFontFamily');
@@ -222,13 +235,34 @@ export function buildPlaceValueUI(container) {
   // ── Conditional visibility ──────────────────────────────────────────────────
 
   function updateConditional() {
-    const showDec  = includeDecEl.checked;
+    const isHint   = typeEl.value === 'type11';
+    const showDec  = includeDecEl.checked && !isHint;
     const showAK   = includeAKEl.checked;
     const showSkip = typeEl.value === 'type9';
 
+    if (isHint) {
+      minDigitsEl.min = '3';
+      minDigitsEl.max = '6';
+      maxDigitsEl.min = '3';
+      maxDigitsEl.max = '6';
+      if (parseInt(minDigitsEl.value) < 3) minDigitsEl.value = '3';
+      if (parseInt(maxDigitsEl.value) < 3) maxDigitsEl.value = '3';
+      if (parseInt(minDigitsEl.value) > 6) minDigitsEl.value = '6';
+      if (parseInt(maxDigitsEl.value) > 6) maxDigitsEl.value = '6';
+    } else {
+      minDigitsEl.min = '1';
+      minDigitsEl.max = '7';
+      maxDigitsEl.min = '1';
+      maxDigitsEl.max = '7';
+    }
+
+    hintDifficultyRow.classList.toggle('hidden', !isHint);
     decPlacesRow.classList.toggle('hidden', !showDec);
     decMixRow.classList.toggle('hidden', !showDec);
-    akPlacementRow.classList.toggle('hidden', !showAK);
+    includeDecEl.closest('.pv-field').classList.toggle('hidden', isHint);
+    qPerWsRow.classList.toggle('hidden', isHint);
+    includeAKEl.closest('.pv-field').classList.toggle('hidden', isHint);
+    akPlacementRow.classList.toggle('hidden', !showAK || isHint);
     skipStepRow.style.display = showSkip ? '' : 'none';
   }
 
@@ -251,6 +285,7 @@ export function buildPlaceValueUI(container) {
       worksheetCount:       Math.min(10, Math.max(1, parseInt(wsCountEl.value) || 2)),
       questionsPerWorksheet:Math.min(30, Math.max(1, parseInt(qPerWsEl.value) || 25)),
       skipCountStep:        parseInt(skipStepEl.value) || 10,
+      hintDifficulty:       hintDifficultyEl.value,
       fontFamily:           fontFamilyEl.value,
       fontSize:             fontSizeEl.value,
       locale:               localeEl.value,
@@ -342,6 +377,23 @@ export function buildPlaceValueUI(container) {
     return el;
   }
 
+  function hintPuzzleGridNode(gen, state, answerRows) {
+    const grid = document.createElement('div');
+    grid.className = 'pv-hint-grid';
+
+    for (let q = 1; q <= 8; q++) {
+      const { question, answer } = gen(state);
+      const puzzle = document.createElement('div');
+      puzzle.innerHTML = question.trim();
+      const puzzleNode = puzzle.firstElementChild;
+      puzzleNode.dataset.questionNumber = String(q);
+      grid.appendChild(puzzleNode);
+      answerRows.push(`<div class="pv-answer-key-item">${q}. ${answer}</div>`);
+    }
+
+    return grid;
+  }
+
   // ── Generate worksheets ──────────────────────────────────────────────────────
 
   function generate() {
@@ -364,6 +416,20 @@ export function buildPlaceValueUI(container) {
     for (let w = 1; w <= state.worksheetCount; w++) {
       const answerRows = [];
       const nodes = [];
+      const label = state.worksheetCount > 1 ? ` ${w}` : '';
+      const makeTitle = pageIdx => pageIdx === 0
+        ? `<span class="pv-name-line">Name: ____________________________________</span>
+           <span class="pv-date-line">Date: ________________</span>`
+        : `<span class="pv-name-line">Worksheet${label} — continued</span>`;
+
+      if (state.type === 'type11') {
+        const { page, content } = newPage(state, makeTitle(0), typeLabel);
+        page.classList.add('pv-hint-worksheet');
+        content.appendChild(hintPuzzleGridNode(gen, state, answerRows));
+        preview.appendChild(page);
+        allAnswers.push({ label, answerRows });
+        continue;
+      }
 
       if (state.type === 'type9') {
         const note = document.createElement('p');
@@ -377,12 +443,6 @@ export function buildPlaceValueUI(container) {
         nodes.push(questionNode(q, question));
         answerRows.push(`<div class="pv-answer-key-item">${q}. ${answer}</div>`);
       }
-
-      const label = state.worksheetCount > 1 ? ` ${w}` : '';
-      const makeTitle = pageIdx => pageIdx === 0
-        ? `<span class="pv-name-line">Name: ___________________________</span>
-           <span class="pv-date-line">Date: ________________</span>`
-        : `<span class="pv-name-line">Worksheet${label} — continued</span>`;
 
       const pages = flowIntoPages(preview, state, nodes, makeTitle, typeLabel);
 
@@ -410,7 +470,7 @@ export function buildPlaceValueUI(container) {
     }
 
     // Separate answer key pages, flowed the same way so long keys break cleanly.
-    if (state.includeAnswerKey && state.answerKeyPlacement === 'separate') {
+    if (state.type !== 'type11' && state.includeAnswerKey && state.answerKeyPlacement === 'separate') {
       for (const { label, answerRows } of allAnswers) {
         const grid = document.createElement('div');
         grid.className = 'pv-answer-key-grid';

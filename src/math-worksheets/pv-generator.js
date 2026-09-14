@@ -413,6 +413,172 @@ export function generateType10(state) {
 
 // ─── Type dispatch map ────────────────────────────────────────────────────────
 
+const HINT_PLACE_NAMES = {
+  3: ['hundreds', 'tens', 'ones'],
+  4: ['thousands', 'hundreds', 'tens', 'ones'],
+  5: ['ten-thousands', 'thousands', 'hundreds', 'tens', 'ones'],
+  6: ['hundred-thousands', 'ten-thousands', 'thousands', 'hundreds', 'tens', 'ones'],
+};
+
+function shuffleInPlace(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = randomInt(0, i);
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function permutations(items) {
+  if (items.length <= 1) return [items];
+  const result = [];
+  for (let i = 0; i < items.length; i++) {
+    const rest = items.slice(0, i).concat(items.slice(i + 1));
+    for (const perm of permutations(rest)) result.push([items[i], ...perm]);
+  }
+  return result;
+}
+
+function clueMatches(perm, clue) {
+  const value = perm[clue.placeIndex];
+  if (clue.type === 'direct') return value === clue.digit;
+  if (clue.type === 'biggest') return value === Math.max(...perm);
+  if (clue.type === 'smallest') return value === Math.min(...perm);
+  if (clue.type === 'even') return value % 2 === 0;
+  if (clue.type === 'odd') return value % 2 !== 0;
+  if (clue.type === 'diff') {
+    const other = perm[clue.otherPlaceIndex];
+    return clue.direction === 'more'
+      ? value - other === clue.amount
+      : other - value === clue.amount;
+  }
+  return false;
+}
+
+function countHintPuzzleSolutions(digits, clues) {
+  let count = 0;
+  for (const perm of permutations(digits)) {
+    if (perm[0] === 0) continue;
+    if (clues.every(clue => clueMatches(perm, clue))) count++;
+    if (count > 1) return count;
+  }
+  return count;
+}
+
+function uniqueDigits(count) {
+  return shuffleInPlace([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, count);
+}
+
+function directHintClue(solution, placeIndex) {
+  return { type: 'direct', digit: solution[placeIndex], placeIndex };
+}
+
+function candidateHintClues(solution, placeIndex, difficulty) {
+  const digit = solution[placeIndex];
+  const clues = [directHintClue(solution, placeIndex)];
+  const maxDigit = Math.max(...solution);
+  const minDigit = Math.min(...solution);
+  const evens = solution.filter(d => d % 2 === 0).length;
+  const odds = solution.length - evens;
+
+  if (difficulty !== 'easy') {
+    if (digit === maxDigit) clues.push({ type: 'biggest', placeIndex });
+    if (digit === minDigit) clues.push({ type: 'smallest', placeIndex });
+    if (digit % 2 === 0 && evens === 1) clues.push({ type: 'even', placeIndex });
+    if (digit % 2 !== 0 && odds === 1) clues.push({ type: 'odd', placeIndex });
+  }
+
+  if (difficulty === 'hard') {
+    const otherIndices = shuffleInPlace([...Array(solution.length).keys()]);
+    for (const otherPlaceIndex of otherIndices) {
+      if (otherPlaceIndex === placeIndex) continue;
+      const diff = digit - solution[otherPlaceIndex];
+      if (diff > 0) {
+        clues.push({ type: 'diff', placeIndex, otherPlaceIndex, direction: 'more', amount: diff });
+      } else if (diff < 0) {
+        clues.push({ type: 'diff', placeIndex, otherPlaceIndex, direction: 'less', amount: Math.abs(diff) });
+      }
+      break;
+    }
+  }
+
+  return clues;
+}
+
+function chooseHintClues(solution, difficulty) {
+  const placeCount = solution.length;
+  const clues = Array(placeCount);
+
+  for (const placeIndex of shuffleInPlace([...Array(placeCount).keys()])) {
+    const candidates = candidateHintClues(solution, placeIndex, difficulty);
+    clues[placeIndex] = difficulty === 'easy'
+      ? candidates[0]
+      : shuffleInPlace(candidates.slice())[0];
+  }
+
+  let solutions = countHintPuzzleSolutions(solution, clues);
+  const replacementOrder = shuffleInPlace(
+    [...Array(placeCount).keys()].filter(i => clues[i].type !== 'direct')
+  );
+
+  while (solutions !== 1 && replacementOrder.length) {
+    const placeIndex = replacementOrder.pop();
+    clues[placeIndex] = directHintClue(solution, placeIndex);
+    solutions = countHintPuzzleSolutions(solution, clues);
+  }
+
+  return solutions === 1
+    ? clues
+    : solution.map((_, placeIndex) => directHintClue(solution, placeIndex));
+}
+
+function hintClueText(clue, places) {
+  const placeName = places[clue.placeIndex];
+  if (clue.type === 'direct') return `The ${clue.digit} is in the ${placeName} place.`;
+  if (clue.type === 'biggest') return `The biggest number is in the ${placeName} place.`;
+  if (clue.type === 'smallest') return `The smallest number is in the ${placeName} place.`;
+  if (clue.type === 'even') return `The even number is in the ${placeName} place.`;
+  if (clue.type === 'odd') return `The odd number is in the ${placeName} place.`;
+  if (clue.type === 'diff') {
+    return `The digit in the ${placeName} place is ${clue.amount} ${clue.direction} than the digit in the ${places[clue.otherPlaceIndex]} place.`;
+  }
+  return '';
+}
+
+export function generateType11(state) {
+  const minDigits = Math.max(3, Math.min(6, state.minDigits || 4));
+  const maxDigits = Math.max(minDigits, Math.min(6, state.maxDigits || 6));
+  const numDigits = randomInt(minDigits, maxDigits);
+  const places = HINT_PLACE_NAMES[numDigits];
+  const digits = uniqueDigits(numDigits);
+  const solution = shuffleInPlace(digits.slice());
+
+  if (solution[0] === 0) {
+    const swapIndex = solution.findIndex(d => d !== 0);
+    [solution[0], solution[swapIndex]] = [solution[swapIndex], solution[0]];
+  }
+
+  const difficulty = state.hintDifficulty || 'medium';
+  const clues = chooseHintClues(solution, difficulty);
+  const answer = solution.join('');
+  const boxes = solution.map(digit =>
+    `<span class="pv-hint-digit-box"><span class="solution-text">${digit}</span></span>`
+  ).join('');
+  const clueItems = clues
+    .map(clue => `<li>${hintClueText(clue, places)}</li>`)
+    .join('');
+
+  return {
+    question: `
+      <div class="pv-hint-puzzle" data-answer="${answer}">
+        <div class="pv-hint-title">Use ${digits.join(', ')} to make the number:</div>
+        <div class="pv-hint-digit-boxes">${boxes}</div>
+        <ul class="pv-hint-clues">${clueItems}</ul>
+      </div>`,
+    answer,
+    solutionCount: countHintPuzzleSolutions(solution, clues),
+  };
+}
+
 export const TYPE_GENERATORS = {
   type1: generateType1,
   type2: generateType2,
@@ -424,6 +590,7 @@ export const TYPE_GENERATORS = {
   type8: generateType8,
   type9: generateType9,
   type10: generateType10,
+  type11: generateType11,
 };
 
 export const TYPE_NAMES = {
@@ -437,4 +604,5 @@ export const TYPE_NAMES = {
   type8:  'Base-Ten Blocks',
   type9:  'Skip Counting',
   type10: 'Powers of 10',
+  type11: 'Place Value Hints',
 };

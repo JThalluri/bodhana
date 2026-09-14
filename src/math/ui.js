@@ -42,15 +42,15 @@ export function buildUI(container) {
               <span class="op-sym add">+</span>
             </label>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="addAmin" value="0" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="addAmin" value="8" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="addAmax" value="9" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="addAmax" value="30" min="0" max="9999" />
             </span>
             <span class="tb-op add-op">+</span>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="addBmin" value="0" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="addBmin" value="7" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="addBmax" value="9" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="addBmax" value="19" min="0" max="9999" />
             </span>
           </div>
 
@@ -60,21 +60,21 @@ export function buildUI(container) {
               <span class="op-sym sub">−</span>
             </label>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="subMmin" value="0" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="subMmin" value="9" min="0" max="9999" />
               <span class="tb-sep">–</span>
               <input class="tb-num math-range-num" type="number" id="subMmax" value="20" min="0" max="9999" />
             </span>
             <span class="tb-op sub-op">−</span>
             <span class="math-range-group">
-              <input class="tb-num math-range-num" type="number" id="subSmin" value="0" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="subSmin" value="7" min="0" max="9999" />
               <span class="tb-sep">–</span>
-              <input class="tb-num math-range-num" type="number" id="subSmax" value="9" min="0" max="9999" />
+              <input class="tb-num math-range-num" type="number" id="subSmax" value="19" min="0" max="9999" />
             </span>
           </div>
 
           <div class="math-subopt-row">
             <label for="subMinDiff" title="Exclude subtraction questions whose answer is smaller than this. Stops trivial pairs like 8 − 8 and 8 − 7.">Min difference</label>
-            <input class="tb-num" type="number" id="subMinDiff" value="2" min="0" max="9999" style="width:52px;" />
+            <input class="tb-num" type="number" id="subMinDiff" value="6" min="0" max="9999" style="width:52px;" />
           </div>
 
           <div class="math-op-row">
@@ -126,7 +126,7 @@ export function buildUI(container) {
           </div>
           <div class="math-opt-field">
             <label for="numPapers">Papers</label>
-            <input class="tb-num" type="number" id="numPapers" value="8" min="1" max="20" style="width:52px;">
+            <input class="tb-num" type="number" id="numPapers" value="2" min="1" max="20" style="width:52px;">
           </div>
           <div class="math-opt-field">
             <label for="qPerPaper">Q per paper</label>
