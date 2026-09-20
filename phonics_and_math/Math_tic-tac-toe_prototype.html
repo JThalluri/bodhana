@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tic-Tac-Toe Worksheet Generator</title>
+    <!-- Import Andika Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GLOBAL STYLES --- */
+        :root {
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: #ecf0f1;
+            --accent: #e67e22;
+            --accent-hover: #d35400;
+            --paper-width: 8.5in;
+            --paper-height: 11in;
+            --border-color: #bdc3c7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Andika', sans-serif;
+            background-color: #ecf0f1;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- LEFT PANE (CONTROLS) --- */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .sidebar h1 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .control-group {
+            background-color: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .control-group h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .form-row label {
+            font-size: 0.9rem;
+        }
+
+        select, input[type="number"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #7f8c8d;
+            background: #34495e;
+            color: white;
+            width: 70px;
+            font-family: 'Andika', sans-serif;
+        }
+
+        select { width: 120px; }
+        
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            font-family: 'Andika', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .btn-secondary {
+            background-color: #7f8c8d;
+            color: white;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-secondary:hover { background-color: #95a5a6; }
+
+        /* Disabled state for controls */
+        .control-group.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- RIGHT PANE (PREVIEW) --- */
+        .preview-pane {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #bdc3c7;
+        }
+
+        .worksheet-page {
+            width: var(--paper-width);
+            height: var(--paper-height);
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            padding: 0.5in;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+        }
+
+        .worksheet-header {
+            display: flex;
+            justify-content: flex-start;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .worksheet-header .line {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            width: 3in;
+        }
+
+        /* --- TIC TAC TOE GRID --- */
+        .game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tic-tac-toe {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 100%;
+            height: 100%;
+            max-width: 7in;
+            max-height: 9in;
+            border: 2px solid #000;
+        }
+
+        .cell {
+            border: 1px solid #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- VERTICAL MATH --- */
+        .math-problem {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-family: 'Andika', sans-serif;
+            font-variant-numeric: tabular-nums;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .operand-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .operator {
+            width: 20px;
+            text-align: right;
+        }
+
+        .number {
+            text-align: right;
+            min-width: 40px;
+        }
+
+        .answer-line {
+            width: 100%;
+            border-top: 2px solid #000;
+            margin-top: 5px;
+            height: 1.2em;
+        }
+
+        /* --- DYNAMIC FONT SIZES BASED ON LAYOUT AND OPERAND COUNT --- */
+        /* 1 Game per Page */
+        .games-per-page-1 .math-problem[data-operands="2"] { font-size: 2.5rem; }
+        .games-per-page-1 .math-problem[data-operands="3"] { font-size: 2rem; }
+        .games-per-page-1 .math-problem[data-operands="4"] { font-size: 1.6rem; }
+        .games-per-page-1 .math-problem[data-operands="5"] { font-size: 1.4rem; }
+        .games-per-page-1 .math-problem[data-operands="6"] { font-size: 1.2rem; }
+
+        /* 2 Games per Page */
+        .games-per-page-2 .math-problem[data-operands="2"] { font-size: 1.8rem; }
+        .games-per-page-2 .math-problem[data-operands="3"] { font-size: 1.5rem; }
+        .games-per-page-2 .math-problem[data-operands="4"] { font-size: 1.2rem; }
+        .games-per-page-2 .math-problem[data-operands="5"] { font-size: 1rem; }
+        .games-per-page-2 .math-problem[data-operands="6"] { font-size: 0.85rem; }
+
+        /* 4 Games per Page */
+        .games-per-page-4 .math-problem[data-operands="2"] { font-size: 1.2rem; }
+        .games-per-page-4 .math-problem[data-operands="3"] { font-size: 1rem; }
+        .games-per-page-4 .math-problem[data-operands="4"] { font-size: 0.85rem; }
+        .games-per-page-4 .math-problem[data-operands="5"] { font-size: 0.75rem; }
+        .games-per-page-4 .math-problem[data-operands="6"] { font-size: 0.65rem; }
+
+        /* --- LAYOUT ADJUSTMENTS --- */
+        .layout-1 { display: flex; justify-content: center; align-items: center; height: 100%; width: 100%; }
+        .layout-2 { display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; gap: 20px; height: 100%; width: 100%; }
+        .layout-4 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; height: 100%; width: 100%; }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            @page { size: letter; margin: 0; }
+            body { background: white; height: auto; overflow: visible; }
+            .sidebar { display: none !important; }
+            .preview-pane { padding: 0; background: white; display: block; overflow: visible; }
+            .worksheet-page { box-shadow: none; margin: 0; page-break-after: always; break-after: page; }
+            .worksheet-page:last-child { page-break-after: auto; break-after: auto; }
+            .print-btn-container { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT PANE: CONTROLS -->
+    <aside class="sidebar">
+        <h1>Worksheet Generator</h1>
+
+        <!-- Difficulty -->
+        <div class="control-group">
+            <h3>Difficulty Level</h3>
+            <div class="form-row">
+                <label for="difficulty">Preset:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Operations -->
+        <div class="control-group" id="ops-group">
+            <h3>Operations</h3>
+            <div class="form-row">
+                <label><input type="checkbox" id="op-add" checked> Addition (+)</label>
+            </div>
+            <div class="form-row">
+                <label><input type="checkbox" id="op-sub" checked> Subtraction (-)</label>
+            </div>
+            <div class="form-row">
+                <label><input type="checkbox" id="op-mul"> Multiplication (×)</label>
+            </div>
+            <div class="form-row">
+                <label><input type="checkbox" id="op-div"> Division (÷)</label>
+            </div>
+        </div>
+
+        <!-- Number Properties -->
+        <div class="control-group" id="num-props-group">
+            <h3>Number Properties</h3>
+            <div class="form-row">
+                <label>Min Digits (1-6):</label>
+                <input type="number" id="min-digits" min="1" max="6" value="2">
+            </div>
+            <div class="form-row">
+                <label>Max Digits (1-6):</label>
+                <input type="number" id="max-digits" min="1" max="6" value="2">
+            </div>
+            <div class="form-row">
+                <label>Operands (2-6):</label>
+                <input type="number" id="num-operands" min="2" max="6" value="2">
+            </div>
+            <div class="form-row">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="multi-operator">
+                    Mixed Operators per Problem
+                </label>
+            </div>
+        </div>
+
+        <!-- Multiplier Properties (Only visible when Multiplication is checked) -->
+        <div class="control-group" id="multiplier-props-group">
+            <h3>Multiplier Digits (2nd Number)</h3>
+            <div class="form-row">
+                <label>Min Digits (1-6):</label>
+                <input type="number" id="multiplier-min-digits" min="1" max="6" value="1">
+            </div>
+            <div class="form-row">
+                <label>Max Digits (1-6):</label>
+                <input type="number" id="multiplier-max-digits" min="1" max="6" value="2">
+            </div>
+        </div>
+
+        <!-- Divisor Properties (Only visible when Division is checked) -->
+        <div class="control-group" id="divisor-props-group">
+            <h3>Divisor Digits (2nd Number)</h3>
+            <div class="form-row">
+                <label>Min Digits (1-6):</label>
+                <input type="number" id="divisor-min-digits" min="1" max="6" value="1">
+            </div>
+            <div class="form-row">
+                <label>Max Digits (1-6):</label>
+                <input type="number" id="divisor-max-digits" min="1" max="6" value="2">
+            </div>
+        </div>
+
+        <!-- Layout -->
+        <div class="control-group">
+            <h3>Layout</h3>
+            <div class="form-row">
+                <label for="pages">Pages (1-10):</label>
+                <select id="pages">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="games-per-page">Games / Page:</label>
+                <select id="games-per-page">
+                    <option value="1">1 (Centered)</option>
+                    <option value="2">2 (Stacked)</option>
+                    <option value="4">4 (Tiled 2x2)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <button class="btn btn-primary" id="generate-btn">Generate Worksheet</button>
+        <button class="btn btn-secondary print-btn-container" id="print-btn">Print / Save as PDF</button>
+    </aside>
+
+    <!-- RIGHT PANE: PREVIEW -->
+    <main class="preview-pane" id="preview-pane">
+        <!-- Worksheets will be injected here -->
+    </main>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        const state = {
+            difficulty: 'easy',
+            operations: { add: true, sub: true, mul: false, div: false },
+            minDigits: 2,
+            maxDigits: 2,
+            numOperands: 2,
+            multiOperator: false,
+            multiplierMinDigits: 1,
+            multiplierMaxDigits: 2,
+            divisorMinDigits: 1,
+            divisorMaxDigits: 2,
+            pages: 1,
+            gamesPerPage: 1,
+            usedProblems: new Set()
+        };
+
+        // --- DOM ELEMENTS ---
+        const dom = {
+            difficulty: document.getElementById('difficulty'),
+            opsGroup: document.getElementById('ops-group'),
+            numPropsGroup: document.getElementById('num-props-group'),
+            multiplierPropsGroup: document.getElementById('multiplier-props-group'),
+            divisorPropsGroup: document.getElementById('divisor-props-group'),
+            opAdd: document.getElementById('op-add'),
+            opSub: document.getElementById('op-sub'),
+            opMul: document.getElementById('op-mul'),
+            opDiv: document.getElementById('op-div'),
+            minDigits: document.getElementById('min-digits'),
+            maxDigits: document.getElementById('max-digits'),
+            numOperands: document.getElementById('num-operands'),
+            multiOperator: document.getElementById('multi-operator'),
+            multiplierMinDigits: document.getElementById('multiplier-min-digits'),
+            multiplierMaxDigits: document.getElementById('multiplier-max-digits'),
+            divisorMinDigits: document.getElementById('divisor-min-digits'),
+            divisorMaxDigits: document.getElementById('divisor-max-digits'),
+            pages: document.getElementById('pages'),
+            gamesPerPage: document.getElementById('games-per-page'),
+            generateBtn: document.getElementById('generate-btn'),
+            printBtn: document.getElementById('print-btn'),
+            previewPane: document.getElementById('preview-pane')
+        };
+
+        // --- UI LOGIC ---
+        function updateUIState() {
+            const isCustom = dom.difficulty.value === 'custom';
+            const isDivChecked = dom.opDiv.checked;
+            const isMulChecked = dom.opMul.checked;
+            
+            // Toggle disabled state based on difficulty
+            const groups = [dom.opsGroup, dom.numPropsGroup];
+            groups.forEach(group => {
+                if (isCustom) {
+                    group.classList.remove('disabled');
+                } else {
+                    group.classList.add('disabled');
+                }
+            });
+
+            // Toggle Multiplier controls visibility
+            if (isMulChecked && isCustom) {
+                dom.multiplierPropsGroup.classList.remove('hidden');
+                dom.multiplierPropsGroup.classList.remove('disabled');
+            } else if (isMulChecked && !isCustom) {
+                dom.multiplierPropsGroup.classList.remove('hidden');
+                dom.multiplierPropsGroup.classList.add('disabled');
+            } else {
+                dom.multiplierPropsGroup.classList.add('hidden');
+            }
+
+            // Toggle Divisor controls visibility
+            if (isDivChecked && isCustom) {
+                dom.divisorPropsGroup.classList.remove('hidden');
+                dom.divisorPropsGroup.classList.remove('disabled');
+            } else if (isDivChecked && !isCustom) {
+                dom.divisorPropsGroup.classList.remove('hidden');
+                dom.divisorPropsGroup.classList.add('disabled');
+            } else {
+                dom.divisorPropsGroup.classList.add('hidden');
+            }
+
+            if (dom.difficulty.value === 'hard') {
+                dom.multiOperator.checked = true;
+            } else if (dom.difficulty.value === 'easy' || dom.difficulty.value === 'medium') {
+                dom.multiOperator.checked = false;
+            }
+
+            // Sync Main Min/Max Digits to prevent invalid ranges
+            let minD = parseInt(dom.minDigits.value);
+            let maxD = parseInt(dom.maxDigits.value);
+            if (minD > maxD) dom.maxDigits.value = minD;
+            else if (maxD < minD) dom.minDigits.value = maxD;
+
+            // Sync Multiplier Min/Max Digits
+            let mulMinD = parseInt(dom.multiplierMinDigits.value);
+            let mulMaxD = parseInt(dom.multiplierMaxDigits.value);
+            if (mulMinD > mulMaxD) dom.multiplierMaxDigits.value = mulMinD;
+            else if (mulMaxD < mulMinD) dom.multiplierMinDigits.value = mulMaxD;
+
+            // Sync Divisor Min/Max Digits
+            let divMinD = parseInt(dom.divisorMinDigits.value);
+            let divMaxD = parseInt(dom.divisorMaxDigits.value);
+            if (divMinD > divMaxD) dom.divisorMaxDigits.value = divMinD;
+            else if (divMaxD < divMinD) dom.divisorMinDigits.value = divMaxD;
+
+            // Update state
+            state.difficulty = dom.difficulty.value;
+            state.operations = {
+                add: dom.opAdd.checked,
+                sub: dom.opSub.checked,
+                mul: dom.opMul.checked,
+                div: dom.opDiv.checked
+            };
+            state.minDigits = parseInt(dom.minDigits.value);
+            state.maxDigits = parseInt(dom.maxDigits.value);
+            state.numOperands = parseInt(dom.numOperands.value);
+            state.multiOperator = dom.multiOperator.checked;
+            state.multiplierMinDigits = parseInt(dom.multiplierMinDigits.value);
+            state.multiplierMaxDigits = parseInt(dom.multiplierMaxDigits.value);
+            state.divisorMinDigits = parseInt(dom.divisorMinDigits.value);
+            state.divisorMaxDigits = parseInt(dom.divisorMaxDigits.value);
+            state.pages = parseInt(dom.pages.value);
+            state.gamesPerPage = parseInt(dom.gamesPerPage.value);
+        }
+
+        Object.values(dom).forEach(el => {
+            if (el && (el.tagName === 'SELECT' || el.tagName === 'INPUT')) {
+                el.addEventListener('change', updateUIState);
+                el.addEventListener('input', updateUIState);
+            }
+        });
+
+        updateUIState();
+
+        // --- MATH GENERATION ENGINE ---
+        
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateNumberByDigits(digits) {
+            if (digits === 1) return getRandomInt(1, 9);
+            const min = Math.pow(10, digits - 1);
+            const max = Math.pow(10, digits) - 1;
+            return getRandomInt(min, max);
+        }
+
+        function getActiveOperations() {
+            const ops = [];
+            if (state.operations.add) ops.push('+');
+            if (state.operations.sub) ops.push('-');
+            if (state.operations.mul) ops.push('×');
+            if (state.operations.div) ops.push('÷');
+            return ops.length > 0 ? ops : ['+'];
+        }
+
+        function getOperandCount() {
+            if (state.difficulty === 'easy' || state.difficulty === 'medium') return 2;
+            if (state.difficulty === 'hard') return getRandomInt(2, 6);
+            return state.numOperands;
+        }
+
+        function getDigitRange() {
+            if (state.difficulty === 'easy' || state.difficulty === 'medium') {
+                const fixedLength = getRandomInt(state.minDigits, state.maxDigits);
+                return { min: fixedLength, max: fixedLength };
+            }
+            return { min: state.minDigits, max: state.maxDigits };
+        }
+
+        function generateProblem() {
+            let attempts = 0;
+            const maxAttempts = 200;
+            const activeOps = getActiveOperations();
+
+            while (attempts < maxAttempts) {
+                attempts++;
+                let operands = [];
+                let operators = [];
+                const numOperands = getOperandCount();
+                const digitRange = getDigitRange();
+                const isMixed = state.multiOperator || state.difficulty === 'hard';
+                let primaryOp = activeOps[getRandomInt(0, activeOps.length - 1)];
+
+                // Determine operators
+                for (let i = 0; i < numOperands - 1; i++) {
+                    operators.push(isMixed ? activeOps[getRandomInt(0, activeOps.length - 1)] : primaryOp);
+                }
+
+                // Generate operands safely
+                let valid = true;
+                let firstDigits = getRandomInt(digitRange.min, digitRange.max);
+                let currentTotal = generateNumberByDigits(firstDigits);
+                operands.push(currentTotal);
+
+                for (let i = 0; i < operators.length; i++) {
+                    let op = operators[i];
+                    let nextOperand = 0;
+
+                    if (op === '+') {
+                        let digits = getRandomInt(digitRange.min, digitRange.max);
+                        nextOperand = generateNumberByDigits(digits);
+                        currentTotal += nextOperand;
+                    } 
+                    else if (op === '-') {
+                        // Ensure no negative numbers AND no identical adjacent numbers
+                        let maxVal = Math.min(currentTotal - 1, Math.pow(10, digitRange.max) - 1);
+                        let minVal = Math.max(1, Math.pow(10, digitRange.min - 1));
+                        
+                        if (minVal > maxVal) {
+                            valid = false; break;
+                        }
+                        do {
+                            nextOperand = getRandomInt(minVal, maxVal);
+                        } while (nextOperand === currentTotal);
+                        
+                        currentTotal -= nextOperand;
+                    } 
+                    else if (op === '×') {
+                        // FIX: Use specific multiplier digit range if in Custom mode
+                        let multMin = state.multiplierMinDigits;
+                        let multMax = state.multiplierMaxDigits;
+
+                        if (state.difficulty !== 'custom') {
+                            if (state.difficulty === 'easy' || state.difficulty === 'medium') {
+                                multMin = digitRange.min;
+                                multMax = digitRange.min;
+                            } else {
+                                // Hard mode: keep multipliers small to prevent huge numbers
+                                multMin = 1;
+                                multMax = 2;
+                            }
+                        }
+
+                        let digits = getRandomInt(multMin, multMax);
+                        nextOperand = generateNumberByDigits(digits);
+                        currentTotal *= nextOperand;
+                    } 
+                    else if (op === '÷') {
+                        // Ensure perfectly divisible, no identical numbers, and quotient >= 2
+                        let possibleDivisors = [];
+                        
+                        let divMinD = state.divisorMinDigits;
+                        let divMaxD = state.divisorMaxDigits;
+                        if (state.difficulty !== 'custom') {
+                            divMinD = 1; divMaxD = 2; 
+                        }
+                        
+                        let minD = Math.pow(10, divMinD - 1);
+                        let maxD = Math.pow(10, divMaxD) - 1;
+                        
+                        if (minD > maxD) { let temp = minD; minD = maxD; maxD = temp; }
+                        
+                        for (let d = minD; d <= Math.min(maxD, currentTotal); d++) {
+                            if (currentTotal % d === 0 && d !== currentTotal && d > 1) {
+                                possibleDivisors.push(d);
+                            }
+                        }
+
+                        if (possibleDivisors.length === 0) {
+                            valid = false; break;
+                        }
+                        
+                        nextOperand = possibleDivisors[getRandomInt(0, possibleDivisors.length - 1)];
+                        currentTotal /= nextOperand;
+                    }
+
+                    operands.push(nextOperand);
+                }
+
+                if (!valid) continue;
+
+                let problemString = operands[0];
+                for (let i = 0; i < operators.length; i++) {
+                    problemString += operators[i] + operands[i+1];
+                }
+
+                if (!state.usedProblems.has(problemString)) {
+                    state.usedProblems.add(problemString);
+                    return { operands, operators, problemString };
+                }
+            }
+
+            // Fallback problem - respects the primary operation
+            let fallbackOp = activeOps[0] || '+';
+            let fallbackOperands = [12, 34];
+            if (fallbackOp === '÷') fallbackOperands = [12, 3];
+            if (fallbackOp === '-') fallbackOperands = [34, 12];
+            if (fallbackOp === '×') fallbackOperands = [12, 3];
+            
+            return { 
+                operands: fallbackOperands, 
+                operators: [fallbackOp], 
+                problemString: `${fallbackOperands[0]}${fallbackOp}${fallbackOperands[1]}` 
+            };
+        }
+
+        // --- RENDERING ENGINE ---
+
+        function renderMathProblem(problem) {
+            // Added data-operands attribute for dynamic CSS font sizing
+            let html = `<div class="math-problem" data-operands="${problem.operands.length}">`;
+            
+            html += `
+                <div class="operand-row">
+                    <span class="operator"></span>
+                    <span class="number">${problem.operands[0]}</span>
+                </div>
+            `;
+
+            for (let i = 0; i < problem.operators.length; i++) {
+                html += `
+                    <div class="operand-row">
+                        <span class="operator">${problem.operators[i]}</span>
+                        <span class="number">${problem.operands[i+1]}</span>
+                    </div>
+                `;
+            }
+
+            html += `<div class="answer-line"></div>`;
+            html += `</div>`;
+            return html;
+        }
+
+        function renderWorksheet() {
+            state.usedProblems.clear();
+            dom.previewPane.innerHTML = '';
+            
+            const layoutClass = `layout-${state.gamesPerPage}`;
+            const fontClass = `games-per-page-${state.gamesPerPage}`;
+
+            for (let p = 0; p < state.pages; p++) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = `worksheet-page ${fontClass}`;
+                
+                pageDiv.innerHTML = `
+                    <div class="worksheet-header">
+                        <div>Data: <span class="line"></span></div>
+                    </div>
+                    <div class="${layoutClass}"></div>
+                `;
+
+                const layoutContainer = pageDiv.querySelector(`.${layoutClass}`);
+
+                for (let g = 0; g < state.gamesPerPage; g++) {
+                    const gameContainer = document.createElement('div');
+                    gameContainer.className = 'game-container';
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'tic-tac-toe';
+
+                    for (let cell = 0; cell < 9; cell++) {
+                        const cellDiv = document.createElement('div');
+                        cellDiv.className = 'cell';
+                        
+                        const problem = generateProblem();
+                        cellDiv.innerHTML = renderMathProblem(problem);
+                        
+                        grid.appendChild(cellDiv);
+                    }
+                    
+                    gameContainer.appendChild(grid);
+                    layoutContainer.appendChild(gameContainer);
+                }
+
+                dom.previewPane.appendChild(pageDiv);
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        dom.generateBtn.addEventListener('click', () => {
+            updateUIState();
+            renderWorksheet();
+        });
+
+        dom.printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        renderWorksheet();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phonics Worksheet Builder</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+  :root {
+    --ink:#111; --muted:#5b6470; --panel-bg:#f4f6f9; --accent:#1f6feb; --radius:10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; height:100%; }
+  body { font-family:"Comic Sans MS","Chalkboard SE","OpenDyslexic","Segoe UI",system-ui,sans-serif;
+         color:var(--ink); background:#e9edf3; }
+  .app { display:flex; height:100vh; overflow:hidden; }
+  .panel { width:380px; min-width:380px; background:var(--panel-bg);
+           border-right:2px solid #cfd6e0; overflow-y:auto; padding:16px 16px 60px; }
+  .preview { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column;
+             align-items:center; gap:24px; }
+
+  .panel h1 { font-size:18px; margin:0 0 2px; }
+  .panel .sub { font-size:12px; color:var(--muted); margin:0 0 16px; }
+
+  fieldset { border:1px solid #cfd6e0; border-radius:var(--radius); background:#fff;
+             margin:0 0 14px; padding:10px 12px 14px; }
+  legend { font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+           color:var(--muted); padding:0 6px; }
+
+  label.row { display:flex; align-items:center; justify-content:space-between;
+              gap:8px; font-size:13px; margin:6px 0; }
+  label.row > span:first-child { flex:1; }
+
+  input[type="number"], select, input[type="text"], input[type="range"] {
+    font:inherit; font-size:13px; padding:4px 6px; border:1px solid #b9c2ce;
+    border-radius:6px; background:#fff; max-width:130px;
+  }
+  input[type="range"] { padding:0; }
+  input[type="file"] { font-size:12px; width:100%; }
+  textarea { width:100%; min-height:60px; font:inherit; font-size:12px; padding:6px;
+             border:1px solid #b9c2ce; border-radius:6px; resize:vertical; }
+  button { font:inherit; font-size:13px; padding:7px 12px; border-radius:8px;
+           border:1px solid #b9c2ce; background:#fff; cursor:pointer; }
+  button:hover { background:#eef3fb; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700; }
+  button.primary:hover { background:#175bc4; }
+  button.tiny { font-size:11px; padding:3px 8px; }
+  .btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+
+  .cat { margin-bottom:6px; }
+  .cat > summary { cursor:pointer; font-size:13px; font-weight:700; padding:4px 0;
+                   list-style:none; }
+  .cat > summary::-webkit-details-marker { display:none; }
+  .cat > summary::before { content:"▸ "; color:var(--muted); }
+  .cat[open] > summary::before { content:"▾ "; }
+  .cat-count { font-weight:400; color:var(--muted); font-size:11px; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:4px; padding:2px 0 6px 14px; }
+  .chip { display:inline-flex; align-items:center; gap:4px; font-size:12px;
+          border:1px solid #cfd6e0; background:#fbfcfe; border-radius:20px;
+          padding:2px 8px 2px 5px; cursor:pointer; }
+  .chip input { margin:0; }
+  .chip:has(input:checked) { background:#dbe9ff; border-color:var(--accent); }
+
+  .radio-list { display:flex; flex-direction:column; gap:6px; }
+  .radio-list label { display:flex; gap:8px; align-items:flex-start; font-size:13px; cursor:pointer; }
+  .radio-list input { margin-top:3px; }
+
+  .stat { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .level-badge { display:inline-block; font-size:11px; padding:1px 7px; border-radius:12px;
+                 background:#e2ecff; color:#1f4c8f; font-weight:700; }
+
+  /* ---- Word list ---- */
+  .word-list { max-height:300px; overflow-y:auto; border:1px solid #e2e6ed;
+               border-radius:6px; background:#fbfcfe; }
+  .word-row { display:grid; grid-template-columns:22px 1fr auto auto auto; gap:6px;
+              align-items:center; padding:5px 8px; border-bottom:1px solid #eef1f5;
+              font-size:12px; }
+  .word-row:last-child { border-bottom:none; }
+  .word-row .wl-word { font-weight:700; font-size:13px; }
+  .word-row .wl-graphemes { color:#5b6470; font-family:ui-monospace,Menlo,monospace;
+                            font-size:11px; }
+  .word-row .wl-badges { display:flex; gap:3px; flex-wrap:wrap; }
+  .word-row .badge { font-size:10px; padding:1px 5px; border-radius:8px;
+                     background:#eef3fb; color:#24406b; }
+  .word-row .badge.b-trigraph { background:#ffe6cc; color:#8a4b00; }
+  .word-row .badge.b-cluster3 { background:#ffe0e0; color:#8a0000; }
+  .word-row .badge.b-blend    { background:#dff5e2; color:#0b5f1f; }
+  .word-row .badge.b-digraph  { background:#dbe9ff; color:#1f4c8f; }
+  .word-row .badge.b-vowel    { background:#f0dfff; color:#550088; }
+  .word-row .badge.b-rctrl    { background:#ffd6ec; color:#8a0055; }
+  .word-row .badge.b-floss    { background:#e6e6e6; color:#444; }
+  .word-row .up, .word-row .down { font-size:10px; padding:1px 5px; border-radius:4px; }
+  .word-row input[type=checkbox] { margin:0; }
+  .word-row.nonsense .wl-word { color:#8a0000; }
+  .word-row.nonsense::after { content:"?"; color:#8a0000; font-weight:700; font-size:11px; }
+
+  /* ---- Worksheet sheet ---- */
+  .sheet { background:#fff; width:8.5in; min-height:11in; padding:0.55in 0.6in;
+           box-shadow:0 4px 22px rgba(20,30,50,.18); border-radius:4px; color:#000; }
+  .sheet + .sheet { }
+  .sheet-title { font-size:26px; margin:0 0 4px; }
+  .sheet-sub { font-size:14px; margin:0 0 6px; color:#333; }
+  .sheet-rule { border:0; border-top:3px solid #000; margin:10px 0 20px; }
+  .sheet-name { font-size:13px; margin:0 0 14px; color:#444; }
+  .sheet-footer { margin-top:32px; padding-top:10px; border-top:1px solid #999;
+                  font-size:10px; color:#666; }
+
+  .dissect-row { display:flex; align-items:center; gap:18px; padding:14px 4px;
+                 border-bottom:2px dotted #999; }
+  .dissect-word { flex:0 0 2.0in; font-size:30px; font-weight:700; }
+  .dissect-arrow { font-size:22px; color:#666; }
+  .dissect-tokens { display:flex; flex-wrap:wrap; gap:10px; }
+  .tok { font-size:22px; border:3px solid #000; border-radius:8px;
+         padding:2px 12px; min-width:58px; text-align:center; }
+
+  .ident-row { display:flex; align-items:center; gap:16px; padding:16px 4px;
+               border-bottom:2px dotted #999; }
+  .ident-word { flex:0 0 1.9in; font-size:28px; font-weight:700; }
+  .ident-options { display:flex; gap:12px; flex-wrap:wrap; }
+  .opt { font-size:20px; border:3px solid #000; border-radius:8px;
+         padding:6px 18px; min-width:74px; text-align:center; position:relative; }
+  .opt.correct::after { content:"✓"; position:absolute; top:-10px; right:-8px;
+                        font-size:16px; font-weight:900; color:#000;
+                        background:#fff; border:2px solid #000; border-radius:50%;
+                        width:20px; height:20px; line-height:16px; text-align:center;
+                        display: none; }
+  .preview.show-answers .opt.correct::after { display: block; }
+
+  .sent-block { margin:0 0 30px; }
+  .sent-word { font-size:32px; font-weight:800; margin:0 0 6px; }
+  .sent-line { border-bottom:3px solid #000; height:40px; margin-top:4px; }
+  .sent-hint { font-size:12px; color:#666; }
+
+  .elkonin-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:22px 30px; }
+  .elkonin-item { break-inside:avoid; }
+  .elkonin-word { font-size:22px; font-weight:700; margin-bottom:6px; }
+  .elkonin-boxes { display:flex; }
+  .ebox { width:50px; height:50px; border:3px solid #000; margin-left:-3px;
+          display:flex; align-items:center; justify-content:center;
+          font-size:14px; font-family:ui-monospace,Menlo,monospace; font-weight:700; }
+  .ebox:first-child { margin-left:0; }
+  .ebox::before { content: attr(data-tok); visibility: hidden; }
+  .preview.show-answers .ebox::before { visibility: visible; }
+  
+  /* Type 5 — answer-key highlight */
+  .preview.show-answers .hunt-cell.match { background: #ffeb99; font-weight: 800; }
+
+  .hunt-tag {
+    display: none;
+    margin-left: 6px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    padding: 1px 6px;
+    background: #dbe9ff;
+    color: #1f4c8f;
+    border-radius: 6px;
+    vertical-align: middle;
+    font-weight: 700;
+  }
+  .preview.show-answers .hunt-tag { display: inline; }
+  .hunt-cell.match { position: relative; }  
+
+  /* Type 6 — answer-key lane tag */
+  .bank-word { display: inline-flex; align-items: baseline; gap: 5px; }
+  .bank-tag {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; font-weight: 700; color: #4a3a00;
+    background: #ffe9b0; border: 1px solid #c89b2e;
+    border-radius: 6px; padding: 1px 6px;
+    display: none;
+  }
+  
+  .preview.show-answers .bank-tag { display: inline-block; }  
+
+  /* Sound Sort — dual tags */
+  .bank-tag.sound-tag {
+    background: #dbe9ff;
+    border-color: #7aa7e8;
+    color: #1f4c8f;
+  }
+  .bank-tag.spelling-tag {
+    background: #fff5cc;
+    border-color: #d4b748;
+    color: #4a3a00;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  
+  .sort-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+  }
+  select:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #f2f4f7;
+  }
+  
+  .hunt-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+               border:3px solid #000; margin-top:10px; }
+  .hunt-cell { border:1px solid #000; min-height:62px; display:flex;
+               align-items:center; justify-content:center; font-size:19px; font-weight:600; }
+
+  .sort-lanes { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:8px; }
+  .lane { border:3px solid #000; border-radius:8px; min-height:4.2in; padding:8px; }
+  .lane-head { text-align:center; font-size:20px; font-weight:800;
+               border-bottom:2px solid #000; padding-bottom:6px; margin-bottom:8px; }
+  .bank { margin-top:26px; border:3px dashed #000; border-radius:8px; padding:12px; }
+  .bank-title { font-size:13px; font-weight:700; text-transform:uppercase;
+                letter-spacing:.06em; margin-bottom:10px; }
+  .bank-words { display:flex; flex-wrap:wrap; gap:8px 26px; font-size:20px; font-weight:600; }
+
+  .ttt-grid { display:grid; gap:0; border:4px solid #000; margin-top:12px; }
+  .ttt-grid.g3 { grid-template-columns:repeat(3,1fr); }
+  .ttt-grid.g4 { grid-template-columns:repeat(4,1fr); }
+  .ttt-cell { border:2px solid #000; aspect-ratio:1/1; display:flex;
+              align-items:center; justify-content:center; font-size:24px; font-weight:700; }
+
+  .empty-note { font-size:15px; color:#666; padding:40px 0; text-align:center; }
+
+  .pairs-box { background:#fff; border-radius:8px; padding:14px 18px;
+               box-shadow:0 2px 8px rgba(20,30,50,.08); max-width:8.5in; width:100%;
+               font-size:13px; }
+  .pairs-box h3 { margin:0 0 8px; font-size:14px; }
+  .pairs-list { display:grid; grid-template-columns:repeat(3,1fr); gap:4px 16px; }
+  .pairs-list span { font-family:ui-monospace,Menlo,monospace; font-size:12px; }
+
+  /* Type 8 — Onset & Rime */
+  .or-caption { font-size: 12px; color: #555; margin-bottom: 20px; font-style: italic; }
+  .or-item { break-inside: avoid; margin: 0 0 28px; padding-bottom: 20px;
+             border-bottom: 2px dotted #999; }
+  .or-item:last-child { border-bottom: none; }
+  .or-word { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
+  .or-row { display: flex; gap: 22px; }
+  .or-cell { display: flex; flex-direction: column; align-items: center; }
+  .or-box {
+    border: 3px solid #000; border-radius: 10px;
+    min-width: 110px; min-height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; padding: 6px 18px; background: #fff;
+  }
+  .or-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+              color: #555; margin-top: 6px; }
+  .or-answer { font-family: ui-monospace, Menlo, monospace; visibility: hidden; }
+  .preview.show-answers .or-answer { visibility: visible; }
+  .or-rhymes { margin-top: 12px; font-size: 13px; color: #333; visibility: hidden; }
+  .or-rhymes .or-rhyme-word { font-weight: 700; }
+  .preview.show-answers .or-rhymes { visibility: visible; }
+
+  /* Type 9 — Syllable Split */
+  .syl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px 34px; }
+  .syl-item { break-inside: avoid; }
+  .syl-word { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .syl-boxes { display: flex; align-items: center; }
+  .syl-box {
+    min-width: 84px; height: 58px; padding: 0 12px;
+    border: 3px solid #000; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; font-weight: 700;
+    font-family: ui-monospace, Menlo, monospace;
+    background: #fff;
+  }
+  .syl-dot { font-size: 22px; padding: 0 8px; color: #666; }
+  .syl-answer { visibility: hidden; }
+  .preview.show-answers .syl-answer { visibility: visible; }
+  .syl-caption {
+    font-size: 12px; color: #555; font-style: italic; margin-bottom: 20px;
+  }
+  
+  /* Solutions toggle */
+  .sol-toggle {
+    position: fixed; top: 20px; right: 24px; z-index: 100;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    padding: 8px 16px; border-radius: 999px;
+    background: var(--accent); color: #fff; border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18); cursor: pointer;
+  }
+  .sol-toggle:hover { filter: brightness(1.08); }
+  .sol-toggle.on { background: #555; }
+  
+  @page { margin:0.4in; }
+  @media print {
+    html, body { height:auto; background:#fff; }
+    .app { display:block; height:auto; overflow:visible; }
+    .panel, .no-print, .pairs-box { display:none !important; }
+    .preview { padding:0; overflow:visible; display:block; }
+    .sheet { width:auto; min-height:0; box-shadow:none; border-radius:0; padding:0;
+             page-break-after:always; }
+    .sheet:last-child { page-break-after:auto; }
+    .dissect-row, .ident-row, .elkonin-item, .ttt-grid, .lane { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="panel">
+    <h1>Phonics Worksheet Builder</h1>
+    <p class="sub">Load a word list → filter → print a sheet.</p>
+
+    <!-- 1. Word source -->
+    <fieldset>
+      <legend>1 · Word Source</legend>
+      <input type="file" id="fileInput" accept=".txt,.csv,text/plain,text/csv">
+      <div class="btn-row">
+        <button id="demoBtn">Load demo list</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+      <div class="stat" id="sourceStat">No words loaded.</div>
+      <div class="btn-row">
+        <button id="csvBtn" class="primary">Download CSV</button>
+      </div>
+    </fieldset>
+
+    <!-- 2. Scope & sequence -->
+    <fieldset>
+      <legend>2 · Scope &amp; Sequence</legend>
+      <label class="row"><span>Taught up to</span>
+        <span class="level-badge" id="levelLabel">Level 8</span>
+      </label>
+      <input type="range" id="scopeSlider" min="1" max="8" value="8" style="width:100%">
+      <div class="stat" id="scopeDesc"></div>
+      <label class="row" style="margin-top:8px">
+        <span>Only show decodable words</span>
+        <input type="checkbox" id="decodableOnly">
+      </label>
+    </fieldset>
+
+    <!-- 3. Pattern filters -->
+    <fieldset>
+      <legend>3 · Pattern Filters</legend>
+      <div class="btn-row" style="margin:0 0 6px">
+        <button id="clearPatterns" class="tiny">Clear</button>
+        <button id="allPatterns" class="tiny">Select all</button>
+      </div>
+      <div id="patternFilters"></div>
+      <label class="row">
+        <span>Match mode</span>
+        <select id="matchMode">
+          <option value="all">ALL categories</option>
+          <option value="any">ANY category</option>
+        </select>
+      </label>
+      <label class="row">
+        <span title="Also record shorter overlapping patterns, e.g. 'ch' inside 'tch'">
+          Include sub-patterns</span>
+        <input type="checkbox" id="includeSubs">
+      </label>
+      <label class="row" style="margin-top:10px">
+        <span title="Filter vowel teams by the sound they actually make in the word">
+          Filter by vowel-team sound</span>
+      </label>
+      <div id="soundFilters" class="chips" style="padding-left:0"></div>      
+    </fieldset>
+
+    <!-- 4. Bounds -->
+    <fieldset>
+      <legend>4 · Bounds &amp; Type</legend>
+      <label class="row"><span>Difficulty</span>
+        <span><input type="number" id="diffMin" min="1" max="3" value="1" style="width:52px"> –
+              <input type="number" id="diffMax" min="1" max="3" value="3" style="width:52px"></span>
+      </label>
+      <label class="row"><span>Phoneme count</span>
+        <span><input type="number" id="phonMin" min="1" max="12" value="1" style="width:52px"> –
+              <input type="number" id="phonMax" min="1" max="12" value="12" style="width:52px"></span>
+      </label>
+      <label class="row"><span>Letter count</span>
+        <span><input type="number" id="letMin" min="1" max="20" value="1" style="width:52px"> –
+              <input type="number" id="letMax" min="1" max="20" value="20" style="width:52px"></span>
+      </label>
+      <label class="row"><span>Word type</span>
+        <select id="wordType">
+          <option value="all">All words</option>
+          <option value="real">Real words only</option>
+          <option value="nonsense">Possibly nonsense</option>
+        </select>
+      </label>
+      <label class="row"><span>Max words on sheet</span>
+        <input type="number" id="maxWords" min="1" max="40" value="12">
+      </label>
+    </fieldset>
+
+    <!-- 5. Activity -->
+    <fieldset>
+      <legend>5 · Activity</legend>
+      <div class="radio-list">
+        <label><input type="radio" name="activity" value="1" checked><span><b>Type 1</b> — Dissect the Word</span></label>
+        <label><input type="radio" name="activity" value="2"><span><b>Type 2</b> — Pattern Identification</span></label>
+        <label><input type="radio" name="activity" value="3"><span><b>Type 3</b> — Sentence Construction</span></label>
+        <label><input type="radio" name="activity" value="4"><span><b>Type 4</b> — Elkonin Sound Boxes</span></label>
+        <label><input type="radio" name="activity" value="5"><span><b>Type 5</b> — Word Hunt Matrix</span></label>
+        <label><input type="radio" name="activity" value="6"><span><b>Type 6</b> — Minimal Pair Sort</span></label>
+        <label><input type="radio" name="activity" value="7"><span><b>Type 7</b> — Tic-Tac-Toe</span></label>
+        <label><input type="radio" name="activity" value="8"><span><b>Type 8</b> — Onset &amp; Rime</span></label>
+        <label><input type="radio" name="activity" value="9"><span><b>Type 9</b> — Syllable Split</span></label>        
+      </div>
+    </fieldset>
+
+    <!-- 6. Options -->
+    <fieldset id="activityOptions">
+      <legend>6 · Activity Options</legend>
+
+      <div data-for="6" style="display:none">
+        <label class="row" style="margin-bottom:6px"
+               title="Lanes become sounds instead of spelling patterns">
+          <span>Sort by sound (not spelling)</span>
+          <input type="checkbox" id="soundSortMode">
+        </label>
+        <label class="row"><span id="laneALabel">Lane A contains</span><select id="laneA"></select></label>
+        <label class="row"><span id="laneBLabel">Lane B contains</span><select id="laneB"></select></label>
+      </div>
+      <div data-for="7" style="display:none">
+        <label class="row"><span>Grid size</span>
+          <select id="tttSize">
+            <option value="3">3 × 3 (9 words)</option>
+            <option value="4">4 × 4 (16 words)</option>
+          </select>
+        </label>
+      </div>
+      <div data-for="5" style="display:none">
+        <label class="row"><span>Grid cells</span>
+          <select id="huntCells">
+            <option value="16">16</option>
+            <option value="20" selected>20</option>
+            <option value="24">24</option>
+          </select>
+        </label>
+        <label class="row" style="margin-top:8px"
+               title="Requires a vowel-team sound filter to be ticked in the sidebar">
+          <span>Sound hunt (group by sound, not spelling)</span>
+          <input type="checkbox" id="soundHuntMode">
+        </label>
+      </div>
+
+      <div data-for="1 2 3 4 5 6 7 8 9">
+        <label class="row"><span>Show filter summary on sheet</span>
+          <input type="checkbox" id="sheetFooter" checked>
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- 7. Word selection -->
+    <fieldset>
+      <legend>7 · Word Selection <span id="selCount" style="font-weight:400;color:#5b6470"></span></legend>
+      <div class="btn-row" style="margin:0 0 8px">
+        <button class="tiny" id="selAll">Select all</button>
+        <button class="tiny" id="selNone">Deselect all</button>
+        <button class="tiny" id="orderReset">Reset order</button>
+        <button class="tiny" id="orderShuffle">Shuffle</button>
+      </div>
+      <div id="wordList" class="word-list"></div>
+      <div class="stat" id="nonsenseHint">
+        Words marked <b>?</b> aren't in the built-in common-word list — treat as possibly nonsense.
+      </div>
+    </fieldset>
+
+    <!-- 8. Print -->
+    <fieldset>
+      <legend>8 · Print</legend>
+      <label class="row"><span>Copies</span>
+        <input type="number" id="copies" min="1" max="30" value="1">
+      </label>
+      <div class="btn-row">
+        <button class="primary" id="printBtn">🖨 Print / Save PDF</button>
+        <button id="refreshBtn">Refresh</button>
+      </div>
+    </fieldset>
+  </aside>
+
+    <main class="preview" id="previewWrap">
+    <button class="sol-toggle no-print" id="solToggle" type="button">👁 Show answers</button>
+    <div id="preview"></div>
+  </main>
+</div>
+
+<script src="PhonicsConstructor.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const PC = window.PhonicsConstructor;
+  if (!PC) {
+    document.getElementById('preview').innerHTML =
+      '<p style="color:#b00;font-size:16px">⚠ PhonicsConstructor.js was not found. ' +
+      'Place it next to this HTML file.</p>';
+    return;
+  }
+
+  const CAT_LABELS = {
+    digraphs:     'Consonant Digraphs',
+    floss:        'FLOSS Endings',
+    blends:       'Consonant Blends',
+    clusters3:    '3-Letter Clusters',
+    trigraphs:    'Trigraphs',
+    vowelTeams:   'Vowel Teams',
+    rControlled:  'R-Controlled Vowels',
+    rControlled3: 'R-Controlled Trigraphs'
+  };
+
+  const BADGE_CLASS = {
+    digraphs: 'b-digraph', floss: 'b-floss', blends: 'b-blend',
+    clusters3: 'b-cluster3', trigraphs: 'b-trigraph',
+    vowelTeams: 'b-vowel', rControlled: 'b-rctrl', rControlled3: 'b-rctrl'
+  };
+
+  const ALL_PATTERNS = (function () {
+    const seen = Object.create(null), out = [];
+    Object.keys(PC.PHONICS_PATTERNS).forEach(function (cat) {
+      PC.PHONICS_PATTERNS[cat].forEach(function (p) {
+        if (!seen[p]) { seen[p] = 1; out.push(p); }
+      });
+    });
+    return out;
+  })();
+
+  const DEMO_WORDS = [
+    'ship','shop','fish','brush','catch','match','watch','thump','think','three',
+    'stretch','string','splash','scratch','bridge','night','light','queen','quick',
+    'truck','train','cloud','spoon','bright','frog','green','prize','snail','crown',
+    'float','dream','sweep','clock','snack','drink','jump','hand','lamp','milk',
+    'soft','belt','help','plant','ant','tent','sink','chip','chop','shell','wheel',
+    'mouse','house','clown','brown','point','coin','boy','toy','grow','show',
+    'eat','sea','team','clean','easy','read','speak','peach',
+    'bread','head','weather','ready',
+    'break','steak'
+  ];
+
+  /* ---------------- State ---------------- */
+  let WORDS     = [];
+  let FILTERED  = [];
+  let wordOrder = [];               // custom display order
+  let wordInclude = Object.create(null);
+
+  /* ---------------- Utilities ---------------- */
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function wordTokens(w) {
+    return (w.graphemes || '').split('|').filter(Boolean);
+  }
+
+  // Returns true if the word satisfies EVERY active substantive filter
+  // (pattern filters AND sound filters). Used by Type 5 to decide which
+  // cells highlight and which cells act as distractors.
+  function matchesActivePatterns(w) {
+    const patterns = getSelectedPatterns();
+    const sounds   = getSelectedSounds();
+    if (!patterns.length && !sounds.length) return false;
+
+    // --- Pattern check ---
+    let patternOk = true;
+    if (patterns.length) {
+      const toks = wordTokens(w);
+      const byCat = {};
+      patterns.forEach(s => { (byCat[s.cat] = byCat[s.cat] || []).push(s.value); });
+      const results = Object.keys(byCat).map(function (cat) {
+        return byCat[cat].some(v => toks.indexOf(v) !== -1);
+      });
+      patternOk = $('matchMode').value === 'all'
+        ? results.every(Boolean)
+        : results.some(Boolean);
+    }
+
+    // --- Sound check ---
+    let soundOk = true;
+    if (sounds.length) {
+      const entries = String(w.vowel_team_sounds || '').split(',').filter(Boolean);
+      soundOk = entries.some(function (e) {
+        const parts = e.split(':');
+        return sounds.indexOf(parts[1]) !== -1;
+      });
+    }
+
+    return patternOk && soundOk;
+  }
+  
+  function badgesHtml(w) {
+    const out = [];
+    const cats = ['digraphs','floss','blends','clusters3','trigraphs','vowelTeams','rControlled','rControlled3'];
+    const fieldMap = {
+      digraphs:'digraphs', floss:'floss', blends:'blends', clusters3:'clusters3',
+      trigraphs:'trigraphs', vowelTeams:'vowel_teams', rControlled:'r_controlled',
+      rControlled3:'r_controlled'
+    };
+    cats.forEach(function (cat) {
+      const field = fieldMap[cat];
+      const vals = String(w[field] || '').split(',').filter(Boolean);
+      vals.forEach(function (v) {
+        out.push('<span class="badge ' + (BADGE_CLASS[cat] || '') + '">' + esc(v) + '</span>');
+      });
+    });
+    // dedupe
+    const seen = {};
+    return out.filter(function (h) { if (seen[h]) return false; seen[h] = 1; return true; }).join('');
+  }
+
+  function normalizeRow(r) {
+    const o = Object.assign({}, r);
+    o.word = String(o.word || '').trim().toLowerCase().replace(/[^a-z]/g, '');
+    o.graphemes = String(o.graphemes || '');
+    if (!o.graphemes) o.graphemes = o.word.split('').join('|');
+    o.tokens = o.graphemes.split('|').filter(Boolean);
+    o.phoneme_count = parseInt(o.phoneme_count, 10) || o.tokens.length;
+    o.difficulty = parseInt(o.difficulty, 10) || 1;
+    o.letter_count = parseInt(o.letter_count, 10) || o.word.length;
+    o.syllable_count = parseInt(o.syllable_count, 10) || 1;
+    o.level = parseInt(o.level, 10) || 1;
+    ['digraphs','trigraphs','blends','clusters3','vowel_teams','r_controlled',
+     'floss','onset','rime','is_common','secondary_patterns']
+      .forEach(function (k) { o[k] = String(o[k] || ''); });
+    return o;
+  }
+
+  /* ============================================================
+     Pattern filters
+     ============================================================ */
+  function buildPatternFilters() {
+    const cats = PC.PHONICS_PATTERNS;
+    const html = Object.keys(cats).map(function (cat) {
+      const chips = cats[cat].map(function (p) {
+        return '<label class="chip"><input type="checkbox" data-cat="' + cat +
+               '" value="' + esc(p) + '"><span>' + esc(p) + '</span></label>';
+      }).join('');
+      return '<details class="cat" open>' +
+        '<summary>' + esc(CAT_LABELS[cat] || cat) +
+        ' <span class="cat-count">(' + cats[cat].length + ')</span></summary>' +
+        '<div class="chips">' + chips + '</div></details>';
+    }).join('');
+    $('patternFilters').innerHTML = html;
+    $('patternFilters').addEventListener('change', refresh);
+  }
+
+  function buildSoundFilters() {
+    const labels = PC.SOUND_LABELS || {};
+    const order = ['long_a','long_e','long_i','long_o','long_u',
+                   'short_a','short_e','short_i','short_o','short_u',
+                   'oo_long','oo_short','ow','oi','aw'];
+    const html = order.filter(k => labels[k]).map(function (k) {
+      return '<label class="chip"><input type="checkbox" data-sound="' + k +
+             '"><span>' + esc(labels[k]) + '</span></label>';
+    }).join('');
+    $('soundFilters').innerHTML = html;
+    $('soundFilters').addEventListener('change', refresh);
+  }
+  
+  function getSelectedPatterns() {
+    return Array.prototype.slice.call(
+      document.querySelectorAll('#patternFilters input[type=checkbox]:checked')
+    ).map(function (cb) { return { cat: cb.dataset.cat, value: cb.value }; });
+  }
+
+  function getSelectedSounds() {
+    return Array.prototype.slice.call(
+      document.querySelectorAll('#soundFilters input[type=checkbox]:checked')
+    ).map(cb => cb.dataset.sound);
+  }
+
+  /* '/ē/ (see)' → '/ē/' — trims the parenthetical for tighter on-sheet text. */
+  function soundDisplay(key) {
+    const label = (PC.SOUND_LABELS || {})[key] || key;
+    const m = String(label).match(/^(\/[^/]+\/)/);
+    return m ? m[1] : label;
+  }
+    
+  /* ============================================================
+     Filter pipeline
+     ============================================================ */
+  function applyFilters() {
+    const sel = getSelectedPatterns();
+    const mode = $('matchMode').value;
+    const dMin = +$('diffMin').value || 1, dMax = +$('diffMax').value || 3;
+    const pMin = +$('phonMin').value || 1, pMax = +$('phonMax').value || 99;
+    const lMin = +$('letMin').value  || 1, lMax = +$('letMax').value  || 99;
+    const scopeMax = +$('scopeSlider').value || 8;
+    const decodableOnly = $('decodableOnly').checked;
+    const wordType = $('wordType').value;
+    const sounds = getSelectedSounds();
+
+    const byCat = {};
+    sel.forEach(s => { (byCat[s.cat] = byCat[s.cat] || []).push(s.value); });
+    const catKeys = Object.keys(byCat);
+
+    FILTERED = WORDS.filter(function (w) {
+      if (w.difficulty < dMin || w.difficulty > dMax) return false;
+      if (w.phoneme_count < pMin || w.phoneme_count > pMax) return false;
+      if (w.word.length < lMin || w.word.length > lMax) return false;
+
+      if (decodableOnly && w.level > scopeMax) return false;
+
+      if (wordType === 'real' && w.is_common !== 'yes') return false;
+      if (wordType === 'nonsense' && w.is_common === 'yes') return false;
+
+      if (sounds.length) {
+        const wts = String(w.vowel_team_sounds || '').split(',');
+        const hasMatch = wts.some(function (entry) {
+          const parts = entry.split(':');
+          return sounds.indexOf(parts[1]) !== -1;
+        });
+        if (!hasMatch) return false;
+      }
+      
+      if (!catKeys.length) return true;
+      const toks = wordTokens(w);
+      const results = catKeys.map(function (cat) {
+        return byCat[cat].some(function (v) { return toks.indexOf(v) !== -1; });
+      });
+      return mode === 'all' ? results.every(Boolean) : results.some(Boolean);
+    });
+
+    syncWordOrder();
+    updateStats();
+    populateContrastSelects();
+  }
+
+  function syncWordOrder() {
+    const filteredSet = Object.create(null);
+    FILTERED.forEach(w => filteredSet[w.word] = 1);
+    // keep existing order for surviving words
+    wordOrder = wordOrder.filter(w => filteredSet[w]);
+    // append new words at end
+    const existing = Object.create(null);
+    wordOrder.forEach(w => existing[w] = 1);
+    FILTERED.forEach(function (w) {
+      if (!existing[w.word]) {
+        wordOrder.push(w.word);
+        wordInclude[w.word] = true;
+      }
+    });
+    // clean stale includes
+    Object.keys(wordInclude).forEach(function (w) {
+      if (!filteredSet[w]) delete wordInclude[w];
+    });
+  }
+
+  function updateStats() {
+    const total = WORDS.length, n = FILTERED.length;
+    $('sourceStat').textContent = total
+      ? n + ' of ' + total + ' words match.'
+      : 'No words loaded.';
+  }
+
+  /* ============================================================
+     Word selection panel
+     ============================================================ */
+  function renderWordList() {
+    const byWord = Object.create(null);
+    FILTERED.forEach(w => byWord[w.word] = w);
+
+    const html = wordOrder.map(function (word, idx) {
+      const w = byWord[word];
+      if (!w) return '';
+      const inc = wordInclude[word] !== false;
+      const isNonsense = w.is_common !== 'yes';
+      return '<div class="word-row' + (isNonsense ? ' nonsense' : '') + '" data-word="' + esc(word) + '">' +
+        '<input type="checkbox" ' + (inc ? 'checked' : '') + ' data-role="include">' +
+        '<span class="wl-word">' + esc(word) + '</span>' +
+        '<span class="wl-graphemes">' + esc(w.graphemes) + '</span>' +
+        '<span class="wl-badges">' + badgesHtml(w) + '</span>' +
+        '<span>' +
+          '<button class="up" data-role="up" data-idx="' + idx + '">▲</button>' +
+          '<button class="down" data-role="down" data-idx="' + idx + '">▼</button>' +
+        '</span>' +
+      '</div>';
+    }).join('');
+    $('wordList').innerHTML = html || '<div style="padding:14px;color:#5b6470;font-size:12px">No words match the current filters.</div>';
+
+    const includedCount = wordOrder.filter(w => wordInclude[w] !== false && byWord[w]).length;
+    $('selCount').textContent = '(' + includedCount + ' selected)';
+  }
+
+  function selectedWords() {
+    const byWord = Object.create(null);
+    FILTERED.forEach(w => byWord[w.word] = w);
+    return wordOrder
+      .filter(w => wordInclude[w] !== false && byWord[w])
+      .map(w => byWord[w]);
+  }
+
+  /* ============================================================
+     Footer / summary text
+     ============================================================ */
+  function filterSummary() {
+    const parts = [];
+    const sel = getSelectedPatterns();
+
+    if (sel.length) {
+      const byCat = {};
+      sel.forEach(s => { (byCat[s.cat] = byCat[s.cat] || []).push(s.value); });
+      Object.keys(byCat).forEach(function (cat) {
+        parts.push((CAT_LABELS[cat] || cat) + ' (' +
+                   byCat[cat].map(v => '/' + v + '/').join(', ') + ')');
+      });
+    }
+    
+    const sounds = getSelectedSounds();
+    if (sounds.length) {
+      const labels = PC.SOUND_LABELS || {};
+      parts.push('sounds ' + sounds.map(s => labels[s] || s).join(', '));
+    }
+            
+    const dMin = +$('diffMin').value, dMax = +$('diffMax').value;
+    if (dMin > 1 || dMax < 3) parts.push('difficulty ' + dMin + '–' + dMax);
+    const decodable = $('decodableOnly').checked;
+    if (decodable) parts.push('decodable up to level ' + $('scopeSlider').value);
+    const wt = $('wordType').value;
+    if (wt === 'real') parts.push('real words only');
+    if (wt === 'nonsense') parts.push('possible nonsense');
+    return parts.length ? parts.join(' · ') : 'All words';
+  }
+
+  /* ============================================================
+     Sheet renderers
+     ============================================================ */
+  function sheetHeader(title, subtitle) {
+    return '<h1 class="sheet-title">' + esc(title) + '</h1>' +
+           (subtitle ? '<p class="sheet-sub">' + esc(subtitle) + '</p>' : '') +
+           '<p class="sheet-name">Name: ______________________________&nbsp;&nbsp;&nbsp;' +
+           'Date: ______________</p><hr class="sheet-rule">';
+  }
+  function sheetFooter() {
+    return $('sheetFooter').checked
+      ? '<div class="sheet-footer">' + esc(filterSummary()) + '</div>' : '';
+  }
+  function wrapSheet(inner) {
+    return '<div class="sheet">' + inner + '</div>';
+  }
+  function emptyNote(msg) {
+    return wrapSheet(sheetHeader('Phonics Practice', '') +
+      '<p class="empty-note">' + esc(msg) + '</p>');
+  }
+
+  /* ---- Type 1: Dissect the Word ---- */
+  function renderType1(words) {
+    if (!words.length) return emptyNote('No words match the current filters.');
+    const rows = words.map(function (w) {
+      const toks = wordTokens(w).map(t => '<span class="tok">/' + esc(t) + '/</span>').join('');
+      return '<div class="dissect-row">' +
+        '<div class="dissect-word">' + esc(w.word) + '</div>' +
+        '<div class="dissect-arrow">➜</div>' +
+        '<div class="dissect-tokens">' + toks + '</div></div>';
+    }).join('');
+    return wrapSheet(sheetHeader('Dissect the Word',
+      'Say the word. Read each sound part. Blend the parts back together.') +
+      rows + sheetFooter());
+  }
+
+  /* ---- Type 2: Pattern Identification ---- */
+  function renderType2(words) {
+    if (!words.length) return emptyNote('No words match the current filters.');
+
+    const rows = words.map(function (w) {
+      const toks = wordTokens(w);
+      const correct = toks.filter(t => t.length > 1 && ALL_PATTERNS.indexOf(t) !== -1);
+      const answerSet = correct.length ? correct : [toks.reduce((a, b) => b.length > a.length ? b : a, '')];
+      const decoys = shuffle(ALL_PATTERNS.filter(p => toks.indexOf(p) === -1 && answerSet.indexOf(p) === -1))
+        .slice(0, Math.max(2, 3 - answerSet.length));
+      const options = shuffle(answerSet.concat(decoys)).slice(0, 4);
+      const optsHtml = options.map(function (o) {
+        const isCorrect = answerSet.indexOf(o) !== -1;
+        const cls = 'opt' + (isCorrect ? ' correct' : '');
+        return '<span class="' + cls + '">' + esc(o) + '</span>';
+      }).join('');
+      return '<div class="ident-row">' +
+        '<div class="ident-word">' + esc(w.word) + '</div>' +
+        '<div class="ident-options">' + optsHtml + '</div></div>';
+    }).join('');
+
+    return wrapSheet(sheetHeader('Circle the Phonics Pattern',
+      'Read the word. Circle the box that shows the target sound pattern.') +
+      rows + sheetFooter());
+  }
+  /* ---- Type 3: Sentence Construction ---- */
+  function renderType3(words) {
+    if (!words.length) return emptyNote('No words match the current filters.');
+    const blocks = words.map(function (w) {
+      return '<div class="sent-block">' +
+        '<div class="sent-word">' + esc(w.word) + '</div>' +
+        '<div class="sent-hint">Write a sentence using this word.</div>' +
+        '<div class="sent-line"></div><div class="sent-line"></div></div>';
+    }).join('');
+    return wrapSheet(sheetHeader('Use It In a Sentence',
+      'Read the word, then write your own sentence.') + blocks + sheetFooter());
+  }
+
+  /* ---- Type 4: Elkonin Sound Boxes ---- */
+  function renderType4(words) {
+    if (!words.length) return emptyNote('No words match the current filters.');
+    const items = words.map(function (w) {
+      const toks = wordTokens(w);
+      const n = w.phoneme_count || toks.length;
+      let boxes = '';
+      for (let i = 0; i < n; i++) {
+        boxes += '<div class="ebox" data-tok="' + esc(toks[i] || '') + '"></div>';
+      }      return '<div class="elkonin-item">' +
+        '<div class="elkonin-word">' + esc(w.word) + '</div>' +
+        '<div class="elkonin-boxes">' + boxes + '</div></div>';
+    }).join('');
+    return wrapSheet(sheetHeader('Sound Boxes',
+      'Say the word slowly. Put one counter in each box for every sound you hear.') +
+      '<div class="elkonin-grid">' + items + '</div>' + sheetFooter());
+  }
+
+  /* ---- Type 5 / 5b: Word Hunt Matrix / Sound Hunt ---- */
+  function renderType5(matchedWords) {
+    const soundHunt = $('soundHuntMode').checked;
+    const activeSounds = getSelectedSounds();
+
+    if (soundHunt && !activeSounds.length) {
+      return emptyNote('Sound Hunt needs a vowel-team sound to hunt for. ' +
+        'Tick one under "Filter by vowel-team sound" in the sidebar.');
+    }
+    if (!matchedWords.length) return emptyNote('No words match the current filters.');
+
+    const total = +$('huntCells').value || 20;
+    const cols = 4, rows = Math.ceil(total / cols);
+    const cellsNeeded = rows * cols;
+
+    const hasFilter = getSelectedPatterns().length > 0 || activeSounds.length > 0;
+
+    const targets = shuffle(matchedWords);
+
+    // ---- Distractor pool ----
+    // In sound-hunt mode, prefer words that also have a vowel team but with
+    // the WRONG sound — these are the pedagogically valuable traps. Fall back
+    // to any non-matching word if too few exist.
+    let distractors;
+    if (soundHunt) {
+      distractors = shuffle(WORDS.filter(function (w) {
+        const entries = String(w.vowel_team_sounds || '').split(',').filter(Boolean);
+        if (!entries.length) return false;
+        return !entries.some(function (e) {
+          return activeSounds.indexOf(e.split(':')[1]) !== -1;
+        });
+      }));
+      if (distractors.length < cellsNeeded * 0.4) {
+        // top up with any other non-target word
+        const extra = shuffle(WORDS.filter(function (w) {
+          return !matchesActivePatterns(w) && distractors.indexOf(w) === -1;
+        }));
+        distractors = distractors.concat(extra);
+      }
+    } else {
+      distractors = hasFilter
+        ? shuffle(WORDS.filter(w => !matchesActivePatterns(w)))
+        : [];
+    }
+
+    // ~60% targets, ~40% distractors
+    const targetQuota = hasFilter
+      ? Math.min(targets.length, Math.round(cellsNeeded * 0.6))
+      : cellsNeeded;
+
+    let picked = targets.slice(0, targetQuota);
+    if (hasFilter && distractors.length) {
+      picked = picked.concat(distractors.slice(0, cellsNeeded - picked.length));
+    }
+
+    // Pad from remaining targets if the pool is still short.
+    if (picked.length < cellsNeeded) {
+      const pickedSet = Object.create(null);
+      picked.forEach(w => pickedSet[w.word] = 1);
+      const more = shuffle(matchedWords).filter(w => !pickedSet[w.word]);
+      picked = picked.concat(more.slice(0, cellsNeeded - picked.length));
+    }
+
+    // Absolute last resort — dictionary smaller than grid.
+    if (picked.length < cellsNeeded) {
+      const seed = picked.slice();
+      let i = 0;
+      while (picked.length < cellsNeeded) {
+        picked.push(seed[i % seed.length]);
+        i++;
+      }
+    }
+
+    const grid = shuffle(picked).slice(0, cellsNeeded);
+
+    // ---- Cell rendering ----
+    const cells = grid.map(function (w) {
+      const match = matchesActivePatterns(w);
+
+      // In sound-hunt mode, reveal which vowel team produced the sound.
+      let tags = '';
+      if (soundHunt && match) {
+        const entries = String(w.vowel_team_sounds || '').split(',').filter(Boolean);
+        const hits = entries.filter(function (e) {
+          return activeSounds.indexOf(e.split(':')[1]) !== -1;
+        });
+        if (hits.length) {
+          tags = hits.map(function (h) {
+            return '<span class="hunt-tag">' + esc(h.split(':')[0]) + '</span>';
+          }).join('');
+        }
+      }
+
+      return '<div class="hunt-cell' + (match ? ' match' : '') + '">' +
+             esc(w.word) + tags + '</div>';
+    }).join('');
+
+    // ---- Header text ----
+    const title = soundHunt ? 'Sound Hunt' : 'Word Hunt';
+    let helper;
+    if (soundHunt) {
+      const soundList = activeSounds.map(soundDisplay).join(' or ');
+      helper = 'Find every word where a vowel team says ' + soundList +
+               '. The spellings will be different — listen, don\u2019t look.';
+    } else if (hasFilter) {
+      helper = 'Find all words that match: ' + filterSummary();
+    } else {
+      helper = 'Read each word aloud with a partner.';
+    }
+
+    return wrapSheet(sheetHeader(title, helper) +
+      '<div class="hunt-grid">' + cells + '</div>' + sheetFooter());
+  }
+
+  /* Populate the two lane dropdowns.
+     Normal mode: patterns grouped by category, Lane B same-category as Lane A.
+     Sound-sort mode: sound options only, Lane B any sound other than Lane A. */
+  function populateContrastSelects() {
+    const soundMode = $('soundSortMode').checked;
+
+    // --- Sound-sort mode ---
+    if (soundMode) {
+      $('laneALabel').textContent = 'Lane A sound';
+      $('laneBLabel').textContent = 'Lane B sound';
+
+      const labels = PC.SOUND_LABELS || {};
+      const order = ['long_a','long_e','long_i','long_o','long_u',
+                     'short_a','short_e','short_i','short_o','short_u',
+                     'oo_long','oo_short','ow','oi','aw'];
+
+      // Which sounds actually appear in the current filtered set?
+      const present = Object.create(null);
+      FILTERED.forEach(function (w) {
+        String(w.vowel_team_sounds || '').split(',').filter(Boolean).forEach(function (e) {
+          const s = e.split(':')[1];
+          if (s) present[s] = 1;
+        });
+      });
+
+      const optsHtml = order.filter(k => labels[k]).map(function (k) {
+        const mark = present[k] ? '• ' : '';
+        return '<option value="' + k + '">' + mark + esc(labels[k]) + '</option>';
+      }).join('');
+
+      const a = $('laneA'), b = $('laneB');
+      const prevA = a.value, prevB = b.value;
+
+      a.innerHTML = optsHtml;
+      if (prevA && a.querySelector('option[value="' + prevA + '"]')) a.value = prevA;
+      else a.value = present['long_e'] ? 'long_e' : (a.options[0] && a.options[0].value);
+
+      // Lane B: every sound except Lane A's.
+      const bOpts = order.filter(k => labels[k] && k !== a.value).map(function (k) {
+        const mark = present[k] ? '• ' : '';
+        return '<option value="' + k + '">' + mark + esc(labels[k]) + '</option>';
+      }).join('');
+      b.innerHTML = bOpts;
+      if (prevB && b.querySelector('option[value="' + prevB + '"]')) b.value = prevB;
+      else b.value = present['short_e'] ? 'short_e' : (b.options[0] && b.options[0].value);
+      return;
+    }
+
+    // --- Normal (pattern) mode ---
+    $('laneALabel').textContent = 'Lane A contains';
+    $('laneBLabel').textContent = 'Lane B contains';
+
+    const catLabels = {
+      digraphs:     'Consonant Digraphs',
+      floss:        'FLOSS Endings',
+      blends:       'Consonant Blends',
+      clusters3:    '3-Letter Clusters',
+      trigraphs:    'Trigraphs',
+      vowelTeams:   'Vowel Teams',
+      rControlled:  'R-Controlled Vowels',
+      rControlled3: 'R-Controlled Trigraphs'
+    };
+    const catOrder = Object.keys(PC.PHONICS_PATTERNS).filter(function (c) {
+      return catLabels[c] && (PC.PHONICS_PATTERNS[c] || []).length;
+    });
+
+    const present = Object.create(null);
+    FILTERED.forEach(function (w) {
+      wordTokens(w).forEach(function (t) {
+        if (t.length >= 2 && PC.PATTERN_CATEGORY[t]) present[t] = 1;
+      });
+    });
+
+    function optionsHtml(cats, skipPattern) {
+      return cats.map(function (cat) {
+        const pats = (PC.PHONICS_PATTERNS[cat] || [])
+          .filter(function (p) { return p !== skipPattern; })
+          .sort();
+        if (!pats.length) return '';
+        return '<optgroup label="' + esc(catLabels[cat]) + '">' +
+          pats.map(function (p) {
+            const mark = present[p] ? '• ' : '';
+            return '<option value="' + esc(p) + '">' + mark + esc(p) + '</option>';
+          }).join('') + '</optgroup>';
+      }).join('');
+    }
+
+    const a = $('laneA'), b = $('laneB');
+    const prevA = a.value, prevB = b.value;
+
+    a.innerHTML = optionsHtml(catOrder);
+    if (prevA && a.querySelector('option[value="' + prevA + '"]')) a.value = prevA;
+
+    const catA = PC.PATTERN_CATEGORY[a.value];
+    b.innerHTML = catA ? optionsHtml([catA], a.value) : '';
+    if (prevB && b.querySelector('option[value="' + prevB + '"]')) b.value = prevB;
+    else b.selectedIndex = 0;
+
+    b.disabled = !b.querySelector('option[value]:not([value=""])');
+  }
+
+  function renderType6() {
+    const soundMode = $('soundSortMode').checked;
+    const a = $('laneA').value, b = $('laneB').value;
+
+    if (!a || !b) {
+      return emptyNote('Pick two ' + (soundMode ? 'sounds' : 'patterns') +
+                       ' for the sort lanes.');
+    }
+    if (a === b) {
+      return emptyNote('The two lanes must be different.');
+    }
+
+    // ============ SOUND SORT ============
+    if (soundMode) {
+      const labels = PC.SOUND_LABELS || {};
+      const labelA = labels[a] || a;
+      const labelB = labels[b] || b;
+
+      const inA = [], inB = [], inBoth = [];
+      FILTERED.forEach(function (w) {
+        const entries = String(w.vowel_team_sounds || '').split(',').filter(Boolean);
+        if (!entries.length) return;
+        const hits = entries.map(function (e) {
+          return { pattern: e.split(':')[0], sound: e.split(':')[1] };
+        });
+        const hasA = hits.some(function (h) { return h.sound === a; });
+        const hasB = hits.some(function (h) { return h.sound === b; });
+        if (hasA && hasB) inBoth.push(w);
+        else if (hasA)    inA.push(w);
+        else if (hasB)    inB.push(w);
+      });
+
+      const union = inA.concat(inB);
+      if (!union.length) {
+        return emptyNote('No words in the current set make either of those ' +
+                         'sounds. Try different sounds, or loosen the filters.');
+      }
+
+      // Bank: tag each word with its lane sound, and — for the answer key —
+      // reveal which spelling produced it.
+      const bank = shuffle(union).map(function (w) {
+        const entries = String(w.vowel_team_sounds || '').split(',').filter(Boolean);
+        const hits = entries.map(function (e) {
+          return { pattern: e.split(':')[0], sound: e.split(':')[1] };
+        }).filter(function (h) { return h.sound === a || h.sound === b; });
+
+        const patterns = [];
+        hits.forEach(function (h) { if (patterns.indexOf(h.pattern) === -1) patterns.push(h.pattern); });
+
+        const soundKey = hits[0].sound;
+        const soundLabel = soundKey === a ? labelA : labelB;
+
+        return '<span class="bank-word">' + esc(w.word) +
+               '<span class="bank-tag sound-tag" data-sound="' + esc(soundKey) + '">' +
+               esc(soundLabel) + '</span>' +
+               '<span class="bank-tag spelling-tag">' +
+               patterns.map(esc).join('/') + '</span>' +
+               '</span>';
+      }).join('');
+
+      const excludeNote = inBoth.length
+        ? '<div class="sort-note">' + inBoth.length + ' word' +
+          (inBoth.length === 1 ? '' : 's') +
+          ' hidden because they contain both sounds.</div>'
+        : '';
+
+      return wrapSheet(sheetHeader('Sound Sort',
+        'Cut out the words at the bottom. Say each one out loud. ' +
+        'Put it in the lane that matches the sound you hear — not the spelling.') +
+        '<div class="sort-lanes">' +
+          '<div class="lane"><div class="lane-head">' + esc(labelA) + '</div></div>' +
+          '<div class="lane"><div class="lane-head">' + esc(labelB) + '</div></div>' +
+        '</div>' +
+        '<div class="bank"><div class="bank-title">✂ Word Bank — cut along the dashed line</div>' +
+        '<div class="bank-words">' + bank + '</div></div>' +
+        excludeNote + sheetFooter());
+    }
+
+    // ============ PATTERN SORT ============
+    if (PC.PATTERN_CATEGORY[a] !== PC.PATTERN_CATEGORY[b]) {
+      return emptyNote('The two lane patterns must be from the same category.');
+    }
+
+    const inA = [], inB = [], inBoth = [];
+    FILTERED.forEach(function (w) {
+      const toks = wordTokens(w);
+      const hasA = toks.indexOf(a) !== -1;
+      const hasB = toks.indexOf(b) !== -1;
+      if (hasA && hasB) inBoth.push(w);
+      else if (hasA)    inA.push(w);
+      else if (hasB)    inB.push(w);
+    });
+
+    const union = inA.concat(inB);
+    if (!union.length) {
+      return emptyNote('No words match this contrast. Try different lane patterns.');
+    }
+
+    const bank = shuffle(union).map(function (w) {
+      const toks = wordTokens(w);
+      const tag = toks.indexOf(a) !== -1 ? a : b;
+      return '<span class="bank-word">' + esc(w.word) +
+             '<span class="bank-tag">' + esc(tag) + '</span></span>';
+    }).join('');
+
+    const excludeNote = inBoth.length
+      ? '<div class="sort-note">' + inBoth.length + ' word' +
+        (inBoth.length === 1 ? '' : 's') +
+        ' hidden because they contain both ' + esc(a) + ' and ' + esc(b) +
+        ' — cannot be sorted into a single lane.</div>'
+      : '';
+
+    return wrapSheet(sheetHeader('Word Sort',
+      'Cut out the words at the bottom. Sort them into the correct lane.') +
+      '<div class="sort-lanes">' +
+        '<div class="lane"><div class="lane-head">' + esc(a) + '</div></div>' +
+        '<div class="lane"><div class="lane-head">' + esc(b) + '</div></div>' +
+      '</div>' +
+      '<div class="bank"><div class="bank-title">✂ Word Bank — cut along the dashed line</div>' +
+      '<div class="bank-words">' + bank + '</div></div>' +
+      excludeNote + sheetFooter());
+  }
+
+  /* ---- Type 7: Tic-Tac-Toe ---- */
+  function renderType7(words) {
+    const size = +$('tttSize').value || 3;
+    const need = size * size;
+    if (words.length < need) {
+      return emptyNote('Need at least ' + need + ' filtered words for a ' +
+                       size + '×' + size + ' grid (currently ' + words.length + ').');
+    }
+    const picks = shuffle(words).slice(0, need);
+    const cells = picks.map(w => '<div class="ttt-cell">' + esc(w.word) + '</div>').join('');
+    return wrapSheet(sheetHeader('Phonics Tic-Tac-Toe',
+      'Read the word in a cell correctly to claim it. Three in a row wins!') +
+      '<div class="ttt-grid g' + size + '">' + cells + '</div>' + sheetFooter());
+  }
+
+  /* ---- Type 8: Onset & Rime ---- */
+  function renderType8(words) {
+    if (!words.length) return emptyNote('No words match the current filters.');
+
+    // Build a rime → words index from the full dictionary (not just the filtered set),
+    // so rhyme families are rich even when the worksheet is narrow.
+    const rimeMap = Object.create(null);
+    WORDS.forEach(function (w) {
+      const r = w.rime;
+      if (!r) return;
+      (rimeMap[r] = rimeMap[r] || []).push(w.word);
+    });
+
+    const items = words.map(function (w) {
+      const onset = w.onset || '';
+      const rime  = w.rime  || w.word;
+      const onsetLabel = onset ? esc(onset) : '(none)';
+
+      const family = (rimeMap[rime] || [])
+        .filter(x => x !== w.word)
+        .slice(0, 6);
+      const famHtml = family.length
+        ? '<div class="or-rhymes">Rhyme family — <span class="or-rhyme-word">-' +
+          esc(rime) + '</span>: ' + family.map(esc).join(', ') + '</div>'
+        : '';
+
+      return '<div class="or-item">' +
+        '<div class="or-word">' + esc(w.word) + '</div>' +
+        '<div class="or-row">' +
+          '<div class="or-cell">' +
+            '<div class="or-box"><span class="or-answer">' + onsetLabel + '</span></div>' +
+            '<div class="or-label">Onset</div>' +
+          '</div>' +
+          '<div class="or-cell">' +
+            '<div class="or-box"><span class="or-answer">' + esc(rime) + '</span></div>' +
+            '<div class="or-label">Rime</div>' +
+          '</div>' +
+        '</div>' + famHtml +
+      '</div>';
+    }).join('');
+
+    return wrapSheet(sheetHeader('Onset & Rime',
+      'Say the word. Write the beginning sound(s) in the onset box, then write the ' +
+      'vowel chunk in the rime box.') +
+      '<div class="or-caption">Tip: the onset is every sound before the first vowel. ' +
+      'The rime starts at the first vowel and runs to the end of the word.</div>' +
+      items + sheetFooter());
+  }
+  
+  /* ---- Type 9: Syllable Split ---- */
+  function renderType9(words) {
+    if (!words.length) return emptyNote('No words match the current filters.');
+
+    const items = words.map(function (w) {
+      const syls = PC.splitSyllables(w.word);
+      const boxes = syls.map(function (s) {
+        return '<div class="syl-box"><span class="syl-answer">' + esc(s) + '</span></div>';
+      }).join('<div class="syl-dot">·</div>');
+
+      return '<div class="syl-item">' +
+        '<div class="syl-word">' + esc(w.word) + '</div>' +
+        '<div class="syl-boxes">' + boxes + '</div>' +
+      '</div>';
+    }).join('');
+
+    return wrapSheet(sheetHeader('Syllable Split',
+      'Say the word. Clap each syllable. Write one syllable in each box.') +
+      '<div class="syl-caption">Tip: every syllable needs a vowel sound. ' +
+      'Vowel teams (ai, ee, oa) stay together.</div>' +
+      '<div class="syl-grid">' + items + '</div>' +
+      sheetFooter());
+  }
+    
+  /* ============================================================
+     Minimal pairs helper panel (below the worksheet)
+     ============================================================ */
+  function renderMinimalPairsPanel(words) {
+    if (!words.length) return '';
+    const pool = words.map(w => w.word);
+    const pairs = [];
+    words.slice(0, 6).forEach(function (w) {
+      PC.findMinimalPairs(w.word, pool).forEach(function (p) {
+        pairs.push(w.word + ' ↔ ' + p.word + '  (' + p.target_token + ' / ' + p.other_token + ')');
+      });
+    });
+    if (!pairs.length) return '';
+    const list = pairs.slice(0, 12).map(p => '<span>' + esc(p) + '</span>').join('');
+    return '<div class="pairs-box no-print"><h3>🔗 Minimal pairs detected in the current selection</h3>' +
+      '<div class="pairs-list">' + list + '</div></div>';
+  }
+
+  /* ============================================================
+     Render dispatcher
+     ============================================================ */
+  function currentActivity() {
+    const el = document.querySelector('input[name=activity]:checked');
+    return el ? el.value : '1';
+  }
+
+  function refreshActivityOptions() {
+    const act = currentActivity();
+    document.querySelectorAll('#activityOptions [data-for]').forEach(function (div) {
+      const list = div.dataset.for.split(' ');
+      div.style.display = list.indexOf(act) !== -1 ? '' : 'none';
+    });
+  }
+
+  function updateScopeLabel() {
+    const lvl = +$('scopeSlider').value;
+    const meta = PC.SCOPE_LEVELS.find(s => s.level === lvl) || PC.SCOPE_LEVELS[7];
+    $('levelLabel').textContent = 'Level ' + lvl;
+    $('scopeDesc').textContent = meta.name + ' — ' + meta.desc;
+  }
+
+  function render() {
+    applyFilters();
+    refreshActivityOptions();
+
+    const act = currentActivity();
+    const max = Math.max(1, +$('maxWords').value || 12);
+    const selected = selectedWords();
+    const copies = Math.max(1, +$('copies').value || 1);
+
+    // Words that fit on the sheet
+    const fit = selected.slice(0, max);
+
+    let sheetHtml;
+    switch (act) {
+      case '1': sheetHtml = renderType1(fit); break;
+      case '2':
+        sheetHtml = renderType2(fit.slice(0, Math.min(max, 10)));
+        break;
+      case '3': sheetHtml = renderType3(fit.slice(0, Math.min(max, 5))); break;
+      case '4': sheetHtml = renderType4(fit); break;
+      case '5': sheetHtml = renderType5(selected); break;
+      case '6': sheetHtml = renderType6(); break;
+      case '7': sheetHtml = renderType7(selected); break;
+      case '8': sheetHtml = renderType8(fit); break;
+      case '9': sheetHtml = renderType9(fit); break;
+      default:  sheetHtml = emptyNote('Unknown activity.');
+    }
+
+    // Duplicate for print copies
+    let sheets = '';
+    for (let i = 0; i < copies; i++) sheets += sheetHtml;
+
+    const pairsPanel = (act === '1' || act === '2' || act === '4' || act === '8' || act === '9')
+      ? renderMinimalPairsPanel(fit) : '';
+
+    $('preview').innerHTML = sheets + pairsPanel;
+    renderWordList();
+  }
+
+  /* ============================================================
+     Data loading
+     ============================================================ */
+  function loadWords(list) {
+    const opts = { includeSubPatterns: $('includeSubs').checked };
+    WORDS = PC.parseWords(list, opts).map(normalizeRow);
+    wordOrder = []; wordInclude = Object.create(null);
+    refresh();
+  }
+
+  function loadPreParsedCSV(text) {
+    let rows;
+    if (window.Papa && window.Papa.parse) {
+      rows = window.Papa.parse(text, { header: true, skipEmptyLines: true }).data;
+    } else {
+      rows = miniCSV(text);
+    }
+    WORDS = rows.map(normalizeRow).filter(r => r.word);
+    wordOrder = []; wordInclude = Object.create(null);
+    refresh();
+  }
+
+  function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const text = String(e.target.result || '');
+      if (PC.isPreParsedCSV(text)) {
+        loadPreParsedCSV(text);
+      } else {
+        const list = text.split(/[\r\n,;|]+/)
+          .map(s => s.trim())
+          .filter(s => /[a-zA-Z]/.test(s));
+        loadWords(list);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function miniCSV(text) {
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if (!lines.length) return [];
+    const header = lines[0].split(',').map(h => h.trim());
+    return lines.slice(1).map(function (line) {
+      const cells = line.split(',');
+      const o = {};
+      header.forEach((h, i) => { o[h] = (cells[i] || '').trim(); });
+      return o;
+    });
+  }
+
+  /* ============================================================
+     Wire up
+     ============================================================ */
+      function refresh() { render(); }  
+  function bind(id) {
+    const el = $(id);
+    if (el) el.addEventListener('change', refresh);
+    if (el && (el.type === 'range' || el.type === 'number')) {
+      el.addEventListener('input', refresh);
+    }
+  }
+
+  ['matchMode','diffMin','diffMax','phonMin','phonMax','letMin','letMax',
+   'maxWords','laneA','laneB','tttSize','huntCells','sheetFooter',
+   'scopeSlider','decodableOnly','wordType','copies','includeSubs','soundHuntMode']
+    .forEach(bind);
+
+  $('scopeSlider').addEventListener('input', updateScopeLabel);
+
+  document.querySelectorAll('input[name=activity]').forEach(function (r) {
+    r.addEventListener('change', refresh);
+  });
+
+  $('fileInput').addEventListener('change', function (e) {
+    if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+  });
+  $('demoBtn').addEventListener('click', () => loadWords(DEMO_WORDS));
+  $('clearBtn').addEventListener('click', function () {
+    WORDS = []; FILTERED = []; wordOrder = []; wordInclude = Object.create(null);
+    refresh();
+  });
+  $('clearPatterns').addEventListener('click', function () {
+    document.querySelectorAll('#patternFilters input[type=checkbox]')
+      .forEach(cb => cb.checked = false);
+    refresh();
+  });
+  $('allPatterns').addEventListener('click', function () {
+    document.querySelectorAll('#patternFilters input[type=checkbox]')
+      .forEach(cb => cb.checked = true);
+    refresh();
+  });
+  $('csvBtn').addEventListener('click', function () {
+    if (!WORDS.length) { alert('Load some words first.'); return; }
+    const csv = PC.toCSV(WORDS, { extended: true });
+    PC.downloadCSV(csv, 'phonics-dictionary.csv');
+  });
+  $('printBtn').addEventListener('click', () => window.print());
+  $('refreshBtn').addEventListener('click', refresh);
+
+  $('solToggle').addEventListener('click', function () {
+    const wrap = $('previewWrap');
+    wrap.classList.toggle('show-answers');
+    const on = wrap.classList.contains('show-answers');
+    this.classList.toggle('on', on);
+    this.textContent = on ? '🙈 Hide answers' : '👁 Show answers';
+  });
+  
+  // Word-list panel interactions (delegated)
+  $('wordList').addEventListener('click', function (e) {
+    const t = e.target;
+    const row = t.closest('.word-row');
+    if (!row) return;
+    const word = row.dataset.word;
+    if (t.dataset.role === 'up') {
+      const i = wordOrder.indexOf(word);
+      if (i > 0) { wordOrder.splice(i, 1); wordOrder.splice(i - 1, 0, word); refresh(); }
+    } else if (t.dataset.role === 'down') {
+      const i = wordOrder.indexOf(word);
+      if (i < wordOrder.length - 1) { wordOrder.splice(i, 1); wordOrder.splice(i + 1, 0, word); refresh(); }
+    }
+  });
+  $('wordList').addEventListener('change', function (e) {
+    if (e.target.dataset.role === 'include') {
+      const row = e.target.closest('.word-row');
+      if (row) { wordInclude[row.dataset.word] = e.target.checked; refresh(); }
+    }
+  });
+  $('selAll').addEventListener('click', function () {
+    wordOrder.forEach(w => wordInclude[w] = true); refresh();
+  });
+  $('selNone').addEventListener('click', function () {
+    wordOrder.forEach(w => wordInclude[w] = false); refresh();
+  });
+  $('orderReset').addEventListener('click', function () {
+    wordOrder = FILTERED.map(w => w.word); refresh();
+  });
+  $('orderShuffle').addEventListener('click', function () {
+    wordOrder = shuffle(wordOrder); refresh();
+  });
+
+  /* Boot */
+  updateScopeLabel();
+  buildPatternFilters();
+  buildSoundFilters();
+  loadWords(DEMO_WORDS);
+})();
+</script>
+</body>
+</html>

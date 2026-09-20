@@ -1,0 +1,488 @@
+/*!
+ * PhonicsConstructor.js  v2.0.0
+ * Raw word list → phonics metadata objects + CSV.
+ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.PhonicsConstructor = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var VERSION = '2.1.0';
+
+  /* ==========================================================
+     1. PATTERN DICTIONARY  (expanded, level-tagged)
+     ========================================================== */
+  var PHONICS_PATTERNS = {
+    digraphs:    ['ch','sh','th','wh','ph','ck','ng','qu','gh','kn','wr','gn','mb','ps'],
+    floss:       ['ss','ff','ll','zz'],
+    blends:      ['bl','cl','fl','gl','pl','sl','br','cr','dr','fr','gr','pr','tr',
+                  'tw','dw','sc','sk','sm','sn','sp','st','sw',
+                  'mp','nt','nk','nd','ft','lt','lk','ld','lp','lf','pt','ct','xt',
+                  'rd','rk','rm','rn','rl','rt'],
+    clusters3:   ['scr','spl','spr','str','shr','thr','squ','sch'],
+    trigraphs:   ['tch','dge','igh'],
+    vowelTeams:  ['ai','ay','ea','ee','ie','oa','oe','ue','ui',
+                  'au','aw','ei','eu','ew','ey','oi','oo','ou','ow','oy',
+                  'eigh','ough','augh'],
+    rControlled: ['ar','er','ir','or','ur'],
+    rControlled3:['air','ear','eer','oor','our','are','ere','ire','ore','ure','oar']
+  };
+
+  var PATTERN_CATEGORY = {};
+  var PATTERN_LEVELS   = {};
+  var SORTED_PATTERNS  = [];
+
+  (function initPatterns() {
+    var catLevels = {
+      digraphs: 2, floss: 2, blends: 3, clusters3: 4, trigraphs: 4,
+      vowelTeams: 5, rControlled: 6, rControlled3: 7
+    };
+    Object.keys(PHONICS_PATTERNS).forEach(function (cat) {
+      PHONICS_PATTERNS[cat].forEach(function (p) {
+        if (!PATTERN_CATEGORY[p]) {
+          PATTERN_CATEGORY[p] = cat;
+          PATTERN_LEVELS[p]   = catLevels[cat] || 2;
+        }
+      });
+    });
+    ['gh','kn','wr','gn','mb','ps'].forEach(function (p) { PATTERN_LEVELS[p] = 4; });
+    ['au','aw','ei','eu','ew','ey','oi','oo','ou','ow','oy'].forEach(function (p) { PATTERN_LEVELS[p] = 6; });
+    ['eigh','ough','augh'].forEach(function (p) { PATTERN_LEVELS[p] = 8; });
+
+    var seen = {};
+    Object.keys(PHONICS_PATTERNS).forEach(function (cat) {
+      PHONICS_PATTERNS[cat].forEach(function (p) {
+        if (seen[p]) return;
+        seen[p] = 1;
+        SORTED_PATTERNS.push({ pattern: p, category: cat });
+      });
+    });
+    SORTED_PATTERNS.sort(function (a, b) { return b.pattern.length - a.pattern.length; });
+  })();
+
+  var SCOPE_LEVELS = [
+    { level: 1, name: 'CVC & single letters',        desc: 'cat, dog, sun' },
+    { level: 2, name: 'Digraphs & FLOSS',            desc: 'sh, ch, th, ck, ng, ss, ll' },
+    { level: 3, name: 'Consonant blends',            desc: 'st, tr, bl, mp, nd' },
+    { level: 4, name: 'Trigraphs & 3-clusters',      desc: 'tch, dge, igh, str, spl' },
+    { level: 5, name: 'Common vowel teams',          desc: 'ai, ay, ee, ea, oa' },
+    { level: 6, name: 'Advanced vowels & R-ctrl',    desc: 'oi, oy, ou, au, ar, er' },
+    { level: 7, name: 'R-ctrl trigraphs',            desc: 'air, ear, ire, ore' },
+    { level: 8, name: 'Advanced / multi-syllable',   desc: 'ough, eigh, schwa' }
+  ];
+
+  /* Curated common-word set (heuristic for real/nonsense) */
+  var COMMON_WORDS = (function () {
+    return ('the be to of and a in that have i it for not on with he as you do at this but his by from ' +
+      'they we say her she or an will my one all would there their what so up out if about who get which ' +
+      'go me when make can like time no just him know take people into year your good some could them see ' +
+      'other than then now look only come its over think also back after use two how our work first well ' +
+      'way even new want because any these give day most us is are was were has had does did would should ' +
+      'may might must shall went gone coming saw seen looked looking said saying made making took taken got ' +
+      'gotten gave given found put run ran running cat dog sun hat bat rat mat sat fat pat man can fan pan ' +
+      'ran van bag tag rag big dig pig wig fig log fog hog jog bog bug hug mug rug tug dug bed fed led red ' +
+      'wed ten hen pen den men net pet set wet let met bet bit fit hit sit lit pit kit win pin fin tin bin ' +
+      'din sin chin thin shin ship shop chip chop chat that this them when whip fish wish dish cash mash ' +
+      'dash ash bash gash hash lash rash sash trash flash crash smash shell smell spell swell class grass ' +
+      'glass pass mass less mess dress press stress trip trap tree train truck trick track crack black ' +
+      'block clock click clack brick bring brush brave broke bright splash spring sprint string strong ' +
+      'street stream stamp stump stand still small smile stone store story storm start jump hand lamp ' +
+      'milk soft belt help plant ant tent sink night light right might tight fight queen quick quit quilt').split(/\s+/);
+  })();
+  (function () { var m = {}; COMMON_WORDS.forEach(function (w) { m[w] = 1; }); COMMON_WORDS = m; })();
+
+  /* ==========================================================
+     2. HELPERS
+     ========================================================== */
+  var CONSONANT = /[bcdfghjklmnpqrstvwxyz]/;
+  var VOWEL_RE  = /[aeiou]/;
+
+  function clean(word) {
+    return String(word == null ? '' : word).toLowerCase().replace(/[^a-z]/g, '');
+  }
+  function isVowel(ch) { return VOWEL_RE.test(ch); }
+
+  function countSyllables(word) {
+    var w = clean(word);
+    if (!w) return 0;
+    if (w.length <= 3) return 1;
+    if (w.charAt(w.length - 1) === 'e' && w.length > 2) {
+      var isLe = (w.charAt(w.length - 2) === 'l' && w.length > 3 && !isVowel(w.charAt(w.length - 3)));
+      if (!isLe) w = w.slice(0, -1);
+    }
+    var count = 0, prev = false;
+    for (var i = 0; i < w.length; i++) {
+      var v = isVowel(w.charAt(i));
+      if (v && !prev) count++;
+      prev = v;
+    }
+    return Math.max(1, count);
+  }
+
+  function onsetRime(word) {
+    var w = clean(word), i = 0;
+    while (i < w.length && !isVowel(w.charAt(i))) i++;
+    return { onset: w.slice(0, i), rime: w.slice(i) };
+  }
+
+  function tokenize(word, opts) {
+    opts = opts || {};
+    var mergeDoubles = opts.mergeDoubleConsonants !== false;
+    var w = clean(word), tokens = [], i = 0;
+    while (i < w.length) {
+      var matched = null;
+      for (var k = 0; k < SORTED_PATTERNS.length; k++) {
+        var p = SORTED_PATTERNS[k].pattern;
+        if (p.length <= w.length - i && w.substr(i, p.length) === p) { matched = p; break; }
+      }
+      if (matched) { tokens.push(matched); i += matched.length; continue; }
+      if (mergeDoubles && i + 1 < w.length &&
+          w.charAt(i) === w.charAt(i + 1) && CONSONANT.test(w.charAt(i))) {
+        tokens.push(w.charAt(i) + w.charAt(i + 1)); i += 2; continue;
+      }
+      tokens.push(w.charAt(i)); i += 1;
+    }
+    return tokens;
+  }
+
+  function findAllPatterns(word) {
+    var found = {};
+    SORTED_PATTERNS.forEach(function (sp) {
+      if (word.indexOf(sp.pattern) !== -1) {
+        if (!found[sp.category]) found[sp.category] = [];
+        if (found[sp.category].indexOf(sp.pattern) === -1) found[sp.category].push(sp.pattern);
+      }
+    });
+    return found;
+  }
+
+  function computeDifficulty(buckets, tokens) {
+    if (buckets.clusters3.length) return 3;
+    if (buckets.trigraphs.length) return 2;
+    var last = tokens[tokens.length - 1];
+    var FINAL = {mp:1,nt:1,nk:1,nd:1,ft:1,lt:1,lk:1,ld:1,lp:1,lf:1,pt:1,ct:1,xt:1,
+                 rd:1,rk:1,rm:1,rn:1,rl:1,rt:1};
+    if (last && FINAL[last]) return 2;
+    if (buckets.vowelTeams.length || buckets.rControlled.length || buckets.rControlled3.length) return 2;
+    return 1;
+  }
+
+  function decodabilityLevel(record) {
+    var maxLevel = 1;
+    (record.tokens || []).forEach(function (t) {
+      if (PATTERN_LEVELS[t]) maxLevel = Math.max(maxLevel, PATTERN_LEVELS[t]);
+    });
+    return maxLevel;
+  }
+
+  /* ==========================================================
+     2b. SYLLABLE SPLITTER  (heuristic)
+     ========================================================== */
+
+  /* Vowel nuclei — patterns that count as a SINGLE vowel sound.
+     Longest first. R-controlled patterns are deliberately excluded so
+     'story' segments as o | y, not or | y. */
+  var VOWEL_NUCLEI = (function () {
+    var list = []
+      .concat(['air','ear','eer','oor','our','are','ere','ire','ore','ure','oar'])
+      .concat(['eigh','ough','augh','igh'])
+      .concat(['ai','ay','ea','ee','ie','oa','oe','ue','ui','au','aw',
+               'ei','eu','ew','ey','oi','oo','ou','ow','oy']);
+    list.sort(function (a, b) { return b.length - a.length; });
+    return list;
+  })();
+
+  function isVowelChar(ch) { return 'aeiou'.indexOf(ch) !== -1; }
+
+  /* 'y' is a consonant only when it starts a word and is followed by a vowel
+     (yes, you, yacht). Otherwise it acts as a vowel (happy, gym, fly). */
+  function isYVowel(w, i) {
+    if (i === 0 && i + 1 < w.length && isVowelChar(w.charAt(i + 1))) return false;
+    return true;
+  }
+
+  function identifyVowelNuclei(word) {
+    var w = clean(word);
+    var nuclei = [];
+    var i = 0;
+    while (i < w.length) {
+      var matched = null;
+      for (var k = 0; k < VOWEL_NUCLEI.length; k++) {
+        var p = VOWEL_NUCLEI[k];
+        if (w.substr(i, p.length) === p) { matched = p; break; }
+      }
+      if (matched) {
+        nuclei.push({ start: i, end: i + matched.length, pattern: matched });
+        i += matched.length;
+        continue;
+      }
+      var ch = w.charAt(i);
+      if (isVowelChar(ch) || (ch === 'y' && isYVowel(w, i))) {
+        nuclei.push({ start: i, end: i + 1, pattern: ch });
+        i += 1;
+        continue;
+      }
+      i += 1;
+    }
+    // Silent final 'e' — drop it when the word has 2+ nuclei
+    if (nuclei.length >= 2) {
+      var last = nuclei[nuclei.length - 1];
+      if (last.pattern === 'e' && last.start > 0 && !isVowelChar(w.charAt(last.start - 1))) {
+        var after = w.slice(last.end);
+        var isSilent = (last.end === w.length) ||
+                       (after.length === 1 && (after === 's' || after === 'd'));
+        if (isSilent) nuclei.pop();
+      }
+    }
+    return nuclei;
+  }
+
+  function splitSyllables(word) {
+    var w = clean(word);
+    if (!w) return [];
+
+    // -Cle ending → the C+le group forms its own syllable
+    var suffix = '';
+    if (w.length > 4 && w.slice(-2) === 'le') {
+      var cIdx = w.length - 3;
+      var c = w.charAt(cIdx);
+      if (!isVowelChar(c) && c !== 'l') {
+        suffix = w.slice(cIdx);
+        w = w.slice(0, cIdx);
+      }
+    }
+
+    var nuclei = identifyVowelNuclei(w);
+    if (nuclei.length <= 1) return suffix ? [w, suffix] : [w];
+
+    var boundaries = [];
+    for (var n = 0; n < nuclei.length - 1; n++) {
+      var cur = nuclei[n], nxt = nuclei[n + 1];
+      var between = w.slice(cur.end, nxt.start);
+      var len = between.length;
+
+      if (len === 0) {
+        // Two adjacent vowels → hiatus (cre-ate)
+        boundaries.push(cur.end);
+      } else if (len === 1) {
+        // VCV → split before the consonant (o-pen, ti-ger)
+        boundaries.push(cur.end);
+      } else if (len === 2) {
+        // VCCV → split between the consonants (rab-bit, pen-cil)
+        boundaries.push(cur.end + 1);
+      } else {
+        // VCCCV+ → keep the last consonant cluster/digraph together
+        var lastTwo = between.slice(-2);
+        var cat = PATTERN_CATEGORY[lastTwo];
+        if (cat === 'blends' || cat === 'digraphs' || cat === 'clusters3') {
+          boundaries.push(nxt.start - 2);
+        } else {
+          boundaries.push(nxt.start - 1);
+        }
+      }
+    }
+
+    var syllables = [], start = 0;
+    boundaries.forEach(function (b) {
+      if (b > start) syllables.push(w.slice(start, b));
+      start = b;
+    });
+    syllables.push(w.slice(start));
+    if (suffix) syllables.push(suffix);
+    return syllables;
+  }
+  
+  /* ==========================================================
+     3. PARSING
+     ========================================================== */
+  function parseWord(rawWord, opts) {
+    opts = opts || {};
+    var word = clean(rawWord);
+    if (!word) return null;
+
+    var tokens = tokenize(word, opts);
+    var buckets = {
+      digraphs: [], trigraphs: [], blends: [],
+      clusters3: [], vowelTeams: [], rControlled: [], rControlled3: [], floss: []
+    };
+    var seen = {};
+    tokens.forEach(function (tok) {
+      if (tok.length < 2) return;
+      var cat = PATTERN_CATEGORY[tok];
+      if (!cat || !buckets[cat]) return;
+      var k = cat + ':' + tok;
+      if (seen[k]) return;
+      seen[k] = 1;
+      buckets[cat].push(tok);
+    });
+
+    if (opts.includeSubPatterns) {
+      var all = findAllPatterns(word);
+      Object.keys(all).forEach(function (cat) {
+        if (!buckets[cat]) return;
+        all[cat].forEach(function (p) {
+          if (buckets[cat].indexOf(p) === -1) buckets[cat].push(p);
+        });
+      });
+    }
+
+    var difficulty = computeDifficulty(buckets, tokens);
+    var or = onsetRime(word);
+
+    var allPats = [];
+    Object.keys(buckets).forEach(function (cat) {
+      buckets[cat].forEach(function (p) {
+        if (allPats.indexOf(p) === -1) allPats.push(p);
+      });
+    });
+
+    var rec = {
+      word: word,
+      graphemes: tokens.join('|'),
+      phoneme_count: tokens.length,
+      digraphs:  buckets.digraphs.join(','),
+      trigraphs: buckets.trigraphs.join(','),
+      blends:    buckets.blends.join(','),
+      difficulty: difficulty,
+
+      clusters3:    buckets.clusters3.join(','),
+      vowel_teams:  buckets.vowelTeams.join(','),
+      r_controlled: buckets.rControlled.concat(buckets.rControlled3).join(','),
+      floss:        buckets.floss.join(','),
+      letter_count: word.length,
+
+      syllable_count: countSyllables(word),
+      onset: or.onset,
+      rime:  or.rime,
+      level: 0,
+      is_common: COMMON_WORDS[word] ? 'yes' : 'no',
+      secondary_patterns: allPats.join(','),
+
+      tokens: tokens
+    };
+    rec.level = decodabilityLevel(rec);
+    return rec;
+  }
+
+  function parseWords(list, opts) {
+    if (!Array.isArray(list)) list = String(list == null ? '' : list).split(/[\r\n]+/);
+    var out = [], seen = {};
+    list.forEach(function (raw) {
+      var rec = parseWord(raw, opts);
+      if (!rec || seen[rec.word]) return;
+      seen[rec.word] = 1;
+      out.push(rec);
+    });
+    return out;
+  }
+
+  function parseText(text, opts) {
+    var list = String(text || '').split(/[\r\n,;|\t]+/)
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return /[a-zA-Z]/.test(s); });
+    return parseWords(list, opts);
+  }
+
+  /* ==========================================================
+     4. MINIMAL PAIRS
+     ========================================================== */
+  function findMinimalPairs(word, pool, opts) {
+    opts = opts || {};
+    var target = parseWord(word, opts);
+    if (!target) return [];
+    var results = [];
+    (pool || []).forEach(function (w) {
+      var rec = (typeof w === 'string') ? parseWord(w, opts) : w;
+      if (!rec || rec.word === target.word) return;
+      if (rec.tokens.length !== target.tokens.length) return;
+      var diffs = 0, at = -1;
+      for (var i = 0; i < rec.tokens.length; i++) {
+        if (rec.tokens[i] !== target.tokens[i]) { diffs++; at = i; }
+        if (diffs > 1) return;
+      }
+      if (diffs === 1) {
+        results.push({
+          word: rec.word,
+          target_token: target.tokens[at],
+          other_token: rec.tokens[at],
+          differs_at: at
+        });
+      }
+    });
+    return results;
+  }
+
+  /* ==========================================================
+     5. CSV EXPORTER
+     ========================================================== */
+  var BASE_COLUMNS = ['word','graphemes','phoneme_count','digraphs','trigraphs','blends','difficulty'];
+  var EXTENDED_COLUMNS = ['clusters3','vowel_teams','r_controlled','floss','letter_count',
+                          'syllable_count','onset','rime','level','is_common','secondary_patterns'];
+
+  function csvCell(v) {
+    var s = String(v == null ? '' : v);
+    return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function toCSV(rows, opts) {
+    opts = opts || {};
+    var cols = BASE_COLUMNS.concat(opts.extended ? EXTENDED_COLUMNS : []);
+    var lines = [cols.join(',')];
+    (rows || []).forEach(function (r) {
+      lines.push(cols.map(function (c) { return csvCell(r[c]); }).join(','));
+    });
+    return lines.join('\r\n');
+  }
+
+  function downloadCSV(csv, filename) {
+    if (typeof document === 'undefined') return;
+    var blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'phonics-dictionary.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+
+  function isPreParsedCSV(text) {
+    var first = String(text || '').split(/\r?\n/)[0] || '';
+    return /^\s*word\s*,\s*graphemes/i.test(first);
+  }
+
+  /* ==========================================================
+     6. PUBLIC API
+     ========================================================== */
+  return {
+    VERSION: VERSION,
+    PHONICS_PATTERNS: PHONICS_PATTERNS,
+    PATTERN_LEVELS:   PATTERN_LEVELS,
+    PATTERN_CATEGORY: PATTERN_CATEGORY,
+    SCOPE_LEVELS:     SCOPE_LEVELS,
+    SORTED_PATTERNS:  SORTED_PATTERNS,
+
+    tokenize: tokenize,
+    parseWord: parseWord,
+    parseWords: parseWords,
+    parseText: parseText,
+    findAllPatterns: findAllPatterns,
+    findMinimalPairs: findMinimalPairs,
+    countSyllables: countSyllables,
+    onsetRime: onsetRime,
+    decodabilityLevel: decodabilityLevel,
+
+    toCSV: toCSV,
+    downloadCSV: downloadCSV,
+    isPreParsedCSV: isPreParsedCSV,
+
+    splitSyllables: splitSyllables,
+    identifyVowelNuclei: identifyVowelNuclei,
+    
+    selfTest: function () {
+      var rows = parseWords(['ship','catch','thump','stretch','clamp','shell','night','phone']);
+      if (typeof console !== 'undefined') console.table(rows);
+      return toCSV(rows, { extended: true });
+    }
+  };
+});
