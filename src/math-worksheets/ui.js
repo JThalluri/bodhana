@@ -1,4 +1,5 @@
 import { buildPlaceValueUI, unmountPlaceValue } from './pv-ui.js';
+import { buildTicTacToeUI, unmountTicTacToe } from './tictactoe-ui.js';
 
 let _listeners = [];
 let _currentType = null;
@@ -20,6 +21,8 @@ function unmountSubType() {
     // math/ui.js has no unmount; clearing innerHTML is sufficient
   } else if (_currentType === 'place-value') {
     unmountPlaceValue();
+  } else if (_currentType === 'tic-tac-toe') {
+    unmountTicTacToe();
   }
 }
 
@@ -32,6 +35,8 @@ async function mountSubType(type, container) {
     buildUI(container);
   } else if (type === 'place-value') {
     buildPlaceValueUI(container);
+  } else if (type === 'tic-tac-toe') {
+    buildTicTacToeUI(container);
   }
 }
 
@@ -43,6 +48,7 @@ export function buildMathWorksheetsUI(container) {
         <select class="tb-select" id="mwTypeSelect" style="min-width:180px;">
           <option value="math-test">Math Tests (Arithmetic)</option>
           <option value="place-value">Place Value</option>
+          <option value="tic-tac-toe">Math Tic-Tac-Toe</option>
         </select>
       </div>
       <div id="mwSubContainer"></div>
