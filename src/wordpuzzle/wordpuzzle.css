@@ -165,9 +165,10 @@
 /* Puzzle block — rendered as a white printable page ------------------------ */
 
 .wp-puzzle-block {
+  width: 8.5in;
+  height: 11in;  
   background: white;
   color: #0f172a;
-  border-radius: var(--radius-lg);
   padding: 20px 24px 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   display: flex;

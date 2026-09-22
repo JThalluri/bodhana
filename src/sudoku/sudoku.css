@@ -110,9 +110,10 @@
 /* ── Puzzle page ────────────────────────────────────────────────────────── */
 
 .sdk-puzzle-page {
+  width: 8.5in;
+  height: 11in;  
   background: white;
   color: #0f172a;
-  border-radius: var(--radius-lg);
   padding: 16px 18px 18px;
   margin-bottom: 28px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
