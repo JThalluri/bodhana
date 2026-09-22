@@ -1,4 +1,4 @@
-import { extractWords, readFileAsText } from './extractor.js';
+import { extractWords, findPossiblePlurals, readFileAsText } from './extractor.js';
 
 const state = {
   files: [],
@@ -7,6 +7,7 @@ const state = {
   baseFileName: '',
   extracted: [],         // alpha-sorted unique words from source docs
   freq: {},              // word → occurrence count across source docs
+  pluralInfo: {},
   excluded: new Set(),   // user-deselected words
 };
 
@@ -22,18 +23,25 @@ export function buildDictBuilderUI(container) {
 
           <div class="wp-tb-group">
             <span class="wp-tb-grouplabel">Filter</span>
-            <label class="tb-count-lbl" title="Minimum word length">Min
-              <input class="tb-num" type="number" id="dbMinLen" value="3" min="1" max="20" />
+            <label class="tb-count-lbl db-range-label" title="Minimum word length">Min
+              <input class="tb-num" type="number" id="dbMinLen" value="5" min="1" max="20" />
             </label>
-            <label class="tb-count-lbl" title="Maximum word length">Max
-              <input class="tb-num" type="number" id="dbMaxLen" value="15" min="1" max="30" />
+            <label class="tb-count-lbl db-range-label" title="Maximum word length">Max
+              <input class="tb-num" type="number" id="dbMaxLen" value="15" min="3" max="30" />
             </label>
             <label class="wp-sol-toggle" title="Convert to lowercase">
-              <span class="toggle-switch" style="width:32px;height:18px;">
+              <span class="toggle-switch toggle-sm">
                 <input type="checkbox" id="dbLowercase" checked />
                 <span class="toggle-track"></span>
               </span>
-              <span class="tb-count-lbl" style="color:var(--text-secondary)">lowercase</span>
+              <span class="db-toggle-label">Lowercase</span>
+            </label>
+            <label class="wp-sol-toggle" title="Keep likely plurals visible, but exclude them from downloads by default">
+              <span class="toggle-switch toggle-sm">
+                <input type="checkbox" id="dbExcludePlurals" checked />
+                <span class="toggle-track"></span>
+              </span>
+              <span class="db-toggle-label">Exclude plurals</span>
             </label>
           </div>
 
@@ -130,6 +138,7 @@ function resetState() {
   state.baseFileName = '';
   state.extracted = [];
   state.freq = {};
+  state.pluralInfo = {};
   state.excluded = new Set();
 }
 
@@ -202,13 +211,18 @@ function fileIcon(name) {
 async function loadBaseDictionary(file) {
   try {
     const text = await readFileAsText(file);
-    const lines = text.split(/\r?\n/).map(l => l.trim().toLowerCase()).filter(Boolean);
+    const lines = text.split(/\r?\n/).map(l => normalizeDownloadWord(l.trim())).filter(Boolean);
     state.baseWordsList = lines;
     state.baseWordsSet = new Set(lines);
     state.baseFileName = file.name;
     renderBaseInfo();
     updateActionButtons();
-    if (state.extracted.length) { updateSummary(); renderWordGrid(); }
+    if (state.extracted.length) {
+      refreshPluralInfo();
+      applyPluralExclusions();
+      updateSummary();
+      renderWordGrid();
+    }
   } catch (err) {
     setStatus('error', `❌ ${err.message}`);
   }
@@ -220,7 +234,12 @@ function clearBaseDictionary() {
   state.baseFileName = '';
   renderBaseInfo();
   updateActionButtons();
-  if (state.extracted.length) { updateSummary(); renderWordGrid(); }
+  if (state.extracted.length) {
+    refreshPluralInfo();
+    applyPluralExclusions();
+    updateSummary();
+    renderWordGrid();
+  }
 }
 
 function renderBaseInfo() {
@@ -260,7 +279,7 @@ async function runExtract() {
   setStatus('info', `Processing ${state.files.length} file(s)…`);
 
   try {
-    const { words, freq, errors } = await extractWords(
+    const { words, freq, pluralInfo, errors } = await extractWords(
       state.files,
       readOpts(),
       (i, total, name) => { if (name) setStatus('info', `Reading ${name} (${i + 1}/${total})…`); }
@@ -268,6 +287,9 @@ async function runExtract() {
 
     state.extracted = words;
     state.freq = freq;
+    state.pluralInfo = pluralInfo;
+    refreshPluralInfo();
+    applyPluralExclusions();
 
     if (errors.length) {
       setStatus('error', `⚠️ ${errors.length} file(s) failed: ${errors.map(e => e.name).join(', ')}`);
@@ -294,7 +316,8 @@ function updateSummary() {
 
   const total = state.extracted.length;
   const excl  = state.excluded.size;
-  const newCt = state.extracted.filter(w => !state.baseWordsSet.has(w)).length;
+  const pluralCt = Object.keys(state.pluralInfo).length;
+  const newCt = state.extracted.filter(w => !hasBaseWord(w)).length;
   const exCt  = total - newCt;
 
   let html = '';
@@ -308,8 +331,32 @@ function updateSummary() {
   if (excl) {
     html += `<span class="db-sum-sep">·</span><span class="db-sum-chip db-sum-excluded">${excl} excluded</span>`;
   }
+  if (pluralCt) {
+    html += `<span class="db-sum-sep">&middot;</span><span class="db-sum-chip db-sum-plural">${pluralCt} possible plural${pluralCt !== 1 ? 's' : ''}</span>`;
+  }
   html += `<span class="db-sum-sep">·</span><span class="db-sum-hint">click word to exclude</span>`;
   el.innerHTML = html;
+}
+
+function excludePluralsEnabled() {
+  return document.getElementById('dbExcludePlurals')?.checked ?? true;
+}
+
+function refreshPluralInfo() {
+  state.pluralInfo = findPossiblePlurals(state.extracted, state.baseWordsList);
+}
+
+function applyPluralExclusions() {
+  if (!excludePluralsEnabled()) {
+    for (const word of Object.keys(state.pluralInfo)) {
+      state.excluded.delete(word);
+    }
+    return;
+  }
+
+  for (const word of Object.keys(state.pluralInfo)) {
+    state.excluded.add(word);
+  }
 }
 
 function renderWordGrid() {
@@ -326,12 +373,15 @@ function renderWordGrid() {
   }
 
   grid.innerHTML = getSortedWords().map(w => {
-    const isExisting = state.baseWordsSet.has(w);
+    const isExisting = hasBaseWord(w);
     const isExcluded = state.excluded.has(w);
+    const pluralBase = state.pluralInfo[w];
+    const isPlural = Boolean(pluralBase);
     const cnt = state.freq[w] || 1;
     const badge = cnt > 1 ? `<sup class="db-freq">${cnt}</sup>` : '';
-    let cls = `db-word-item${isExisting ? ' db-word-existing' : ' db-word-new'}${isExcluded ? ' db-word-excluded' : ''}`;
-    return `<div class="${cls}" data-word="${w}" title="${cnt} occurrence${cnt !== 1 ? 's' : ''}">${w}${badge}</div>`;
+    const pluralTitle = isPlural ? `; possible plural of "${pluralBase}"` : '';
+    let cls = `db-word-item${isExisting ? ' db-word-existing' : ' db-word-new'}${isPlural ? ' db-word-plural' : ''}${isExcluded ? ' db-word-excluded' : ''}`;
+    return `<div class="${cls}" data-word="${w}" title="${cnt} occurrence${cnt !== 1 ? 's' : ''}${pluralTitle}">${w}${badge}</div>`;
   }).join('');
 }
 
@@ -340,7 +390,7 @@ function renderWordGrid() {
 function updateActionButtons() {
   const hasBase    = state.baseWordsList.length > 0;
   const hasActive  = state.extracted.some(w => !state.excluded.has(w));
-  const hasNewDelta = hasActive && state.extracted.some(w => !state.excluded.has(w) && !state.baseWordsSet.has(w));
+  const hasNewDelta = hasActive && state.extracted.some(w => !state.excluded.has(w) && !hasBaseWord(w));
 
   const dlBtn     = document.getElementById('dbBtnDownload');
   const mergeBtn  = document.getElementById('dbBtnMerge');
@@ -357,6 +407,24 @@ function activeExtracted() {
   return getSortedWords().filter(w => !state.excluded.has(w));
 }
 
+function isAllCapsDownloadWord(word) {
+  const letters = word.replace(/[^a-zA-Z]/g, '');
+  return letters.length > 1 && letters === letters.toUpperCase();
+}
+
+function normalizeDownloadWord(word) {
+  if (!word) return '';
+  return isAllCapsDownloadWord(word) ? word : word.toLowerCase();
+}
+
+function normalizeDownloadWords(words) {
+  return [...new Set(words.map(normalizeDownloadWord).filter(Boolean))];
+}
+
+function hasBaseWord(word) {
+  return state.baseWordsSet.has(normalizeDownloadWord(word));
+}
+
 function timestamp() {
   const d = new Date();
   const p = n => String(n).padStart(2, '0');
@@ -368,7 +436,7 @@ function baseStem() {
 }
 
 function downloadTxt(words, filename) {
-  const blob = new Blob([words.join('\n')], { type: 'text/plain' });
+  const blob = new Blob([normalizeDownloadWords(words).join('\n')], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -382,16 +450,16 @@ function doDownloadStandalone() {
 }
 
 function doDownloadFullMerge() {
-  const newOnly = state.extracted.filter(w => !state.excluded.has(w) && !state.baseWordsSet.has(w));
-  const merged  = [...new Set([...state.baseWordsList, ...newOnly])];
+  const newOnly = state.extracted.filter(w => !state.excluded.has(w) && !hasBaseWord(w));
+  const merged  = normalizeDownloadWords([...state.baseWordsList, ...newOnly]);
   merged.sort((a, b) => a.localeCompare(b));
   downloadTxt(merged, `${baseStem()}_merged_${timestamp()}.txt`);
 }
 
 function doDownloadAppendDelta() {
-  const delta = state.extracted
-    .filter(w => !state.excluded.has(w) && !state.baseWordsSet.has(w))
-    .sort((a, b) => a.localeCompare(b));
+  const delta = normalizeDownloadWords(state.extracted
+    .filter(w => !state.excluded.has(w) && !hasBaseWord(w))
+  ).sort((a, b) => a.localeCompare(b));
   downloadTxt([...state.baseWordsList, ...delta], `${baseStem()}_updated_${timestamp()}.txt`);
 }
 
@@ -401,6 +469,7 @@ function doClear() {
   state.files = [];
   state.extracted = [];
   state.freq = {};
+  state.pluralInfo = {};
   state.excluded = new Set();
   renderFileList();
   renderWordGrid();
@@ -486,6 +555,14 @@ function wireEvents() {
   // Sort re-renders without re-extracting
   document.getElementById('dbSortBy')?.addEventListener('change', () => {
     if (state.extracted.length) renderWordGrid();
+  });
+
+  document.getElementById('dbExcludePlurals')?.addEventListener('change', () => {
+    if (!state.extracted.length) return;
+    applyPluralExclusions();
+    updateSummary();
+    renderWordGrid();
+    updateActionButtons();
   });
 }
 

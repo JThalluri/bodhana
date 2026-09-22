@@ -23,13 +23,92 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  min-height: 40px;
+  min-height: 38px;
 }
 
 .db-tb-row ~ .db-tb-row {
   border-top: 1px solid var(--border);
   padding-top: 8px;
   margin-top: 4px;
+}
+
+.db-toolbar .wp-tb-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+
+.db-toolbar .wp-tb-grouplabel {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.db-toolbar .tb-count-lbl {
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.db-toolbar .db-range-label {
+  align-items: center;
+}
+
+.db-toolbar .tb-num {
+  width: 42px;
+  height: 28px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--bg-input);
+}
+
+.db-toolbar .tb-select {
+  height: 30px;
+  min-width: 132px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 13px;
+}
+
+.db-toolbar .wp-sol-toggle {
+  gap: 6px;
+  min-height: 30px;
+  color: var(--text-secondary);
+}
+
+.db-toolbar .db-toggle-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.db-toolbar .toggle-switch.toggle-sm {
+  width: 34px;
+  height: 20px;
+}
+
+.db-toolbar .toggle-switch.toggle-sm .toggle-track::after {
+  width: 16px;
+  height: 16px;
+}
+
+.db-toolbar .toggle-switch.toggle-sm input:checked + .toggle-track::after {
+  transform: translateX(14px);
+}
+
+.db-toolbar .tb-vdiv {
+  height: 28px;
+  margin: 0 4px;
 }
 
 /* Main layout -------------------------------------------------------------- */
@@ -251,6 +330,11 @@
   color: var(--danger);
 }
 
+.db-sum-plural {
+  background: color-mix(in srgb, #2563eb 14%, transparent);
+  color: #2563eb;
+}
+
 .db-sum-sep { color: var(--border); user-select: none; }
 
 .db-sum-hint {
@@ -299,6 +383,16 @@
 .db-word-existing {
   color: var(--text-muted);
   background: var(--bg-body);
+}
+
+.db-word-plural {
+  color: #2563eb;
+  background: color-mix(in srgb, #2563eb 8%, var(--bg-surface));
+}
+
+.db-word-existing.db-word-plural {
+  color: color-mix(in srgb, #2563eb 70%, var(--text-muted));
+  background: color-mix(in srgb, #2563eb 7%, var(--bg-body));
 }
 
 /* User-excluded word — struck through */

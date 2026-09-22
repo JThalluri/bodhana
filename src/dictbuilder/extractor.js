@@ -80,20 +80,65 @@ async function extractText(file) {
 
 /**
  * Tokenize text into unique words with frequency counts.
- * Returns { words: string[] (alpha-sorted), freq: Record<string,number> }
+ * Returns { words: string[] (alpha-sorted), freq: Record<string,number>, pluralInfo }
  */
 export function tokenize(text, opts = {}) {
   const { minLen = 3, maxLen = 15, lowercase = true } = opts;
   const freq = {};
-  for (const w of text.split(/[^a-zA-Z]+/)) {
+  const wordPattern = /[a-zA-Z]+(?:['’][a-zA-Z]+)*/g;
+  for (const match of text.matchAll(wordPattern)) {
+    const w = match[0].replace(/’/g, "'");
     if (!w) continue;
-    const key = lowercase ? w.toLowerCase() : w;
+    const isAllCaps = isAllCapsWord(w);
+    if (lowercase && isAllCaps) continue;
+    const key = isAllCaps ? w : w.toLowerCase();
     if (key.length >= minLen && key.length <= maxLen) {
       freq[key] = (freq[key] || 0) + 1;
     }
   }
   const words = Object.keys(freq).sort((a, b) => a.localeCompare(b));
-  return { words, freq };
+  return { words, freq, pluralInfo: findPossiblePlurals(words) };
+}
+
+function isAllCapsWord(word) {
+  const letters = word.replace(/[^a-zA-Z]/g, '');
+  return letters.length > 1 && letters === letters.toUpperCase();
+}
+
+function pluralCandidates(word) {
+  if (word.length < 4 || word.includes("'")) return [];
+  const candidates = [];
+
+  if (/ies$/i.test(word) && word.length > 4) {
+    candidates.push(word.slice(0, -3) + 'y');
+  }
+  if (/ves$/i.test(word) && word.length > 4) {
+    candidates.push(word.slice(0, -3) + 'f');
+    candidates.push(word.slice(0, -3) + 'fe');
+  }
+  if (/(ches|shes|sses|xes|zes)$/i.test(word) && word.length > 4) {
+    candidates.push(word.slice(0, -2));
+  }
+  if (/s$/i.test(word) && !/ss$/i.test(word) && word.length > 3) {
+    candidates.push(word.slice(0, -1));
+  }
+
+  return [...new Set(candidates)];
+}
+
+export function findPossiblePlurals(words, extraBaseWords = []) {
+  const lookup = new Set([...words, ...extraBaseWords].map(w => String(w).toLowerCase()));
+  const pluralInfo = {};
+
+  for (const word of words) {
+    const lower = word.toLowerCase();
+    const base = pluralCandidates(lower).find(candidate => lookup.has(candidate));
+    if (base) {
+      pluralInfo[word] = base;
+    }
+  }
+
+  return pluralInfo;
 }
 
 export async function extractWords(files, opts, onProgress) {
@@ -109,6 +154,6 @@ export async function extractWords(files, opts, onProgress) {
     }
   }
   if (onProgress) onProgress(files.length, files.length, '');
-  const { words, freq } = tokenize(texts.join(' '), opts);
-  return { words, freq, errors };
+  const { words, freq, pluralInfo } = tokenize(texts.join(' '), opts);
+  return { words, freq, pluralInfo, errors };
 }
