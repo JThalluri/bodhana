@@ -129,7 +129,7 @@ export function buildUI(container) {
             <input class="tb-num" type="number" id="numPapers" value="2" min="1" max="20" style="width:52px;">
           </div>
           <div class="math-opt-field">
-            <label for="qPerPaper">Q per paper</label>
+            <label for="qPerPaper">Questions per paper</label>
             <input class="tb-num" type="number" id="qPerPaper" value="51" min="1" max="100" style="width:52px;">
           </div>
         </div>

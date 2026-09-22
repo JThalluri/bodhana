@@ -47,10 +47,10 @@ export function buildTicTacToeUI(container) {
             <div class="ttt-field">
               <label for="tttDifficulty">Preset</label>
               <select class="tb-select" id="tttDifficulty" style="width:120px;">
+                <option value="custom">Custom</option>                
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
-                <option value="custom">Custom</option>
               </select>
             </div>
           </div>
@@ -79,11 +79,11 @@ export function buildTicTacToeUI(container) {
             <div class="ttt-section-subtitle">Numbers</div>
             <div class="ttt-field">
               <label for="tttMinDigits">Min digits</label>
-              <input class="tb-num" type="number" id="tttMinDigits" min="1" max="6" value="2" style="width:52px;">
+              <input class="tb-num" type="number" id="tttMinDigits" min="1" max="6" value="3" style="width:52px;">
             </div>
             <div class="ttt-field">
               <label for="tttMaxDigits">Max digits</label>
-              <input class="tb-num" type="number" id="tttMaxDigits" min="1" max="6" value="2" style="width:52px;">
+              <input class="tb-num" type="number" id="tttMaxDigits" min="1" max="6" value="3" style="width:52px;">
             </div>
             <div class="ttt-field">
               <label for="tttOperands">Operands</label>
@@ -128,9 +128,9 @@ export function buildTicTacToeUI(container) {
             <div class="ttt-field">
               <label for="tttGamesPerPage">Games per page</label>
               <select class="tb-select" id="tttGamesPerPage" style="width:80px;">
-                <option value="1">1</option>
-                <option value="2">2</option>
                 <option value="4">4</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
               </select>
             </div>
           </div>
