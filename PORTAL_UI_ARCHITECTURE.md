@@ -1,12 +1,12 @@
 # Portal UI Architecture
 
-## Printable Tool Shell
+## Tool Shell
 
-Included worksheet modules should follow this screen structure:
+Included tool modules should follow this screen structure:
 
 ```text
 sidebar | module header
-        | settings pane | page preview pane | empty right pane
+        | settings pane | main work/preview pane | empty right pane
 ```
 
 The module header is the only visible header row. It contains the module title/status on the left, actions on the right, and the theme toggle as the final item.
@@ -30,6 +30,8 @@ Use shared classes for the common layout:
 - `.tool-theme-slot`
 
 Module-specific classes may remain for controls and worksheet rendering, but module containers should adopt these primitives so preview size, spacing, and sidebar collapse behavior stay consistent.
+
+Dictionary Builder uses the same shell primitives, but its main pane contains extracted word results rather than Letter-sized worksheet pages. Its data extraction, filtering, deduping, and download behavior are outside the layout contract and should remain unchanged until the separate Dictionary Builder feature redesign.
 
 ## Page Preview Contract
 

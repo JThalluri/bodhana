@@ -21,8 +21,8 @@
 
 ## Module Scope
 
-- Include Math Worksheets, Math Puzzles, Sudoku, Word Puzzles, and Seyes Worksheets.
-- Exclude Dictionary Builder because it needs a separate redesign and feature phase.
+- Include Math Worksheets, Math Puzzles, Sudoku, Word Puzzles, Seyes Worksheets, and Dictionary Builder in the shared visual shell.
+- Limit Dictionary Builder work to layout consistency in this phase; its functional overhaul and new features remain a separate redesign phase.
 - Treat Seyes as the most sensitive module because physical paper geometry affects student handwriting practice.
 
 ## Layout
@@ -30,3 +30,4 @@
 - Use a fixed settings pane and fixed rendered-page pane.
 - Add an empty right-side pane that absorbs extra width, including when the sidebar collapses.
 - Normalize printable module backgrounds across light and dark modes.
+- Dictionary Builder uses the same header/settings/main/right-pane structure, with its word results as the main pane instead of a rendered worksheet page.

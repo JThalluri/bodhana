@@ -2,7 +2,7 @@
 
 ## Summary
 
-Redesign the printable worksheet modules around one consistent shell: sidebar, one module header, fixed settings pane, fixed rendered-page preview pane, and an empty right-side pane that absorbs extra width. Dictionary Builder is excluded from this phase. Seyes is protected because its physical print geometry is part of the product behavior.
+Redesign the tool modules around one consistent shell: sidebar, one module header, fixed settings pane, fixed main work/preview pane, and an empty right-side pane that absorbs extra width. Dictionary Builder is included for layout only before Export PDF; its deeper feature overhaul remains a separate phase. Seyes is protected because its physical print geometry is part of the product behavior.
 
 Implementation is split into subphases. After each subphase: build, visually test affected modules at 1920x1080 where possible, fix issues, and commit before moving on.
 
@@ -12,7 +12,8 @@ Implementation is split into subphases. After each subphase: build, visually tes
 2. Shared shell foundation
 3. Non-Seyes printable modules
 4. Seyes module
-5. High-quality Export PDF
+5. Dictionary Builder layout-only shell
+6. High-quality Export PDF
 
 ## Decisions
 
@@ -23,7 +24,8 @@ Implementation is split into subphases. After each subphase: build, visually tes
 - Export PDF is a later vector-PDF subphase, not a raster DOM screenshot.
 - Export PDF downloads all rendered pages when implemented.
 - The right-side pane stays empty until content/instructions are designed.
-- Dictionary Builder is excluded.
+- Dictionary Builder uses the shared shell for visual consistency, but extraction, filtering, deduping, and download behavior are unchanged in this pass.
+- Dictionary Builder feature redesign remains a separate future phase.
 
 ## Validation Checklist
 
@@ -34,6 +36,7 @@ Implementation is split into subphases. After each subphase: build, visually tes
 - Empty right pane absorbs extra width.
 - One full Letter page is visible in the middle pane at 1920x1080.
 - Print output hides portal chrome and preserves page size.
+- Dictionary Builder has one header row, a left settings pane, a main results pane, and the theme toggle last.
 - Build passes after every phase.
 
 ## Seyes Validation

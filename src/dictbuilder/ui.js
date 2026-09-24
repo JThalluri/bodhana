@@ -1,4 +1,5 @@
 import { extractWords, findPossiblePlurals, readFileAsText } from './extractor.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
 
 const state = {
   files: [],
@@ -13,54 +14,16 @@ const state = {
 
 export function buildDictBuilderUI(container) {
   container.innerHTML = `
-    <div class="db-tool">
+    <div class="db-tool tool-shell">
 
-      <!-- Two-row sticky toolbar -->
-      <div class="db-toolbar no-print">
-
-        <!-- Row 1: filter settings + sort -->
-        <div class="db-tb-row">
-
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Filter</span>
-            <label class="tb-count-lbl db-range-label" title="Minimum word length">Min
-              <input class="tb-num" type="number" id="dbMinLen" value="5" min="1" max="20" />
-            </label>
-            <label class="tb-count-lbl db-range-label" title="Maximum word length">Max
-              <input class="tb-num" type="number" id="dbMaxLen" value="15" min="3" max="30" />
-            </label>
-            <label class="wp-sol-toggle" title="Convert to lowercase">
-              <span class="toggle-switch toggle-sm">
-                <input type="checkbox" id="dbLowercase" checked />
-                <span class="toggle-track"></span>
-              </span>
-              <span class="db-toggle-label">Lowercase</span>
-            </label>
-            <label class="wp-sol-toggle" title="Keep likely plurals visible, but exclude them from downloads by default">
-              <span class="toggle-switch toggle-sm">
-                <input type="checkbox" id="dbExcludePlurals" checked />
-                <span class="toggle-track"></span>
-              </span>
-              <span class="db-toggle-label">Exclude plurals</span>
-            </label>
-          </div>
-
-          <span class="tb-vdiv"></span>
-
-          <div class="wp-tb-group">
-            <span class="wp-tb-grouplabel">Sort</span>
-            <select class="tb-select" id="dbSortBy" title="Word sort order">
-              <option value="alpha">Alphabetical</option>
-              <option value="freq">By frequency</option>
-            </select>
-          </div>
-
+      <div class="tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Dictionary Builder</span>
+          <span class="tool-header-status tb-status status-msg info" id="dbStatus"></span>
         </div>
 
-        <!-- Row 2: actions right-aligned -->
-        <div class="db-tb-row">
-
-          <div class="tb-actions" style="margin-left:auto">
+        <div class="tool-header-actions">
+          <div class="tb-actions">
             <button class="btn btn-primary btn-sm" id="dbBtnExtract">
               <i class="fas fa-magic"></i> Extract
             </button>
@@ -80,48 +43,95 @@ export function buildDictBuilderUI(container) {
               <i class="fas fa-times"></i> Clear
             </button>
           </div>
-
-          <span class="tb-status status-msg info" id="dbStatus"></span>
-
+          <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
       </div>
 
-      <div class="db-main">
+      <div class="db-main tool-body">
 
-        <div class="db-left">
+        <div class="db-left tool-settings no-print">
 
-          <p class="db-section-label">Source Documents</p>
-          <div class="db-dropzone" id="dbDropzone">
-            <i class="fas fa-cloud-upload-alt db-drop-icon"></i>
-            <p class="db-drop-text">Drop files here or <span class="db-browse-link">browse</span></p>
-            <p class="db-drop-hint">PDF · DOCX · ODT · TXT · CSV · MD</p>
-            <input type="file" id="dbFileInput" multiple
-              accept=".pdf,.docx,.odt,.txt,.md,.csv,.html,.text"
-              style="display:none;" />
-          </div>
-          <div class="db-file-list" id="dbFileList"></div>
+          <section class="db-settings-section">
+            <div class="db-section-label">Filter</div>
 
-          <p class="db-section-label db-section-label-secondary">
-            Base Dictionary <span class="db-optional">(optional — to merge/append)</span>
-          </p>
-          <div class="db-base-zone" id="dbBaseZone">
-            <i class="fas fa-database"></i>
-            <span>Drop .txt or <span class="db-browse-link">browse</span></span>
-            <input type="file" id="dbBaseInput" accept=".txt,.text" style="display:none;" />
-          </div>
-          <div id="dbBaseInfo"></div>
+            <div class="db-field-row db-field-row-compact">
+              <label for="dbMinLen">Min length</label>
+              <input class="tb-num" type="number" id="dbMinLen" value="5" min="1" max="20" />
+            </div>
+
+            <div class="db-field-row db-field-row-compact">
+              <label for="dbMaxLen">Max length</label>
+              <input class="tb-num" type="number" id="dbMaxLen" value="15" min="3" max="30" />
+            </div>
+
+            <label class="db-toggle-row" title="Convert to lowercase">
+              <span>Lowercase</span>
+              <span class="toggle-switch toggle-sm">
+                <input type="checkbox" id="dbLowercase" checked />
+                <span class="toggle-track"></span>
+              </span>
+            </label>
+
+            <label class="db-toggle-row" title="Keep likely plurals visible, but exclude them from downloads by default">
+              <span>Exclude plurals</span>
+              <span class="toggle-switch toggle-sm">
+                <input type="checkbox" id="dbExcludePlurals" checked />
+                <span class="toggle-track"></span>
+              </span>
+            </label>
+          </section>
+
+          <section class="db-settings-section">
+            <div class="db-section-label">Sort</div>
+            <div class="db-field-row">
+              <label for="dbSortBy">Order</label>
+              <select class="tb-select" id="dbSortBy" title="Word sort order">
+                <option value="alpha">Alphabetical</option>
+                <option value="freq">By frequency</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="db-settings-section">
+            <div class="db-section-label">Source Documents</div>
+            <div class="db-dropzone" id="dbDropzone">
+              <i class="fas fa-cloud-upload-alt db-drop-icon"></i>
+              <p class="db-drop-text">Drop files here or <span class="db-browse-link">browse</span></p>
+              <p class="db-drop-hint">PDF / DOCX / ODT / TXT / CSV / MD</p>
+              <input type="file" id="dbFileInput" multiple
+                accept=".pdf,.docx,.odt,.txt,.md,.csv,.html,.text"
+                style="display:none;" />
+            </div>
+            <div class="db-file-list" id="dbFileList"></div>
+          </section>
+
+          <section class="db-settings-section">
+            <div class="db-section-label">
+              Base Dictionary <span class="db-optional">(optional)</span>
+            </div>
+            <div class="db-base-zone" id="dbBaseZone">
+              <i class="fas fa-database"></i>
+              <span>Drop .txt or <span class="db-browse-link">browse</span></span>
+              <input type="file" id="dbBaseInput" accept=".txt,.text" style="display:none;" />
+            </div>
+            <div id="dbBaseInfo"></div>
+          </section>
 
         </div>
 
-        <div class="db-right">
-          <div class="db-summary" id="dbSummary"></div>
-          <div class="db-word-grid" id="dbWordGrid">
-            <div class="db-empty-hint">
-              <i class="fas fa-book-open"></i>
-              <p>Add files and click <strong>Extract</strong> to build a word list.</p>
+        <div class="db-right tool-preview">
+          <div class="db-results-scroll">
+            <div class="db-summary" id="dbSummary"></div>
+            <div class="db-word-grid" id="dbWordGrid">
+              <div class="db-empty-hint">
+                <i class="fas fa-book-open"></i>
+                <p>Add files and click <strong>Extract</strong> to build a word list.</p>
+              </div>
             </div>
           </div>
         </div>
+
+        <div class="tool-info-pane" aria-hidden="true"></div>
 
       </div>
     </div>
