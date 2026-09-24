@@ -1,104 +1,58 @@
-/* ─── Worksheets Module ─────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap');
-/*
- * Font: Andika (Google Fonts) — designed for emerging readers and handwriting
- * practice. Letter forms closely match print handwriting conventions taught
- * in schools, making it the correct choice for Seyès practice sheets.
- *
- * At 38 px on a 96 dpi display the cap-height fills the upper Seyès band,
- * x-height sits in the middle 4 mm zone, and descenders use the lower 2 mm.
- * Baseline offset control in the toolbar compensates for screen DPI variation.
- *
- * Note: Google Fonts embeds Andika in the PDF (~400 KB); accepted tradeoff.
- * See docs/DECISIONS.md for full context.
- */
-
-/* ─── Tool shell ─────────────────────────────────────────────────────────── */
 
 .ws-tool {
-  display: flex;
-  flex-direction: column;
   height: 100%;
   min-height: 0;
 }
 
-/* ─── Sticky toolbar ─────────────────────────────────────────────────────── */
-
-.ws-toolbar {
-  background: var(--bg-surface);
+.ws-settings-section {
+  padding: 16px 18px;
   border-bottom: 1px solid var(--border);
-  padding: 8px 16px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: var(--shadow-sm);
-  flex-shrink: 0;
 }
 
-.ws-tb-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  min-height: 40px;
-}
-
-.ws-tb-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.ws-tb-grouplabel {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  white-space: nowrap;
-  padding-right: 4px;
-  border-right: 1px solid var(--border);
-  margin-right: 2px;
-  line-height: 1;
-  align-self: center;
-}
-
-/* ─── Two-pane body ──────────────────────────────────────────────────────── */
-
-.ws-body {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-  min-height: 0;
-}
-
-/* Left: text input pane */
-.ws-input-pane {
-  width: 300px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--bg-surface);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-}
-
-.ws-pane-label {
+.ws-section-title {
+  margin-bottom: 12px;
   font-size: var(--text-xs);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
   color: var(--text-muted);
+}
+
+.ws-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: var(--text-sm);
+}
+
+.ws-field:last-child {
+  margin-bottom: 0;
+}
+
+.ws-field label {
+  color: var(--text-primary);
+}
+
+.ws-field .tb-select,
+.ws-field .tb-num {
+  width: 100%;
+}
+
+.ws-field:has(#wsTypeSelect) {
+  grid-template-columns: minmax(0, 1fr) 180px;
+}
+
+#wsTypeSelect {
+  min-width: 180px;
 }
 
 .ws-textarea {
-  flex: 1;
-  min-height: 160px;
-  resize: vertical;
   width: 100%;
+  min-height: 260px;
+  resize: vertical;
   box-sizing: border-box;
   font-family: var(--font-ui);
   font-size: var(--text-sm);
@@ -128,26 +82,11 @@
   margin-right: 2px;
 }
 
-/* Right: pages pane */
-.ws-pages-pane {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: auto;
-  background: var(--bg-body);
-  padding: var(--space-5);
+.tool-pages > .seyes-page {
+  zoom: var(--tool-page-scale) !important;
 }
-
-#wsPagesContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-6);
-}
-
-/* ─── Seyès Paper ────────────────────────────────────────────────────────── */
 
 .seyes-page {
-  /* CSS variables are overridden per-element by JS */
   --seyes-baseline-offset: 0mm;
   --seyes-font-size: 38px;
   --seyes-left-pad: 8mm;
@@ -169,16 +108,11 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-
   background-color: #fff;
-
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-/* The rules are drawn as vector <line>s (see seyes-grid.js) rather than tiled
-   CSS gradients, which intermittently dropped a minor rule to sub-pixel
-   rounding. */
 .seyes-grid-svg {
   display: block;
   width: 100%;
@@ -188,7 +122,8 @@
 
 .seyes-guide-h {
   position: absolute;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   top: calc(var(--seyes-top-pad) + 8mm);
   border-top: 0.4mm dashed #e02020;
   pointer-events: none;
@@ -197,7 +132,8 @@
 
 .seyes-guide-v {
   position: absolute;
-  top: 0; bottom: 0;
+  top: 0;
+  bottom: 0;
   left: var(--seyes-left-pad);
   border-left: 0.4mm dashed #e02020;
   pointer-events: none;
@@ -237,34 +173,26 @@
   vertical-align: top;
 }
 
-/* ─── Print ──────────────────────────────────────────────────────────────── */
-
 @media print {
   .ws-toolbar,
-  .ws-input-pane {
+  .ws-settings-pane {
     display: none !important;
   }
 
-  .ws-tool {
-    display: block !important;
-    height: auto !important;
-  }
-
+  .ws-tool,
   .ws-body {
     display: block !important;
+    height: auto !important;
     overflow: visible !important;
   }
 
-  .ws-pages-pane {
+  .ws-pages-pane,
+  .tool-preview-scroll,
+  #wsPagesContainer {
     display: block !important;
     overflow: visible !important;
     padding: 0 !important;
     background: #fff !important;
-  }
-
-  #wsPagesContainer {
-    display: block !important;
-    gap: 0 !important;
   }
 
   .seyes-page {
@@ -283,5 +211,4 @@
   .seyes-guide-v {
     display: none !important;
   }
-
 }
