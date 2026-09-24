@@ -15,6 +15,7 @@ const printableRoutes = new Set([
   '/word-puzzles',
   '/math-puzzles',
   '/sudoku',
+  '/dict-builder',
   '/worksheets',
 ]);
 
