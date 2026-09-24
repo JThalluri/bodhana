@@ -1,6 +1,8 @@
 import { DIFFICULTY_SETTINGS, generatePuzzle } from './generator.js';
 import { renderPuzzles } from './renderer.js';
 import { readInt } from '../shared/utils.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { printWorksheet } from '../shared/print.js';
 
 const state = {
   puzzles: [],
@@ -9,34 +11,31 @@ const state = {
 
 export function buildSudokuUI(container) {
   container.innerHTML = `
-    <div class="sdk-tool">
+    <div class="sdk-tool tool-shell">
 
-      <!-- Toolbar -->
-      <div class="sdk-toolbar no-print">
-        <div class="sdk-tb-row">
-          <span class="mw-typebar-label">Sudoku</span>
-          <span class="tb-vdiv"></span>
-          <span class="tb-status status-msg info" id="sdkStatus"></span>
-
-          <div class="tb-actions" style="margin-left:auto;gap:6px;">
+      <div class="sdk-toolbar tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Sudoku</span>
+          <span class="tool-header-status tb-status status-msg info" id="sdkStatus"></span>
+        </div>
+        <div class="tool-header-actions">
             <button class="btn btn-primary btn-sm" id="sdkBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="sdkBtnPrint">
-              <i class="fas fa-print"></i> Print
+              <i class="fas fa-print"></i> Print PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="sdkBtnReset">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
-          </div>
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
       </div>
 
-      <!-- Two-pane body -->
-      <div class="sdk-body">
+      <div class="sdk-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="sdk-settings-pane no-print">
+        <div class="sdk-settings-pane tool-settings no-print">
 
           <div class="sdk-settings-section">
             <div class="sdk-section-title">Puzzle</div>
@@ -94,13 +93,17 @@ export function buildSudokuUI(container) {
         </div>
 
         <!-- Right: rendered pages -->
-        <div class="sdk-output" id="sdkOutput">
+        <div class="sdk-output tool-preview" id="sdkOutput">
+          <div class="tool-preview-scroll">
           <div class="empty-state" id="sdkEmptyState">
             <i class="fas fa-th"></i>
             <p>Click <strong>Generate</strong> to create Sudoku puzzles.</p>
           </div>
-          <div id="sdkPuzzlesContainer"></div>
+          <div id="sdkPuzzlesContainer" class="tool-pages"></div>
+          </div>
         </div>
+
+        <div class="tool-info-pane" aria-hidden="true"></div>
 
       </div>
 
@@ -187,7 +190,7 @@ function runReset() {
 
 function wireEvents() {
   document.getElementById('sdkBtnGenerate')?.addEventListener('click', runGenerate);
-  document.getElementById('sdkBtnPrint')?.addEventListener('click', () => window.print());
+  document.getElementById('sdkBtnPrint')?.addEventListener('click', printWorksheet);
   document.getElementById('sdkBtnReset')?.addEventListener('click', runReset);
 
   document.getElementById('sdkShowSolutions')?.addEventListener('change', (e) => {

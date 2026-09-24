@@ -34,6 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: var(--space-3);
   padding: 0 var(--space-4);
   color: var(--sidebar-text);
   background: transparent;
@@ -43,6 +44,29 @@
   font-size: var(--text-lg);
   transition: background var(--transition), color var(--transition);
   flex-shrink: 0;
+}
+
+.sidebar-brand-banner {
+  height: 40px;
+  width: auto;
+  max-width: 150px;
+  display: block;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  background: #fff;
+  transition: opacity var(--transition), width var(--transition);
+}
+
+.portal-sidebar.collapsed .sidebar-toggle {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.portal-sidebar.collapsed .sidebar-brand-banner {
+  opacity: 0;
+  width: 0;
+  max-width: 0;
+  pointer-events: none;
 }
 
 .sidebar-toggle:hover {
@@ -153,6 +177,10 @@
 }
 
 .route-home .brand-banner { display: none; }
+
+.route-printable-tool .portal-topbar {
+  display: none;
+}
 
 .topbar-actions {
   display: flex;

@@ -1,6 +1,8 @@
 import { DEFAULTS } from '../math/generator.js';
 import { DIFFICULTY_SETTINGS, generatePuzzle } from './generator.js';
 import { renderPuzzles } from './renderer.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { printWorksheet } from '../shared/print.js';
 
 const DIFF_DEFAULTS = {
   easy:   { equations: DIFFICULTY_SETTINGS.easy.targetDefault },
@@ -15,34 +17,31 @@ const state = {
 
 export function buildMathPuzzleUI(container) {
   container.innerHTML = `
-    <div class="mp-tool">
+    <div class="mp-tool tool-shell">
 
-      <!-- Toolbar -->
-      <div class="mp-toolbar no-print">
-        <div class="mp-tb-row">
-          <span class="mw-typebar-label">Math Puzzle Grid</span>
-          <span class="tb-vdiv"></span>
-          <span class="tb-status status-msg info" id="mpStatus"></span>
-
-          <div class="tb-actions" style="margin-left:auto;gap:6px;">
+      <div class="mp-toolbar tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Math Puzzle Grid</span>
+          <span class="tool-header-status tb-status status-msg info" id="mpStatus"></span>
+        </div>
+        <div class="tool-header-actions">
             <button class="btn btn-primary btn-sm" id="mpBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="mpBtnPrint">
-              <i class="fas fa-print"></i> Print
+              <i class="fas fa-print"></i> Print PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="mpBtnReset">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
-          </div>
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
       </div>
 
-      <!-- Two-pane body -->
-      <div class="mp-body">
+      <div class="mp-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="mp-settings-pane no-print">
+        <div class="mp-settings-pane tool-settings no-print">
 
           <div class="mp-settings-section">
             <div class="mp-section-title">Operations</div>
@@ -156,13 +155,17 @@ export function buildMathPuzzleUI(container) {
         </div>
 
         <!-- Right: rendered pages -->
-        <div class="mp-output" id="mpOutput">
+        <div class="mp-output tool-preview" id="mpOutput">
+          <div class="tool-preview-scroll">
           <div class="empty-state" id="mpEmptyState">
             <i class="fas fa-hashtag"></i>
             <p>Click <strong>Generate</strong> to create math puzzles.</p>
           </div>
-          <div id="mpPuzzlesContainer"></div>
+          <div id="mpPuzzlesContainer" class="tool-pages"></div>
+          </div>
         </div>
+
+        <div class="tool-info-pane" aria-hidden="true"></div>
 
       </div>
 
@@ -275,7 +278,7 @@ function runReset() {
 
 function wireEvents() {
   document.getElementById('mpBtnGenerate')?.addEventListener('click', runGenerate);
-  document.getElementById('mpBtnPrint')?.addEventListener('click', () => window.print());
+  document.getElementById('mpBtnPrint')?.addEventListener('click', printWorksheet);
   document.getElementById('mpBtnReset')?.addEventListener('click', runReset);
 
   document.getElementById('mpDifficulty')?.addEventListener('change', (e) => {

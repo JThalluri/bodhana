@@ -273,8 +273,6 @@
 
 /* ── Print ──────────────────────────────────────────────────────────────── */
 
-@page { size: Letter; margin: 0.35in 0.4in; }
-
 @media print {
   .mp-toolbar { display: none !important; }
   .mp-settings-pane { display: none !important; }
@@ -302,19 +300,19 @@
   }
 
   .mp-puzzle-page {
-    display: block !important;
+    display: flex !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    padding: 0 !important;
     margin: 0 !important;
     background: white !important;
+    box-sizing: border-box;
     page-break-after: always;
     break-after: page;
     page-break-inside: avoid;
-    height: 100vh;
-    max-height: 100vh;
+    width: 8.5in;
+    height: 11in;
+    max-height: 11in;
     overflow: hidden;
-    width: 100%;
     max-width: none;
   }
 

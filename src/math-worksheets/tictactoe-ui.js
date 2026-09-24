@@ -3,6 +3,8 @@ import {
   generateTicTacToeWorksheet,
   normalizeTicTacToeState,
 } from './tictactoe-generator.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { printWorksheet } from '../shared/print.js';
 
 let _tttListeners = [];
 
@@ -19,29 +21,28 @@ export function unmountTicTacToe() {
 
 export function buildTicTacToeUI(container) {
   container.innerHTML = `
-    <div class="ttt-tool">
-      <div class="ttt-toolbar no-print">
-        <div class="ttt-tb-row">
-          <span class="mw-typebar-label">Math Tic-Tac-Toe</span>
-          <span class="tb-vdiv"></span>
-          <span class="tb-status status-msg info" id="tttStatus"></span>
-
-          <div class="tb-actions" style="margin-left:auto;gap:6px;">
+    <div class="ttt-tool tool-shell">
+      <div class="ttt-toolbar tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Math Tic-Tac-Toe</span>
+          <span class="tool-header-status tb-status status-msg info" id="tttStatus"></span>
+        </div>
+        <div class="tool-header-actions">
             <button class="btn btn-primary btn-sm" id="tttGenerateBtn">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="tttPrintBtn">
-              <i class="fas fa-print"></i> Print
+              <i class="fas fa-print"></i> Print PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="tttResetBtn">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
-          </div>
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
       </div>
 
-      <div class="ttt-body">
-        <div class="ttt-settings-pane no-print">
+      <div class="ttt-body tool-body">
+        <div class="ttt-settings-pane tool-settings no-print">
           <div class="ttt-settings-section">
             <div class="ttt-section-title">Difficulty</div>
             <div class="ttt-field">
@@ -145,14 +146,18 @@ export function buildTicTacToeUI(container) {
           </div>
         </div>
 
-        <div class="ttt-preview-pane">
-          <div id="tttWorksheetsContainer">
+        <div class="ttt-preview-pane tool-preview">
+          <div class="tool-preview-scroll">
+          <div id="tttWorksheetsContainer" class="tool-pages">
             <div class="empty-state">
               <i class="fas fa-border-all"></i>
               <p>Configure settings and click Generate.</p>
             </div>
           </div>
+          </div>
         </div>
+
+        <div class="tool-info-pane" aria-hidden="true"></div>
       </div>
     </div>
   `;
@@ -333,7 +338,7 @@ export function buildTicTacToeUI(container) {
   ].forEach(el => on(el, 'change', updateConditional));
 
   on(els.generateBtn, 'click', renderWorksheet);
-  on(els.printBtn, 'click', () => window.print());
+  on(els.printBtn, 'click', printWorksheet);
   on(els.resetBtn, 'click', reset);
 
   updateConditional();

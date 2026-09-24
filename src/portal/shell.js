@@ -5,7 +5,6 @@ export function initShell() {
   const sidebar  = document.getElementById('portalSidebar');
   const toggle   = document.getElementById('sidebarToggle');
   const overlay  = document.getElementById('sidebarOverlay');
-  const themBtn  = document.getElementById('themeToggle');
 
   const brandImg = document.getElementById('brandBanner');
   if (brandImg) brandImg.src = BANNER_URL;
@@ -36,5 +35,14 @@ export function initShell() {
     });
   });
 
-  themBtn.addEventListener('click', toggleTheme);
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('[data-theme-toggle]');
+    if (toggle) toggleTheme();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.key !== 'Enter' && e.key !== ' ') || !e.target.closest('[data-theme-toggle]')) return;
+    e.preventDefault();
+    toggleTheme();
+  });
 }

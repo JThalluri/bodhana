@@ -1,6 +1,8 @@
 import {
   setSeed, TYPE_GENERATORS, TYPE_NAMES,
 } from './pv-generator.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { printWorksheet } from '../shared/print.js';
 
 let _pvListeners = [];
 
@@ -19,54 +21,51 @@ export function unmountPlaceValue() {
 
 export function buildPlaceValueUI(container) {
   container.innerHTML = `
-    <div class="pv-tool">
+    <div class="pv-tool tool-shell">
 
-      <!-- Toolbar -->
-      <div class="pv-toolbar no-print">
-        <div class="pv-tb-row">
-
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span class="mw-typebar-label">Worksheet Type</span>
-            <select class="tb-select" id="pvType" style="min-width:220px;">
-              <option value="type1">1. Examining Number Value</option>
-              <option value="type2">2. Place Value Chart</option>
-              <option value="type3">3. Build a Number (Expanded Form)</option>
-              <option value="type4">4. Missing Place Value</option>
-              <option value="type5">5. Word Form</option>
-              <option value="type6">6. Comparing Numbers</option>
-              <option value="type7">7. Rounding</option>
-              <option value="type8">8. Base-Ten Blocks</option>
-              <option value="type9">9. Skip Counting</option>
-              <option value="type10">10. Powers of 10</option>
-              <option value="type11">11. Place Value Hints</option>
-            </select>
-          </div>
-
-          <span class="tb-vdiv"></span>
-
-          <div class="tb-actions" style="margin-left:auto;gap:6px;">
-            <button class="btn btn-ghost btn-sm" id="pvRevealBtn">
-              <i class="fas fa-eye"></i> Reveal Solutions
-            </button>
+      <div class="pv-toolbar tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Place Value</span>
+        </div>
+        <div class="tool-header-actions">
             <button class="btn btn-primary btn-sm" id="pvGenerateBtn">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="pvPrintBtn">
-              <i class="fas fa-print"></i> Print
+              <i class="fas fa-print"></i> Print PDF
             </button>
-            <button class="btn btn-secondary btn-sm" id="pvPdfBtn">
-              <i class="fas fa-file-pdf"></i> PDF
+            <button class="btn btn-ghost btn-sm" id="pvRevealBtn">
+              <i class="fas fa-eye"></i> Reveal Solutions
             </button>
-          </div>
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
 
         </div>
       </div>
 
-      <!-- Two-pane body -->
-      <div class="pv-body">
+      <div class="pv-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="pv-settings-pane no-print">
+        <div class="pv-settings-pane tool-settings no-print">
+
+          <div class="pv-settings-section tool-type-section">
+            <div class="pv-section-title">Place Value Type</div>
+            <div class="pv-field">
+              <label for="pvType">Worksheet</label>
+              <select class="tb-select" id="pvType">
+                <option value="type1">1. Examining Number Value</option>
+                <option value="type2">2. Place Value Chart</option>
+                <option value="type3">3. Build a Number (Expanded Form)</option>
+                <option value="type4">4. Missing Place Value</option>
+                <option value="type5">5. Word Form</option>
+                <option value="type6">6. Comparing Numbers</option>
+                <option value="type7">7. Rounding</option>
+                <option value="type8">8. Base-Ten Blocks</option>
+                <option value="type9">9. Skip Counting</option>
+                <option value="type10">10. Powers of 10</option>
+                <option value="type11">11. Place Value Hints</option>
+              </select>
+            </div>
+          </div>
 
           <div class="pv-settings-section">
             <div class="pv-section-title">Number Range</div>
@@ -186,14 +185,18 @@ export function buildPlaceValueUI(container) {
         </div>
 
         <!-- Right: preview pane -->
-        <div class="pv-preview-pane">
-          <div id="pvWorksheetsContainer">
+        <div class="pv-preview-pane tool-preview">
+          <div class="tool-preview-scroll">
+          <div id="pvWorksheetsContainer" class="tool-pages">
             <div class="empty-state">
               <i class="fas fa-file-alt"></i>
               <p>Configure settings and click Generate.</p>
             </div>
           </div>
+          </div>
         </div>
+
+        <div class="tool-info-pane" aria-hidden="true"></div>
 
       </div>
     </div>
@@ -494,7 +497,7 @@ export function buildPlaceValueUI(container) {
   on(includeAKEl, 'change', updateConditional);
 
   on(generateBtn, 'click', generate);
-  on(printBtn, 'click', () => window.print());
+  on(printBtn, 'click', printWorksheet);
 
   on(revealBtn, 'click', () => {
     revealActive = !revealActive;

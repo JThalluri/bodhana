@@ -26,6 +26,30 @@ function unmountSubType() {
   }
 }
 
+function worksheetTypeSelectorMarkup(currentType) {
+  return `
+    <div class="mw-settings-section tool-type-section">
+      <div class="mw-section-title">Math Worksheet</div>
+      <div class="mw-field">
+        <label for="mwTypeSelect">Category</label>
+        <select class="tb-select" id="mwTypeSelect">
+          <option value="math-test"${currentType === 'math-test' ? ' selected' : ''}>Math Tests (Arithmetic)</option>
+          <option value="place-value"${currentType === 'place-value' ? ' selected' : ''}>Place Value</option>
+          <option value="tic-tac-toe"${currentType === 'tic-tac-toe' ? ' selected' : ''}>Math Tic-Tac-Toe</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+function injectWorksheetTypeSelector(container, currentType, onChange) {
+  const pane = container.querySelector('.math-settings-pane, .pv-settings-pane, .ttt-settings-pane');
+  if (!pane) return;
+  pane.insertAdjacentHTML('afterbegin', worksheetTypeSelectorMarkup(currentType));
+  const select = pane.querySelector('#mwTypeSelect');
+  on(select, 'change', () => onChange(select.value));
+}
+
 async function mountSubType(type, container) {
   container.innerHTML = '';
   _currentType = type;
@@ -43,25 +67,17 @@ async function mountSubType(type, container) {
 export function buildMathWorksheetsUI(container) {
   container.innerHTML = `
     <div class="mw-tool">
-      <div class="mw-typebar no-print">
-        <span class="mw-typebar-label">Math Worksheet Type</span>
-        <select class="tb-select" id="mwTypeSelect" style="min-width:180px;">
-          <option value="math-test">Math Tests (Arithmetic)</option>
-          <option value="place-value">Place Value</option>
-          <option value="tic-tac-toe">Math Tic-Tac-Toe</option>
-        </select>
-      </div>
       <div id="mwSubContainer"></div>
     </div>
   `;
 
-  const typeSelect  = container.querySelector('#mwTypeSelect');
   const subContainer = container.querySelector('#mwSubContainer');
 
-  mountSubType('math-test', subContainer);
-
-  on(typeSelect, 'change', () => {
+  const switchType = async (nextType) => {
     unmountSubType();
-    mountSubType(typeSelect.value, subContainer);
-  });
+    await mountSubType(nextType, subContainer);
+    injectWorksheetTypeSelector(subContainer, nextType, switchType);
+  };
+
+  switchType('math-test');
 }

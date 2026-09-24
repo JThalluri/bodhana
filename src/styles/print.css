@@ -1,9 +1,17 @@
 /* ─── Print: Hide Portal Chrome ─────────────────────────────────────────── */
 
+@page {
+  size: Letter;
+  margin: 0;
+}
+
 @media print {
   .portal-sidebar,
   .portal-topbar,
   .sidebar-overlay,
+  .tool-header,
+  .tool-settings,
+  .tool-info-pane,
   .no-print {
     display: none !important;
   }
@@ -27,8 +35,67 @@
     display: block !important;
   }
 
+  .tool-body,
+  .tool-preview,
+  .tool-preview-scroll,
+  .tool-pages {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: white !important;
+  }
+
+  .tool-pages > .paper-page,
+  .tool-pages > .pv-worksheet,
+  .tool-pages > .ttt-worksheet,
+  .tool-pages > .mp-puzzle-page,
+  .tool-pages > .sdk-puzzle-page,
+  .tool-pages > .wp-puzzle-block {
+    zoom: 1 !important;
+    width: 8.5in !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 11in !important;
+    max-height: 11in !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background: white !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .tool-pages > .paper-page:last-child,
+  .tool-pages > .pv-worksheet:last-child,
+  .tool-pages > .ttt-worksheet:last-child,
+  .tool-pages > .mp-puzzle-page:last-child,
+  .tool-pages > .sdk-puzzle-page:last-child,
+  .tool-pages > .wp-puzzle-block:last-child {
+    page-break-after: avoid !important;
+    break-after: auto !important;
+  }
+
   body {
+    margin: 0 !important;
+    padding: 0 !important;
     background: white !important;
     color: black !important;
+  }
+
+  html {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
   }
 }

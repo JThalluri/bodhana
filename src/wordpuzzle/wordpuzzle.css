@@ -181,7 +181,7 @@
 
 .wp-puzzle-header {
   display: grid;
-  grid-template-columns: 50% 25% 25%;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-2);
   padding-bottom: 10px;
   margin-bottom: 14px;
@@ -196,6 +196,7 @@
   align-items: center;
   gap: 6px;
   color: #0f172a;
+  min-width: 0;
 }
 
 .wp-label {
@@ -208,7 +209,7 @@
 .wp-dash-line {
   flex: 1;
   border-bottom: 2px dashed #888;
-  min-width: 30px;
+  min-width: 0;
   height: 1.2em;
 }
 
@@ -341,11 +342,6 @@
 
 /* Print -------------------------------------------------------------------- */
 
-@page {
-  size: auto;
-  margin: var(--print-margin);
-}
-
 @media print {
   .wp-settings-pane { display: none !important; }
   .wp-toolbar { display: none !important; }
@@ -376,18 +372,20 @@
   }
 
   .wp-puzzle-block {
-    display: block !important;
+    display: flex !important;
     background: white !important;
     border: none !important;
     border-radius: 0 !important;
     padding: 20px 24px 30px !important;
     margin: 0 !important;
     box-shadow: none !important;
+    box-sizing: border-box;
     page-break-after: always;
     break-after: page;
     page-break-inside: avoid;
-    height: 100vh;
-    max-height: 100vh;
+    width: 8.5in;
+    height: 11in;
+    max-height: 11in;
     overflow: hidden;
   }
 

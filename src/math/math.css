@@ -279,8 +279,6 @@
 /* ─── Print ──────────────────────────────────────────────────────────────── */
 
 @media print {
-  @page { size: Letter; margin: 0.3in 0.4in; }
-
   .math-settings-pane { display: none !important; }
   .math-toolbar { display: none !important; }
 
@@ -303,25 +301,42 @@
   .math-papers { max-width: none; }
 
   .paper-page {
-    box-shadow: none; border-radius: 0; padding: 0; margin: 0;
-    page-break-after: always; break-after: page;
-    height: 100vh; max-height: 100vh; overflow: hidden; background: white;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+    page-break-after: always;
+    break-after: page;
+    width: 8.5in;
+    height: 11in;
+    max-height: 11in;
+    overflow: hidden;
+    background: white;
+    box-sizing: border-box;
   }
-  .paper-page:last-child { page-break-after: avoid; break-after: auto; }
 
-  .paper-header { font-size: 18pt; padding-bottom: 10px; margin-bottom: 8px; border-bottom-width: 3px; flex: 0 0 auto; min-height: 70px; align-items: flex-end; }
-  .paper-header .underline-sm  { width: 120px; border-bottom-width: 2.5px; height: 1.4em; }
+  .paper-page:last-child {
+    page-break-after: avoid;
+    break-after: auto;
+  }
+
+  .paper-header { font-size: 17pt; padding-bottom: 10px; margin-bottom: 8px; border-bottom-width: 3px; flex: 0 0 auto; min-height: 70px; align-items: flex-end; gap: 8px; }
+  .header-name { flex: 1 1 auto; min-width: 0; }
+  .header-score,
+  .header-time,
+  .header-var { flex: 0 0 auto; margin-left: 0; }
+  .paper-header .underline-sm  { width: 110px; border-bottom-width: 2.5px; height: 1.4em; }
+  .paper-header .underline-vsm { width: 76px; border-bottom-width: 2.5px; height: 1.4em; }
   .paper-header .score-underline { width: 40px; border-bottom-width: 2.5px; height: 1.4em; }
-  .header-var { font-size: 14pt; }
+  .header-var { font-size: 12pt; }
 
   .paper-table { flex: 1 1 auto; height: 100%; }
-  .paper-table td { padding: 1px 6px; }
+  .paper-table td { padding: 1px 4px; }
   .paper-table tr { height: 5.88%; max-height: 5.88%; }
 
-  .question { font-size: 16pt; line-height: 1.5; }
-  .q-num  { min-width: 28px; font-size: 16pt; }
-  .q-expr { font-size: 16pt; }
-  .q-line { width: 60px; border-bottom-width: 2px; height: 1.2em; }
+  .question { font-size: 15pt; line-height: 1.5; gap: 3px; }
+  .q-num  { min-width: 26px; font-size: 15pt; }
+  .q-expr { font-size: 15pt; }
+  .q-line { width: 52px; border-bottom-width: 2px; height: 1.2em; margin-left: 4px; }
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */

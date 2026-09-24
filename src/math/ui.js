@@ -1,37 +1,36 @@
 import { generate, DEFAULTS } from './generator.js';
 import { renderPapers } from './renderer.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { printWorksheet } from '../shared/print.js';
 import './math.css';
 
 export function buildUI(container) {
   container.innerHTML = `
-    <div class="math-tool">
+    <div class="math-tool tool-shell">
 
-      <!-- Toolbar -->
-      <div class="math-toolbar no-print">
-        <div class="math-tb-row">
-          <span class="mw-typebar-label">Arithmetic Tests</span>
-          <span class="tb-vdiv"></span>
-          <span class="tb-status status-msg info" id="mathStatus"></span>
-
-          <div class="tb-actions" style="margin-left:auto;gap:6px;">
+      <div class="math-toolbar tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Arithmetic Tests</span>
+          <span class="tool-header-status tb-status status-msg info" id="mathStatus"></span>
+        </div>
+        <div class="tool-header-actions">
             <button class="btn btn-primary btn-sm" id="mathGenerateBtn">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="mathPrintBtn">
-              <i class="fas fa-print"></i> Print
+              <i class="fas fa-print"></i> Print PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="mathResetBtn">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
-          </div>
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
       </div>
 
-      <!-- Two-pane body -->
-      <div class="math-body">
+      <div class="math-body tool-body">
 
       <!-- Left: settings pane -->
-      <div class="math-settings-pane no-print">
+      <div class="math-settings-pane tool-settings no-print">
 
         <div class="math-settings-section">
           <div class="math-section-title">Operations &amp; Ranges</div>
@@ -137,14 +136,18 @@ export function buildUI(container) {
       </div>
 
       <!-- Right: papers output -->
-      <div class="math-papers-pane">
-        <div id="mathPapersContainer" class="math-papers">
+      <div class="math-papers-pane tool-preview">
+        <div class="tool-preview-scroll">
+        <div id="mathPapersContainer" class="math-papers tool-pages">
           <div class="empty-state">
             <i class="fas fa-list-ol"></i>
             <p>Configure options and click Generate.</p>
           </div>
         </div>
+        </div>
       </div>
+
+      <div class="tool-info-pane" aria-hidden="true"></div>
 
       </div>
 
@@ -223,7 +226,7 @@ function runReset() {
 
 function wireEvents() {
   document.getElementById('mathGenerateBtn')?.addEventListener('click', runGenerate);
-  document.getElementById('mathPrintBtn')?.addEventListener('click', () => window.print());
+  document.getElementById('mathPrintBtn')?.addEventListener('click', printWorksheet);
   document.getElementById('mathResetBtn')?.addEventListener('click', runReset);
   ['includeAdd', 'includeSub', 'includeMul', 'includeDiv', 'questionMode', 'subMinDiff'].forEach(id => {
     document.getElementById(id)?.addEventListener('change', runGenerate);

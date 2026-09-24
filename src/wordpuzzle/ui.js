@@ -3,6 +3,8 @@ import { generateWordSearch } from './wordsearch.js';
 import { generateCrissCross } from './crisscross.js';
 import { generateJumble } from './jumble.js';
 import { renderPuzzles } from './renderer.js';
+import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { printWorksheet } from '../shared/print.js';
 
 export const DIFFICULTY = {
   easy:   { minLen: 3, maxLen: 6,  attempts: 80  },
@@ -21,31 +23,28 @@ const maxLens = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 
 export function buildWordPuzzleUI(container) {
   container.innerHTML = `
-    <div class="wp-tool">
+    <div class="wp-tool tool-shell">
 
-      <!-- Toolbar -->
-      <div class="wp-toolbar no-print">
-        <div class="wp-tb-row">
-          <span class="mw-typebar-label">Word Puzzles</span>
-          <span class="tb-vdiv"></span>
-          <span class="tb-status status-msg info" id="wpGenStatus"></span>
-
-          <div class="tb-actions" style="margin-left:auto;gap:6px;">
+      <div class="wp-toolbar tool-header no-print">
+        <div class="tool-header-main">
+          <span class="tool-header-title">Word Puzzles</span>
+          <span class="tool-header-status tb-status status-msg info" id="wpGenStatus"></span>
+        </div>
+        <div class="tool-header-actions">
             <button class="btn btn-primary btn-sm" id="wpBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="wpBtnPrint">
-              <i class="fas fa-print"></i> Print
+              <i class="fas fa-print"></i> Print PDF
             </button>
-          </div>
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
       </div>
 
-      <!-- Two-pane body -->
-      <div class="wp-body">
+      <div class="wp-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="wp-settings-pane no-print">
+        <div class="wp-settings-pane tool-settings no-print">
 
           <div class="wp-settings-section">
             <div class="wp-section-title">Puzzle</div>
@@ -129,14 +128,6 @@ export function buildWordPuzzleUI(container) {
                 <option value="uppercase">UPPER</option>
               </select>
             </div>
-            <div class="wp-set-field">
-              <label for="wpPrintMargin">Print margin</label>
-              <select class="tb-select" id="wpPrintMargin">
-                <option value="6mm">6 mm</option>
-                <option value="10mm" selected>10 mm</option>
-                <option value="16mm">16 mm</option>
-              </select>
-            </div>
           </div>
 
           <div class="wp-settings-section">
@@ -172,13 +163,17 @@ export function buildWordPuzzleUI(container) {
         </div>
 
         <!-- Right: rendered pages -->
-        <div class="wp-output" id="wpOutput">
+        <div class="wp-output tool-preview" id="wpOutput">
+          <div class="tool-preview-scroll">
           <div class="empty-state" id="wpEmptyState">
             <i class="fas fa-file-alt"></i>
             <p>Click <strong>Generate</strong> to create puzzles.</p>
           </div>
-          <div id="wpPuzzlesContainer"></div>
+          <div id="wpPuzzlesContainer" class="tool-pages"></div>
+          </div>
         </div>
+
+        <div class="tool-info-pane" aria-hidden="true"></div>
 
       </div>
 
@@ -207,7 +202,6 @@ function readOpts() {
     fontSize:       n('wpFontSize', 20),
     cellPadding:    n('wpCellPadding', 6),
     caseMode:       v('wpCaseMode') || 'lowercase',
-    printMargin:    v('wpPrintMargin') || '10mm',
   };
 }
 
@@ -265,7 +259,6 @@ function runGenerate() {
   const solEl = document.getElementById('wpShowSolutions');
   if (solEl) solEl.checked = false;
 
-  document.documentElement.style.setProperty('--print-margin', opts.printMargin);
   doRender();
 
   if (status) {
@@ -305,9 +298,7 @@ function wireEvents() {
 
   document.getElementById('wpBtnPrint')?.addEventListener('click', () => {
     if (!state.puzzles.length) return;
-    const margin = document.getElementById('wpPrintMargin')?.value ?? '10mm';
-    document.documentElement.style.setProperty('--print-margin', margin);
-    window.print();
+    printWorksheet();
   });
 
   document.getElementById('wpShowSolutions')?.addEventListener('change', (e) => {
@@ -344,7 +335,7 @@ function wireEvents() {
     doRender();
   });
 
-  ['wpFontFamily', 'wpFontSize', 'wpCellPadding', 'wpCaseMode', 'wpPrintMargin'].forEach(id => {
+  ['wpFontFamily', 'wpFontSize', 'wpCellPadding', 'wpCaseMode'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     const handler = () => { if (state.puzzles.length) doRender(); };

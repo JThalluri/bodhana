@@ -30,6 +30,7 @@
     <aside class="portal-sidebar" id="portalSidebar">
       <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
         <i class="fas fa-bars"></i>
+        <img class="sidebar-brand-banner" id="brandBanner" alt="Bodhana" />
       </button>
       <nav class="sidebar-nav" id="sidebarNav">
         <a href="#/" class="nav-item" data-route="/">
@@ -58,7 +59,7 @@
         </a>
         <a href="#/dict-builder" class="nav-item" data-route="/dict-builder">
           <i class="fas fa-book-open nav-icon"></i>
-          <span class="nav-label">Dict Builder</span>
+          <span class="nav-label">Build Dictionary</span>
         </a>
       </nav>
     </aside>
@@ -68,11 +69,9 @@
 
       <!-- Top bar -->
       <header class="portal-topbar" id="portalTopbar">
-        <div class="topbar-brand">
-          <img class="brand-banner" id="brandBanner" alt="Bodhana" />
-        </div>
+        <div class="topbar-brand"></div>
         <div class="topbar-actions">
-          <div class="theme-pill" id="themeToggle" role="button" tabindex="0" aria-label="Toggle theme">
+          <div class="theme-pill" id="themeToggle" role="button" tabindex="0" aria-label="Toggle theme" data-theme-toggle>
             <i class="fas fa-sun theme-sun"></i>
             <span class="theme-pill-track"><span class="theme-pill-thumb"></span></span>
             <i class="fas fa-moon theme-moon"></i>

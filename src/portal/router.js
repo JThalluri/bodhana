@@ -9,6 +9,14 @@ const routes = {
   '/worksheets':       () => import('../worksheets/index.js'),
 };
 
+const printableRoutes = new Set([
+  '/math',
+  '/math-worksheets',
+  '/word-puzzles',
+  '/math-puzzles',
+  '/sudoku',
+]);
+
 let currentUnmount = null;
 
 export function initRouter() {
@@ -28,6 +36,8 @@ async function handleRoute() {
   content.innerHTML = '';
   updateActiveNav(hash);
   document.body.classList.toggle('route-home', hash === '/');
+  document.body.classList.toggle('route-printable-tool', printableRoutes.has(hash));
+  document.querySelector('#themeToggle')?.toggleAttribute('data-theme-toggle', !printableRoutes.has(hash));
 
   const loader = routes[hash] ?? routes['/'];
   try {

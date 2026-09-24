@@ -284,8 +284,4 @@
     display: none !important;
   }
 
-  @page {
-    size: letter;
-    margin: 0;
-  }
 }

@@ -87,6 +87,17 @@
 
   /* Topbar height */
   --topbar-height: 56px;
+  --tool-header-height: 56px;
+  --tool-settings-width: 300px;
+  --tool-preview-width: 660px;
+  --tool-page-scale: 0.72;
+  --tool-workspace-bg: #111827;
+  --print-page-width: 8.5in;
+  --print-page-height: 11in;
+  --print-margin-x: 0.4in;
+  --print-margin-y: 0.35in;
+  --print-content-width: 7.7in;
+  --print-content-height: 10.3in;
 
   /* Transition */
   --transition: 200ms ease;
@@ -124,4 +135,6 @@
   --shadow-sm:      0 1px 3px rgba(0,0,0,0.3);
   --shadow-md:      0 4px 12px rgba(0,0,0,0.4);
   --shadow-lg:      0 8px 24px rgba(0,0,0,0.5);
+
+  --tool-workspace-bg: #0b1220;
 }
