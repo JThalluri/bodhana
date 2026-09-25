@@ -25,12 +25,12 @@ export function brandWatermarkStyles() {
       z-index: 1000 !important;
       pointer-events: none !important;
       user-select: none !important;
-      font-family: "Nunito", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif !important;
-      font-size: 16pt !important;
+      font-family: "Nunito ExtraBold", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif !important;
+      font-size: 18pt !important;
       font-weight: 900 !important;
       line-height: 1 !important;
       letter-spacing: 0.01em !important;
-      color: #f97316 !important;
+      color: #ca5400ff !important;
       opacity: 0.58 !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;

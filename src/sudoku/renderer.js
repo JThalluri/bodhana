@@ -1,7 +1,16 @@
 import { DIFFICULTY_SETTINGS } from './generator.js';
 
 export function renderPuzzles(puzzles, opts = {}) {
-  return puzzles.map((p, i) => puzzleHTML(p, i, opts)).join('');
+  const tileCount = normalizeTileCount(opts.tileCount);
+  if (tileCount === 1) {
+    return puzzles.map((p, i) => puzzleHTML(p, i, opts)).join('');
+  }
+
+  const pages = [];
+  for (let i = 0; i < puzzles.length; i += tileCount) {
+    pages.push(tiledPageHTML(puzzles.slice(i, i + tileCount), i, tileCount, opts));
+  }
+  return pages.join('');
 }
 
 function puzzleHTML(data, idx, opts) {
@@ -9,7 +18,7 @@ function puzzleHTML(data, idx, opts) {
   const { puzzle, solution, difficulty } = data;
   const {
     showSolutions = false,
-    fontFamily = "'Nunito', sans-serif",
+    fontFamily = "'Andika', sans-serif",
     fontSize = 20,
     cellPadding = 12,
   } = opts;
@@ -36,6 +45,55 @@ function puzzleHTML(data, idx, opts) {
       <p class="sdk-instructions">Fill each row, column, and 3&times;3 box with the digits 1&ndash;9, using each digit exactly once.</p>
     </section>
   `;
+}
+
+function tiledPageHTML(pagePuzzles, startIndex, tileCount, opts) {
+  const gridStyle = tileGridStyle(tileCount);
+  const difficultyLabel = DIFFICULTY_SETTINGS[pagePuzzles[0]?.difficulty]?.label ?? pagePuzzles[0]?.difficulty ?? 'Sudoku';
+  const tiles = pagePuzzles.map((puzzle, index) => {
+    if (!puzzle) return '';
+    const puzzleNumber = startIndex + index + 1;
+    return `
+      <article class="sdk-tile" style="${gridStyle}">
+        <div class="sdk-tile-number">${puzzleNumber}</div>
+        <div class="sdk-grid-wrap sdk-tile-grid-wrap" role="img" aria-label="Sudoku puzzle ${puzzleNumber}">
+          ${gridToHTML(puzzle.puzzle, puzzle.solution, opts.showSolutions)}
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  return `
+    <section class="sdk-puzzle-page sdk-tile-page sdk-tile-page-${tileCount}">
+      <div class="sdk-header">
+        <span class="sdk-header-field">Name <span class="sdk-underline sdk-underline-lg"></span></span>
+        <span class="sdk-header-field">Date <span class="sdk-underline sdk-underline-md"></span></span>
+        <span class="sdk-header-meta">Sudoku &middot; ${difficultyLabel}</span>
+      </div>
+      <div class="sdk-tile-layout">
+        ${tiles}
+      </div>
+      <p class="sdk-instructions">Fill each row, column, and 3&times;3 box with the digits 1&ndash;9, using each digit exactly once.</p>
+    </section>
+  `;
+}
+
+function tileGridStyle(tileCount) {
+  const preset = {
+    2: { cell: 54, font: 25 },
+    4: { cell: 42, font: 19 },
+    6: { cell: 34, font: 16 },
+  }[tileCount] ?? { cell: 42, font: 19 };
+
+  return [
+    `--sdk-cell-size: ${preset.cell}px`,
+    `--sdk-font-size: ${preset.font}px`,
+    "font-family: 'Andika', sans-serif",
+  ].join('; ');
+}
+
+function normalizeTileCount(value) {
+  return [1, 2, 4, 6].includes(Number(value)) ? Number(value) : 4;
 }
 
 function gridToHTML(puzzle, solution, showSolutions) {

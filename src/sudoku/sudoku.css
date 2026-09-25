@@ -122,6 +122,10 @@
   align-items: flex-start;
 }
 
+.sdk-tile-page {
+  padding: 14px 18px;
+}
+
 /* ── Header ─────────────────────────────────────────────────────────────── */
 
 .sdk-header {
@@ -168,7 +172,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  overflow-x: auto;
+  overflow: visible;
 }
 
 /* Table-based grid — border-collapse is the most print-reliable border approach */
@@ -217,6 +221,56 @@
   color: #777;
   font-style: italic;
   font-family: var(--font-header);
+}
+
+.sdk-tile-layout {
+  display: grid;
+  width: 100%;
+  flex: 1;
+  align-content: start;
+  justify-items: center;
+  gap: 16px 14px;
+}
+
+.sdk-tile-page-2 .sdk-tile-layout {
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.sdk-tile-page-4 .sdk-tile-layout,
+.sdk-tile-page-6 .sdk-tile-layout {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sdk-tile {
+  display: grid;
+  grid-template-columns: 16px auto;
+  align-items: start;
+  justify-content: center;
+  column-gap: 6px;
+  width: 100%;
+  min-width: 0;
+  break-inside: avoid;
+}
+
+.sdk-tile-number {
+  font-family: var(--font-header);
+  font-size: 9pt;
+  font-weight: 700;
+  color: #444;
+  line-height: 1;
+  text-align: right;
+  padding-top: 2px;
+}
+
+.sdk-tile-grid-wrap {
+  width: auto;
+}
+
+.sdk-tile-page .sdk-instructions {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 6px;
 }
 
 /* ── Print ──────────────────────────────────────────────────────────────── */
@@ -274,9 +328,26 @@
   .sdk-underline-md { width: 130px !important; }
 
   /* Override inline cell-size so the grid fills the printable width */
-  .sdk-grid-wrap {
+  .sdk-puzzle-page:not(.sdk-tile-page) .sdk-grid-wrap {
     --sdk-cell-size: calc(6.3in / 9) !important;
     --sdk-font-size: calc(6.3in / 9 * 0.44) !important;
+  }
+
+  .sdk-tile-page .sdk-header {
+    font-size: 11pt !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 5px !important;
+  }
+
+  .sdk-tile-page .sdk-underline-lg { width: 190px !important; }
+  .sdk-tile-page .sdk-underline-md { width: 110px !important; }
+
+  .sdk-tile-layout {
+    gap: 16px 14px !important;
+  }
+
+  .sdk-tile-page-2 .sdk-tile-layout {
+    gap: 18px !important;
   }
 
   .sdk-cell {

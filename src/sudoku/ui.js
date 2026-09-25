@@ -54,31 +54,21 @@ export function buildSudokuUI(container) {
             </div>
             <div class="sdk-field">
               <label for="sdkPuzzleCount">Puzzles</label>
-              <input class="tb-num" type="number" id="sdkPuzzleCount" value="2" min="1" max="8" />
+              <input class="tb-num" type="number" id="sdkPuzzleCount" value="4" min="1" max="24" />
             </div>
           </div>
 
           <div class="sdk-settings-section">
-            <div class="sdk-section-title">Style</div>
+            <div class="sdk-section-title">Layout</div>
 
             <div class="sdk-field">
-              <label for="sdkFontFamily">Font</label>
-              <select class="tb-select" id="sdkFontFamily">
-                <option value="'Nunito', sans-serif">Nunito</option>
-                <option value="'Andika', sans-serif">Andika</option>
-                <option value="'Comic Sans MS', cursive">Comic Sans</option>
-                <option value="'Patrick Hand', cursive">Patrick Hand</option>
-                <option value="'Courier New', monospace">Courier New</option>
-                <option value="Arial, sans-serif">Arial</option>
+              <label for="sdkTileCount">Puzzles per page</label>
+              <select class="tb-select" id="sdkTileCount">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="6">6</option>
               </select>
-            </div>
-            <div class="sdk-field">
-              <label for="sdkFontSize">Font size</label>
-              <input class="tb-num" type="number" id="sdkFontSize" value="20" min="10" max="36" />
-            </div>
-            <div class="sdk-field">
-              <label for="sdkCellPadding">Cell padding</label>
-              <input class="tb-num" type="number" id="sdkCellPadding" value="12" min="4" max="28" />
             </div>
           </div>
 
@@ -122,11 +112,13 @@ function readConfig() {
   const sel = id => document.getElementById(id)?.value ?? '';
   return {
     difficulty:  sel('sdkDifficulty') || 'medium',
-    count:       Math.min(8, Math.max(1, readInt('sdkPuzzleCount', 2))),
-    fontFamily:  sel('sdkFontFamily') || "'Nunito', sans-serif",
-    fontSize:    readInt('sdkFontSize', 20),
-    cellPadding: readInt('sdkCellPadding', 12),
+    count:       Math.min(24, Math.max(1, readInt('sdkPuzzleCount', 4))),
+    tileCount:   normalizeTileCount(readInt('sdkTileCount', 4)),
   };
+}
+
+function normalizeTileCount(value) {
+  return [1, 2, 4, 6].includes(value) ? value : 4;
 }
 
 function runGenerate() {
@@ -176,19 +168,15 @@ function doRender(cfg) {
   if (empty) empty.style.display = 'none';
   container.innerHTML = renderPuzzles(state.puzzles, {
     showSolutions: state.showSolutions,
-    fontFamily:    config.fontFamily,
-    fontSize:      config.fontSize,
-    cellPadding:   config.cellPadding,
+    tileCount:     config.tileCount,
   });
 }
 
 function runReset() {
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
   set('sdkDifficulty',  'medium');
-  set('sdkPuzzleCount', 2);
-  set('sdkFontFamily',  "'Nunito', sans-serif");
-  set('sdkFontSize',    20);
-  set('sdkCellPadding', 12);
+  set('sdkPuzzleCount', 4);
+  set('sdkTileCount',   4);
   runGenerate();
 }
 
@@ -203,12 +191,8 @@ function wireEvents() {
     if (state.puzzles.length) doRender();
   });
 
-  ['sdkFontFamily', 'sdkFontSize', 'sdkCellPadding'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const handler = () => { if (state.puzzles.length) doRender(); };
-    el.addEventListener('change', handler);
-    el.addEventListener('input', handler);
+  document.getElementById('sdkTileCount')?.addEventListener('change', () => {
+    if (state.puzzles.length) doRender();
   });
 
   document.addEventListener('keydown', handleKeydown);
