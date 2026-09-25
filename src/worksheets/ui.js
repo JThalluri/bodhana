@@ -29,16 +29,20 @@ function esc(c) {
 export function buildWorksheetsUI(container) {
   container.innerHTML = `
     <div class="ws-tool tool-shell">
-      <div class="ws-toolbar tool-header no-print">
+      <div class="ws-toolbar tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Seyes Worksheets</span>
           <span class="tool-header-status tb-status status-msg info" id="wsPageCount"></span>
         </div>
-        <div class="tool-header-actions">
-          <button class="btn btn-primary btn-sm" id="wsPrintBtn">
-            <i class="fas fa-print"></i> Print PDF
-          </button>
-          <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+        <div class="tool-header-actions tool-worksheet-actions">
+          <div class="tool-primary-actions">
+            <button class="btn btn-primary btn-sm" id="wsPrintBtn">
+              <i class="fas fa-print"></i> Print
+            </button>
+          </div>
+          <div class="tool-secondary-actions">
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
         </div>
       </div>
 

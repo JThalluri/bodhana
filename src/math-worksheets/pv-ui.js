@@ -24,24 +24,28 @@ export function buildPlaceValueUI(container) {
   container.innerHTML = `
     <div class="pv-tool tool-shell">
 
-      <div class="pv-toolbar tool-header no-print">
+      <div class="pv-toolbar tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Place Value</span>
         </div>
-        <div class="tool-header-actions">
+        <div class="tool-header-actions tool-worksheet-actions">
+          <div class="tool-primary-actions">
             <button class="btn btn-primary btn-sm" id="pvGenerateBtn">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="pvPrintBtn">
-              <i class="fas fa-print"></i> Print PDF
+              <i class="fas fa-print"></i> Print
             </button>
             <button class="btn btn-secondary btn-sm" id="pvExportBtn">
-              <i class="fas fa-file-pdf"></i> Export PDF
+              <i class="fas fa-file-pdf"></i> Export
             </button>
             <button class="btn btn-ghost btn-sm" id="pvRevealBtn">
               <i class="fas fa-eye"></i> Reveal Solutions
             </button>
+          </div>
+          <div class="tool-secondary-actions">
             <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
 
         </div>
       </div>

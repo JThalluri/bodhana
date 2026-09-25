@@ -14,25 +14,30 @@ export function buildSudokuUI(container) {
   container.innerHTML = `
     <div class="sdk-tool tool-shell">
 
-      <div class="sdk-toolbar tool-header no-print">
+      <div class="sdk-toolbar tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Sudoku</span>
           <span class="tool-header-status tb-status status-msg info" id="sdkStatus"></span>
         </div>
-        <div class="tool-header-actions">
+        <div class="tool-header-actions tool-worksheet-actions">
+          <div class="tool-primary-actions">
             <button class="btn btn-primary btn-sm" id="sdkBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="sdkBtnPrint">
-              <i class="fas fa-print"></i> Print PDF
+              <i class="fas fa-print"></i> Print
             </button>
             <button class="btn btn-secondary btn-sm" id="sdkBtnExport">
-              <i class="fas fa-file-pdf"></i> Export PDF
+              <i class="fas fa-file-pdf"></i> Export
             </button>
+            <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-ghost btn-sm" id="sdkBtnReset">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
+          </div>
+          <div class="tool-secondary-actions">
             <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
         </div>
       </div>
 

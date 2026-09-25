@@ -16,14 +16,14 @@ export function buildDictBuilderUI(container) {
   container.innerHTML = `
     <div class="db-tool tool-shell">
 
-      <div class="tool-header no-print">
+      <div class="tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Dictionary Builder</span>
           <span class="tool-header-status tb-status status-msg info" id="dbStatus"></span>
         </div>
 
         <div class="tool-header-actions">
-          <div class="tb-actions">
+          <div class="tool-primary-actions">
             <button class="btn btn-primary btn-sm" id="dbBtnExtract">
               <i class="fas fa-magic"></i> Extract
             </button>
@@ -39,11 +39,14 @@ export function buildDictBuilderUI(container) {
               title="Keep base dictionary as-is, append only the net-new words at the end">
               <i class="fas fa-file-import"></i> Append Delta
             </button>
+            <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-danger btn-sm" id="dbBtnClear">
               <i class="fas fa-times"></i> Clear
             </button>
           </div>
-          <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          <div class="tool-secondary-actions">
+            <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
         </div>
       </div>
 

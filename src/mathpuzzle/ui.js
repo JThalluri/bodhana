@@ -20,25 +20,30 @@ export function buildMathPuzzleUI(container) {
   container.innerHTML = `
     <div class="mp-tool tool-shell">
 
-      <div class="mp-toolbar tool-header no-print">
+      <div class="mp-toolbar tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Math Puzzle Grid</span>
           <span class="tool-header-status tb-status status-msg info" id="mpStatus"></span>
         </div>
-        <div class="tool-header-actions">
+        <div class="tool-header-actions tool-worksheet-actions">
+          <div class="tool-primary-actions">
             <button class="btn btn-primary btn-sm" id="mpBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="mpBtnPrint">
-              <i class="fas fa-print"></i> Print PDF
+              <i class="fas fa-print"></i> Print
             </button>
             <button class="btn btn-secondary btn-sm" id="mpBtnExport">
-              <i class="fas fa-file-pdf"></i> Export PDF
+              <i class="fas fa-file-pdf"></i> Export
             </button>
+            <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-ghost btn-sm" id="mpBtnReset">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
+          </div>
+          <div class="tool-secondary-actions">
             <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
         </div>
       </div>
 

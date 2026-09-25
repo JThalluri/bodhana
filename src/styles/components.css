@@ -439,12 +439,68 @@
   flex-wrap: wrap;
 }
 
+.tool-header.tool-worksheet-header {
+  display: grid;
+  grid-template-columns: var(--tool-settings-width) var(--tool-preview-width) minmax(0, 1fr);
+  gap: 0;
+  padding: 0;
+}
+
+.tool-header.tool-worksheet-header .tool-header-main {
+  grid-column: 1;
+  padding: 0 var(--space-3) 0 var(--space-4);
+}
+
+.tool-header.tool-worksheet-header .tool-header-actions {
+  grid-column: 2 / 4;
+  display: grid;
+  grid-template-columns: var(--tool-preview-width) minmax(0, 1fr);
+  align-self: stretch;
+  align-items: center;
+  gap: 0;
+  margin-left: 0;
+}
+
+.tool-primary-actions,
+.tool-secondary-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tool-primary-actions {
+  justify-self: end;
+  padding-right: var(--space-4);
+}
+
+.tool-secondary-actions {
+  justify-self: end;
+  min-height: 32px;
+  padding: 0 var(--space-4) 0 var(--space-3);
+  border-left: 1px solid var(--border);
+}
+
+.tool-action-separator {
+  width: 1px;
+  height: 24px;
+  margin: 0 var(--space-2);
+  background: var(--border);
+  flex: 0 0 auto;
+}
+
 .tool-theme-slot {
   display: inline-flex;
   align-items: center;
   margin-left: 4px;
   padding-left: 8px;
   border-left: 1px solid var(--border);
+}
+
+.tool-secondary-actions .tool-theme-slot {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
 }
 
 .tool-body {

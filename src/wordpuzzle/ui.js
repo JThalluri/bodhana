@@ -26,22 +26,26 @@ export function buildWordPuzzleUI(container) {
   container.innerHTML = `
     <div class="wp-tool tool-shell">
 
-      <div class="wp-toolbar tool-header no-print">
+      <div class="wp-toolbar tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Word Puzzles</span>
           <span class="tool-header-status tb-status status-msg info" id="wpGenStatus"></span>
         </div>
-        <div class="tool-header-actions">
+        <div class="tool-header-actions tool-worksheet-actions">
+          <div class="tool-primary-actions">
             <button class="btn btn-primary btn-sm" id="wpBtnGenerate">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="wpBtnPrint">
-              <i class="fas fa-print"></i> Print PDF
+              <i class="fas fa-print"></i> Print
             </button>
             <button class="btn btn-secondary btn-sm" id="wpBtnExport">
-              <i class="fas fa-file-pdf"></i> Export PDF
+              <i class="fas fa-file-pdf"></i> Export
             </button>
+          </div>
+          <div class="tool-secondary-actions">
             <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
         </div>
       </div>
 

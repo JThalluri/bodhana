@@ -23,25 +23,30 @@ export function unmountTicTacToe() {
 export function buildTicTacToeUI(container) {
   container.innerHTML = `
     <div class="ttt-tool tool-shell">
-      <div class="ttt-toolbar tool-header no-print">
+      <div class="ttt-toolbar tool-header tool-worksheet-header no-print">
         <div class="tool-header-main">
           <span class="tool-header-title">Math Tic-Tac-Toe</span>
           <span class="tool-header-status tb-status status-msg info" id="tttStatus"></span>
         </div>
-        <div class="tool-header-actions">
+        <div class="tool-header-actions tool-worksheet-actions">
+          <div class="tool-primary-actions">
             <button class="btn btn-primary btn-sm" id="tttGenerateBtn">
               <i class="fas fa-sync-alt"></i> Generate
             </button>
             <button class="btn btn-secondary btn-sm" id="tttPrintBtn">
-              <i class="fas fa-print"></i> Print PDF
+              <i class="fas fa-print"></i> Print
             </button>
             <button class="btn btn-secondary btn-sm" id="tttExportBtn">
-              <i class="fas fa-file-pdf"></i> Export PDF
+              <i class="fas fa-file-pdf"></i> Export
             </button>
+            <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-ghost btn-sm" id="tttResetBtn">
               <i class="fas fa-undo-alt"></i> Reset
             </button>
+          </div>
+          <div class="tool-secondary-actions">
             <span class="tool-theme-slot">${themeToggleMarkup()}</span>
+          </div>
         </div>
       </div>
 
