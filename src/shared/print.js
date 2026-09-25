@@ -1,3 +1,5 @@
+import { addBrandWatermarks, brandWatermarkStyles } from './worksheet-brand.js';
+
 const PRINT_PAGE_SELECTOR = [
   '.paper-page',
   '.pv-worksheet',
@@ -85,6 +87,7 @@ export function printWorksheet() {
       height: 11in !important;
       max-height: 11in !important;
       margin: 0 !important;
+      position: relative !important;
       box-sizing: border-box !important;
       overflow: hidden !important;
       background: white !important;
@@ -100,6 +103,8 @@ export function printWorksheet() {
       page-break-after: avoid !important;
       break-after: auto !important;
     }
+
+    ${brandWatermarkStyles()}
   </style>
 </head>
 <body>
@@ -107,6 +112,7 @@ export function printWorksheet() {
 </body>
 </html>`);
   printDocument.close();
+  addBrandWatermarks(printDocument, PRINT_PAGE_CHILD_SELECTOR);
 
   let cleanedUp = false;
   const cleanup = () => {

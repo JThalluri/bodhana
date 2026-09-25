@@ -18,11 +18,13 @@ Implementation is split into subphases. After each subphase: build, visually tes
 ## Decisions
 
 - Worksheet type selectors live as the first section of the settings pane.
-- Generated modules use header actions in this order: Generate, Print PDF, later Export PDF, secondary actions, theme toggle last.
+- Generated modules use header actions in this order: Generate, Print PDF, Export PDF, secondary actions, theme toggle last.
 - Seyes is real-time and has no Generate button.
 - Print PDF uses the browser native print path for best quality.
-- Export PDF is a later vector-PDF subphase, not a raster DOM screenshot.
+- Export PDF uses a shared print-layout frame and high-resolution page-image PDF exporter so exported pages match the validated print layout.
 - Export PDF downloads all rendered pages when implemented.
+- Seyes remains print-only in this phase; its strict millimeter print geometry is not routed through Export PDF yet.
+- Printed and exported pages include a small `Bodhana` text watermark at the top-right corner.
 - The right-side pane stays empty until content/instructions are designed.
 - Dictionary Builder uses the shared shell for visual consistency, but extraction, filtering, deduping, and download behavior are unchanged in this pass.
 - Dictionary Builder feature redesign remains a separate future phase.
@@ -36,6 +38,7 @@ Implementation is split into subphases. After each subphase: build, visually tes
 - Empty right pane absorbs extra width.
 - One full Letter page is visible in the middle pane at 1920x1080.
 - Print output hides portal chrome and preserves page size.
+- Export PDF downloads all rendered pages with the same Letter page geometry as the print/export frame.
 - Dictionary Builder has one header row, a left settings pane, a main results pane, and the theme toggle last.
 - Build passes after every phase.
 

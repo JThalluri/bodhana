@@ -3,6 +3,7 @@ import { renderPuzzles } from './renderer.js';
 import { readInt } from '../shared/utils.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
+import { exportWorksheetPdf } from '../shared/export-pdf.js';
 
 const state = {
   puzzles: [],
@@ -24,6 +25,9 @@ export function buildSudokuUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="sdkBtnPrint">
               <i class="fas fa-print"></i> Print PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" id="sdkBtnExport">
+              <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="sdkBtnReset">
               <i class="fas fa-undo-alt"></i> Reset
@@ -191,6 +195,7 @@ function runReset() {
 function wireEvents() {
   document.getElementById('sdkBtnGenerate')?.addEventListener('click', runGenerate);
   document.getElementById('sdkBtnPrint')?.addEventListener('click', printWorksheet);
+  document.getElementById('sdkBtnExport')?.addEventListener('click', () => exportWorksheetPdf({ filenameBase: 'sudoku' }));
   document.getElementById('sdkBtnReset')?.addEventListener('click', runReset);
 
   document.getElementById('sdkShowSolutions')?.addEventListener('change', (e) => {

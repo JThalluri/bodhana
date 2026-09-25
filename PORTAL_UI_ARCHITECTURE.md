@@ -46,4 +46,10 @@ Seyes uses deterministic millimeter geometry. Its pagination, grid SVG, text pla
 
 ## PDF Direction
 
-Native `Print PDF` is the quality baseline. Future `Export PDF` should generate vector PDFs from worksheet data or geometry, not rasterize the screen preview.
+Native `Print PDF` is the quality baseline. Direct `Export PDF` for generated non-Seyes worksheets uses a shared hidden print-layout frame, renders each Letter-sized page at high resolution, and embeds those page images into a PDF. This avoids screen-preview zoom drift while matching the validated print geometry.
+
+The exporter must not rasterize the visible preview pane directly. It should render from the same print-layout contract used by `Print PDF`: Letter page, zero browser page margin, module print overrides, all rendered pages included, and portal chrome excluded.
+
+Seyes remains outside direct Export PDF for now. Its trusted output path is still the dedicated print window because its 8mm grid and text placement require physical validation.
+
+Printed and exported worksheet pages include a small top-right `Bodhana` watermark implemented as real page markup rather than a pseudo-element, so the same mark survives print windows and PDF serialization.

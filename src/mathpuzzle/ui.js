@@ -3,6 +3,7 @@ import { DIFFICULTY_SETTINGS, generatePuzzle } from './generator.js';
 import { renderPuzzles } from './renderer.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
+import { exportWorksheetPdf } from '../shared/export-pdf.js';
 
 const DIFF_DEFAULTS = {
   easy:   { equations: DIFFICULTY_SETTINGS.easy.targetDefault },
@@ -30,6 +31,9 @@ export function buildMathPuzzleUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="mpBtnPrint">
               <i class="fas fa-print"></i> Print PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" id="mpBtnExport">
+              <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="mpBtnReset">
               <i class="fas fa-undo-alt"></i> Reset
@@ -279,6 +283,7 @@ function runReset() {
 function wireEvents() {
   document.getElementById('mpBtnGenerate')?.addEventListener('click', runGenerate);
   document.getElementById('mpBtnPrint')?.addEventListener('click', printWorksheet);
+  document.getElementById('mpBtnExport')?.addEventListener('click', () => exportWorksheetPdf({ filenameBase: 'math_puzzle_grid' }));
   document.getElementById('mpBtnReset')?.addEventListener('click', runReset);
 
   document.getElementById('mpDifficulty')?.addEventListener('change', (e) => {

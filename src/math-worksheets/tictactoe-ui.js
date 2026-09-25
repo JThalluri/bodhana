@@ -5,6 +5,7 @@ import {
 } from './tictactoe-generator.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
+import { exportWorksheetPdf } from '../shared/export-pdf.js';
 
 let _tttListeners = [];
 
@@ -33,6 +34,9 @@ export function buildTicTacToeUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="tttPrintBtn">
               <i class="fas fa-print"></i> Print PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" id="tttExportBtn">
+              <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="tttResetBtn">
               <i class="fas fa-undo-alt"></i> Reset
@@ -188,6 +192,7 @@ export function buildTicTacToeUI(container) {
     preview: c('#tttWorksheetsContainer'),
     generateBtn: c('#tttGenerateBtn'),
     printBtn: c('#tttPrintBtn'),
+    exportBtn: c('#tttExportBtn'),
     resetBtn: c('#tttResetBtn'),
   };
 
@@ -339,6 +344,7 @@ export function buildTicTacToeUI(container) {
 
   on(els.generateBtn, 'click', renderWorksheet);
   on(els.printBtn, 'click', printWorksheet);
+  on(els.exportBtn, 'click', () => exportWorksheetPdf({ filenameBase: 'math_tic_tac_toe' }));
   on(els.resetBtn, 'click', reset);
 
   updateConditional();

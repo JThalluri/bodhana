@@ -3,6 +3,7 @@ import {
 } from './pv-generator.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
+import { exportWorksheetPdf } from '../shared/export-pdf.js';
 
 let _pvListeners = [];
 
@@ -33,6 +34,9 @@ export function buildPlaceValueUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="pvPrintBtn">
               <i class="fas fa-print"></i> Print PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" id="pvExportBtn">
+              <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="pvRevealBtn">
               <i class="fas fa-eye"></i> Reveal Solutions
@@ -230,7 +234,7 @@ export function buildPlaceValueUI(container) {
   const revealBtn       = c('#pvRevealBtn');
   const generateBtn     = c('#pvGenerateBtn');
   const printBtn        = c('#pvPrintBtn');
-  const pdfBtn          = c('#pvPdfBtn');
+  const exportBtn       = c('#pvExportBtn');
   const preview         = c('#pvWorksheetsContainer');
 
   let revealActive = false;
@@ -498,6 +502,7 @@ export function buildPlaceValueUI(container) {
 
   on(generateBtn, 'click', generate);
   on(printBtn, 'click', printWorksheet);
+  on(exportBtn, 'click', () => exportWorksheetPdf({ filenameBase: TYPE_NAMES[typeEl.value] ?? 'place_value' }));
 
   on(revealBtn, 'click', () => {
     revealActive = !revealActive;
@@ -505,36 +510,6 @@ export function buildPlaceValueUI(container) {
     revealBtn.innerHTML = revealActive
       ? '<i class="fas fa-eye-slash"></i> Hide Solutions'
       : '<i class="fas fa-eye"></i> Reveal Solutions';
-  });
-
-  on(pdfBtn, 'click', async () => {
-    if (!preview.querySelector('.pv-worksheet')) return;
-    pdfBtn.disabled = true;
-    pdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    try {
-      if (!window.html2pdf) {
-        await new Promise((resolve, reject) => {
-          const s = document.createElement('script');
-          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-          s.onload = resolve;
-          s.onerror = reject;
-          document.head.appendChild(s);
-        });
-      }
-      await window.html2pdf()
-        .set({
-          margin: 0,
-          filename: 'place_value_worksheets.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-        })
-        .from(preview)
-        .save();
-    } finally {
-      pdfBtn.disabled = false;
-      pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> PDF';
-    }
   });
 
   updateConditional();

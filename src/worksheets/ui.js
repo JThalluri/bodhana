@@ -1,5 +1,6 @@
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { seyesGridSVG } from './seyes-grid.js';
+import { brandWatermarkElementHTML, brandWatermarkStyles } from '../shared/worksheet-brand.js';
 
 let _listeners = [];
 
@@ -296,6 +297,7 @@ function buildPrintHTML(pages, vars) {
 <div class="page">
   <div class="grid">${gridSVG}</div>
   <div class="text-area">${pageLinesToHTML(lines)}</div>
+  ${brandWatermarkElementHTML()}
 </div>`).join('\n');
 
   return `<!DOCTYPE html>
@@ -327,6 +329,8 @@ function buildPrintHTML(pages, vars) {
     break-after: page;
   }
   .page:last-child { page-break-after: avoid; break-after: auto; }
+
+  ${brandWatermarkStyles()}
 
   .grid {
     position: absolute;

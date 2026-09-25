@@ -2,6 +2,7 @@ import { generate, DEFAULTS } from './generator.js';
 import { renderPapers } from './renderer.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
+import { exportWorksheetPdf } from '../shared/export-pdf.js';
 import './math.css';
 
 export function buildUI(container) {
@@ -19,6 +20,9 @@ export function buildUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="mathPrintBtn">
               <i class="fas fa-print"></i> Print PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" id="mathExportBtn">
+              <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <button class="btn btn-ghost btn-sm" id="mathResetBtn">
               <i class="fas fa-undo-alt"></i> Reset
@@ -227,6 +231,7 @@ function runReset() {
 function wireEvents() {
   document.getElementById('mathGenerateBtn')?.addEventListener('click', runGenerate);
   document.getElementById('mathPrintBtn')?.addEventListener('click', printWorksheet);
+  document.getElementById('mathExportBtn')?.addEventListener('click', () => exportWorksheetPdf({ filenameBase: 'arithmetic_tests' }));
   document.getElementById('mathResetBtn')?.addEventListener('click', runReset);
   ['includeAdd', 'includeSub', 'includeMul', 'includeDiv', 'questionMode', 'subMinDiff'].forEach(id => {
     document.getElementById(id)?.addEventListener('change', runGenerate);

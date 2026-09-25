@@ -5,6 +5,7 @@ import { generateJumble } from './jumble.js';
 import { renderPuzzles } from './renderer.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
+import { exportWorksheetPdf } from '../shared/export-pdf.js';
 
 export const DIFFICULTY = {
   easy:   { minLen: 3, maxLen: 6,  attempts: 80  },
@@ -36,6 +37,9 @@ export function buildWordPuzzleUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="wpBtnPrint">
               <i class="fas fa-print"></i> Print PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" id="wpBtnExport">
+              <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <span class="tool-theme-slot">${themeToggleMarkup()}</span>
         </div>
@@ -299,6 +303,11 @@ function wireEvents() {
   document.getElementById('wpBtnPrint')?.addEventListener('click', () => {
     if (!state.puzzles.length) return;
     printWorksheet();
+  });
+
+  document.getElementById('wpBtnExport')?.addEventListener('click', () => {
+    if (!state.puzzles.length) return;
+    exportWorksheetPdf({ filenameBase: document.getElementById('wpMode')?.value ?? 'word_puzzles' });
   });
 
   document.getElementById('wpShowSolutions')?.addEventListener('change', (e) => {
