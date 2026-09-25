@@ -295,6 +295,22 @@
   flex: 1;
 }
 
+.pv-wordform-answer-lines {
+  display: block;
+  margin-top: 5px;
+}
+
+.pv-wordform-answer-lines span {
+  display: block;
+  height: 1.15em;
+  border-bottom: 1.2px solid #333;
+  margin-bottom: 4px;
+}
+
+.pv-wordform-answer-lines span:last-child {
+  margin-bottom: 0;
+}
+
 .pv-question:has(.pv-chart) {
   line-height: 1.35;
 }

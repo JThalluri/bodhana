@@ -283,23 +283,32 @@ export function generateType4(state) {
   };
 }
 
+function answerLines(state) {
+  const count = Math.min(2, Math.max(0, parseInt(state.emptyLines) || 0));
+  if (count === 0) return '';
+
+  const lines = Array.from({ length: count }, () => '<span></span>').join('');
+  return `<span class="pv-wordform-answer-lines" aria-hidden="true">${lines}</span>`;
+}
+
 export function generateType5(state) {
   const numObj  = generateNumber(state, false);
   const formatted = formatNumber(numObj, state, 0);
   const wordsFunc = state.locale === 'in' ? numberToWordsIN : numberToWordsUS;
   const words     = wordsFunc(numObj.intPart);
   const toWords   = _random() < 0.5;
+  const blankLines = answerLines(state);
 
   if (toWords) {
     return {
       question: `Write the word form for: <strong>${formatted}</strong>
-        <span class="solution-text">${words}</span>`,
+        <span class="solution-text">${words}</span>${blankLines}`,
       answer: words,
     };
   }
   return {
     question: `Write the number for: <em>${words}</em>
-      <span class="solution-text">${formatted}</span>`,
+      <span class="solution-text">${formatted}</span>${blankLines}`,
     answer: formatted,
   };
 }

@@ -116,6 +116,14 @@ export function buildPlaceValueUI(container) {
               <label for="pvQuestionsPerWs">Questions per worksheet</label>
               <input class="tb-num" type="number" id="pvQuestionsPerWs" min="1" max="30" value="25" style="width:52px;">
             </div>
+            <div class="pv-field hidden" id="pvEmptyLinesRow">
+              <label for="pvEmptyLines">Empty lines</label>
+              <select class="tb-select" id="pvEmptyLines" style="width:80px;">
+                <option value="0">0</option>
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
             <div class="pv-field" id="pvSkipStepRow" style="display:none;">
               <label for="pvSkipStep">Skip count step</label>
               <select class="tb-select" id="pvSkipStep" style="width:80px;">
@@ -222,6 +230,8 @@ export function buildPlaceValueUI(container) {
   const wsCountEl       = c('#pvWorksheetCount');
   const qPerWsEl        = c('#pvQuestionsPerWs');
   const qPerWsRow       = c('#pvQuestionsPerWsRow');
+  const emptyLinesEl    = c('#pvEmptyLines');
+  const emptyLinesRow   = c('#pvEmptyLinesRow');
   const skipStepEl      = c('#pvSkipStep');
   const skipStepRow     = c('#pvSkipStepRow');
   const fontFamilyEl    = c('#pvFontFamily');
@@ -246,6 +256,7 @@ export function buildPlaceValueUI(container) {
     const showDec  = includeDecEl.checked && !isHint;
     const showAK   = includeAKEl.checked;
     const showSkip = typeEl.value === 'type9';
+    const showEmptyLines = typeEl.value === 'type5';
 
     if (isHint) {
       minDigitsEl.min = '3';
@@ -270,6 +281,7 @@ export function buildPlaceValueUI(container) {
     qPerWsRow.classList.toggle('hidden', isHint);
     includeAKEl.closest('.pv-field').classList.toggle('hidden', isHint);
     akPlacementRow.classList.toggle('hidden', !showAK || isHint);
+    emptyLinesRow.classList.toggle('hidden', !showEmptyLines);
     skipStepRow.style.display = showSkip ? '' : 'none';
   }
 
@@ -291,6 +303,7 @@ export function buildPlaceValueUI(container) {
       decimalMix:           decMixEl.checked,
       worksheetCount:       Math.min(10, Math.max(1, parseInt(wsCountEl.value) || 2)),
       questionsPerWorksheet:Math.min(30, Math.max(1, parseInt(qPerWsEl.value) || 25)),
+      emptyLines:           Math.min(2, Math.max(0, parseInt(emptyLinesEl.value) || 0)),
       skipCountStep:        parseInt(skipStepEl.value) || 10,
       hintDifficulty:       hintDifficultyEl.value,
       fontFamily:           fontFamilyEl.value,
