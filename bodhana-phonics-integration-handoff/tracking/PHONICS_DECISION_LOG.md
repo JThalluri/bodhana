@@ -1,0 +1,489 @@
+# Phonics Integration — Decision Log
+
+**Append-only.** Never edit or delete a past entry, even if a later decision reverses it — add a
+new entry that supersedes it and reference the one it replaces. This is the audit trail;
+`PHONICS_STATUS.md` is the current-state snapshot. Don't conflate the two.
+
+**Entry format:**
+
+```
+## YYYY-MM-DD — <short title>
+Phase: <n>
+Context: <what triggered this decision>
+Decision: <what was decided>
+Alternatives considered: <brief, if any>
+Rationale: <why>
+Spec impact: <which spec/section this affects, if any — "none" if purely an implementation detail>
+```
+
+Routine implementation choices (not dictated by the spec, but not touching a MUST/hard-fail
+statement, a backlog item, or an acceptance criterion) go here and the agent proceeds. Anything
+bigger than that goes to `PHONICS_STATUS.md` → Open Questions instead, and waits.
+
+---
+
+## 2026-10-01 — Shared core logic reframed from "throwaway" to permanent
+
+Phase: 1 (affects Phase 2 and Phase 3 directly)
+
+Context: while designing the Phase 2 Constructs Workbench spec, found that it needs the exact
+same tokenize/splitSyllables/vowelTeamSounds/lookupException logic that Phase 1's spec had
+originally framed as a temporary, test-only reimplementation (to be discarded once Phase 3 built
+the "real" engine). Phase 2 runs before Phase 3 exists, so it would otherwise have had to either
+depend on code explicitly labeled throwaway, or duplicate the logic a second time — reintroducing
+the exact multi-truths drift problem this whole initiative exists to eliminate.
+
+Decision: this logic is not throwaway. It ships from Phase 1 as genuinely shared, pure,
+dependency-free modules under `src/phonics/core/*.mjs`. Phase 1's own regression tests consume it
+directly (no change in behavior for Phase 1). Phase 2's Workbench imports it unmodified. Phase 3's
+scope narrows correspondingly: wrap this already-proven core into the full public
+`PhonicsConstructor` API (CSV export, UMD wrapper, `parseWord`/`parseWords`, etc.) rather than
+re-deriving the compute logic.
+
+Alternatives considered: (a) let Phase 2 depend on Phase 1's test-only code as-is — rejected,
+"depend on code labeled temporary" is a worse smell than the rename costs; (b) have Phase 2
+duplicate the logic independently — rejected outright, this is precisely the failure pattern
+(PhonicsConstructor.js's version label vs. actual table contents vs. exported CSV) that started
+this entire effort.
+
+Rationale: zero duplicated linguistic/compute logic across the whole initiative, full stop — not
+"minimize duplication," actually zero. A second implementation of `lookupException`'s three-tier
+lookup anywhere in this codebase is a standing risk of silent divergence, regardless of which
+phase introduced it.
+
+Spec impact: `phonics-constructs-pipeline-spec_v1.0.md` §6 and §11 described this logic as
+temporary/throwaway — superseded by this entry. Also adds two new Phase 1 acceptance criteria
+(see `PHONICS_STATUS.md` Phase 1, items 9–10) that weren't in the original spec's §10. If Phase 1
+implementation is already underway or complete under the original framing, the fix is a
+relocation (move the logic from test scaffolding to `src/phonics/core/`) and a de-labeling, not a
+rewrite — the logic itself doesn't change.
+
+---
+
+## 2026-10-01 — Core scope expands beyond the original four Phase 1 functions
+
+Phase: 1 (completed/finalized in Phase 3), 3
+
+Context: while scoping Phase 3's engine, the full original API contract required
+`countSyllables`, `onsetRime`, `identifyVowelNuclei`, `computeDifficulty`, `decodabilityLevel`,
+and `findAllPatterns` in addition to the four functions Phase 1 named as "core"
+(`tokenize`, `splitSyllables`, `vowelTeamSounds`, `lookupException`). These are the same category
+of thing — pure, dependency-free, single-word compute — and splitting them between `core/` and
+engine-local code would recreate exactly the "some logic lives in two places" risk this
+initiative exists to eliminate.
+
+Decision: all pure per-word compute functions live in `src/phonics/core/`, full stop. The engine
+(Phase 3) is orchestration + I/O only — it calls core functions, assembles `Record` objects,
+handles CSV/download, and owns the public API shape, but defines zero linguistic logic itself.
+
+Rationale: same as the original shared-core decision above — one implementation per computation,
+everywhere in this codebase, no exceptions carved out for "but this one's simple enough to
+inline."
+
+Spec impact: expands the file list under `src/phonics/core/` beyond what Phase 1's spec
+originally enumerated. No behavior change to any function — this is purely a "where does this
+code live" decision, not a "what does this code do" decision.
+
+---
+
+## 2026-10-01 — UMD wrapper dropped; engine is ES-module-only
+
+Phase: 3
+
+Context: the original prototype spec (`phonics_extractor_spec-v1.2.md`) required three loading
+environments (browser `<script>` global, CommonJS, ESM interop) because the engine was designed
+to be dropped into a standalone static HTML page as a script tag. That deployment model doesn't
+apply once this engine is bundled into Bodhana's Vite SPA (ESM throughout already) and consumed
+by the standalone Constructs Workbench via direct `core/` imports (not via a wrapped object).
+
+Decision: the engine ships as plain ES modules — named exports plus one convenience default
+export. No `module.exports`, no `window.PhonicsConstructor` global, no UMD factory wrapper.
+
+Alternatives considered: keep UMD for "just in case" standalone-script reuse later — rejected as
+speculative complexity with no current consumer; a thin UMD shim is cheap to add later if a real
+need appears, cheaper than maintaining unused wrapper code now.
+
+Rationale: this engine has exactly two real consumers today (Bodhana's Vite build, and the
+Workbench's direct core imports) and neither needs UMD. Carrying it forward would be solving a
+problem that no longer exists, inherited from the engine's original standalone-prototype
+distribution model.
+
+Spec impact: `phonics_extractor_spec-v1.2.md` §1's three-environment loading-pattern table is
+superseded for this codebase. That document remains useful as historical reference for the
+original algorithm/data design, not as the current API distribution contract.
+
+---
+
+## 2026-10-01 — Enrichment cache is permanent and incremental, no invalidation logic
+
+Phase: 4
+
+Context: `PhonicsEngine.parseWord(word)` is pure — same word always produces the same output
+within one loaded build. Rather than design invalidation rules for "when does cached enrichment
+go stale," the cache (`state.phonicsByWord`) is treated as append-only for the session: Enrich
+only computes words not already present, regardless of re-extraction, filtering, or
+exclude/include toggling.
+
+Decision: no invalidation logic exists at all. This is correct by construction, not a shortcut —
+there is no scenario where a cached word's enrichment becomes wrong, since output depends only on
+the word string and the currently-loaded constructs build.
+
+Rationale: eliminates an entire category of "is my data stale" UX and bug surface rather than
+handling it carefully.
+
+Spec impact: none — this is purely how Dictionary Builder's own state is designed, doesn't touch
+any other phase's contract.
+
+---
+
+## 2026-10-01 — `is_common` default fallback list relocated, not re-curated
+
+Phase: 4
+
+Context: the retired `COMMON_WORDS` list (confirmed removed from the phonics engine in Phase 1/3)
+still has a legitimate use — the is_common fallback when a teacher hasn't loaded a Base
+Dictionary yet.
+
+Decision: seed `src/dictbuilder/default-common-words.js` verbatim from the old list's content. No
+new curation work, no validation pipeline — this is a word-frequency heuristic, not a linguistic
+construct, and explicitly doesn't go through the Phase 1 YAML/compiler pipeline.
+
+Rationale: keeps the phonics constructs pipeline free of anything that isn't actually phonics,
+per the original plan, while not losing the (reasonable, already-curated) content by discarding
+it outright.
+
+Spec impact: none beyond Phase 4's own file list.
+
+---
+
+## 2026-10-01 — Select/exclude markup corrected to two real `<button>`s
+
+Phase: 4
+
+Context: the original word-grid markup used a clickable `<div>` with delegated click handling for
+exclude. Splitting select-for-detail and exclude into two independent actions on the same cell
+made the existing div-click pattern ambiguous for assistive tech once a second actionable target
+was added.
+
+Decision: both actions are real `<button>` elements (`.db-word-select`, `.db-word-exclude-btn`)
+inside the (still div, still `position: relative`) cell container, each with its own click
+handler and `e.stopPropagation()` boundary where needed.
+
+Rationale: correct accessibility shape from the start costs nothing extra to build; retrofitting
+it later would mean re-touching every word-grid interaction handler a second time.
+
+Spec impact: none — purely a markup/semantics correction within Phase 4's own deliverable.
+
+---
+
+## 2026-10-01 — v1 Phonics Worksheets ships 4 of 9 original activity types
+
+Phase: 5
+
+Context: the original prototype specified 9 worksheet activities. Scoping Phase 5 against the
+"framework first, worksheets are legos" direction, four activities (Dissect the Word, Elkonin
+Sound Boxes, Onset & Rime, Syllable Split) share a property the other five don't: they are fully
+deterministic given a word list — no shuffle, no distractor-pool generation, no dual-mode filter
+interaction. The remaining five (Pattern ID's distractor draw, Word Hunt/Sound Hunt, Minimal
+Pair/Sound Sort, Tic-Tac-Toe) carry real, independent complexity.
+
+Decision: v1 ships only the four deterministic activities. This also enables a real-time
+("no Generate button, live preview") header layout per Bodhana's own prototype guidelines, since
+determinism is exactly the property that makes live-updating safe/cheap. The remaining five are
+explicitly scoped as Phase 5b, using the same generator/renderer architecture, once this slice
+is proven in production.
+
+Rationale: two of the deferred activities (Word Hunt/Sound Hunt, Minimal Pair/Sound Sort) are
+each genuinely as complex as this entire phase's other four combined — shipping all nine now
+would make this phase the riskiest, highest-rework one in the whole initiative, which is the
+opposite of what the phased sequencing was for.
+
+Spec impact: `phonics-worksheets-module-spec_v1.0.md` scopes to 4 activities; the deferred 5 are
+not yet speced at all (not even stubbed) — they get their own spec when picked up.
+
+---
+
+## 2026-10-01 — `default-common-words.js` relocated to `src/shared/`
+
+Phase: 4 → corrected in 5
+
+Context: Phase 4 placed this file under `src/dictbuilder/`. Scoping Phase 5's Word Source section
+found the Phonics Worksheets module needs the identical is_common fallback resolution when a
+teacher loads a raw word list directly, without going through Dictionary Builder first.
+
+Decision: relocate to `src/shared/default-common-words.js`. If Phase 4 was already built against
+the old path, this is a one-line import-path fix, not a content or logic change — the list
+itself doesn't change.
+
+Rationale: same "zero duplicated lookup logic across phases" principle applied every other time
+this kind of overlap has surfaced in this initiative.
+
+Spec impact: `phonics-dictionary-builder-integration-spec_v1.0.md` §5's file path is superseded
+by this entry — if Phase 4 is mid-build or complete, apply this relocation before Phase 5 starts,
+not after.
+
+---
+
+## 2026-10-01 — Answer-key visibility corrected to match the real Bodhana convention, not the old prototype
+
+Phase: 5
+
+Context: the old prototype toggled answer visibility via a `.show-answers` CSS class on an
+ancestor, with answer markup always present in the DOM but hidden. Reviewing Word Puzzles' real
+`ui.js` showed the actual Bodhana convention is different: `state.showSolutions` is passed as a
+parameter into the renderer function, which produces different HTML depending on its value,
+re-rendered on toggle.
+
+Decision: Phase 5 follows the real convention, not the old prototype's. Elkonin boxes and the
+Onset & Rime rhyme-family line are genuinely absent from the DOM when solutions are hidden, not
+CSS-hidden.
+
+Rationale: consistency with the actual codebase this is being integrated into outranks
+consistency with a prototype that was explicitly reference-only per your own earlier instruction.
+Small side benefit: answers aren't inspectable via dev tools when hidden, though that wasn't the
+deciding factor.
+
+Spec impact: none outside Phase 5 — this never shipped anywhere yet.
+
+---
+
+## 2026-10-01 — `.paper-page` confirmed reusable as-is; no shared print/export file edits needed
+
+Phase: 5
+
+Context: Phase 5's §7 was left explicitly pending real `src/shared/print.js` and
+`src/shared/export-pdf.js`, rather than guessed at, given the guidelines' explicit warning that
+registering a new page class requires editing both shared files. Those files were obtained and
+reviewed.
+
+Decision: reuse `.paper-page` directly, with no edits to either shared file. Evidence: both
+files hardcode the same six-class selector list; the other five classes are each
+module-prefixed (`.pv-worksheet`, `.ttt-worksheet`, `.mp-puzzle-page`, `.sdk-puzzle-page`,
+`.wp-puzzle-block`) and each has a bespoke override block inside `export-pdf.js`'s
+`exportPrintStyles()`; `.paper-page` is the only one of the six with no such block and the only
+one without a module prefix — consistent with it being the designated generic/no-special-
+handling page vessel this module's four deterministic, simply-laid-out activities need.
+
+Alternatives considered: registering a new `.phx-worksheet-page` class — rejected, unnecessary
+given `.paper-page` fits exactly and avoids touching the explicitly-protected shared print/export
+engine at all.
+
+Rationale: lowest possible risk resolution — zero changes to shared, cross-module-sensitive
+files, for a module whose activities have no layout need the generic contract doesn't already
+cover.
+
+Spec impact: Phase 5 spec §7 fully rewritten from "pending" to resolved; no other phase affected.
+
+**One residual, explicitly non-blocking item:** whether `worksheets/` or `math-worksheets/`
+(neither reviewed) already defines `.paper-page` with different assumptions is unconfirmed. Low
+risk, cheap to catch immediately if it happens (a visibly duplicate CSS rule), not worth a
+further pause to chase down in advance. If it does happen, resolve by scoping the new rule more
+specifically or coordinating with whichever module got there first — not by inventing a new
+page class as a first resort.
+
+---
+
+## 2026-10-01 — Cross-phase consistency pass: 5 gaps found and fixed at source
+
+Phase: all
+
+Context: before final consolidation, did a deliberate re-read of all five specs against this
+decision log, specifically checking whether every logged correction actually got applied to
+every document it affects — not just the document being written at the time the correction was
+noticed. Five gaps found:
+
+1. **Phase 1's own spec still described the core compute logic as throwaway/temporary** (§6,
+   §11) and never listed `src/phonics/core/*.mjs` as an actual deliverable (§2) — the
+   "shared core is permanent" correction had only ever been applied to the decision log and to
+   later specs that referenced it, never to Phase 1's own text. Fixed: §2, §6, §10, §11 of
+   `phonics-constructs-pipeline-spec_v1.0.md` now state this natively, with two new acceptance
+   criteria (9, 10) and a new required deliverable (`scripts/constructs-compile-core.mjs`,
+   exporting `compileConstructs()` as the pure transform Phase 2 needs — this also closes a gap
+   where that requirement existed only informally in Phase 2's spec).
+2. **Phase 4's spec still said `src/dictbuilder/default-common-words.js`** — the relocation to
+   `src/shared/` was decided and logged while scoping Phase 5, and applied to Phase 5's spec, but
+   never written back into Phase 4's own deliverables table or code comment. Fixed at source in
+   `phonics-dictionary-builder-integration-spec_v1.0.md` §2 and §5.
+3. **A real latent bug, not a drift issue**: Phase 3's spec never explicitly instructed removing
+   `is_common` from the hardcoded `EXTENDED_COLUMNS` array inside `toCSV`. Left as originally
+   written, a build agent copying the old array verbatim would produce a header row with a
+   blank `is_common` column — and combined with Phase 4's `extraColumns: ['is_common']`, two
+   `is_common` columns in one CSV. This wasn't a previously-logged decision that failed to
+   propagate; it was found by re-deriving `toCSV`'s actual behavior from first principles rather
+   than trusting the existing text. Fixed in `phonics-engine-spec_v1.0.md` §3.3 with the exact
+   corrected 11-entry array and the corrected column-count expectation (18, not the old
+   prototype's 19, until `extraColumns` is added back).
+4. **Fixture corpus filename mismatch, consistent across four documents.** The actual delivered
+   file is `phonics-regression-fixtures.v2.yaml`; Phases 1, 2, 3, and 5 all referenced it as
+   `phonics-regression.v2.yaml` (missing the `-fixtures` segment) — six occurrences total, found
+   via `grep` rather than manual re-reading, which also caught one occurrence (Phase 3) that
+   manual review had missed. Fixed across all four files.
+5. **Phase 2's dependency note on `compileConstructs()` was written defensively** ("if Phase 1
+   wasn't built this way, fix it") because at the time it was written, Phase 1's spec didn't yet
+   explicitly require it. Now that fix #1 above makes it an explicit Phase 1 requirement, the
+   hedge was stale. Tightened in `phonics-constructs-workbench-spec_v1.0.md` §7.
+
+Rationale for doing this pass at all: eleven corrections were made across five phases in one
+drafting session. Each was individually cheap to make, but logging a correction and actually
+propagating it to every affected document are two different actions, and nothing before this
+pass had verified the second one actually happened everywhere it needed to. This is the same
+category of risk the whole initiative exists to catch in the linguistic data — it applies
+equally to the specs describing the code, not just the code's construct tables.
+
+Spec impact: see the five fixes above. `PHONICS_STATUS.md` updated correspondingly to remove
+now-unnecessary addendum framing where corrections are native to their spec at this point.
+
+---
+
+## 2026-10-01 — Tokenizer-reachability gap: 9 vowel team patterns added to tokenizer fixtures
+
+Phase: 1
+Context: running `node scripts/build-constructs.mjs` during Phase 1 implementation surfaced a
+reachability failure for 9 vowelTeam patterns: ai, ay, ie, oa, au, aw, ey, oi, oy. The §5.1
+reachability check examines only `fixtures.tokenizer[*].graphemes` for produced tokens. These
+9 patterns did appear in the `vowelTeamSounds` fixture section (rain, day, pie, boat, author, saw,
+monkey, coin, toy) but NOT in any tokenizer fixture with a grapheme breakdown.
+
+The v2 fixture doc §4 coverage matrix claims "vowelTeams: 23 ✅ all covered" — that claim was
+verified across all three fixture types (tokenizer + syllableSplit + vowelTeamSounds), but the
+spec's reachability check only looks at tokenizer fixtures. These two things are in direct
+tension.
+
+Decision: add 9 tokenizer fixtures to `constructs/fixtures/phonics-regression-fixtures.v2.yaml`
+(rain, day, pie, boat, author, saw, monkey, coin, toy — words already present in the
+vowelTeamSounds section, grapheme breakdowns derived from the algorithm). This satisfies both
+the spec's §5.1 MUST and the fixture doc's "all covered" coverage matrix.
+
+Alternatives considered: (a) extend the reachability check to also count patterns referenced in
+vowelTeamSounds fixtures — rejected because §5.1 is explicit ("tokenizer fixture's graphemes
+field") and changing the validation rule would be changing a spec acceptance criterion, which
+requires an open question rather than a decision; (b) leave the gap and open it as a question
+— rejected because this would block Phase 1 completion on a mechanical gap, not a design
+ambiguity; the correct grapheme breakdowns are deterministic and unambiguous.
+
+Rationale: the fixture doc's "no outstanding reachability gaps" claim was an authoring error
+(cross-fixture-type coverage conflated with tokenizer-only reachability). The fix is to add the
+missing tokenizer fixtures so both the claim and the enforcement align.
+
+Spec impact: `constructs/fixtures/phonics-regression-fixtures.v2.yaml` gains 9 tokenizer
+fixtures. The companion `.md` rationale doc was not modified (it lives in the read-only handoff
+package); this decision log entry is the audit trail.
+
+---
+
+## 2026-10-02 — `always: false` flag given real semantics in `tryStripSuffix`
+
+Phase: 1
+Context: the original `tryStripSuffix` spec described an `always` flag on suffix-strip rules,
+but the implementation never enforced it — every rule fired unconditionally regardless of the
+flag's value. During Phase 1 implementation this was found to produce incorrect splits for words
+where the candidate stem is not a morphological root: `shoulder → [should, er]` (stem=`should`
+is not a root for `-er`; correct split is `[shoul, der]` via VCCV pattern fallback once the
+strip is suppressed). The flag needed real behavior.
+
+Decision: `always: false` rules now require the stem to appear in `rootWordsSet` OR the stem+'e'
+to appear there (e-drop roots like `believe → believ`), OR doubling-undo to have fired. Words
+where the candidate stem is not a recognized root fall through to the pattern fallback (VCCV/VCV
+rules), which produces the correct structural split without needing morphological knowledge.
+
+Alternatives considered: (a) keep `always: true` for all rules and add exceptions list — rejected
+because it inverts the logical default (every unknown word would be stripped, errors opt-in); (b)
+derive roots algorithmically from phonics patterns — rejected as out-of-scope; root vocabulary
+is small and curated lists are already the model everywhere else in this codebase.
+
+Rationale: `always: false` was already intended to mean "only strip if the stem is a real word"
+(the flag name implies it). Making it do exactly that closes the gap between the spec's intent and
+the code's behavior; the flag is no longer dead code.
+
+Spec impact: none — this is an implementation detail within Phase 1's `tryStripSuffix` function.
+The `-er` rule (minStem:5, always:false) is the main beneficiary; the `-ous` rule is also
+`always: false` and gains the same protection.
+
+---
+
+## 2026-10-02 — `height`/`sleight` exception pattern corrected from `ei` to `eigh`
+
+Phase: 1
+Context: `phonics-constructs.yaml`'s `vowelTeamExceptions` table originally had `height` and
+`sleight` with `pattern: ei`. But the tokenizer uses longest-match-first, and `eigh` is a longer
+pattern that appears in the vowelTeams list — so the tokenizer actually produces `eigh` as the
+token, not `ei`. An exception row keyed on `ei` would never match either word.
+
+Decision: changed both rows to `pattern: eigh`. This is a correction of a pre-existing
+discrepancy between the data file and the tokenizer's actual behavior inherited from the legacy
+`PhonicsConstructor.js` — the original code compared against `ei` too, making the exception
+silently unreachable in both the old and new implementations.
+
+Alternatives considered: lowering `eigh` in the vowelNucleiList so `ei` would match first —
+rejected because `eigh` as a vowelTeam pattern has unambiguous scope (eight, neighbor, sleigh)
+and lowering it would break those tokens; the correct fix is to align the exception row with what
+the tokenizer actually produces.
+
+Rationale: the exception row must name the token the tokenizer emits. If the tokenizer produces
+`eigh`, the exception must say `eigh`. Aligning data with code is always the right direction.
+
+Spec impact: none beyond the YAML data file — no spec document references `height`/`sleight`
+exception rows at the pattern level.
+
+---
+
+## 2026-10-02 — `tryCompoundSplit` threshold widened (5+ chars, right-half ≥ 2 chars)
+
+Phase: 1
+Context: original `tryCompoundSplit` required words to be at least 6 chars and right halves to
+be at least 3 chars. This prevented `maybe` (5 chars, `may`=3 + `be`=2) from compound-splitting,
+causing the silent-e drop rule to remove `e` and collapse `maybe` into a single syllable.
+
+Decision: widened to 5+ char words with right-half ≥ 2 chars (left still ≥ 3 by loop bounds).
+The change is guarded by the requirement that BOTH halves appear in `compoundPartsSet` — so only
+real compound-word parts can match. This is not "trust any 2-char string"; it is "trust any
+2-char string that someone explicitly listed as a compound part."
+
+Alternatives considered: (a) fix the silent-e drop rule to not fire when the preceding nucleus is
+a long vowel — rejected because it would require phonological classification of the preceding
+nucleus, which is exactly the kind of linguistic data that belongs in the constructs YAML, not
+hardcoded in the splitter; (b) add `maybe` as a special case — rejected as not generalizable.
+
+False positive audit (done at time of change): 2-char entries currently in `compoundParts` are
+`no`, `be`, `do`, `up`, `in`. Representative 5-char combinations checked: `sunup` (sun+up ✓),
+`setup` (set+up ✓), `maybe` (may+be ✓). No false positives found. The 2-char halves are too
+semantically constrained to produce spurious splits.
+
+Rationale: compound recognition belongs in the data, not the splitter. Widening the threshold
+and trusting the curated list is the correct architectural move; the false positive audit
+confirms it's also safe in practice.
+
+Spec impact: none — `tryCompoundSplit`'s thresholds are an implementation detail not
+referenced by any spec section.
+
+---
+
+## 2026-10-02 — `-ie` suffix rule changed to `always: false`; five root stems added
+
+Phase: 1
+Context: `tryStripSuffix`'s `-ie` rule was initially set to `always: true` (fire for all words
+ending in `ie`). This correctly handles `cookie → [cook, ie]`, `movie → [mov, ie]`, `brownie →
+[brown, ie]`, and `selfie → [self, ie]`. But it incorrectly handles `zombie → [zomb, ie]`
+instead of the correct `[zom, bie]` — because `zomb` is not a morphological stem and the `b`
+phonologically belongs as onset of the second syllable.
+
+Decision: changed `-ie` to `always: false`. Added `cook`, `rook`, `self`, `brown`, and `move`
+to `rootWords` so the five currently-tested words keep their correct splits. `zombie`'s stem
+`zomb` (and `zombe`) is not in `rootWords`, so the strip is skipped and the VCCV pattern
+fallback correctly produces `zom|bie`.
+
+`selfie` passes normally (`self` in rootWords). No `expectedFailure` is needed — the concern
+that pattern fallback would give `sel|fie` was rendered moot by recognizing `self` as a root.
+
+Alternatives considered: (a) add a code guard checking whether the stem ends in a plosive
+preceded by a consonant (catches `zomb` but fails for `junk` in `junkie`) — rejected as fragile;
+(b) keep `always: true` and route `zombie` through compound-split by adding `zom`/`bie` to
+`compoundParts` — rejected because `bie` is not a real word-part and this would have unexpected
+scope.
+
+Rationale: `always: false` with a curated root list is exactly the same pattern used by `-er`
+and `-ous` — it is the established mechanism in this codebase for "only strip if this is a real
+morphological derivation." Extending it to `-ie` is consistent, not a one-off hack.
+
+Spec impact: none — the `always` flag semantics are an implementation detail within
+`tryStripSuffix`, not referenced by spec section numbers.

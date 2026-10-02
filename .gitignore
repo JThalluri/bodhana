@@ -1,3 +1,4 @@
 node_modules/
 dist/
 phonics_and_math/
+src/phonics/generated/

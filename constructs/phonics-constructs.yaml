@@ -1,0 +1,598 @@
+schemaVersion: "1.0.0"
+
+patternCategories:
+  digraphs:    [ch, sh, th, wh, ph, ck, ng, qu, gh, kn, wr, gn, mb, ps]
+  floss:       [ss, ff, ll, zz]
+  blends:      [bl, cl, fl, gl, pl, sl, br, cr, dr, fr, gr, pr, tr,
+                tw, dw, sc, sk, sm, sn, sp, st, sw,
+                mp, nt, nk, nd, ft, lt, lk, ld, lp, lf, pt, ct, xt]
+  # NOTE: rd, rk, rm, rn, rl, rt deliberately excluded — structurally unreachable.
+  # rControlled always claims the vowel+r pair first (greedy longest-match).
+  # See backlog "RESOLVED" section. Do not re-add without re-reading that entry.
+  clusters3:   [scr, spl, spr, str, shr, thr, squ, sch]
+  trigraphs:   [tch, dge, igh]
+  vowelTeams:  [ai, ay, ea, ee, ie, oa, oe, ue, ui,
+                au, aw, ei, eu, ew, ey, oi, oo, ou, ow, oy,
+                eigh, ough, augh]
+  rControlled:  [ar, er, ir, or, ur]
+  rControlled3: [air, ear, eer, oor, our, are, ere, ire, ore, ure, oar]
+
+patternCategoryDefaultLevels:
+  digraphs: 2
+  floss: 2
+  blends: 3
+  clusters3: 4
+  trigraphs: 4
+  vowelTeams: 5
+  rControlled: 6
+  rControlled3: 7
+
+patternLevelOverrides:
+  gh: 4
+  kn: 4
+  wr: 4
+  gn: 4
+  mb: 4
+  ps: 4
+  au: 6
+  aw: 6
+  ei: 6
+  eu: 6
+  ew: 6
+  ey: 6
+  oi: 6
+  oo: 6
+  ou: 6
+  ow: 6
+  oy: 6
+  eigh: 8
+  ough: 8
+  augh: 8
+
+scopeLevels:
+  - { level: 1, name: "CVC & single letters",      desc: "cat, dog, sun" }
+  - { level: 2, name: "Digraphs & FLOSS",           desc: "sh, ch, th, ck, ng, ss, ll" }
+  - { level: 3, name: "Consonant blends",           desc: "st, tr, bl, mp, nd" }
+  - { level: 4, name: "Trigraphs & 3-clusters",     desc: "tch, dge, igh, str, spl" }
+  - { level: 5, name: "Common vowel teams",         desc: "ai, ay, ee, ea, oa" }
+  - { level: 6, name: "Advanced vowels & R-ctrl",   desc: "oi, oy, ou, au, ar, er" }
+  - { level: 7, name: "R-ctrl trigraphs",           desc: "air, ear, ire, ore" }
+  - { level: 8, name: "Advanced / multi-syllable",  desc: "ough, eigh, schwa" }
+
+soundLabels:
+  long_a:   "/ā/ (cake)"
+  long_e:   "/ē/ (see)"
+  long_i:   "/ī/ (bike)"
+  long_o:   "/ō/ (boat)"
+  long_u:   "/ū/ (cube)"
+  short_a:  "/ă/ (cat)"
+  short_e:  "/ĕ/ (bed)"
+  short_i:  "/ĭ/ (bit)"
+  short_o:  "/ŏ/ (dog)"
+  short_u:  "/ŭ/ (cup)"
+  oo_long:  "/o͞o/ (moon)"
+  oo_short: "/o͝o/ (book)"
+  ow:       "/ou/ (cow)"
+  oi:       "/oi/ (coin)"
+  aw:       "/ô/ (saw)"
+  air:      "/âr/ (air)"
+
+defaultVowelSound:
+  ai: long_a
+  ay: long_a
+  ea: long_e
+  ee: long_e
+  ie: long_i
+  oa: long_o
+  oe: long_o
+  ue: long_u
+  ui: long_u
+  au: aw
+  aw: aw
+  ei: long_a
+  eu: long_u
+  ew: oo_long
+  ey: long_a
+  oi: oi
+  oy: oi
+  oo: oo_long
+  ou: ow
+  ow: ow
+  eigh: long_a
+  augh: aw
+  ough: long_o
+
+# Flat array of exception rows. Each row: { word, pattern, sound, note? }
+# Two rows for the same word is NORMAL (dual-override words like cookie).
+# Duplicate (word, pattern) pairs are the hard-fail condition (different sounds
+# for the same word+pattern is a real contradiction). See README.md §Exception table.
+vowelTeamExceptions:
+  # ---- ea = short_e ----
+  - { word: bread,     pattern: ea, sound: short_e }
+  - { word: head,      pattern: ea, sound: short_e }
+  - { word: dead,      pattern: ea, sound: short_e }
+  - { word: ready,     pattern: ea, sound: short_e }
+  - { word: already,   pattern: ea, sound: short_e }
+  - { word: breakfast, pattern: ea, sound: short_e }
+  - { word: health,    pattern: ea, sound: short_e }
+  - { word: wealth,    pattern: ea, sound: short_e }
+  - { word: weather,   pattern: ea, sound: short_e }
+  - { word: feather,   pattern: ea, sound: short_e }
+  - { word: leather,   pattern: ea, sound: short_e }
+  - { word: heavy,     pattern: ea, sound: short_e }
+  - { word: pleasant,  pattern: ea, sound: short_e }
+  - { word: measure,   pattern: ea, sound: short_e }
+  - { word: treasure,  pattern: ea, sound: short_e }
+  - { word: sweat,     pattern: ea, sound: short_e }
+  - { word: threat,    pattern: ea, sound: short_e }
+  - { word: spread,    pattern: ea, sound: short_e }
+  - { word: instead,   pattern: ea, sound: short_e }
+  - { word: thread,    pattern: ea, sound: short_e }
+  - { word: breath,    pattern: ea, sound: short_e }
+  - { word: death,     pattern: ea, sound: short_e }
+  - { word: deaf,      pattern: ea, sound: short_e }
+  # ---- ea = long_a ----
+  - { word: break,     pattern: ea, sound: long_a }
+  - { word: great,     pattern: ea, sound: long_a }
+  - { word: steak,     pattern: ea, sound: long_a }
+  # ---- ea = long_e (silent-e makes the ea long) ----
+  - { word: breathe,   pattern: ea, sound: long_e }
+  - { word: breathes,  pattern: ea, sound: long_e }
+  - { word: breathed,  pattern: ea, sound: long_e }
+  - { word: breather,  pattern: ea, sound: long_e }
+  - { word: breathing, pattern: ea, sound: long_e }
+  # ---- oo = oo_short ----
+  - { word: book,   pattern: oo, sound: oo_short }
+  - { word: look,   pattern: oo, sound: oo_short }
+  - { word: took,   pattern: oo, sound: oo_short }
+  - { word: cook,   pattern: oo, sound: oo_short }
+  - { word: hook,   pattern: oo, sound: oo_short }
+  - { word: good,   pattern: oo, sound: oo_short }
+  - { word: hood,   pattern: oo, sound: oo_short }
+  - { word: wood,   pattern: oo, sound: oo_short }
+  - { word: foot,   pattern: oo, sound: oo_short }
+  - { word: stood,  pattern: oo, sound: oo_short }
+  - { word: shook,  pattern: oo, sound: oo_short }
+  - { word: brook,  pattern: oo, sound: oo_short }
+  - { word: wool,   pattern: oo, sound: oo_short }
+  - { word: hoof,   pattern: oo, sound: oo_short }
+  # ---- oo = short_u ----
+  - { word: blood,  pattern: oo, sound: short_u }
+  - { word: flood,  pattern: oo, sound: short_u }
+  # ---- ow = long_o ----
+  - { word: snow,   pattern: ow, sound: long_o }
+  - { word: slow,   pattern: ow, sound: long_o }
+  - { word: grow,   pattern: ow, sound: long_o }
+  - { word: show,   pattern: ow, sound: long_o }
+  - { word: know,   pattern: ow, sound: long_o }
+  - { word: low,    pattern: ow, sound: long_o }
+  - { word: row,    pattern: ow, sound: long_o }
+  - { word: glow,   pattern: ow, sound: long_o }
+  - { word: flow,   pattern: ow, sound: long_o }
+  - { word: throw,  pattern: ow, sound: long_o }
+  - { word: window, pattern: ow, sound: long_o }
+  - { word: yellow, pattern: ow, sound: long_o }
+  - { word: follow, pattern: ow, sound: long_o }
+  # ---- ou = oo_long ----
+  - { word: soup,   pattern: ou, sound: oo_long }
+  - { word: group,  pattern: ou, sound: oo_long }
+  - { word: you,    pattern: ou, sound: oo_long }
+  - { word: youth,  pattern: ou, sound: oo_long }
+  - { word: route,  pattern: ou, sound: oo_long }
+  - { word: wound,  pattern: ou, sound: oo_long }
+  # ---- ou = oo_short ----
+  - { word: would,  pattern: ou, sound: oo_short }
+  - { word: could,  pattern: ou, sound: oo_short }
+  - { word: should, pattern: ou, sound: oo_short }
+  # ---- ou = long_o (shoulder/soul family — MUST NOT inherit oo_short via suffix-strip from 'should') ----
+  - { word: shoulder,  pattern: ou, sound: long_o }
+  - { word: shoulders, pattern: ou, sound: long_o }
+  - { word: soul,      pattern: ou, sound: long_o }
+  - { word: souls,     pattern: ou, sound: long_o }
+  - { word: boulder,   pattern: ou, sound: long_o }
+  - { word: boulders,  pattern: ou, sound: long_o }
+  # ---- ou = short_u ----
+  - { word: touch,    pattern: ou, sound: short_u }
+  - { word: rough,    pattern: ou, sound: short_u }
+  - { word: tough,    pattern: ou, sound: short_u }
+  - { word: enough,   pattern: ou, sound: short_u }
+  - { word: cousin,   pattern: ou, sound: short_u }
+  - { word: double,   pattern: ou, sound: short_u }
+  - { word: trouble,  pattern: ou, sound: short_u }
+  - { word: young,    pattern: ou, sound: short_u }
+  # ---- ie = long_e (field/shield set) ----
+  - { word: field,   pattern: ie, sound: long_e }
+  - { word: yield,   pattern: ie, sound: long_e }
+  - { word: shield,  pattern: ie, sound: long_e }
+  - { word: brief,   pattern: ie, sound: long_e }
+  - { word: chief,   pattern: ie, sound: long_e }
+  - { word: thief,   pattern: ie, sound: long_e }
+  - { word: grief,   pattern: ie, sound: long_e }
+  - { word: relief,  pattern: ie, sound: long_e }
+  - { word: niece,   pattern: ie, sound: long_e }
+  - { word: piece,   pattern: ie, sound: long_e }
+  - { word: priest,  pattern: ie, sound: long_e }
+  # ---- ie = long_e (believe family) ----
+  - { word: believe,   pattern: ie, sound: long_e }
+  - { word: believes,  pattern: ie, sound: long_e }
+  - { word: believed,  pattern: ie, sound: long_e }
+  - { word: believer,  pattern: ie, sound: long_e }
+  - { word: believing, pattern: ie, sound: long_e }
+  # ---- ie = long_e (dual-override words — also have oo rows below) ----
+  - { word: cookie,   pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: cookies,  pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: bookie,   pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: bookies,  pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: rookie,   pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: rookies,  pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: hoodie,   pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: hoodies,  pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: woodie,   pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  - { word: footie,   pattern: ie, sound: long_e, note: "dual-override — also has oo:oo_short row" }
+  # ---- oo = oo_short for dual-override words ----
+  - { word: cookie,   pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: cookies,  pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: bookie,   pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: bookies,  pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: rookie,   pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: rookies,  pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: hoodie,   pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: hoodies,  pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: woodie,   pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  - { word: footie,   pattern: oo, sound: oo_short, note: "dual-override — also has ie:long_e row" }
+  # ---- ie = long_e (various -ie words) ----
+  - { word: movie,      pattern: ie, sound: long_e }
+  - { word: movies,     pattern: ie, sound: long_e }
+  - { word: batteries,  pattern: ie, sound: long_e }
+  - { word: zombie,     pattern: ie, sound: long_e }
+  - { word: zombies,    pattern: ie, sound: long_e }
+  - { word: brownie,    pattern: ie, sound: long_e }
+  - { word: brownies,   pattern: ie, sound: long_e }
+  - { word: selfie,     pattern: ie, sound: long_e }
+  - { word: selfies,    pattern: ie, sound: long_e }
+  - { word: sweetie,    pattern: ie, sound: long_e }
+  - { word: auntie,     pattern: ie, sound: long_e }
+  - { word: calorie,    pattern: ie, sound: long_e }
+  - { word: calories,   pattern: ie, sound: long_e }
+  - { word: prairie,    pattern: ie, sound: long_e }
+  - { word: collie,     pattern: ie, sound: long_e }
+  - { word: goalie,     pattern: ie, sound: long_e }
+  - { word: genie,      pattern: ie, sound: long_e }
+  - { word: soldier,    pattern: ie, sound: long_e }
+  - { word: charlie,    pattern: ie, sound: long_e }
+  # ---- ie = short_e ----
+  - { word: friend,  pattern: ie, sound: short_e }
+  # ---- ey = long_e ----
+  - { word: key,     pattern: ey, sound: long_e }
+  - { word: monkey,  pattern: ey, sound: long_e }
+  - { word: donkey,  pattern: ey, sound: long_e }
+  - { word: turkey,  pattern: ey, sound: long_e }
+  - { word: alley,   pattern: ey, sound: long_e }
+  - { word: valley,  pattern: ey, sound: long_e }
+  - { word: chimney, pattern: ey, sound: long_e }
+  - { word: honey,   pattern: ey, sound: long_e }
+  - { word: money,   pattern: ey, sound: long_e }
+  # ---- ey = long_a ----
+  - { word: they,    pattern: ey, sound: long_a }
+  - { word: obey,    pattern: ey, sound: long_a }
+  # ---- ay = short_e ----
+  - { word: says,    pattern: ay, sound: short_e }
+  # ---- ei = long_e ----
+  - { word: receive,  pattern: ei, sound: long_e }
+  - { word: deceive,  pattern: ei, sound: long_e }
+  - { word: ceiling,  pattern: ei, sound: long_e }
+  - { word: protein,  pattern: ei, sound: long_e }
+  - { word: either,   pattern: ei, sound: long_e }
+  - { word: neither,  pattern: ei, sound: long_e }
+  - { word: seize,    pattern: ei, sound: long_e }
+  # ---- ei = long_i ----
+  - { word: height,   pattern: eigh, sound: long_i }
+  - { word: sleight,  pattern: eigh, sound: long_i }
+  # ---- ei = air ----
+  - { word: their,    pattern: ei, sound: air }
+  - { word: heir,     pattern: ei, sound: air }
+  - { word: theirs,   pattern: ei, sound: air }
+
+compoundParts:
+  # Standalone words commonly appearing as one half of a compound.
+  # Each entry must be at least 2 characters (hard-fail if shorter).
+  # The compound splitter also requires BOTH halves >= 3 chars at runtime.
+  - some
+  - any
+  - every
+  - no
+  - one
+  - thing
+  - body
+  - where
+  - what
+  - who
+  - how
+  - when
+  - why
+  - sun
+  - moon
+  - star
+  - day
+  - night
+  - time
+  - week
+  - year
+  - book
+  - case
+  - mark
+  - ground
+  - back
+  - side
+  - walk
+  - way
+  - yard
+  - work
+  - play
+  - mate
+  - room
+  - house
+  - home
+  - place
+  - food
+  - cake
+  - bread
+  - bed
+  - spread
+  - milk
+  - meat
+  - bird
+  - fish
+  - tree
+  - leaf
+  - rain
+  - snow
+  - wind
+  - cloud
+  - fire
+  - water
+  - earth
+  - air
+  - light
+  - dark
+  - may
+  - be
+  - can
+  - will
+  - do
+  - have
+  - go
+  - come
+  - see
+  - know
+  - think
+  - say
+  - take
+  - get
+  - make
+  - man
+  - boy
+  - girl
+  - friend
+  - self
+  - own
+  - ever
+  - never
+  - up
+  - down
+  - in
+  - out
+  - over
+  - under
+  - all
+  - half
+  - full
+  - less
+  - more
+  - hand
+  - foot
+  - head
+  - arm
+  - leg
+  - eye
+  - ear
+  - hair
+  - black
+  - white
+  - blue
+  - red
+  - green
+  - brown
+  - yellow
+  - pink
+  - purple
+  - grand
+  - mother
+  - father
+  - son
+  - daughter
+  - chair
+  - table
+  - door
+  - window
+  - wall
+  - floor
+  - roof
+  - stairs
+  - paper
+  - pencil
+  - pen
+  - box
+  - bag
+  - toy
+  - game
+  - ball
+  - cup
+  - pot
+  - pan
+  - bowl
+  - dish
+  - glass
+  - spoon
+  - fork
+  - knife
+  - car
+  - bus
+  - train
+  - boat
+  - plane
+  - bike
+  - ship
+  - truck
+  - cart
+  - class
+  - birth
+  - board
+  - fly
+  - base
+  - basket
+  - note
+  - text
+  - story
+  - news
+  - stand
+  - set
+  - line
+  - ware
+  - wear
+  - pad
+  - clip
+  - pin
+  - corn
+  - pop
+  - bow
+  - steak
+  - throw
+
+rootWords:
+  # Used by the suffix-strip un-doubling logic (running→run, bigger→big).
+  # Each entry must be at least 3 characters (hard-fail if shorter).
+  - run
+  - hop
+  - sit
+  - fit
+  - big
+  - hot
+  - get
+  - cut
+  - put
+  - let
+  - win
+  - shop
+  - drop
+  - slip
+  - trip
+  - swim
+  - stop
+  - plan
+  - clap
+  - grab
+  - drum
+  - hug
+  - jog
+  - nod
+  - pat
+  - pet
+  - pop
+  - rub
+  - shut
+  - skip
+  - slam
+  - snap
+  - spin
+  - spot
+  - step
+  - stir
+  - swap
+  - tap
+  - tip
+  - top
+  - wrap
+  - zip
+  - spell
+  - tell
+  - sell
+  - smell
+  - swell
+  - fill
+  - kill
+  - will
+  - still
+  - chill
+  - drill
+  - fast
+  - slow
+  - soft
+  - hard
+  - quick
+  - small
+  - tall
+  - short
+  - long
+  - strong
+  - weak
+  - teach
+  - believe
+  - work
+  - play
+  - help
+  - look
+  - want
+  - need
+  - call
+  - talk
+  - walk
+  - read
+  - write
+  - sing
+  - ring
+  - king
+  - thing
+  - bring
+  - spring
+  - string
+  - wing
+  - cling
+  - fling
+  - sting
+  - swing
+  - dig
+  - fig
+  - pig
+  - wig
+  - sum
+  - ban
+  - fan
+  - man
+  - pan
+  - tan
+  - van
+  - slim   # Added per backlog resolved item — slimmer must split as slim·mer
+  - cook   # cook+ie → cookie; -ie needs always:false so stems must be listed
+  - rook   # rook+ie → rookie
+  - self   # self+ie → selfie
+  - brown  # brown+ie → brownie
+  - move   # mov+ie → movie (stem+'e' path; always:false requires real-root check)
+
+suffixStripRules:
+  # ORDER MATTERS — first match wins, exactly as the runtime rules[] array.
+  - { suffix: tion,  minStem: 2, always: true }
+  - { suffix: sion,  minStem: 2, always: true }
+  - { suffix: ment,  minStem: 3, always: true }
+  - { suffix: ness,  minStem: 3, always: true }
+  - { suffix: less,  minStem: 3, always: true }
+  - { suffix: able,  minStem: 3, always: true }
+  - { suffix: ible,  minStem: 3, always: true }
+  - { suffix: ie,    minStem: 2, always: false }
+  - { suffix: ous,   minStem: 3, always: false }
+  - { suffix: ful,   minStem: 3, always: true }
+  - { suffix: ing,   minStem: 3, always: true,  undouble: true }
+  - { suffix: ly,    minStem: 3, always: true }
+  - { suffix: est,   minStem: 4, always: true,  undouble: true }
+  - { suffix: er,    minStem: 5, always: false, undouble: true }
+  - { suffix: ed,    minStem: 2, always: true,  edOnly: true }
