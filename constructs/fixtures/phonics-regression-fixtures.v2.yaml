@@ -1,0 +1,380 @@
+# Authoritative, machine-readable regression corpus for the Phase 1 build.
+# Human-readable rationale lives in phonics-regression-fixtures-v2.md — read that first.
+# This file is the thing tests actually load. Do not hand-edit without updating the .md too.
+#
+# expectedFailure: true means "this is the correct target, the implementation is known not to
+# meet it yet, see phonics-phase2-backlog.md for the tracked reason." Tests for these should
+# assert-and-report as a known-failure, not a hard build-blocking failure, and the harness should
+# warn loudly if an expectedFailure case starts passing (so the backlog item can be closed) or if
+# a non-expectedFailure case starts failing (a real regression).
+
+schemaVersion: "1.0.0"
+
+tokenizer:
+  # format: { word, graphemes }  graphemes uses '|' as the phoneme separator, matching tokenize()
+  - { word: ship,        graphemes: "sh|i|p" }
+  - { word: catch,       graphemes: "c|a|tch" }
+  - { word: stretch,     graphemes: "str|e|tch" }
+  - { word: shell,       graphemes: "sh|e|ll" }
+  - { word: clamp,       graphemes: "cl|a|mp" }
+  - { word: phone,       graphemes: "ph|o|n|e" }
+  - { word: sing,        graphemes: "s|i|ng" }
+  - { word: singing,     graphemes: "s|i|ng|i|ng" }
+  - { word: strong,      graphemes: "str|o|ng" }
+  - { word: finger,      graphemes: "f|i|n|g|er" }
+  - { word: gingerbread, graphemes: "g|i|n|g|er|br|ea|d" }
+  - { word: longer,      graphemes: "l|o|n|g|er" }
+  - { word: stronger,    graphemes: "str|o|n|g|er" }
+  - { word: younger,     graphemes: "y|ou|n|g|er" }
+
+  # CVC / Level 1 baseline
+  - { word: cat, graphemes: "c|a|t" }
+  - { word: dog, graphemes: "d|o|g" }
+  - { word: sun, graphemes: "s|u|n" }
+  - { word: hat, graphemes: "h|a|t" }
+  - { word: bed, graphemes: "b|e|d" }
+  - { word: pin, graphemes: "p|i|n" }
+  - { word: top, graphemes: "t|o|p" }
+  - { word: cup, graphemes: "c|u|p" }
+
+  # Digraphs
+  - { word: math,  graphemes: "m|a|th" }
+  - { word: whale, graphemes: "wh|a|l|e" }
+  - { word: duck,  graphemes: "d|u|ck" }
+  - { word: queen, graphemes: "qu|ee|n" }
+  - { word: ghost, graphemes: "gh|o|st" }
+  - { word: knee,  graphemes: "kn|ee" }
+  - { word: wrist, graphemes: "wr|i|st" }
+  - { word: gnome, graphemes: "gn|o|m|e" }
+  - { word: comb,  graphemes: "c|o|mb" }
+  - { word: lamb,  graphemes: "l|a|mb" }
+  - { word: psalm, graphemes: "ps|a|l|m", note: "structural coverage only; classroom-appropriateness flagged, swap if a better word is found" }
+
+  # Floss
+  - { word: buzz,  graphemes: "b|u|zz" }
+  - { word: cliff, graphemes: "cl|i|ff" }
+  - { word: grass, graphemes: "gr|a|ss" }
+
+  # Clusters3 and trigraphs
+  - { word: splash, graphemes: "spl|a|sh" }
+  - { word: sprint, graphemes: "spr|i|nt" }
+  - { word: shrimp, graphemes: "shr|i|mp" }
+  - { word: three,  graphemes: "thr|ee" }
+  - { word: squid,  graphemes: "squ|i|d" }
+  - { word: school, graphemes: "sch|oo|l" }
+  - { word: scrap,  graphemes: "scr|a|p" }
+  - { word: night,  graphemes: "n|igh|t" }
+  - { word: fudge,  graphemes: "f|u|dge" }
+
+  # rControlled / rControlled3 — includes the 13 common words that drove removal of
+  # rd/rk/rm/rn/rl/rt from the blends category (see backlog, resolved items)
+  - { word: car,   graphemes: "c|ar" }
+  - { word: her,   graphemes: "h|er" }
+  - { word: bird,  graphemes: "b|ir|d" }
+  - { word: for,   graphemes: "f|or" }
+  - { word: fur,   graphemes: "f|ur" }
+  - { word: stark, graphemes: "st|ar|k" }
+  - { word: pork,  graphemes: "p|or|k" }
+  - { word: storm, graphemes: "st|or|m" }
+  - { word: arm,   graphemes: "ar|m" }
+  - { word: barn,  graphemes: "b|ar|n" }
+  - { word: corn,  graphemes: "c|or|n" }
+  - { word: girl,  graphemes: "g|ir|l" }
+  - { word: swirl, graphemes: "sw|ir|l" }
+  - { word: art,   graphemes: "ar|t" }
+  - { word: card,  graphemes: "c|ar|d" }
+  - { word: short, graphemes: "sh|or|t" }
+  - { word: chair, graphemes: "ch|air" }
+  - { word: bear,  graphemes: "b|ear" }
+  - { word: beard, graphemes: "b|ear|d" }
+  - { word: deer,  graphemes: "d|eer" }
+  - { word: door,  graphemes: "d|oor" }
+  - { word: sour,  graphemes: "s|our" }
+  - { word: care,  graphemes: "c|are" }
+  - { word: here,  graphemes: "h|ere" }
+  - { word: fire,  graphemes: "f|ire" }
+  - { word: more,  graphemes: "m|ore" }
+  - { word: pure,  graphemes: "p|ure" }
+  - { word: roar,  graphemes: "r|oar" }
+
+  # Vowel teams not previously exercised (section 1.7 from v2 md)
+  - { word: blue,    graphemes: "bl|ue" }
+  - { word: fruit,   graphemes: "fr|ui|t" }
+  - { word: feud,    graphemes: "f|eu|d", note: "rare word, structural coverage only" }
+  - { word: chew,    graphemes: "ch|ew" }
+  - { word: caught,  graphemes: "c|augh|t" }
+  - { word: though,  graphemes: "th|ough" }
+  - { word: eight,   graphemes: "eigh|t" }
+  - { word: toe,     graphemes: "t|oe" }
+  - { word: vein,    graphemes: "v|ei|n" }
+
+  # Closing the tokenizer-reachability gap: ai/ay/ie/oa/au/aw/ey/oi/oy appear
+  # in the v2 vowelTeamSounds fixtures but the §5.1 reachability check requires
+  # tokenizer-fixture coverage. Added during implementation (see decision log).
+  - { word: rain,   graphemes: "r|ai|n" }
+  - { word: day,    graphemes: "d|ay" }
+  - { word: pie,    graphemes: "p|ie" }
+  - { word: boat,   graphemes: "b|oa|t" }
+  - { word: author, graphemes: "au|th|or" }
+  - { word: saw,    graphemes: "s|aw" }
+  - { word: monkey, graphemes: "m|o|nk|ey" }
+  - { word: coin,   graphemes: "c|oi|n" }
+  - { word: toy,    graphemes: "t|oy" }
+
+  # Remaining blends (23 of 23 — the unreachable 6 were removed from the construct, not from here)
+  - { word: flag,  graphemes: "fl|a|g" }
+  - { word: glow,  graphemes: "gl|ow" }
+  - { word: plan,  graphemes: "pl|a|n" }
+  - { word: sled,  graphemes: "sl|e|d" }
+  - { word: bring, graphemes: "br|i|ng" }
+  - { word: crab,  graphemes: "cr|a|b" }
+  - { word: drum,  graphemes: "dr|u|m" }
+  - { word: print, graphemes: "pr|i|nt" }
+  - { word: trap,  graphemes: "tr|a|p" }
+  - { word: twin,  graphemes: "tw|i|n" }
+  - { word: dwarf, graphemes: "dw|ar|f" }
+  - { word: scan,  graphemes: "sc|a|n" }
+  - { word: skip,  graphemes: "sk|i|p" }
+  - { word: smell, graphemes: "sm|e|ll" }
+  - { word: snap,  graphemes: "sn|a|p" }
+  - { word: spin,  graphemes: "sp|i|n" }
+  - { word: swim,  graphemes: "sw|i|m" }
+  - { word: pink,  graphemes: "p|i|nk" }
+  - { word: sand,  graphemes: "s|a|nd" }
+  - { word: soft,  graphemes: "s|o|ft" }
+  - { word: belt,  graphemes: "b|e|lt" }
+  - { word: milk,  graphemes: "m|i|lk" }
+  - { word: gold,  graphemes: "g|o|ld" }
+  - { word: help,  graphemes: "h|e|lp" }
+  - { word: self,  graphemes: "s|e|lf" }
+  - { word: kept,  graphemes: "k|e|pt" }
+  - { word: act,   graphemes: "a|ct" }
+  - { word: next,  graphemes: "n|e|xt" }
+
+syllableSplit:
+  # format: { word, split }  split is an array of syllable strings, in order
+  - { word: something,   split: [some, thing] }
+  - { word: amazing,     split: [a, maz, ing] }
+  - { word: cooked,      split: [cooked] }
+  - { word: maybe,       split: [may, be] }
+  - { word: doors,       split: [doors] }
+  - { word: running,     split: [run, ning] }
+  - { word: spelling,    split: [spell, ing] }
+  - { word: teacher,     split: [teach, er] }
+  - { word: over,        split: [o, ver] }
+  - { word: never,       split: [ne, ver] }
+  - { word: water,       split: [wa, ter] }
+  - { word: bigger,      split: [big, ger] }
+  - { word: table,       split: [ta, ble] }
+  - { word: rabbit,      split: [rab, bit] }
+  - { word: wanted,      split: [want, ed] }
+  - { word: jumped,      split: [jumped] }
+  - { word: father,      split: [fa, ther] }
+  - { word: sister,      split: [sis, ter] }
+  - { word: summer,      split: [sum, mer] }
+  - { word: winter,      split: [win, ter] }
+  - { word: flower,      split: [flow, er] }
+  - { word: understand,  split: [un, der, stand] }
+
+  # Single-syllable sanity checks — one entry per new pattern family introduced in v2
+  - { word: cat,    split: [cat] }
+  - { word: dog,    split: [dog] }
+  - { word: sun,    split: [sun] }
+  - { word: hat,    split: [hat] }
+  - { word: bed,    split: [bed] }
+  - { word: pin,    split: [pin] }
+  - { word: top,    split: [top] }
+  - { word: cup,    split: [cup] }
+  - { word: math,   split: [math] }
+  - { word: whale,  split: [whale] }
+  - { word: duck,   split: [duck] }
+  - { word: queen,  split: [queen] }
+  - { word: ghost,  split: [ghost] }
+  - { word: knee,   split: [knee] }
+  - { word: wrist,  split: [wrist] }
+  - { word: gnome,  split: [gnome] }
+  - { word: comb,   split: [comb] }
+  - { word: lamb,   split: [lamb] }
+  - { word: buzz,   split: [buzz] }
+  - { word: cliff,  split: [cliff] }
+  - { word: grass,  split: [grass] }
+  - { word: splash, split: [splash] }
+  - { word: sprint, split: [sprint] }
+  - { word: shrimp, split: [shrimp] }
+  - { word: three,  split: [three] }
+  - { word: squid,  split: [squid] }
+  - { word: school, split: [school] }
+  - { word: scrap,  split: [scrap] }
+  - { word: night,  split: [night] }
+  - { word: fudge,  split: [fudge] }
+  - { word: chair,  split: [chair] }
+  - { word: bear,   split: [bear] }
+  - { word: beard,  split: [beard] }
+  - { word: deer,   split: [deer] }
+  - { word: door,   split: [door] }
+  - { word: sour,   split: [sour] }
+  - { word: care,   split: [care] }
+  - { word: here,   split: [here] }
+  - { word: fire,   split: [fire] }
+  - { word: more,   split: [more] }
+  - { word: pure,   split: [pure] }
+  - { word: roar,   split: [roar] }
+  - { word: car,    split: [car] }
+  - { word: her,    split: [her] }
+  - { word: bird,   split: [bird] }
+  - { word: for,    split: [for] }
+  - { word: fur,    split: [fur] }
+  - { word: stark,  split: [stark] }
+  - { word: pork,   split: [pork] }
+  - { word: storm,  split: [storm] }
+  - { word: arm,    split: [arm] }
+  - { word: barn,   split: [barn] }
+  - { word: corn,   split: [corn] }
+  - { word: girl,   split: [girl] }
+  - { word: swirl,  split: [swirl] }
+  - { word: art,    split: [art] }
+  - { word: card,   split: [card] }
+  - { word: short,  split: [short] }
+  - { word: blue,   split: [blue] }
+  - { word: fruit,  split: [fruit] }
+  - { word: chew,   split: [chew] }
+  - { word: caught, split: [caught] }
+  - { word: though, split: [though] }
+  - { word: eight,  split: [eight] }
+  - { word: toe,    split: [toe] }
+  - { word: vein,   split: [vein] }
+  - { word: touch,  split: [touch] }
+  - { word: speak,  split: [speak] }
+  - { word: team,   split: [team] }
+  - { word: eat,    split: [eat] }
+  - { word: sea,    split: [sea] }
+  - { word: saw,    split: [saw] }
+  - { word: day,    split: [day] }
+  - { word: rain,   split: [rain] }
+  - { word: boat,   split: [boat] }
+  - { word: coin,   split: [coin] }
+  - { word: toy,    split: [toy] }
+
+  # Multi-syllable — compound-scan and suffix-strip paths
+  - { word: gingerbread, split: [gin, ger, bread] }
+  - { word: breadwinner, split: [bread, win, ner] }
+  - { word: bedspread,   split: [bed, spread] }
+  - { word: steakhouse,  split: [steak, house] }
+  - { word: overthrow,   split: [o, ver, throw] }
+  - { word: believer,    split: [be, liev, er] }
+  - { word: cookie,      split: [cook, ie] }
+  - { word: rookie,      split: [rook, ie] }
+  - { word: movie,       split: [mov, ie] }
+  - { word: friendly,    split: [friend, ly] }
+  - { word: friends,     split: [friends] }
+  - { word: several,     split: [sev, er, al], expectedFailure: true, reason: "identifyVowelNuclei uses only 3-char r-controlled patterns; bare 'er' at position 1 in 'sev-er-al' is seen as two single-vowel nuclei (e…e), so VCV fires and gives se|ve|ral — see backlog" }
+  - { word: monkey,      split: [mon, key] }
+  - { word: turkey,      split: [tur, key] }
+  - { word: shoulder,    split: [shoul, der] }
+  - { word: trouble,     split: [trou, ble] }
+  - { word: author,      split: [au, thor] }
+  - { word: reindeer,    split: [rein, deer] }
+  - { word: slimmer,     split: [slim, mer], note: "requires ROOT_WORDS to include 'slim' — see backlog resolved items" }
+  - { word: zombie,      split: [zom, bie] }
+  - { word: brownie,     split: [brown, ie] }
+  - { word: selfie,      split: [self, ie] }
+
+  # Suffix-rule coverage — one per tryStripSuffix rule
+  - { word: nation,    split: [na, tion] }
+  - { word: vision,     split: [vi, sion] }
+  - { word: payment,    split: [pay, ment] }
+  - { word: kindness,   split: [kind, ness] }
+  - { word: careless,   split: [care, less] }
+  - { word: readable,   split: [read, a, ble], expectedFailure: true, reason: "-able treated as one segment, undercounts by 1 syllable — see backlog item 1 (open)" }
+  - { word: visible,    split: [vis, i, ble], expectedFailure: true, reason: "-ible same issue as -able — see backlog item 1 (open)" }
+  - { word: famous,     split: [fa, mous] }
+  - { word: careful,    split: [care, ful] }
+  - { word: biggest,    split: [big, gest] }
+
+vowelTeamSounds:
+  # format: { word, pattern, sound }  — pattern:sound pairs matching vowel_team_sounds output
+  - { word: easy,          pattern: ea,    sound: long_e }
+  - { word: breakfast,     pattern: ea,    sound: short_e }
+  - { word: ready,         pattern: ea,    sound: short_e }
+  - { word: weak,          pattern: ea,    sound: long_e }
+  - { word: bread,         pattern: ea,    sound: short_e }
+  - { word: break,         pattern: ea,    sound: long_a }
+  - { word: steak,         pattern: ea,    sound: long_a }
+  - { word: snow,          pattern: ow,    sound: long_o }
+  - { word: cow,           pattern: ow,    sound: ow }
+  - { word: book,          pattern: oo,    sound: oo_short }
+  - { word: moon,          pattern: oo,    sound: oo_long }
+  - { word: shield,        pattern: ie,    sound: long_e }
+  - { word: pie,           pattern: ie,    sound: long_i }
+  - { word: believe,       pattern: ie,    sound: long_e }
+  - { word: cookie,        pattern: ie,    sound: long_e }
+  - { word: cookie,        pattern: oo,    sound: oo_short }
+  - { word: breathe,       pattern: ea,    sound: long_e }
+  - { word: breathes,      pattern: ea,    sound: long_e }
+  - { word: breadwinner,   pattern: ea,    sound: short_e }
+  - { word: bedspread,     pattern: ea,    sound: short_e }
+  - { word: steakhouse,    pattern: ea,    sound: long_a }
+  - { word: steakhouse,    pattern: ou,    sound: ow }
+  - { word: overthrow,     pattern: ow,    sound: long_o }
+  - { word: gingerbread,   pattern: ea,    sound: short_e }
+  - { word: would,         pattern: ou,    sound: oo_short }
+  - { word: friend,        pattern: ie,    sound: short_e }
+  - { word: friends,       pattern: ie,    sound: short_e }
+  - { word: says,          pattern: ay,    sound: short_e }
+  - { word: they,          pattern: ey,    sound: long_a }
+  - { word: height,        pattern: eigh,  sound: long_i }
+  - { word: their,         pattern: ei,    sound: air }
+
+  # Closes the default ea:long_e gap — the exact 'speak' scenario
+  - { word: speak, pattern: ea, sound: long_e }
+  - { word: team,  pattern: ea, sound: long_e }
+  - { word: eat,   pattern: ea, sound: long_e }
+  - { word: sea,   pattern: ea, sound: long_e }
+
+  # One default-case fixture per remaining vowel team pattern
+  - { word: rain,    pattern: ai,    sound: long_a }
+  - { word: day,     pattern: ay,    sound: long_a }
+  - { word: three,   pattern: ee,    sound: long_e }
+  - { word: boat,    pattern: oa,    sound: long_o }
+  - { word: toe,     pattern: oe,    sound: long_o }
+  - { word: blue,    pattern: ue,    sound: long_u }
+  - { word: fruit,   pattern: ui,    sound: long_u }
+  - { word: saw,     pattern: aw,    sound: aw }
+  - { word: author,  pattern: au,    sound: aw }
+  - { word: vein,    pattern: ei,    sound: long_a, note: "first-ever test of the ei default, not just its exceptions" }
+  - { word: feud,    pattern: eu,    sound: long_u, note: "rare word, structural coverage only" }
+  - { word: chew,    pattern: ew,    sound: oo_long }
+  - { word: monkey,  pattern: ey,    sound: long_e }
+  - { word: coin,    pattern: oi,    sound: oi }
+  - { word: toy,     pattern: oy,    sound: oi }
+  - { word: caught,  pattern: augh,  sound: aw }
+  - { word: though,  pattern: ough,  sound: long_o }
+  - { word: eight,   pattern: eigh,  sound: long_a }
+
+  # ou-family boundary — would/could/should vs shoulder/soul vs touch/young
+  - { word: touch,     pattern: ou, sound: short_u }
+  - { word: young,     pattern: ou, sound: short_u }
+  - { word: would,     pattern: ou, sound: oo_short }
+  - { word: shoulder,  pattern: ou, sound: long_o, note: "FLAGGED — must not inherit oo_short via suffix-stripping from 'should'" }
+
+  # Representative spot-check sample of previously-uncovered VOWEL_TEAM_EXCEPTIONS rows.
+  # Full coverage of all exception rows is auto-generated by the compiler directly from the
+  # construct table (permanent rule 4) — this sample is for human readability only, not the
+  # full test set.
+  - { word: dead,     pattern: ea, sound: short_e }
+  - { word: health,   pattern: ea, sound: short_e }
+  - { word: feather,  pattern: ea, sound: short_e }
+  - { word: heavy,    pattern: ea, sound: short_e }
+  - { word: measure,  pattern: ea, sound: short_e }
+  - { word: thread,   pattern: ea, sound: short_e }
+  - { word: field,    pattern: ie, sound: long_e }
+  - { word: brief,    pattern: ie, sound: long_e }
+  - { word: niece,    pattern: ie, sound: long_e }
+  - { word: alley,    pattern: ey, sound: long_e }
+  - { word: honey,    pattern: ey, sound: long_e }
+  - { word: hood,     pattern: oo, sound: oo_short }
+  - { word: wool,     pattern: oo, sound: oo_short }
+  - { word: window,   pattern: ow, sound: long_o }
+  - { word: yellow,   pattern: ow, sound: long_o }
+  - { word: route,    pattern: ou, sound: oo_long }
+  - { word: wound,    pattern: ou, sound: oo_long }
