@@ -6,7 +6,7 @@ history — history lives in `PHONICS_DECISION_LOG.md` (implementation decisions
 
 **Last updated by:** Build agent (Claude)
 **Last updated:** 2026-10-02
-**One-line summary of what changed since last update:** Phase 1 complete (final) — 326 tests passing (325 normal + 1 expectedFailure): `several` reverted to expectedFailure; `zombie`/`brownie`/`selfie` added as normal fixtures; 4 decision-log entries backfilled; compound-split false-positive audit documented; backlog entry added for r-controlled VCV gap
+**One-line summary of what changed since last update:** Phase 3 complete — `PhonicsEngine.mjs` + `constructsLoader.mjs` built; 335 Phase 3 engine tests passing; 661 total tests passing (326 Phase 1 + 335 Phase 3)
 
 ---
 
@@ -71,7 +71,7 @@ Acceptance criteria (from spec §8):
 ## Phase 3 — Engine refactor
 
 **Spec:** `phonics-engine-spec_v1.0.md`
-**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☐ Complete
+**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☑ Complete
 **Depends on:** Phase 1 items 9–10 (core module existence) — and now also depends on Phase 1's
 core file list being the *expanded* set (see decision log, "Core scope expands beyond the
 original four Phase 1 functions") not just the original four.
@@ -82,19 +82,19 @@ just a documentation gap. Double-check this specific point during implementation
 
 Acceptance criteria (from spec §4):
 
-- [ ] 1. `ENGINE_VERSION === '3.0.0'`
-- [ ] 2. `tokenize('gingerbread').join('|') === 'g|i|n|g|er|br|ea|d'`
-- [ ] 3. `splitSyllables('understand').join('·') === 'un·der·stand'`
-- [ ] 4. `parseWord('breathe')` and `parseWord('breathes')` both `vowel_team_sounds === 'ea:long_e'`
-- [ ] 5. `parseWord('cookie')` and `parseWord('rookie')` both `'oo:oo_short,ie:long_e'` (order = token order, not table order)
-- [ ] 6. `parseWord('gingerbread').vowel_team_sounds === 'ea:short_e'`
-- [ ] 7. `parseWord('ship')` has no `is_common` key at all (checked via `Object.keys`, not just property access)
-- [ ] 8. `toCSV(rows, {extended:true})` with no `extraColumns` has no `is_common` column
-- [ ] 9. `toCSV(rows, {extended:true, extraColumns:['is_common']})` appends `is_common` as the last column
-- [ ] 10. Corrupted `schemaVersion` in compiled JSON throws synchronously at `loadConstructs()`, naming both versions
-- [ ] 11. Full regression corpus (non-`expectedFailure`) passes via the **public API**, not just core functions directly
-- [ ] 12. Zero linguistic logic defined inside `PhonicsEngine.mjs` itself (verify by review/grep)
-- [ ] 13. No `module.exports`, no `window.PhonicsConstructor` global, no UMD wrapper anywhere
+- [x] 1. `ENGINE_VERSION === '3.0.0'`
+- [x] 2. `tokenize('gingerbread').join('|') === 'g|i|n|g|er|br|ea|d'`
+- [x] 3. `splitSyllables('understand').join('·') === 'un·der·stand'`
+- [x] 4. `parseWord('breathe')` and `parseWord('breathes')` both `vowel_team_sounds === 'ea:long_e'`
+- [x] 5. `parseWord('cookie')` and `parseWord('rookie')` both `'oo:oo_short,ie:long_e'` (order = token order, not table order)
+- [x] 6. `parseWord('gingerbread').vowel_team_sounds === 'ea:short_e'`
+- [x] 7. `parseWord('ship')` has no `is_common` key at all (checked via `Object.keys`, not just property access)
+- [x] 8. `toCSV(rows, {extended:true})` with no `extraColumns` has no `is_common` column
+- [x] 9. `toCSV(rows, {extended:true, extraColumns:['is_common']})` appends `is_common` as the last column
+- [x] 10. Corrupted `schemaVersion` in compiled JSON throws synchronously at `loadConstructs()`, naming both versions
+- [x] 11. Full regression corpus (non-`expectedFailure`) passes via the **public API**, not just core functions directly
+- [x] 12. Zero linguistic logic defined inside `PhonicsEngine.mjs` itself (verify by review/grep)
+- [x] 13. No `module.exports`, no `window.PhonicsConstructor` global, no UMD wrapper anywhere
 
 **Open questions:** — none yet
 

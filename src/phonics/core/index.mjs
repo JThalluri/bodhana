@@ -16,12 +16,19 @@ export {
   splitSyllables,
   countSyllables,
   onsetRime,
+  findMinimalPairs,
 } from './syllables.mjs';
 export {
   buildExceptionMap,
   lookupException,
+  soundForVowelTeam,
   vowelTeamSounds,
+} from './vowelSounds.mjs';
+export {
   findAllPatterns,
+  findSecondaryPatterns,
+} from './patterns.mjs';
+export {
   computeDifficulty,
   decodabilityLevel,
-} from './vowelSounds.mjs';
+} from './difficulty.mjs';
