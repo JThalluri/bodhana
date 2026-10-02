@@ -487,3 +487,66 @@ morphological derivation." Extending it to `-ie` is consistent, not a one-off ha
 
 Spec impact: none — the `always` flag semantics are an implementation detail within
 `tryStripSuffix`, not referenced by spec section numbers.
+
+---
+
+## 2026-10-02 — `soundForVowelTeam` added to `core/vowelSounds.mjs`
+
+Phase: 3
+Context: the Phase 3 public API spec lists `soundForVowelTeam(word, pattern)` as a named export
+on the engine. The engine's pattern is to bind constructs data at load time and expose simplified
+signatures. The underlying two-tier lookup (exception → default) already existed as the inner
+join of `lookupException` + `defaultVowelSound[pattern]` but had no single-call core function.
+
+Decision: added `soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound)` to
+`core/vowelSounds.mjs` — it calls `lookupException` then falls back to `defaultVowelSound`.
+The engine wrapper at line ~213 binds the maps from `loadConstructs()` and exposes the
+two-argument public signature.
+
+Alternatives considered: inline it in the engine — rejected on the same grounds as every other
+"one-line compute, where does it live?" question in this codebase: if it touches a word and
+returns a value, it belongs in core/. This is enforced by the "zero linguistic logic in engine"
+invariant (AC 12).
+
+Rationale: consistency.
+
+Spec impact: none beyond adding the function to the core file and its re-export in `index.mjs`.
+
+---
+
+## 2026-10-02 — `computeDifficulty`, `decodabilityLevel`, `findAllPatterns` relocated to dedicated core files; `findSecondaryPatterns` and `findMinimalPairs` added
+
+Phase: 3
+Context: Phase 3 spec §1 specifies the layout:
+  `difficulty.mjs` — computeDifficulty, decodabilityLevel
+  `patterns.mjs`   — findAllPatterns
+and spec §0.1 requires all pure per-word compute in `core/` full stop. Initial Phase 3
+implementation left `computeDifficulty`, `decodabilityLevel`, and `findAllPatterns` in
+`vowelSounds.mjs` (where they existed from Phase 1) rather than moving them to the spec-named
+files. Two additional functions were also missed:
+
+1. The `secondaryList` computation inside `parseWord` (find patterns in substring-search output
+   that aren't independent tokens) — inline in the engine, not in core.
+2. `findMinimalPairs` — the linguistic definition "minimal pair = same onset or same rime" was
+   inline in the engine, not in core.
+
+Found during post-implementation review (not during implementation). No behavior changed — the
+relocation is a structural correction, not a logic fix.
+
+Decision: created `core/difficulty.mjs` (computeDifficulty, decodabilityLevel) and
+`core/patterns.mjs` (findAllPatterns, findSecondaryPatterns). Added findMinimalPairs to
+`core/syllables.mjs` (it builds on onsetRime which is already there). Updated `core/index.mjs`
+to re-export all new functions. Updated PhonicsEngine.mjs to import and delegate; removed the
+two inline implementations.
+
+Test coverage: 27 direct core-level tests added in `tests/phonics/core.test.js` covering all
+five functions. Full 688-test suite passes after relocation with identical pass/fail breakdown
+to pre-relocation (661 tests), confirming zero behavior change.
+
+Rationale: the spec is explicit ("difficulty.mjs", "patterns.mjs"), and the no-linguistic-logic-
+in-engine invariant is an acceptance criterion (AC 12). Both require this relocation. Doing it
+right is cheaper than carrying a structural gap into Phase 4/5 where it becomes harder to fix.
+
+Spec impact: `phonics-engine-spec_v1.0.md` §1 module layout is now fully implemented. AC 12
+now holds by construction (verified by grep — no pattern-matching, no lookup tables, no
+difficulty/sound logic defined inside PhonicsEngine.mjs).

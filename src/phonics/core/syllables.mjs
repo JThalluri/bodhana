@@ -284,3 +284,28 @@ export function onsetRime(word) {
   while (i < w.length && !isVowelChar(w[i])) i++;
   return { onset: w.slice(0, i), rime: w.slice(i) };
 }
+
+/**
+ * Find words in pool that are minimal pairs of word.
+ * Two words are minimal pairs when they share the same rime (onset differs)
+ * or the same onset (rime differs) — the classic onset–rime definition.
+ *
+ * @param {string} word
+ * @param {string[]} pool
+ * @returns {{ word: string, sharedOnset: boolean, sharedRime: boolean }[]}
+ */
+export function findMinimalPairs(word, pool) {
+  const target = clean(word);
+  const { onset: targetOnset, rime: targetRime } = onsetRime(target);
+  return pool
+    .map(clean)
+    .filter(w => w && w !== target)
+    .filter(w => {
+      const { onset, rime } = onsetRime(w);
+      return onset === targetOnset || rime === targetRime;
+    })
+    .map(w => {
+      const { onset, rime } = onsetRime(w);
+      return { word: w, sharedOnset: onset === targetOnset, sharedRime: rime === targetRime };
+    });
+}
