@@ -7,6 +7,7 @@ const PRINT_PAGE_SELECTOR = [
   '.mp-puzzle-page',
   '.sdk-puzzle-page',
   '.wp-puzzle-block',
+  '.hw-worksheet',
 ].join(',');
 
 const PRINT_PAGE_CHILD_SELECTOR = PRINT_PAGE_SELECTOR

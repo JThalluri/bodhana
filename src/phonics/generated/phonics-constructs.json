@@ -1,0 +1,1611 @@
+{
+  "compoundParts": [
+    "some",
+    "any",
+    "every",
+    "no",
+    "one",
+    "thing",
+    "body",
+    "where",
+    "what",
+    "who",
+    "how",
+    "when",
+    "why",
+    "sun",
+    "moon",
+    "star",
+    "day",
+    "night",
+    "time",
+    "week",
+    "year",
+    "book",
+    "case",
+    "mark",
+    "ground",
+    "back",
+    "side",
+    "walk",
+    "way",
+    "yard",
+    "work",
+    "play",
+    "mate",
+    "room",
+    "house",
+    "home",
+    "place",
+    "food",
+    "cake",
+    "bread",
+    "bed",
+    "spread",
+    "milk",
+    "meat",
+    "bird",
+    "fish",
+    "tree",
+    "leaf",
+    "rain",
+    "snow",
+    "wind",
+    "cloud",
+    "fire",
+    "water",
+    "earth",
+    "air",
+    "light",
+    "dark",
+    "may",
+    "be",
+    "can",
+    "will",
+    "do",
+    "have",
+    "go",
+    "come",
+    "see",
+    "know",
+    "think",
+    "say",
+    "take",
+    "get",
+    "make",
+    "man",
+    "boy",
+    "girl",
+    "friend",
+    "self",
+    "own",
+    "ever",
+    "never",
+    "up",
+    "down",
+    "in",
+    "out",
+    "over",
+    "under",
+    "all",
+    "half",
+    "full",
+    "less",
+    "more",
+    "hand",
+    "foot",
+    "head",
+    "arm",
+    "leg",
+    "eye",
+    "ear",
+    "hair",
+    "black",
+    "white",
+    "blue",
+    "red",
+    "green",
+    "brown",
+    "yellow",
+    "pink",
+    "purple",
+    "grand",
+    "mother",
+    "father",
+    "son",
+    "daughter",
+    "chair",
+    "table",
+    "door",
+    "window",
+    "wall",
+    "floor",
+    "roof",
+    "stairs",
+    "paper",
+    "pencil",
+    "pen",
+    "box",
+    "bag",
+    "toy",
+    "game",
+    "ball",
+    "cup",
+    "pot",
+    "pan",
+    "bowl",
+    "dish",
+    "glass",
+    "spoon",
+    "fork",
+    "knife",
+    "car",
+    "bus",
+    "train",
+    "boat",
+    "plane",
+    "bike",
+    "ship",
+    "truck",
+    "cart",
+    "class",
+    "birth",
+    "board",
+    "fly",
+    "base",
+    "basket",
+    "note",
+    "text",
+    "story",
+    "news",
+    "stand",
+    "set",
+    "line",
+    "ware",
+    "wear",
+    "pad",
+    "clip",
+    "pin",
+    "corn",
+    "pop",
+    "bow",
+    "steak",
+    "throw"
+  ],
+  "defaultVowelSound": {
+    "ai": "long_a",
+    "au": "aw",
+    "augh": "aw",
+    "aw": "aw",
+    "ay": "long_a",
+    "ea": "long_e",
+    "ee": "long_e",
+    "ei": "long_a",
+    "eigh": "long_a",
+    "eu": "long_u",
+    "ew": "oo_long",
+    "ey": "long_a",
+    "ie": "long_i",
+    "oa": "long_o",
+    "oe": "long_o",
+    "oi": "oi",
+    "oo": "oo_long",
+    "ou": "ow",
+    "ough": "long_o",
+    "ow": "ow",
+    "oy": "oi",
+    "ue": "long_u",
+    "ui": "long_u"
+  },
+  "generatedAt": "2026-10-02T12:50:52.591Z",
+  "patternCategories": {
+    "blends": [
+      "bl",
+      "cl",
+      "fl",
+      "gl",
+      "pl",
+      "sl",
+      "br",
+      "cr",
+      "dr",
+      "fr",
+      "gr",
+      "pr",
+      "tr",
+      "tw",
+      "dw",
+      "sc",
+      "sk",
+      "sm",
+      "sn",
+      "sp",
+      "st",
+      "sw",
+      "mp",
+      "nt",
+      "nk",
+      "nd",
+      "ft",
+      "lt",
+      "lk",
+      "ld",
+      "lp",
+      "lf",
+      "pt",
+      "ct",
+      "xt"
+    ],
+    "clusters3": [
+      "scr",
+      "spl",
+      "spr",
+      "str",
+      "shr",
+      "thr",
+      "squ",
+      "sch"
+    ],
+    "digraphs": [
+      "ch",
+      "sh",
+      "th",
+      "wh",
+      "ph",
+      "ck",
+      "ng",
+      "qu",
+      "gh",
+      "kn",
+      "wr",
+      "gn",
+      "mb",
+      "ps"
+    ],
+    "floss": [
+      "ss",
+      "ff",
+      "ll",
+      "zz"
+    ],
+    "rControlled": [
+      "ar",
+      "er",
+      "ir",
+      "or",
+      "ur"
+    ],
+    "rControlled3": [
+      "air",
+      "ear",
+      "eer",
+      "oor",
+      "our",
+      "are",
+      "ere",
+      "ire",
+      "ore",
+      "ure",
+      "oar"
+    ],
+    "trigraphs": [
+      "tch",
+      "dge",
+      "igh"
+    ],
+    "vowelTeams": [
+      "ai",
+      "ay",
+      "ea",
+      "ee",
+      "ie",
+      "oa",
+      "oe",
+      "ue",
+      "ui",
+      "au",
+      "aw",
+      "ei",
+      "eu",
+      "ew",
+      "ey",
+      "oi",
+      "oo",
+      "ou",
+      "ow",
+      "oy",
+      "eigh",
+      "ough",
+      "augh"
+    ]
+  },
+  "patternCategoryDefaultLevels": {
+    "blends": 3,
+    "clusters3": 4,
+    "digraphs": 2,
+    "floss": 2,
+    "rControlled": 6,
+    "rControlled3": 7,
+    "trigraphs": 4,
+    "vowelTeams": 5
+  },
+  "patternLevelOverrides": {
+    "au": 6,
+    "augh": 8,
+    "aw": 6,
+    "ei": 6,
+    "eigh": 8,
+    "eu": 6,
+    "ew": 6,
+    "ey": 6,
+    "gh": 4,
+    "gn": 4,
+    "kn": 4,
+    "mb": 4,
+    "oi": 6,
+    "oo": 6,
+    "ou": 6,
+    "ough": 8,
+    "ow": 6,
+    "oy": 6,
+    "ps": 4,
+    "wr": 4
+  },
+  "rootWords": [
+    "run",
+    "hop",
+    "sit",
+    "fit",
+    "big",
+    "hot",
+    "get",
+    "cut",
+    "put",
+    "let",
+    "win",
+    "shop",
+    "drop",
+    "slip",
+    "trip",
+    "swim",
+    "stop",
+    "plan",
+    "clap",
+    "grab",
+    "drum",
+    "hug",
+    "jog",
+    "nod",
+    "pat",
+    "pet",
+    "pop",
+    "rub",
+    "shut",
+    "skip",
+    "slam",
+    "snap",
+    "spin",
+    "spot",
+    "step",
+    "stir",
+    "swap",
+    "tap",
+    "tip",
+    "top",
+    "wrap",
+    "zip",
+    "spell",
+    "tell",
+    "sell",
+    "smell",
+    "swell",
+    "fill",
+    "kill",
+    "will",
+    "still",
+    "chill",
+    "drill",
+    "fast",
+    "slow",
+    "soft",
+    "hard",
+    "quick",
+    "small",
+    "tall",
+    "short",
+    "long",
+    "strong",
+    "weak",
+    "teach",
+    "believe",
+    "work",
+    "play",
+    "help",
+    "look",
+    "want",
+    "need",
+    "call",
+    "talk",
+    "walk",
+    "read",
+    "write",
+    "sing",
+    "ring",
+    "king",
+    "thing",
+    "bring",
+    "spring",
+    "string",
+    "wing",
+    "cling",
+    "fling",
+    "sting",
+    "swing",
+    "dig",
+    "fig",
+    "pig",
+    "wig",
+    "sum",
+    "ban",
+    "fan",
+    "man",
+    "pan",
+    "tan",
+    "van",
+    "slim",
+    "cook",
+    "rook",
+    "self",
+    "brown",
+    "move"
+  ],
+  "schemaVersion": "1.0.0",
+  "scopeLevels": [
+    {
+      "desc": "cat, dog, sun",
+      "level": 1,
+      "name": "CVC & single letters"
+    },
+    {
+      "desc": "sh, ch, th, ck, ng, ss, ll",
+      "level": 2,
+      "name": "Digraphs & FLOSS"
+    },
+    {
+      "desc": "st, tr, bl, mp, nd",
+      "level": 3,
+      "name": "Consonant blends"
+    },
+    {
+      "desc": "tch, dge, igh, str, spl",
+      "level": 4,
+      "name": "Trigraphs & 3-clusters"
+    },
+    {
+      "desc": "ai, ay, ee, ea, oa",
+      "level": 5,
+      "name": "Common vowel teams"
+    },
+    {
+      "desc": "oi, oy, ou, au, ar, er",
+      "level": 6,
+      "name": "Advanced vowels & R-ctrl"
+    },
+    {
+      "desc": "air, ear, ire, ore",
+      "level": 7,
+      "name": "R-ctrl trigraphs"
+    },
+    {
+      "desc": "ough, eigh, schwa",
+      "level": 8,
+      "name": "Advanced / multi-syllable"
+    }
+  ],
+  "soundLabels": {
+    "air": "/âr/ (air)",
+    "aw": "/ô/ (saw)",
+    "long_a": "/ā/ (cake)",
+    "long_e": "/ē/ (see)",
+    "long_i": "/ī/ (bike)",
+    "long_o": "/ō/ (boat)",
+    "long_u": "/ū/ (cube)",
+    "oi": "/oi/ (coin)",
+    "oo_long": "/o͞o/ (moon)",
+    "oo_short": "/o͝o/ (book)",
+    "ow": "/ou/ (cow)",
+    "short_a": "/ă/ (cat)",
+    "short_e": "/ĕ/ (bed)",
+    "short_i": "/ĭ/ (bit)",
+    "short_o": "/ŏ/ (dog)",
+    "short_u": "/ŭ/ (cup)"
+  },
+  "sourceHash": "sha256:922914bcf88b18be6bcaf0d9fb84e9a972b9a0a045cb485f524545003453dd27",
+  "suffixStripRules": [
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 2,
+      "suffix": "tion",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 2,
+      "suffix": "sion",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ment",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ness",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "less",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "able",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ible",
+      "undouble": false
+    },
+    {
+      "always": false,
+      "edOnly": false,
+      "minStem": 2,
+      "suffix": "ie",
+      "undouble": false
+    },
+    {
+      "always": false,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ous",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ful",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ing",
+      "undouble": true
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 3,
+      "suffix": "ly",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 4,
+      "suffix": "est",
+      "undouble": true
+    },
+    {
+      "always": false,
+      "edOnly": false,
+      "minStem": 5,
+      "suffix": "er",
+      "undouble": true
+    },
+    {
+      "always": true,
+      "edOnly": true,
+      "minStem": 2,
+      "suffix": "ed",
+      "undouble": false
+    }
+  ],
+  "vowelTeamExceptions": [
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "bread"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "head"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "dead"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "ready"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "already"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "breakfast"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "health"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "wealth"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "weather"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "feather"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "leather"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "heavy"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "pleasant"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "measure"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "treasure"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "sweat"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "threat"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "spread"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "instead"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "thread"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "breath"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "death"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "short_e",
+      "word": "deaf"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_a",
+      "word": "break"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_a",
+      "word": "great"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_a",
+      "word": "steak"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_e",
+      "word": "breathe"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_e",
+      "word": "breathes"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_e",
+      "word": "breathed"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_e",
+      "word": "breather"
+    },
+    {
+      "note": null,
+      "pattern": "ea",
+      "sound": "long_e",
+      "word": "breathing"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "book"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "look"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "took"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "cook"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "hook"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "good"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "hood"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "wood"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "foot"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "stood"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "shook"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "brook"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "wool"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "hoof"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "short_u",
+      "word": "blood"
+    },
+    {
+      "note": null,
+      "pattern": "oo",
+      "sound": "short_u",
+      "word": "flood"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "snow"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "slow"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "grow"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "show"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "know"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "low"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "row"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "glow"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "flow"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "throw"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "window"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "yellow"
+    },
+    {
+      "note": null,
+      "pattern": "ow",
+      "sound": "long_o",
+      "word": "follow"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_long",
+      "word": "soup"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_long",
+      "word": "group"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_long",
+      "word": "you"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_long",
+      "word": "youth"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_long",
+      "word": "route"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_long",
+      "word": "wound"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_short",
+      "word": "would"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_short",
+      "word": "could"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "oo_short",
+      "word": "should"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "long_o",
+      "word": "shoulder"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "long_o",
+      "word": "shoulders"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "long_o",
+      "word": "soul"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "long_o",
+      "word": "souls"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "long_o",
+      "word": "boulder"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "long_o",
+      "word": "boulders"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "touch"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "rough"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "tough"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "enough"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "cousin"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "double"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "trouble"
+    },
+    {
+      "note": null,
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "young"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "field"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "yield"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "shield"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "brief"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "chief"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "thief"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "grief"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "relief"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "niece"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "piece"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "priest"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "believe"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "believes"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "believed"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "believer"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "believing"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "cookie"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "cookies"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "bookie"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "bookies"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "rookie"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "rookies"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "hoodie"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "hoodies"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "woodie"
+    },
+    {
+      "note": "dual-override — also has oo:oo_short row",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "footie"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "cookie"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "cookies"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "bookie"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "bookies"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "rookie"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "rookies"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "hoodie"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "hoodies"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "woodie"
+    },
+    {
+      "note": "dual-override — also has ie:long_e row",
+      "pattern": "oo",
+      "sound": "oo_short",
+      "word": "footie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "movie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "movies"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "batteries"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "zombie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "zombies"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "brownie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "brownies"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "selfie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "selfies"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "sweetie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "auntie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "calorie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "calories"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "prairie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "collie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "goalie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "genie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "soldier"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "charlie"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "friend"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "key"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "monkey"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "donkey"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "turkey"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "alley"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "valley"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "chimney"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "honey"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_e",
+      "word": "money"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_a",
+      "word": "they"
+    },
+    {
+      "note": null,
+      "pattern": "ey",
+      "sound": "long_a",
+      "word": "obey"
+    },
+    {
+      "note": null,
+      "pattern": "ay",
+      "sound": "short_e",
+      "word": "says"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "receive"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "deceive"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "ceiling"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "protein"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "either"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "neither"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "long_e",
+      "word": "seize"
+    },
+    {
+      "note": null,
+      "pattern": "eigh",
+      "sound": "long_i",
+      "word": "height"
+    },
+    {
+      "note": null,
+      "pattern": "eigh",
+      "sound": "long_i",
+      "word": "sleight"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "air",
+      "word": "their"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "air",
+      "word": "heir"
+    },
+    {
+      "note": null,
+      "pattern": "ei",
+      "sound": "air",
+      "word": "theirs"
+    }
+  ]
+}

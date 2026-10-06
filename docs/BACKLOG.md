@@ -6,7 +6,8 @@ Items are ordered by priority. Update this file when work begins or finishes.
 
 ## Active / In Progress
 
-*(nothing currently in flight)*
+### Writing Worksheets — Handwriting Lines type (awaiting user testing)
+New worksheet type under `/worksheets`, selected from the Type dropdown (Seyès remains the default). Code in `src/writing-worksheets/`. Five grade-tier presets (Pre-K → adult), three formats (alternating model + practice, copy-from-box, jumbled sentences), inline-SVG ruling, word wrapping, auto pagination up to 20 pages, seeded shuffle, shared Print / Export PDF. Pending: physical print check of Tier 4 Seyès-style 8 mm / 2 mm spacing.
 
 ---
 

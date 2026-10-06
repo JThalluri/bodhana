@@ -18,6 +18,24 @@ Non-obvious decisions, with context so they can be revisited intelligently.
 
 ---
 
+## Writing Worksheets: one route, two types (Seyès default)
+
+**Decision:** Handwriting Lines lives under `/worksheets` beside Seyès, switched by the settings-pane Type select. `src/worksheets/index.js` is a dispatcher; Seyès (`src/worksheets/ui.js`) is untouched apart from the extra `<option>`. Handwriting Lines code sits in `src/writing-worksheets/`.
+
+**Details / agreed scope:**
+- Seyès stays the default type; Handwriting Lines is opt-in.
+- Tier 4 is labelled "Seyès-style (practice)". It is a separate SVG ruling with float spacing (exact 8 mm rows, 2 mm sub-lines), printed via the shared print path. Line geometry is locked for it. Needs a physical print check.
+- Portrait only. No landscape; Tier 1 uses short default content instead.
+- Fonts: Andika, Nunito, Open Sans. The prototype's cursive fonts and cursive mode were dropped.
+- Kept from the prototype: letter spacing, tracing opacity, seed + Reshuffle.
+- Practice text never shrinks; it wraps at whole words. In alternating format each wrapped line gets its own model + practice group, groups stay together on a page, and a long item may continue onto the next page between groups. The reference box (read, not traced) may shrink its body text to 14px to leave room for writing rows.
+- Jumbled blocks all use the height of the longest sentence so block size doesn't reveal the order.
+- Rows may stretch 85–115% to fill a page, but only through the skip space; grids without skip space (Seyès-style, single rule) never stretch.
+- Text baseline is placed with a hidden DOM probe (`baselineOffsetInLineBox`), not font metrics arithmetic, so it sits exactly on the ruled baseline at print scale.
+- No settings persisted to localStorage.
+
+---
+
 ## Place Value Worksheets: Measurement-based pagination
 
 **Decision:** Build pages by appending question nodes into a fixed 11in page and measuring `scrollHeight` vs `clientHeight` of the flexible `.pv-ws-content` area, starting a new page when the next item would overflow (`flowIntoPages` in `pv-ui.js`).

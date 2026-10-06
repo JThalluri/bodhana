@@ -7,6 +7,7 @@ const EXPORT_PAGE_SELECTOR = [
   '.mp-puzzle-page',
   '.sdk-puzzle-page',
   '.wp-puzzle-block',
+  '.hw-worksheet',
 ].join(',');
 
 const EXPORT_PAGE_CHILD_SELECTOR = EXPORT_PAGE_SELECTOR

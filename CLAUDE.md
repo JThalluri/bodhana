@@ -98,7 +98,7 @@ Shared across all modules — no need to re-define in module CSS:
 | `/math-puzzles` | Math Puzzle Grid | `src/mathpuzzle/` |
 | `/sudoku` | Sudoku | `src/sudoku/` |
 | `/dict-builder` | Dictionary Builder | `src/dictbuilder/` |
-| `/worksheets` | Seyès Worksheets | `src/worksheets/` |
+| `/worksheets` | Writing Worksheets (type switcher: Seyès default, Handwriting Lines) | `src/worksheets/` (Seyès + dispatcher), `src/writing-worksheets/` (Handwriting Lines) |
 
 ## Known Constraints
 - **vite-plugin-singlefile**: all imports inlined → watch bundle size. Google Fonts loaded via CDN link tag (not inlined).

@@ -569,7 +569,8 @@
 .tool-pages > .ttt-worksheet,
 .tool-pages > .mp-puzzle-page,
 .tool-pages > .sdk-puzzle-page,
-.tool-pages > .wp-puzzle-block {
+.tool-pages > .wp-puzzle-block,
+.tool-pages > .hw-worksheet {
   zoom: var(--tool-page-scale) !important;
 }
 

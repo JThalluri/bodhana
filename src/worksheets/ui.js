@@ -54,6 +54,7 @@ export function buildWorksheetsUI(container) {
               <label for="wsTypeSelect">Type</label>
               <select class="tb-select" id="wsTypeSelect">
                 <option value="seyes">Seyes / French Ruled</option>
+                <option value="handwriting">Handwriting Lines</option>
               </select>
             </div>
           </div>

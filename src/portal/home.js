@@ -100,17 +100,17 @@ export function mount(container) {
             <i class="fas fa-file-alt"></i>
           </div>
           <div class="tool-info">
-            <h2 class="tool-name">Worksheet Generator</h2>
+            <h2 class="tool-name">Writing Worksheets</h2>
             <p class="tool-desc">
-              Create printable Seyès (French ruled) handwriting practice sheets.
-              Type a sentence, set font size and margins, and print a grid
-              where each character sits in its own 8&thinsp;mm cell with
-              blank rows below for learners to copy.
+              Printable handwriting practice. Choose Seyès (French ruled)
+              sheets, or Handwriting Lines with grade-tiered ruling from
+              Pre-K to adult in alternating, copy-from-box and jumbled
+              sentence formats.
             </p>
             <div class="tool-tags">
               <span class="tag">Seyès</span>
-              <span class="tag">Handwriting</span>
-              <span class="tag">French Ruled</span>
+              <span class="tag">Handwriting Lines</span>
+              <span class="tag">Pre-K – Adult</span>
               <span class="tag">Printable</span>
             </div>
           </div>
