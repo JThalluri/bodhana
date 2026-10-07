@@ -566,7 +566,8 @@
 
 .tool-pages > .paper-page,
 .tool-pages > .pv-worksheet,
-.tool-pages > .ttt-worksheet,
+.tool-pages > .frac-worksheet,
+.tool-pages > .mg-worksheet,
 .tool-pages > .mp-puzzle-page,
 .tool-pages > .sdk-puzzle-page,
 .tool-pages > .wp-puzzle-block,

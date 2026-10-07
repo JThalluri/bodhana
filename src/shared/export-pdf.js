@@ -3,7 +3,8 @@ import { addBrandWatermarks, brandWatermarkStyles } from './worksheet-brand.js';
 const EXPORT_PAGE_SELECTOR = [
   '.paper-page',
   '.pv-worksheet',
-  '.ttt-worksheet',
+  '.frac-worksheet',
+  '.mg-worksheet',
   '.mp-puzzle-page',
   '.sdk-puzzle-page',
   '.wp-puzzle-block',
@@ -141,14 +142,16 @@ function exportPrintStyles() {
     }
 
     .pv-worksheet,
-    .ttt-worksheet {
+    .frac-worksheet,
+    .mg-worksheet {
       zoom: 1 !important;
       box-shadow: none !important;
       margin: 0 !important;
       overflow: hidden !important;
     }
 
-    .pv-ws-content {
+    .pv-ws-content,
+    .frac-ws-content {
       overflow: visible !important;
     }
 

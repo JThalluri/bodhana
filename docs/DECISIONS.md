@@ -112,6 +112,17 @@ Non-obvious decisions, with context so they can be revisited intelligently.
 
 ---
 
+## Math Worksheets and Math Games: Fractions split
+
+**Decision:** Fractions drills live under Math Worksheets as the `fractions-drill` type, while grid-based classroom games live in the standalone `/math-games` module. The legacy arithmetic Tic-Tac-Toe generator moved to Math Games so all math games share one route and one printable page class.
+
+**Details:**
+- `/fractions` is an alias that keeps the URL and opens Math Worksheets with Fractions selected.
+- Fraction worksheets use measured page filling, Andika-only student-facing math text, shared Print/Export, and no settings persistence.
+- Math Games v1 includes Tic-Tac-Toe, Bingo, Match, and Snake. Connect 4 is backlog and Fractions War is intentionally dropped.
+
+---
+
 ## Build: vite-plugin-singlefile
 
 **Decision:** Use vite-plugin-singlefile to produce a single self-contained `dist/index.html`.

@@ -525,42 +525,23 @@
   color: #333;
 }
 
-/* Tic-Tac-Toe worksheets */
+/* Fractions worksheets */
 
-.ttt-tool {
+.frac-tool {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
 }
 
-.ttt-toolbar {
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border);
-  padding: 8px 16px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: var(--shadow-sm);
-  flex-shrink: 0;
-}
-
-.ttt-tb-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  min-height: 40px;
-}
-
-.ttt-body {
+.frac-body {
   display: flex;
   flex: 1;
-  overflow: hidden;
   min-height: 0;
+  overflow: hidden;
 }
 
-.ttt-settings-pane {
+.frac-settings-pane {
   width: 280px;
   flex-shrink: 0;
   display: flex;
@@ -570,33 +551,21 @@
   overflow-y: auto;
 }
 
-.ttt-settings-section {
+.frac-settings-section {
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border);
 }
 
-.ttt-settings-section:last-child {
-  border-bottom: none;
-}
-
-.ttt-section-title,
-.ttt-section-subtitle {
+.frac-section-title {
   font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
-}
-
-.ttt-section-title {
   margin: 0 0 var(--space-2) 0;
 }
 
-.ttt-section-subtitle {
-  margin: var(--space-3) 0 var(--space-2);
-}
-
-.ttt-field {
+.frac-field {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -606,52 +575,55 @@
   color: var(--text-secondary);
 }
 
-.ttt-field:last-child {
-  margin-bottom: 0;
-}
-
-.ttt-field label {
+.frac-field label {
   flex: 1;
-  cursor: pointer;
-  user-select: none;
 }
 
-.ttt-field input[type="number"],
-.ttt-field input[type="text"],
-.ttt-field select {
-  width: 80px;
-  flex-shrink: 0;
+.frac-field select,
+.frac-field input[type="number"],
+.frac-field input[type="text"] {
+  width: 120px;
 }
 
-.ttt-field input[type="checkbox"],
-.ttt-op-grid input[type="checkbox"] {
+.frac-field input[readonly] {
+  opacity: 0.68;
+  cursor: not-allowed;
+}
+
+.frac-field input[type="checkbox"] {
   width: auto;
-  flex-shrink: 0;
   cursor: pointer;
   accent-color: var(--accent);
 }
 
-.ttt-op-grid {
+.frac-op-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
+  margin-bottom: var(--space-2);
 }
 
-.ttt-disabled-section {
-  opacity: 0.58;
-}
-
-.ttt-disabled-section label,
-.ttt-disabled-section input,
-.ttt-disabled-section select {
-  cursor: not-allowed;
-}
-
-.ttt-conditional.hidden {
+.frac-settings-section .hidden {
   display: none;
 }
 
-.ttt-preview-pane {
+.frac-text-input {
+  padding: 3px 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.frac-range-note {
+  min-height: 1.35em;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.frac-preview-pane {
   flex: 1;
   overflow-y: auto;
   overflow-x: auto;
@@ -659,14 +631,14 @@
   padding: var(--space-5);
 }
 
-#tttWorksheetsContainer {
+#fracWorksheetsContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-6);
+  gap: var(--space-4);
 }
 
-.ttt-worksheet {
+.frac-worksheet {
   width: 8.5in;
   height: 11in;
   background: #fff;
@@ -676,172 +648,269 @@
   padding: 0.35in 0.45in 0.32in;
   flex-shrink: 0;
   font-family: 'Andika', sans-serif;
+  line-height: 1.45;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  zoom: 0.75;
 }
 
-.ttt-ws-header {
+.frac-measuring .frac-worksheet {
+  zoom: 1 !important;
+}
+
+.frac-font-s { font-size: 13px; }
+.frac-font-m { font-size: 16px; }
+.frac-font-l { font-size: 19px; }
+.frac-font-xl { font-size: 23px; }
+
+.frac-ws-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
   border-bottom: 1.5px solid #333;
   padding-bottom: 5px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 
-.ttt-ws-namedate {
+.frac-ws-namedate {
   display: flex;
   gap: 20px;
   align-items: flex-end;
 }
 
-.ttt-name-line,
-.ttt-date-line {
+.frac-name-line,
+.frac-date-line {
   font-size: 12px;
   color: #444;
 }
 
-.ttt-ws-typelabel {
+.frac-ws-typelabel {
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #bbb;
+  color: #999;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.ttt-games-layout {
+.frac-ws-content {
   flex: 1;
   min-height: 0;
-  display: grid;
-  gap: 20px;
-}
-
-.ttt-games-1 .ttt-games-layout {
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  align-items: center;
-  justify-items: center;
-}
-
-.ttt-games-2 .ttt-games-layout {
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-}
-
-.ttt-games-4 .ttt-games-layout {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-}
-
-.ttt-game {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  width: 100%;
-  height: 100%;
-  border: 2px solid #111;
-  box-sizing: border-box;
-}
-
-.ttt-games-1 .ttt-game {
-  max-width: 7in;
-  max-height: 9in;
-  aspect-ratio: 1 / 1;
-}
-
-.ttt-cell {
-  border: 1px solid #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  min-height: 0;
-  padding: 5px;
   overflow: hidden;
 }
 
-.ttt-problem {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  width: max-content;
-  max-width: 100%;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.05;
-}
-
-.ttt-problem-row {
+.frac-layout-two-col .frac-ws-content,
+.frac-layout-three-col .frac-ws-content {
   display: grid;
-  grid-template-columns: 0.9em minmax(0, 1fr);
-  gap: 0.12em;
-  align-items: baseline;
+  grid-auto-rows: min-content;
+  align-content: start;
+  column-gap: 18px;
 }
 
-.ttt-problem-op {
-  text-align: left;
+.frac-layout-two-col .frac-ws-content {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.frac-layout-three-col .frac-ws-content {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 14px;
+}
+
+.frac-question {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  break-inside: avoid;
+}
+
+.frac-layout-two-col .frac-question {
+  margin-bottom: 8px;
+}
+
+.frac-layout-three-col .frac-question {
+  margin-bottom: 7px;
+}
+
+.frac-q-num {
+  min-width: 32px;
   font-weight: 700;
+  color: #333;
+  flex-shrink: 0;
 }
 
-.ttt-problem-num {
-  text-align: right;
+.frac-q-body {
+  flex: 1;
+  min-width: 0;
 }
 
-.ttt-answer-line {
-  border-top: 2px solid #111;
-  height: 0.85em;
-  margin-top: 0.12em;
+.frac-workspace-line {
+  display: block;
+  height: 1.25em;
+  border-bottom: 1px solid #777;
+  margin-top: 5px;
 }
 
-.ttt-games-1 .ttt-problem[data-operands="2"] { font-size: 2.5rem; }
-.ttt-games-1 .ttt-problem[data-operands="3"] { font-size: 2rem; }
-.ttt-games-1 .ttt-problem[data-operands="4"] { font-size: 1.6rem; }
-.ttt-games-1 .ttt-problem[data-operands="5"] { font-size: 1.4rem; }
-.ttt-games-1 .ttt-problem[data-operands="6"] { font-size: 1.2rem; }
+.frac-layout-two-col .frac-workspace-line {
+  height: 1.05em;
+  margin-top: 4px;
+}
 
-.ttt-games-2 .ttt-problem[data-operands="2"] { font-size: 1.8rem; }
-.ttt-games-2 .ttt-problem[data-operands="3"] { font-size: 1.5rem; }
-.ttt-games-2 .ttt-problem[data-operands="4"] { font-size: 1.2rem; }
-.ttt-games-2 .ttt-problem[data-operands="5"] { font-size: 1rem; }
-.ttt-games-2 .ttt-problem[data-operands="6"] { font-size: 0.85rem; }
+.frac-layout-three-col .frac-workspace-line {
+  height: 0.9em;
+  margin-top: 3px;
+}
 
-.ttt-games-4 .ttt-problem[data-operands="2"] { font-size: 1.2rem; }
-.ttt-games-4 .ttt-problem[data-operands="3"] { font-size: 1rem; }
-.ttt-games-4 .ttt-problem[data-operands="4"] { font-size: 0.85rem; }
-.ttt-games-4 .ttt-problem[data-operands="5"] { font-size: 0.75rem; }
-.ttt-games-4 .ttt-problem[data-operands="6"] { font-size: 0.65rem; }
+.frac-blank {
+  display: inline-block;
+  border-bottom: 1.5px solid #333;
+  height: 1em;
+  vertical-align: baseline;
+}
 
-/* ─── Print ──────────────────────────────────────────────────────────────── */
+.frac-text {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  align-items: center;
+  justify-items: center;
+  line-height: 1;
+  vertical-align: middle;
+  margin: 0 0.08em;
+}
+
+.frac-text span:first-child {
+  border-bottom: 1.4px solid currentColor;
+  padding: 0 0.12em 0.08em;
+}
+
+.frac-text span:last-child {
+  padding-top: 0.08em;
+}
+
+.frac-mixed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12em;
+}
+
+.frac-shape-svg {
+  width: 70px;
+  height: 52px;
+  shape-rendering: crispEdges;
+  vertical-align: middle;
+  margin: 0 6px;
+}
+
+.frac-shape-bar {
+  height: 34px;
+}
+
+.frac-shape-svg rect,
+.frac-shape-svg line {
+  stroke: #111;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.frac-shape-svg .frac-svg-shaded {
+  fill: #b0b0b0;
+}
+
+.frac-shape-svg .frac-svg-empty {
+  fill: #fff;
+}
+
+.frac-shape-svg .frac-svg-unused {
+  fill: transparent;
+  stroke: transparent;
+  visibility: hidden;
+}
+
+.frac-numberline-svg {
+  width: 260px;
+  height: 58px;
+  vertical-align: middle;
+  margin-right: 12px;
+}
+
+.frac-numberline-svg line {
+  stroke: #111;
+  stroke-width: 1.5;
+}
+
+.frac-numberline-svg text {
+  font-size: 8px;
+  fill: #111;
+}
+
+.frac-marker {
+  fill: #111;
+}
+
+.frac-compare-term {
+  display: inline-flex;
+  min-width: 90px;
+  align-items: center;
+  justify-content: center;
+}
+
+.frac-compare-box {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid #111;
+  vertical-align: middle;
+  margin: 0 10px;
+}
+
+.frac-answer-key {
+  grid-column: 1 / -1;
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 2px solid #333;
+  font-family: var(--font-ui);
+}
+
+.frac-answer-key-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.frac-answer-key-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px 14px;
+  font-size: 11px;
+  line-height: 1.35;
+}
 
 @media print {
   .mw-typebar,
   .pv-toolbar,
   .pv-settings-pane,
-  .ttt-toolbar,
-  .ttt-settings-pane {
+  .frac-toolbar,
+  .frac-settings-pane {
     display: none !important;
   }
 
   .mw-tool,
   .pv-tool,
-  .ttt-tool {
+  .frac-tool {
     display: block !important;
     height: auto !important;
   }
 
   .pv-body,
-  .ttt-body {
+  .frac-body {
     display: block !important;
     overflow: visible !important;
   }
 
   .pv-preview-pane,
-  .ttt-preview-pane {
+  .frac-preview-pane {
     display: block !important;
     overflow: visible !important;
     padding: 0 !important;
@@ -849,13 +918,13 @@
   }
 
   #pvWorksheetsContainer,
-  #tttWorksheetsContainer {
+  #fracWorksheetsContainer {
     display: block !important;
     gap: 0 !important;
   }
 
   .pv-worksheet,
-  .ttt-worksheet {
+  .frac-worksheet {
     zoom: 1 !important;
     box-shadow: none !important;
     margin: 0 !important;
@@ -874,7 +943,7 @@
   }
 
   .pv-worksheet:last-child,
-  .ttt-worksheet:last-child {
+  .frac-worksheet:last-child {
     page-break-after: avoid;
     break-after: auto;
   }

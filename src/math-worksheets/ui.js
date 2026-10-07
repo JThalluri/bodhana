@@ -1,5 +1,5 @@
 import { buildPlaceValueUI, unmountPlaceValue } from './pv-ui.js';
-import { buildTicTacToeUI, unmountTicTacToe } from './tictactoe-ui.js';
+import { buildFractionsUI, unmountFractions } from './fractions-ui.js';
 
 let _listeners = [];
 let _currentType = null;
@@ -21,8 +21,8 @@ function unmountSubType() {
     // math/ui.js has no unmount; clearing innerHTML is sufficient
   } else if (_currentType === 'place-value') {
     unmountPlaceValue();
-  } else if (_currentType === 'tic-tac-toe') {
-    unmountTicTacToe();
+  } else if (_currentType === 'fractions-drill') {
+    unmountFractions();
   }
 }
 
@@ -35,7 +35,7 @@ function worksheetTypeSelectorMarkup(currentType) {
         <select class="tb-select" id="mwTypeSelect">
           <option value="math-test"${currentType === 'math-test' ? ' selected' : ''}>Math Tests (Arithmetic)</option>
           <option value="place-value"${currentType === 'place-value' ? ' selected' : ''}>Place Value</option>
-          <option value="tic-tac-toe"${currentType === 'tic-tac-toe' ? ' selected' : ''}>Math Tic-Tac-Toe</option>
+          <option value="fractions-drill"${currentType === 'fractions-drill' ? ' selected' : ''}>Fractions</option>
         </select>
       </div>
     </div>
@@ -43,7 +43,7 @@ function worksheetTypeSelectorMarkup(currentType) {
 }
 
 function injectWorksheetTypeSelector(container, currentType, onChange) {
-  const pane = container.querySelector('.math-settings-pane, .pv-settings-pane, .ttt-settings-pane');
+  const pane = container.querySelector('.math-settings-pane, .pv-settings-pane, .frac-settings-pane');
   if (!pane) return;
   pane.insertAdjacentHTML('afterbegin', worksheetTypeSelectorMarkup(currentType));
   const select = pane.querySelector('#mwTypeSelect');
@@ -59,12 +59,12 @@ async function mountSubType(type, container) {
     buildUI(container);
   } else if (type === 'place-value') {
     buildPlaceValueUI(container);
-  } else if (type === 'tic-tac-toe') {
-    buildTicTacToeUI(container);
+  } else if (type === 'fractions-drill') {
+    buildFractionsUI(container);
   }
 }
 
-export function buildMathWorksheetsUI(container) {
+export function buildMathWorksheetsUI(container, initialType = 'math-test') {
   container.innerHTML = `
     <div class="mw-tool">
       <div id="mwSubContainer"></div>
@@ -79,5 +79,5 @@ export function buildMathWorksheetsUI(container) {
     injectWorksheetTypeSelector(subContainer, nextType, switchType);
   };
 
-  switchType('math-test');
+  switchType(initialType);
 }

@@ -109,7 +109,8 @@ The shared print/export engines currently recognize these page selectors:
 
 - `.paper-page`
 - `.pv-worksheet`
-- `.ttt-worksheet`
+- `.frac-worksheet`
+- `.mg-worksheet`
 - `.mp-puzzle-page`
 - `.sdk-puzzle-page`
 - `.wp-puzzle-block`

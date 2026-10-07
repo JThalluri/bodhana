@@ -54,7 +54,8 @@
 
   .tool-pages > .paper-page,
   .tool-pages > .pv-worksheet,
-  .tool-pages > .ttt-worksheet,
+  .tool-pages > .frac-worksheet,
+  .tool-pages > .mg-worksheet,
   .tool-pages > .mp-puzzle-page,
   .tool-pages > .sdk-puzzle-page,
   .tool-pages > .wp-puzzle-block,
@@ -79,7 +80,8 @@
 
   .tool-pages > .paper-page:last-child,
   .tool-pages > .pv-worksheet:last-child,
-  .tool-pages > .ttt-worksheet:last-child,
+  .tool-pages > .frac-worksheet:last-child,
+  .tool-pages > .mg-worksheet:last-child,
   .tool-pages > .mp-puzzle-page:last-child,
   .tool-pages > .sdk-puzzle-page:last-child,
   .tool-pages > .wp-puzzle-block:last-child,

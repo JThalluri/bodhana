@@ -82,6 +82,11 @@
   color: var(--color-add);
 }
 
+.mathgames-icon {
+  background: color-mix(in srgb, #7c3aed 12%, transparent);
+  color: #7c3aed;
+}
+
 .puzzle-icon {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent);

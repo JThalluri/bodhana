@@ -2,6 +2,8 @@ const routes = {
   '/':                 () => import('./home.js'),
   '/math':             () => import('../math-worksheets/index.js'),
   '/math-worksheets':  () => import('../math-worksheets/index.js'),
+  '/fractions':        () => import('../math-worksheets/index.js'),
+  '/math-games':       () => import('../math-games/index.js'),
   '/word-puzzles':     () => import('../wordpuzzle/index.js'),
   '/math-puzzles':     () => import('../mathpuzzle/index.js'),
   '/sudoku':           () => import('../sudoku/index.js'),
@@ -12,6 +14,8 @@ const routes = {
 const printableRoutes = new Set([
   '/math',
   '/math-worksheets',
+  '/fractions',
+  '/math-games',
   '/word-puzzles',
   '/math-puzzles',
   '/sudoku',

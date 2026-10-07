@@ -19,14 +19,36 @@ export function mount(container) {
           <div class="tool-info">
             <h2 class="tool-name">Math Worksheets</h2>
             <p class="tool-desc">
-              Printable math worksheets for arithmetic drills and place value
-              concepts. Mix operations or target place value with 10 worksheet
-              types covering digits, expanded form, word form, rounding, and more.
+              Printable math worksheets for arithmetic drills, place value,
+              and fractions. Mix operations or target concepts with worksheet
+              types covering digits, visual fractions, conversions, and more.
             </p>
             <div class="tool-tags">
               <span class="tag">Arithmetic</span>
               <span class="tag">Place Value</span>
+              <span class="tag">Fractions</span>
               <span class="tag">Grades 2–5</span>
+              <span class="tag">Printable</span>
+            </div>
+          </div>
+          <div class="tool-arrow"><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <a href="#/math-games" class="tool-card">
+          <div class="tool-icon mathgames-icon">
+            <i class="fas fa-dice"></i>
+          </div>
+          <div class="tool-info">
+            <h2 class="tool-name">Math Games</h2>
+            <p class="tool-desc">
+              Printable classroom games for arithmetic and fractions. Generate
+              Tic-Tac-Toe, Bingo, Match, and Snake boards with answer helpers
+              for quick teacher checks.
+            </p>
+            <div class="tool-tags">
+              <span class="tag">Tic-Tac-Toe</span>
+              <span class="tag">Bingo</span>
+              <span class="tag">Fractions</span>
               <span class="tag">Printable</span>
             </div>
           </div>

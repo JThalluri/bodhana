@@ -6,6 +6,9 @@ Items are ordered by priority. Update this file when work begins or finishes.
 
 ## Active / In Progress
 
+### Math Games + Fractions Worksheets (implementation)
+Moving Tic-Tac-Toe into `/math-games`, adding fraction Bingo/Match/Snake, and adding Fractions as a Math Worksheets family with shared Print / Export.
+
 ### Writing Worksheets — Handwriting Lines type (awaiting user testing)
 New worksheet type under `/worksheets`, selected from the Type dropdown (Seyès remains the default). Code in `src/writing-worksheets/`. Five grade-tier presets (Pre-K → adult), three formats (alternating model + practice, copy-from-box, jumbled sentences), inline-SVG ruling, word wrapping, auto pagination up to 20 pages, seeded shuffle, shared Print / Export PDF. Pending: physical print check of Tier 4 Seyès-style 8 mm / 2 mm spacing.
 
@@ -38,6 +41,9 @@ Added Word Jumble puzzle type to the Word Puzzles module.
 ---
 
 ## Backlog
+
+### Fractions Later Work
+Prototype-only fraction worksheet/game ideas deferred from v1: number-line mark, fraction of a set, estimation/benchmarking, equivalent fractions, ordering, and Connect 4. Fractions War is dropped.
 
 ### Portal-wide UX Overhaul
 Standardize all modules to the two-pane print-preview layout pattern used by Worksheets and Math Worksheets:

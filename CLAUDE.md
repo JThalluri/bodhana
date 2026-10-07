@@ -30,6 +30,8 @@ const routes = {
   '/':             () => import('./home.js'),
   '/math':         () => import('../math-worksheets/index.js'),  // redirects to math-worksheets
   '/math-worksheets': () => import('../math-worksheets/index.js'),
+  '/fractions':    () => import('../math-worksheets/index.js'),  // preselects Fractions
+  '/math-games':   () => import('../math-games/index.js'),
   '/word-puzzles': () => import('../wordpuzzle/index.js'),
   '/math-puzzles': () => import('../mathpuzzle/index.js'),
   '/sudoku':       () => import('../sudoku/index.js'),
@@ -94,6 +96,8 @@ Shared across all modules — no need to re-define in module CSS:
 |---|---|---|
 | `/` | Home | `src/portal/home.js` |
 | `/math-worksheets` | Math Worksheets | `src/math-worksheets/` |
+| `/fractions` | Math Worksheets (Fractions selected) | `src/math-worksheets/` |
+| `/math-games` | Math Games | `src/math-games/` |
 | `/word-puzzles` | Word Puzzles | `src/wordpuzzle/` |
 | `/math-puzzles` | Math Puzzle Grid | `src/mathpuzzle/` |
 | `/sudoku` | Sudoku | `src/sudoku/` |

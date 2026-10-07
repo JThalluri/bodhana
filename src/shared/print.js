@@ -3,7 +3,8 @@ import { addBrandWatermarks, brandWatermarkStyles } from './worksheet-brand.js';
 const PRINT_PAGE_SELECTOR = [
   '.paper-page',
   '.pv-worksheet',
-  '.ttt-worksheet',
+  '.frac-worksheet',
+  '.mg-worksheet',
   '.mp-puzzle-page',
   '.sdk-puzzle-page',
   '.wp-puzzle-block',
