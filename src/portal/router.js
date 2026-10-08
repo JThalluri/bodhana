@@ -9,6 +9,7 @@ const routes = {
   '/sudoku':           () => import('../sudoku/index.js'),
   '/dict-builder':     () => import('../dictbuilder/index.js'),
   '/worksheets':       () => import('../worksheets/index.js'),
+  '/certificates':     () => import('../appreciation-certificates/index.js'),
 };
 
 const printableRoutes = new Set([
@@ -21,6 +22,7 @@ const printableRoutes = new Set([
   '/sudoku',
   '/dict-builder',
   '/worksheets',
+  '/certificates',
 ]);
 
 let currentUnmount = null;

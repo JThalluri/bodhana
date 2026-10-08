@@ -9,7 +9,10 @@ const PRINT_PAGE_SELECTOR = [
   '.sdk-puzzle-page',
   '.wp-puzzle-block',
   '.hw-worksheet',
+  '.award-cert-page',
 ].join(',');
+
+const LANDSCAPE_PAGE_SELECTOR = '.award-cert-page.is-landscape';
 
 const PRINT_PAGE_CHILD_SELECTOR = PRINT_PAGE_SELECTOR
   .split(',')
@@ -28,6 +31,10 @@ export function printWorksheet() {
     window.print();
     return;
   }
+  const isLandscape = [...pages].some(page => page.matches(LANDSCAPE_PAGE_SELECTOR));
+  const pageWidth = isLandscape ? '11in' : '8.5in';
+  const pageHeight = isLandscape ? '8.5in' : '11in';
+  const pageSize = isLandscape ? 'Letter landscape' : 'Letter';
 
   const printFrame = document.createElement('iframe');
   printFrame.setAttribute('aria-hidden', 'true');
@@ -60,7 +67,7 @@ export function printWorksheet() {
   <title>Bodhana Worksheet Print</title>
   ${headAssets}
   <style>
-    @page { size: Letter; margin: 0; }
+    @page { size: ${pageSize}; margin: 0; }
 
     html,
     body {
@@ -72,7 +79,7 @@ export function printWorksheet() {
 
     .print-document {
       display: block !important;
-      width: 8.5in !important;
+      width: ${pageWidth} !important;
       min-width: 0 !important;
       max-width: none !important;
       margin: 0 !important;
@@ -83,11 +90,11 @@ export function printWorksheet() {
 
     ${PRINT_PAGE_CHILD_SELECTOR} {
       zoom: 1 !important;
-      width: 8.5in !important;
+      width: ${pageWidth} !important;
       min-width: 0 !important;
       max-width: none !important;
-      height: 11in !important;
-      max-height: 11in !important;
+      height: ${pageHeight} !important;
+      max-height: ${pageHeight} !important;
       margin: 0 !important;
       position: relative !important;
       box-sizing: border-box !important;
@@ -106,6 +113,53 @@ export function printWorksheet() {
       break-after: auto !important;
     }
 
+    .print-document .cert-scale-stage {
+      display: block !important;
+      width: ${pageWidth} !important;
+      height: ${pageHeight} !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      background: white !important;
+    }
+
+    .print-document .award-cert-page.is-landscape {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      width: ${pageWidth} !important;
+      min-width: ${pageWidth} !important;
+      height: ${pageHeight} !important;
+      min-height: ${pageHeight} !important;
+      margin: 0 !important;
+      transform: none !important;
+      page-break-after: avoid !important;
+      break-after: auto !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .print-document .cert-name {
+      color: #c44f42 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .print-document .cert-title,
+    .print-document .cert-note,
+    .print-document .cert-sign-value {
+      color: #1d1717 !important;
+    }
+
+    .print-document .cert-title::after,
+    .print-document .cert-sign-line {
+      background: #9f3435 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
     ${brandWatermarkStyles()}
   </style>
 </head>
@@ -114,7 +168,9 @@ export function printWorksheet() {
 </body>
 </html>`);
   printDocument.close();
-  addBrandWatermarks(printDocument, PRINT_PAGE_CHILD_SELECTOR);
+  if (!isLandscape) {
+    addBrandWatermarks(printDocument, PRINT_PAGE_CHILD_SELECTOR);
+  }
 
   let cleanedUp = false;
   const cleanup = () => {
