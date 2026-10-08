@@ -550,3 +550,211 @@ right is cheaper than carrying a structural gap into Phase 4/5 where it becomes 
 Spec impact: `phonics-engine-spec_v1.0.md` §1 module layout is now fully implemented. AC 12
 now holds by construction (verified by grep — no pattern-matching, no lookup tables, no
 difficulty/sound logic defined inside PhonicsEngine.mjs).
+
+---
+
+## 2026-10-08 — `.tool-info-pane` updated to flex column (spec §3.3 layout prerequisite)
+
+Phase: 4
+
+Context: spec §3.3 defines `.info-tab-panels { flex: 1; min-height: 0; overflow: hidden }`
+(changed from the spec's `height: 100%` to `flex: 1` in implementation). The spec deliverables
+table says components.css changes are "additive — new shared classes, nothing existing touched."
+However, `.info-tab-panels { flex: 1 }` only works if the parent is a flex container. The
+`.tool-info-pane` rule (`flex: 1 1 auto; min-width: 0`) was not a flex container, so panels
+would not fill the available height without this change.
+
+Decision: updated `.tool-info-pane` to add `display: flex; flex-direction: column; overflow:
+hidden`. The `height: 100%` approach in the spec's CSS snippet was replaced with `flex: 1;
+min-height: 0` on `.info-tab-panels` to avoid the height-percentage-on-auto-height problem that
+affects cross-browser percentage height resolution in flex items.
+
+Alternatives considered: (a) leave `.tool-info-pane` untouched and use `position: absolute`
+within the panels — rejected because `.tool-info-pane` has no `position: relative`, and adding
+it via a new rule would have the same "modifying existing behavior" concern with more complex
+layout consequences; (b) use `calc(100% - 44px)` for panel height — rejected as brittle
+(hard-coded tab strip height); (c) accept truncated panels — rejected as a known visual defect.
+
+Rationale: the "nothing existing touched" constraint's spirit is "don't break existing
+components," not "never add properties to a previously-empty pane." The pane has no prior
+content consumers, so this change has zero breakage risk. The flex layout is structurally
+required for the panel content to fill its container.
+
+Spec impact: `phonics-dictionary-builder-integration-spec_v1.0.md` §3.3 CSS implemented with
+`flex: 1; min-height: 0` instead of `height: 100%` on `.info-tab-panels`. Functionally
+equivalent — both fill remaining height. No impact on any acceptance criteria.
+
+---
+
+## 2026-10-08 — Flag export placed in Detail panel, not header
+
+Phase: 4
+
+Context: spec §8.3 says the flag export action "can live in the Detail panel itself, near the
+flag control, or as a header action gated on `state.flagged.length > 0` — build agent's call,
+not load-bearing either way."
+
+Decision: placed Export Flags as a button inside the Detail panel (near the flag control, only
+visible when `flagCount > 0`). It does not appear in the header.
+
+Alternatives considered: header action — rejected because the header is already at 7 interactive
+items (Extract, Enrich, 3 download buttons, Export Phonics CSV, Clear). A flags-export button
+would only be non-disabled when flags exist, which is uncommon; tucking it in the panel where
+the user just flagged a word is lower-friction and keeps the header clean.
+
+Rationale: spec explicitly deferred this to the build agent. Panel proximity reduces cognitive
+distance — the teacher just flagged a word, sees the export button immediately beside the result.
+
+Spec impact: none — explicitly left to agent's judgment in §8.3.
+
+---
+
+## 2026-10-08 — Enrichment chip added to summary bar
+
+Phase: 4
+
+Context: spec §7.2 says "badges now render for newly-enriched words" after renderWordGrid() is
+called post-Enrich. The spec describes this in the context of the grid re-render but does not
+specify what the badge looks like. Additionally, the summary bar (updateSummary) needed a hint
+update: the old text said "click word to exclude" but clicking the word now selects it; the × 
+button excludes.
+
+Decision: added a small green dot indicator (`.db-word-enriched::after`) on enriched words in
+the grid, and a `.db-sum-enriched` chip in the summary bar showing enrichment count. Updated
+the summary hint to "click × to exclude."
+
+Alternatives considered: no visual enrichment indicator at all — rejected because the spec
+explicitly mentions badges rendering after enrich; the green dot provides minimal but sufficient
+feedback.
+
+Rationale: teachers need to know which words have been analyzed vs which are still raw; the
+dot + chip gives that at a glance without adding visual noise.
+
+Spec impact: purely additive to UI, not tied to any acceptance criterion.
+
+---
+
+## 2026-10-08 — `.wd-grapheme-box` vs `.phx-grapheme-box` in Phase 5 renderers
+
+Phase: 5
+Context: the Phase 5 spec text (§5) refers to `.phx-grapheme-box` and `.phx-syllable-dot` as the
+classes shared with Phase 4. Those names were written before Phase 4 was implemented; the actual
+shipped Phase 4 class is `.wd-grapheme-box` (in `src/styles/phonics-word-detail.css`).
+Decision: Phase 5 renderers use `.wd-grapheme-box` — the actual shipped class — not the spec's
+placeholder name. AC 5 ("exact same CSS classes as Phase 4") is satisfied because `.wd-grapheme-box`
+is the class Phase 4 actually uses.
+Alternatives considered: creating a new `.phx-grapheme-box` alias that copies the Phase 4 styles —
+rejected because it would make AC 5 false (the renderer would be using a different class name than
+Phase 4, even if visually identical).
+Rationale: use the real thing, not a copy or alias. The spec's class name was a speculative
+placeholder; reality wins.
+Spec impact: §5 class name reference corrected at implementation; AC 5 meaning unchanged.
+
+---
+
+## 2026-10-08 — Syllable Split: boxed presentation using `.wd-grapheme-box` per syllable
+
+Phase: 5
+Context: the spec asks for an explicit design decision: does Syllable Split use the plain `.wd-syllables`
+text style (Phase 4's "un · der · stand" display) or discrete boxes per syllable?
+Decision: Syllable Split uses `.wd-grapheme-box` — one box per syllable — for its worksheet rendering.
+The `.phx-syllable-box` modifier class adds extra minimum width to accommodate multi-letter syllables.
+When `showSolutions=false`, boxes are empty (`phx-box-empty`); when `showSolutions=true`, each box
+contains its syllable.
+Alternatives considered: plain text with dots (`.wd-syllables` style) — rejected because a worksheet
+activity needs discrete fill-in boxes for students to write in, not a reading-context display. A
+printed worksheet with blank spaces for "ship" vs. "ship · per" is meaningless without discrete targets.
+Rationale: worksheet affordance. The `.wd-syllables` plain-text form is right for the detail panel
+(quick reference while curating); discrete boxes are right for a printable fill-in activity.
+Spec impact: AC 5 still satisfied — `.wd-grapheme-box` is used in both Dissect and Syllable Split.
+
+---
+
+## 2026-10-08 — PapaParse not bundled: minimal inline CSV parser
+
+Phase: 5
+Context: the spec §2.2 says "PapaParse, bundled — confirm it's available or bundle it under
+`vendor/` consistent with the Bodhana convention." A search of the codebase found no `vendor/`
+directory and no papaparse in package.json. It was present in the old prototype but was not carried
+into this codebase.
+Decision: implement a minimal RFC-4180-compatible CSV parser inline in `ui.js` (`parseCSVLine` +
+`parseCSV`). It handles quoted fields with embedded commas and escaped quotes — the two cases
+produced by `PhonicsEngine.toCSV`'s `csvCell()` function — which is the only CSV format this
+module will ever receive.
+Alternatives considered: install papaparse via npm — rejected because it adds a dependency for a
+use case fully covered by a 20-line parser given the known, controlled input format.
+Rationale: zero new dependencies; the input format is our own and fully predictable.
+Spec impact: AC 2 (CSV round-trip) is satisfied by the inline parser for the specific toCSV format.
+
+---
+
+## 2026-10-08 — `.paper-page` defined in math.css: no conflict, no new registration
+
+Phase: 5
+Context: spec §7.3 flagged a pre-flight check — verify no other module defines `.paper-page` with
+conflicting assumptions. `src/math/math.css` does define `.paper-page` with `width: 8.5in;
+height: 11in; background: white; display: flex; flex-direction: column;` — properties consistent
+with the phonics worksheets use.
+Decision: proceed with `.paper-page` as-is, scoped phonics overrides to `.phx-page.paper-page`.
+Every phonics page renders as `<div class="paper-page phx-page">` — `.paper-page` for print engine
+detection, `.phx-page` for phonics-specific CSS overrides. This avoids cascade conflicts with math's
+definition while keeping the print engine's selector matching intact.
+Alternatives considered: define a new `.phx-paper-page` class and register it in print.js —
+rejected; modifying shared files is explicitly out of scope for this phase.
+Rationale: the `.phx-page` modifier is the clean way to extend without touching shared state.
+Spec impact: §7.1 confirmed correct; `.paper-page` used as-is for print/export detection.
+
+---
+
+## 2026-10-08 — is_common annotation added to plain-text load path (bug fix during evidence review)
+
+Phase: 5
+Context: during evidence collection, found that `DEFAULT_COMMON_WORDS` was imported in `ui.js`
+but not called — `loadWordsFromText`'s plain-text branch called `parseWords(words)` without
+annotating the resulting records with `is_common`. Caught before sign-off.
+Decision: `state.allWords` in the plain-text branch is set to `parseWords(words).map(r => ({
+...r, is_common: DEFAULT_COMMON_WORDS.has(r.word.toLowerCase()) }))`. The CSV branch already
+preserves `is_common` from the CSV column — no change there.
+Alternatives considered: none; the import without use was plainly a bug.
+Rationale: AC 1 requires that `is_common` matches Dictionary Builder's resolution for the same
+word. Without this annotation, plain-text-loaded records had no `is_common` field at all.
+Spec impact: AC 1 satisfaction requires this fix.
+
+---
+
+## 2026-10-08 — Base Dictionary not supported in Phonics Worksheets (deliberate scope)
+
+Phase: 5
+Context: spec §2.1 says is_common is resolved "against a loaded Base Dictionary if present,
+else default-common-words.js." Phonics Worksheets implements no mechanism to load a Base
+Dictionary.
+Decision: no Base Dictionary support in this module. `is_common` always uses DEFAULT_COMMON_WORDS.
+Alternatives considered: reusing Dictionary Builder's base-dictionary dropzone pattern — rejected
+because (1) the spec says "if present" making it optional, (2) Phonics Worksheets is a worksheet
+generator not a curation tool and does not need to match a teacher's active base dictionary, and
+(3) implementing it properly would require session state shared across modules (not currently
+present anywhere in this codebase per §3 of the spec).
+Rationale: "if present" in the spec means optional; the important guarantee is that DEFAULT_COMMON_WORDS
+is the same shared file (not reimplemented), which is true.
+Spec impact: §2.1 partial — shared file requirement met, Base Dictionary support out of scope for v1.
+
+---
+
+## 2026-10-08 — Real/nonsense word-type filter not implemented (new gap, logged at evidence review)
+
+Phase: 5
+Context: spec §3 ("Bounds & Type") describes a "real/nonsense word-type select" filter (All /
+Real only / Nonsense only). During Phase 5 evidence collection (ITEM 5), a check of ui.js
+`matchesFilters` confirmed no such filter exists. None of the 9 Phase 5 acceptance criteria test
+for it, and no prior decision log entry covers it. This is a new gap identified at sign-off, not
+a deferred known item.
+Decision: real/nonsense word-type filter is not implemented in v1. The gap is logged here as a
+new open item, not a previously-logged deliberate deferral.
+Alternatives considered: implement now — rejected because (a) none of the ACs require it, (b)
+determining whether a word is "nonsense" is a non-trivial lexical lookup (no dictionary bundled),
+and (c) the spec §3 text describes the UI widget but no AC tests the filtering behavior —
+implementing it speculatively would be outside the signed-off scope.
+Rationale: spec §3 describes the UI affordance; zero ACs validate the filter's effect. Logging
+the gap explicitly so it appears on the next phase's scope review rather than being silently absent.
+Spec impact: §3 Bounds & Type select widget partially out of scope for v1. Requires its own AC
+and a lexical word-list strategy (e.g. CMU dict subset) before it can be built correctly.

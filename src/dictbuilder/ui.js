@@ -1,5 +1,8 @@
 import { extractWords, findPossiblePlurals, readFileAsText } from './extractor.js';
-import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { themeToggleMarkup, infoPaneTabsMarkup, wireInfoPaneTabs } from '../shared/shell-ui.js';
+import PhonicsEngine from '../phonics/PhonicsEngine.mjs';
+import { renderWordDetail } from '../shared/phonicsWordDetail.js';
+import { DEFAULT_COMMON_WORDS } from '../shared/default-common-words.js';
 
 const state = {
   files: [],
@@ -10,7 +13,48 @@ const state = {
   freq: {},              // word → occurrence count across source docs
   pluralInfo: {},
   excluded: new Set(),   // user-deselected words
+  phonicsByWord: Object.create(null), // word → Record from PhonicsEngine (no is_common)
+  flagged: [],           // [{ word, record, note, flaggedAt }]
+  selectedWord: null,
 };
+
+// Assigned once at mount via wireInfoPaneTabs — used by selectWord()
+let infoPaneTabs = null;
+
+// ── Notes tab static content ──────────────────────────────────────────────────
+
+const NOTES_HTML = `
+  <div class="wd-notes">
+    <div>
+      <h3>Extract</h3>
+      <p>Scans your source documents and builds a unique, sorted word list. Words are
+      filtered by length and lowercase setting. Likely plurals are flagged automatically.</p>
+    </div>
+    <div>
+      <h3>Enrich</h3>
+      <p>Runs phonics analysis on every extracted word using the Phase 3 engine. This is
+      an opt-in step — not automatic — because analysis is computed per-word and you may
+      want to review the word list first.</p>
+      <p>Enrichment is cached for the session: re-running Enrich or re-extracting the same
+      words never recomputes words already analyzed.</p>
+    </div>
+    <div>
+      <h3>Word grid</h3>
+      <ul>
+        <li><strong>Click a word's text</strong> to select it and view its phonics detail.</li>
+        <li><strong>Click the × button</strong> to exclude a word from export.</li>
+        <li>Superscript numbers are frequency counts across all source documents.</li>
+        <li>Blue words are possible plurals. Grey words already exist in the base dictionary.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Flagging</h3>
+      <p>In the Detail tab, use the Flag control to mark a word for follow-up. Add an optional
+      note explaining the issue, then click <em>Flag</em>. Use <em>Export flags</em> to download
+      the collected flags as JSON — this file is the input for the Phase 2 Constructs Workbench
+      when a teacher finds something that needs a correction.</p>
+    </div>
+  </div>`;
 
 export function buildDictBuilderUI(container) {
   container.innerHTML = `
@@ -27,6 +71,11 @@ export function buildDictBuilderUI(container) {
             <button class="btn btn-primary btn-sm" id="dbBtnExtract">
               <i class="fas fa-magic"></i> Extract
             </button>
+            <button class="btn btn-secondary btn-sm" id="dbBtnEnrich" disabled
+              title="Run phonics analysis on extracted words">
+              <i class="fas fa-microscope"></i> Enrich
+            </button>
+            <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-secondary btn-sm" id="dbBtnDownload" disabled
               title="Download extracted words as a standalone dictionary">
               <i class="fas fa-download"></i> Download
@@ -38,6 +87,10 @@ export function buildDictBuilderUI(container) {
             <button class="btn btn-secondary btn-sm" id="dbBtnAppend" disabled
               title="Keep base dictionary as-is, append only the net-new words at the end">
               <i class="fas fa-file-import"></i> Append Delta
+            </button>
+            <button class="btn btn-secondary btn-sm" id="dbBtnPhonicsCSV" disabled
+              title="Export phonics analysis as CSV (requires Enrich)">
+              <i class="fas fa-file-csv"></i> Export Phonics CSV
             </button>
             <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-danger btn-sm" id="dbBtnClear">
@@ -134,14 +187,24 @@ export function buildDictBuilderUI(container) {
           </div>
         </div>
 
-        <div class="tool-info-pane" aria-hidden="true"></div>
+        <div class="tool-info-pane" id="dbInfoPane"></div>
 
       </div>
     </div>
   `;
 
+  // Initialize info pane tabs
+  const infoPane = container.querySelector('#dbInfoPane');
+  infoPane.innerHTML = infoPaneTabsMarkup([
+    { id: 'notes',  label: 'Notes',  icon: 'fa-sticky-note' },
+    { id: 'detail', label: 'Detail', icon: 'fa-microscope'  },
+  ]);
+  infoPane.querySelector('[data-panel="notes"]').innerHTML = NOTES_HTML;
+  infoPaneTabs = wireInfoPaneTabs(infoPane);
+
   resetState();
   wireEvents();
+  renderDetailPanel(); // initialize Detail tab with "no word selected" state
 }
 
 function resetState() {
@@ -153,6 +216,9 @@ function resetState() {
   state.freq = {};
   state.pluralInfo = {};
   state.excluded = new Set();
+  state.phonicsByWord = Object.create(null);
+  state.flagged = [];
+  state.selectedWord = null;
 }
 
 // ── Options ──────────────────────────────────────────────────────────────────
@@ -288,6 +354,7 @@ async function runExtract() {
   const extractBtn = document.getElementById('dbBtnExtract');
   if (extractBtn) extractBtn.disabled = true;
   state.excluded = new Set();
+  state.selectedWord = null;
 
   setStatus('info', `Processing ${state.files.length} file(s)…`);
 
@@ -313,11 +380,100 @@ async function runExtract() {
     updateSummary();
     renderWordGrid();
     updateActionButtons();
+    renderDetailPanel(); // reset detail (selection was cleared)
   } catch (err) {
     setStatus('error', `❌ ${err.message}`);
   } finally {
     if (extractBtn) extractBtn.disabled = false;
   }
+}
+
+// ── Enrich ────────────────────────────────────────────────────────────────────
+
+function runEnrich() {
+  const toEnrich = state.extracted.filter(w => !(w in state.phonicsByWord));
+  if (!toEnrich.length) {
+    setStatus('info', 'Already enriched.');
+    return;
+  }
+  const records = PhonicsEngine.parseWords(toEnrich);
+  records.forEach(r => { state.phonicsByWord[r.word] = r; });
+  updateSummary();
+  renderWordGrid();
+  updateActionButtons();
+  if (state.selectedWord) renderDetailPanel(); // refresh if open word just got enriched
+  setStatus('success', `<i class="fas fa-check-circle"></i> ${records.length} word${records.length !== 1 ? 's' : ''} enriched`);
+}
+
+// ── Selection and detail panel ─────────────────────────────────────────────────
+
+function selectWord(word) {
+  if (!word) return;
+  state.selectedWord = word;
+  renderWordGrid();
+  renderDetailPanel();
+  infoPaneTabs?.activate('detail'); // auto-switch — unconditional per spec §4
+}
+
+function isCommon(word) {
+  if (state.baseWordsList.length) return state.baseWordsSet.has(word);
+  return DEFAULT_COMMON_WORDS.has(word);
+}
+
+function renderDetailPanel() {
+  const panel = document.querySelector('#dbInfoPane .info-tab-panel[data-panel="detail"]');
+  if (!panel) return;
+
+  const word   = state.selectedWord;
+  const record = word ? state.phonicsByWord[word] : null;
+
+  panel.innerHTML = renderWordDetail(word, record, {
+    freq:           word ? (state.freq[word] || 1) : 0,
+    isCommon:       word ? isCommon(word) : null,
+    alreadyFlagged: word ? state.flagged.some(f => f.word === word) : false,
+    flagCount:      state.flagged.length,
+  });
+
+  // Wire flag button (only present in enriched state)
+  const flagBtn = panel.querySelector('[data-action="flag"]');
+  if (flagBtn && !flagBtn.disabled) {
+    flagBtn.addEventListener('click', () => {
+      const noteInput = panel.querySelector('[data-flag-note]');
+      const note = noteInput?.value.trim() || '';
+      state.flagged.push({
+        word,
+        record,
+        note,
+        flaggedAt: new Date().toISOString(),
+      });
+      if (noteInput) noteInput.value = '';
+      flagBtn.innerHTML = '<i class="fas fa-check"></i> Flagged';
+      flagBtn.disabled = true;
+      updateActionButtons();
+      // Re-render to update export-flags button count
+      renderDetailPanel();
+    });
+  }
+
+  // Wire export-flags button
+  const exportBtn = panel.querySelector('[data-action="export-flags"]');
+  exportBtn?.addEventListener('click', doExportFlagsJSON);
+}
+
+// ── Exclude ───────────────────────────────────────────────────────────────────
+
+function toggleExclude(word) {
+  if (!word) return;
+  if (state.excluded.has(word)) {
+    state.excluded.delete(word);
+  } else {
+    state.excluded.add(word);
+  }
+  // Toggle class on the item in-place without full grid re-render
+  const item = document.querySelector(`#dbWordGrid .db-word-item[data-word="${word}"]`);
+  item?.classList.toggle('db-word-excluded', state.excluded.has(word));
+  updateSummary();
+  updateActionButtons();
 }
 
 // ── Results panel ─────────────────────────────────────────────────────────────
@@ -327,11 +483,12 @@ function updateSummary() {
   if (!el) return;
   if (!state.extracted.length) { el.innerHTML = ''; return; }
 
-  const total = state.extracted.length;
-  const excl  = state.excluded.size;
+  const total    = state.extracted.length;
+  const excl     = state.excluded.size;
   const pluralCt = Object.keys(state.pluralInfo).length;
-  const newCt = state.extracted.filter(w => !hasBaseWord(w)).length;
-  const exCt  = total - newCt;
+  const newCt    = state.extracted.filter(w => !hasBaseWord(w)).length;
+  const exCt     = total - newCt;
+  const enrichedCt = Object.keys(state.phonicsByWord).length;
 
   let html = '';
   if (state.baseWordsList.length) {
@@ -347,7 +504,10 @@ function updateSummary() {
   if (pluralCt) {
     html += `<span class="db-sum-sep">&middot;</span><span class="db-sum-chip db-sum-plural">${pluralCt} possible plural${pluralCt !== 1 ? 's' : ''}</span>`;
   }
-  html += `<span class="db-sum-sep">·</span><span class="db-sum-hint">click word to exclude</span>`;
+  if (enrichedCt) {
+    html += `<span class="db-sum-sep">·</span><span class="db-sum-chip db-sum-enriched">${enrichedCt} enriched</span>`;
+  }
+  html += `<span class="db-sum-sep">·</span><span class="db-sum-hint">click × to exclude</span>`;
   el.innerHTML = html;
 }
 
@@ -388,30 +548,52 @@ function renderWordGrid() {
   grid.innerHTML = getSortedWords().map(w => {
     const isExisting = hasBaseWord(w);
     const isExcluded = state.excluded.has(w);
+    const isSelected = state.selectedWord === w;
+    const isEnriched = w in state.phonicsByWord;
     const pluralBase = state.pluralInfo[w];
-    const isPlural = Boolean(pluralBase);
-    const cnt = state.freq[w] || 1;
-    const badge = cnt > 1 ? `<sup class="db-freq">${cnt}</sup>` : '';
+    const isPlural   = Boolean(pluralBase);
+    const cnt        = state.freq[w] || 1;
+    const badge      = cnt > 1 ? `<sup class="db-freq">${cnt}</sup>` : '';
     const pluralTitle = isPlural ? `; possible plural of "${pluralBase}"` : '';
-    let cls = `db-word-item${isExisting ? ' db-word-existing' : ' db-word-new'}${isPlural ? ' db-word-plural' : ''}${isExcluded ? ' db-word-excluded' : ''}`;
-    return `<div class="${cls}" data-word="${w}" title="${cnt} occurrence${cnt !== 1 ? 's' : ''}${pluralTitle}">${w}${badge}</div>`;
+    const cls = [
+      'db-word-item',
+      isExisting ? 'db-word-existing' : 'db-word-new',
+      isPlural   ? 'db-word-plural'   : '',
+      isExcluded ? 'db-word-excluded' : '',
+      isSelected ? 'selected'         : '',
+      isEnriched ? 'db-word-enriched' : '',
+    ].filter(Boolean).join(' ');
+    return `
+      <div class="${cls}" data-word="${w}"
+           title="${cnt} occurrence${cnt !== 1 ? 's' : ''}${pluralTitle}">
+        <button class="db-word-select" data-word="${w}">${w}${badge}</button>
+        <button class="db-word-exclude-btn" data-word="${w}"
+          title="Exclude from export" aria-label="Exclude ${w}">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>`;
   }).join('');
 }
 
 // ── Action buttons ────────────────────────────────────────────────────────────
 
 function updateActionButtons() {
-  const hasBase    = state.baseWordsList.length > 0;
-  const hasActive  = state.extracted.some(w => !state.excluded.has(w));
+  const hasBase     = state.baseWordsList.length > 0;
+  const hasActive   = state.extracted.some(w => !state.excluded.has(w));
   const hasNewDelta = hasActive && state.extracted.some(w => !state.excluded.has(w) && !hasBaseWord(w));
+  const hasEnriched = Object.keys(state.phonicsByWord).length > 0;
 
+  const enrichBtn = document.getElementById('dbBtnEnrich');
   const dlBtn     = document.getElementById('dbBtnDownload');
   const mergeBtn  = document.getElementById('dbBtnMerge');
   const appendBtn = document.getElementById('dbBtnAppend');
+  const csvBtn    = document.getElementById('dbBtnPhonicsCSV');
 
+  if (enrichBtn) enrichBtn.disabled = !state.extracted.length;
   if (dlBtn)     dlBtn.disabled     = !hasActive;
   if (mergeBtn)  mergeBtn.disabled  = !(hasBase && hasActive);
   if (appendBtn) appendBtn.disabled = !(hasBase && hasNewDelta);
+  if (csvBtn)    csvBtn.disabled    = !hasEnriched;
 }
 
 // ── Downloads ─────────────────────────────────────────────────────────────────
@@ -476,6 +658,33 @@ function doDownloadAppendDelta() {
   downloadTxt([...state.baseWordsList, ...delta], `${baseStem()}_updated_${timestamp()}.txt`);
 }
 
+function doExportPhonicsCSV() {
+  const rows = activeExtracted().map(word => ({
+    ...(state.phonicsByWord[word] || { word }),
+    is_common: isCommon(word),
+  }));
+  const csv = PhonicsEngine.toCSV(rows, { extended: true, extraColumns: ['is_common'] });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `phonics_${timestamp()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function doExportFlagsJSON() {
+  if (!state.flagged.length) return;
+  const json = JSON.stringify(state.flagged, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `phonics-flags_${timestamp()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // ── Clear ─────────────────────────────────────────────────────────────────────
 
 function doClear() {
@@ -484,12 +693,16 @@ function doClear() {
   state.freq = {};
   state.pluralInfo = {};
   state.excluded = new Set();
+  state.phonicsByWord = Object.create(null);
+  state.flagged = [];
+  state.selectedWord = null;
   renderFileList();
   renderWordGrid();
   const sum = document.getElementById('dbSummary');
   if (sum) sum.innerHTML = '';
   updateActionButtons();
   setStatus('info', '');
+  renderDetailPanel();
   // Base dictionary is kept intentionally — it's a separate persistent input
 }
 
@@ -506,9 +719,11 @@ function setStatus(type, html) {
 
 function wireEvents() {
   document.getElementById('dbBtnExtract')?.addEventListener('click', runExtract);
+  document.getElementById('dbBtnEnrich')?.addEventListener('click', runEnrich);
   document.getElementById('dbBtnDownload')?.addEventListener('click', doDownloadStandalone);
   document.getElementById('dbBtnMerge')?.addEventListener('click', doDownloadFullMerge);
   document.getElementById('dbBtnAppend')?.addEventListener('click', doDownloadAppendDelta);
+  document.getElementById('dbBtnPhonicsCSV')?.addEventListener('click', doExportPhonicsCSV);
   document.getElementById('dbBtnClear')?.addEventListener('click', doClear);
 
   // Source documents drop zone
@@ -548,21 +763,15 @@ function wireEvents() {
     e.target.value = '';
   });
 
-  // Click-to-exclude (event delegation — survives re-renders)
+  // Word grid — two delegated handlers: exclude-btn and select-btn
   document.getElementById('dbWordGrid')?.addEventListener('click', e => {
-    const item = e.target.closest('.db-word-item');
-    if (!item) return;
-    const word = item.dataset.word;
-    if (!word) return;
-    if (state.excluded.has(word)) {
-      state.excluded.delete(word);
-      item.classList.remove('db-word-excluded');
-    } else {
-      state.excluded.add(word);
-      item.classList.add('db-word-excluded');
+    const excludeBtn = e.target.closest('.db-word-exclude-btn');
+    if (excludeBtn) {
+      toggleExclude(excludeBtn.dataset.word);
+      return;
     }
-    updateSummary();
-    updateActionButtons();
+    const selectBtn = e.target.closest('.db-word-select');
+    if (selectBtn) selectWord(selectBtn.dataset.word);
   });
 
   // Sort re-renders without re-extracting
@@ -581,4 +790,5 @@ function wireEvents() {
 
 export function unmount() {
   resetState();
+  infoPaneTabs = null;
 }

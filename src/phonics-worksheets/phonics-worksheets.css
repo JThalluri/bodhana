@@ -1,0 +1,439 @@
+/* Phonics Worksheets ─────────────────────────────────────────────────────── */
+
+.phx-tool {
+  height: 100%;
+  min-height: 0;
+}
+
+/* ── Settings pane ──────────────────────────────────────────────────────────── */
+
+.phx-settings {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.phx-settings-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.phx-section-label {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.phx-field-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 100px;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.phx-field-row:last-child { margin-bottom: 0; }
+
+.phx-field-row .tb-select,
+.phx-field-row .tb-num { width: 100%; }
+
+.phx-range-pair {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.phx-range-pair .tb-num { width: 44px; }
+
+.phx-range-sep {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.phx-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 6px;
+}
+
+.phx-toggle-row:last-child { margin-bottom: 0; }
+
+.phx-toggle-row .toggle-switch.toggle-sm { width: 34px; height: 20px; }
+.phx-toggle-row .toggle-switch.toggle-sm .toggle-track::after { width: 16px; height: 16px; }
+.phx-toggle-row .toggle-switch.toggle-sm input:checked + .toggle-track::after { transform: translateX(14px); }
+
+/* Dropzone */
+
+.phx-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  user-select: none;
+  margin-bottom: 8px;
+}
+
+.phx-dropzone:hover,
+.phx-dropzone.phx-drag-over {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.phx-drop-icon {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.phx-drop-text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0 0 4px;
+}
+
+.phx-drop-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.phx-browse-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.phx-demo-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Pattern filter */
+
+.phx-filter-group {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+
+.phx-filter-group:last-child { border-bottom: none; }
+
+.phx-filter-summary {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 5px 2px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.phx-filter-summary::-webkit-details-marker { display: none; }
+
+.phx-pattern-chips,
+.phx-sound-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 0 8px;
+}
+
+.phx-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.phx-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.phx-chip.phx-chip-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
+/* Word selection list */
+
+.phx-word-sel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.phx-word-sel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.phx-word-sel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  font-size: var(--text-sm);
+}
+
+.phx-word-sel-word {
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+}
+
+.phx-reorder-btns {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.phx-reorder-btns .btn {
+  padding: 0 5px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.phx-reorder-btns .btn:hover:not(:disabled) { color: var(--accent); }
+.phx-reorder-btns .btn:disabled { opacity: 0.3; cursor: default; }
+
+.phx-sel-empty {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+/* ── Preview pane ──────────────────────────────────────────────────────────── */
+
+.phx-preview {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: var(--bg-body);
+  padding: var(--space-5) var(--space-4);
+}
+
+/* ── Paper page ─────────────────────────────────────────────────────────────── */
+
+.phx-page.paper-page {
+  font-family: var(--font-print);
+  display: flex;
+  flex-direction: column;
+  padding: 0.5in 0.6in;
+  box-sizing: border-box;
+}
+
+.phx-page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2.5px solid #1a1a1a;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.phx-page-title {
+  font-size: 18pt;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.phx-name-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 11pt;
+  color: #333;
+  flex-wrap: nowrap;
+}
+
+.phx-name-label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.phx-name-blank {
+  display: inline-block;
+  width: 2in;
+  border-bottom: 1.5px solid #444;
+  min-height: 1.2em;
+}
+
+.phx-date-blank {
+  width: 1.2in;
+}
+
+/* ── Word rows ──────────────────────────────────────────────────────────────── */
+
+.phx-word-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.phx-word-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.phx-word-row:last-child { border-bottom: none; }
+
+.phx-word-label {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #111;
+  min-width: 1.4in;
+  flex-shrink: 0;
+}
+
+/* ── Dissect + Syllable Split: grapheme/syllable boxes ──────────────────────── */
+
+.phx-grapheme-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Worksheet-context override for wd-grapheme-box */
+.phx-page .wd-grapheme-box {
+  min-width: 36px;
+  padding: 4px 8px;
+  font-size: 13pt;
+  font-family: var(--font-print);
+  border: 2px solid #444;
+  border-radius: 4px;
+  background: white;
+  color: #111;
+}
+
+.phx-page .phx-syllable-box {
+  min-width: 56px;
+}
+
+.phx-page .phx-box-empty {
+  color: transparent !important;
+  background: white;
+}
+
+/* ── Elkonin boxes ───────────────────────────────────────────────────────────── */
+
+.phx-elkonin-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.phx-elkonin-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid #444;
+  border-radius: 4px;
+  font-size: 13pt;
+  font-family: var(--font-print);
+  font-weight: 600;
+  color: #111;
+  background: white;
+  box-sizing: border-box;
+}
+
+/* ── Onset & Rime ────────────────────────────────────────────────────────────── */
+
+.phx-or-row {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.phx-or-boxes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.phx-or-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 40px;
+  padding: 4px 10px;
+  border: 2px solid #444;
+  border-radius: 4px;
+  font-size: 13pt;
+  font-family: var(--font-print);
+  font-weight: 600;
+  color: #111;
+  background: white;
+  box-sizing: border-box;
+}
+
+.phx-or-onset { border-right-style: dashed; }
+.phx-or-rime  { border-left-style: dashed; }
+
+.phx-or-plus {
+  font-size: 14pt;
+  color: #555;
+  font-weight: 700;
+}
+
+.phx-rhyme-family {
+  width: 100%;
+  font-size: 10pt;
+  color: #555;
+  font-style: italic;
+  padding-left: 1.6in;
+  margin-top: 2px;
+}
+
+/* ── Print overrides ─────────────────────────────────────────────────────────── */
+
+@media print {
+  .phx-tool { display: block !important; height: auto !important; }
+  .phx-settings, .phx-toolbar, .tool-header { display: none !important; }
+  .phx-body, .phx-preview { display: block !important; overflow: visible !important; }
+  .phx-preview { padding: 0 !important; background: white !important; }
+  .tool-pages { display: block !important; }
+}

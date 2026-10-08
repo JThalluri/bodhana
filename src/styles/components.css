@@ -558,6 +558,9 @@
   flex: 1 1 auto;
   min-width: 0;
   background: var(--tool-workspace-bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .tool-type-section {
@@ -658,3 +661,48 @@
 .op-sym.sub { color: var(--color-sub); }
 .op-sym.mul { color: var(--color-mul); }
 .op-sym.div { color: var(--color-div); }
+
+/* ── Info-pane tabs (shared primitive — first used by Dictionary Builder) ── */
+
+.info-tabs {
+  display: flex;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.info-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-ui);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.info-tab:hover { color: var(--text-primary); }
+
+.info-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.info-tab-panels { flex: 1; min-height: 0; overflow: hidden; }
+
+.info-tab-panel {
+  display: none;
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-4);
+  box-sizing: border-box;
+}
+
+.info-tab-panel.active { display: block; }

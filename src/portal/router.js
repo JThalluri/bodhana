@@ -7,9 +7,10 @@ const routes = {
   '/word-puzzles':     () => import('../wordpuzzle/index.js'),
   '/math-puzzles':     () => import('../mathpuzzle/index.js'),
   '/sudoku':           () => import('../sudoku/index.js'),
-  '/dict-builder':     () => import('../dictbuilder/index.js'),
-  '/worksheets':       () => import('../worksheets/index.js'),
-  '/certificates':     () => import('../appreciation-certificates/index.js'),
+  '/dict-builder':        () => import('../dictbuilder/index.js'),
+  '/worksheets':          () => import('../worksheets/index.js'),
+  '/certificates':        () => import('../appreciation-certificates/index.js'),
+  '/phonics-worksheets':  () => import('../phonics-worksheets/index.js'),
 };
 
 const printableRoutes = new Set([
@@ -23,6 +24,7 @@ const printableRoutes = new Set([
   '/dict-builder',
   '/worksheets',
   '/certificates',
+  '/phonics-worksheets',
 ]);
 
 let currentUnmount = null;

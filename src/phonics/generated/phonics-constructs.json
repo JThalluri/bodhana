@@ -197,7 +197,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-02T12:50:52.591Z",
+  "generatedAt": "2026-10-08T14:05:48.803Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -520,7 +520,7 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:922914bcf88b18be6bcaf0d9fb84e9a972b9a0a045cb485f524545003453dd27",
+  "sourceHash": "sha256:c46544d57c85aa96fbf1691cef2079eb940d82c4c6233c7e16a7d5c439961a5e",
   "suffixStripRules": [
     {
       "always": true,

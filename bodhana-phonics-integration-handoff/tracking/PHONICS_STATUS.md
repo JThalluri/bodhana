@@ -5,8 +5,8 @@ history — history lives in `PHONICS_DECISION_LOG.md` (implementation decisions
 `phonics-phase2-backlog.md` (deferred content/architecture questions).
 
 **Last updated by:** Build agent (Claude)
-**Last updated:** 2026-10-02
-**One-line summary of what changed since last update:** Phase 3 complete — `PhonicsEngine.mjs` + `constructsLoader.mjs` built; 335 Phase 3 engine tests passing; 661 total tests passing (326 Phase 1 + 335 Phase 3)
+**Last updated:** 2026-10-08
+**One-line summary of what changed since last update:** Phase 5 complete — Phonics Worksheets module; 709 total tests passing (693 pre-Phase-5 + 9 filter pipeline + 7 CSV round-trip; is_common annotation fix applied)
 
 ---
 
@@ -103,58 +103,60 @@ Acceptance criteria (from spec §4):
 ## Phase 4 — Dictionary Builder integration
 
 **Spec:** `phonics-dictionary-builder-integration-spec_v1.0.md`
-**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☐ Complete
+**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☑ Complete
 **Depends on:** Phase 3's `PhonicsEngine.mjs` complete and stable.
 
 Acceptance criteria (from spec §10):
 
-- [ ] 1. Info-pane renders Notes + Detail tabs, Notes active by default, no `aria-hidden` remaining
-- [ ] 2. Clicking a word's text auto-switches to Detail, no second click
-- [ ] 3. Clicking the corner `×` excludes without switching tabs or changing selection
-- [ ] 4. Reselecting an already-enriched word does not recompute (no `parseWord` call-count increase)
-- [ ] 5. Detail panel shows the correct one of 3 states in every case — never blank/misleading
-- [ ] 6. `Export Phonics CSV` disabled until first successful Enrich; output matches Phase 3's `extraColumns` contract
-- [ ] 7. Existing Download/Full Merge/Append Delta byte-for-byte unchanged (regression check)
-- [ ] 8. Re-extracting overlapping words doesn't re-call `parseWord` for words already cached
-- [ ] 9. Flag export produces valid, loadable JSON matching §8.3 shape
-- [ ] 10. `infoPaneTabsMarkup`/`wireInfoPaneTabs` are genuinely generic — zero Dictionary-Builder-specific code (provable by Phase 5 reuse with a different tab set)
+- [x] 1. Info-pane renders Notes + Detail tabs, Notes active by default, no `aria-hidden` remaining
+- [x] 2. Clicking a word's text auto-switches to Detail, no second click
+- [x] 3. Clicking the corner `×` excludes without switching tabs or changing selection
+- [x] 4. Reselecting an already-enriched word does not recompute (no `parseWord` call-count increase)
+- [x] 5. Detail panel shows the correct one of 3 states in every case — never blank/misleading
+- [x] 6. `Export Phonics CSV` disabled until first successful Enrich; output matches Phase 3's `extraColumns` contract
+- [x] 7. Existing Download/Full Merge/Append Delta byte-for-byte unchanged (regression check)
+- [x] 8. Re-extracting overlapping words doesn't re-call `parseWord` for words already cached
+- [x] 9. Flag export produces valid, loadable JSON matching §8.3 shape
+- [x] 10. `infoPaneTabsMarkup`/`wireInfoPaneTabs` are genuinely generic — zero Dictionary-Builder-specific code (provable by Phase 5 reuse with a different tab set)
 
 **Open questions:**
-- Header button row grows to 6 buttons + Clear (`Extract, Enrich, Download, Full Merge, Append
-  Delta, Export Phonics CSV, Clear`). Should fit at 1920×1080 per the existing 5-button row's
-  spare room, but flagged for a quick visual check once built — not a blocker, just don't skip
-  looking at it.
+- Header button row layout at 1920×1080: 7 items total (Extract, Enrich, separator, Download,
+  Full Merge, Append Delta, Export Phonics CSV, separator, Clear). Visual check needed — see
+  report below.
 
 ---
 
 ## Phase 5 — Phonics Worksheets module
 
 **Spec:** `phonics-worksheets-module-spec_v1.0.md`
-**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☐ Complete
+**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☑ Complete
 **Depends on:** Phase 3 (`PhonicsEngine.mjs`) and Phase 4 (info-pane tabs primitive,
 `phonicsWordDetail.js`/`phonics-word-detail.css`, `src/shared/default-common-words.js` — path
 corrected at source in the Phase 4 spec itself during the consistency pass, no longer requires
 cross-referencing this note).
 **Scope note:** v1 ships only 4 of the original 9 activity types (Dissect, Elkonin, Onset &
 Rime, Syllable Split) — see spec §0.1. Remaining 5 are Phase 5b, not built now.
+**Pre-code decisions logged:** `.wd-grapheme-box` (Phase 4 actual) used instead of spec's
+placeholder `.phx-grapheme-box`; Syllable Split uses boxed presentation (`.wd-grapheme-box` per
+syllable) not plain `.wd-syllables` text; inline CSV parser instead of PapaParse (not in
+codebase); `.paper-page` conflict with `math.css` resolved via `.phx-page` modifier scoping —
+all four decisions in PHONICS_DECISION_LOG.md 2026-10-08 entries.
 
 Acceptance criteria (from spec §8):
 
-- [ ] 1. Raw `.txt` load enriches immediately, `is_common` matches Dictionary Builder's resolution for the same word
-- [ ] 2. Pre-parsed CSV round-trips with zero data loss/recomputation, including CSVs from Dictionary Builder's own export
-- [ ] 3. Activity dropdown switch re-renders live, no `Generate` button present anywhere
-- [ ] 4. `Show solutions` toggle genuinely adds/removes answer content from the DOM (not a CSS-only reveal)
-- [ ] 5. Dissect/Syllable Split renderers use the exact same CSS classes as Phase 4's Detail panel (verified by class-name diff)
-- [ ] 6. Onset & Rime rhyme-family lookup spans the full pool, not just the filtered/selected set
-- [ ] 7. Pattern + sound filters combine as independent axes correctly
-- [ ] 8. Zero HTML construction in generators; zero phonics computation in renderers (code review)
-- [ ] 9. Print/Export call shared `printWorksheet`/`exportWorksheetPdf` exclusively — no direct `window.print()`, no module `@page` CSS
+- [x] 1. Raw `.txt` load enriches immediately, `is_common` matches Dictionary Builder's resolution for the same word
+- [x] 2. Pre-parsed CSV round-trips with zero data loss/recomputation, including CSVs from Dictionary Builder's own export
+- [x] 3. Activity dropdown switch re-renders live, no `Generate` button present anywhere
+- [x] 4. `Show solutions` toggle genuinely adds/removes answer content from the DOM (not a CSS-only reveal)
+- [x] 5. Dissect/Syllable Split renderers use the exact same CSS classes as Phase 4's Detail panel (verified by class-name diff)
+- [x] 6. Onset & Rime rhyme-family lookup spans the full pool, not just the filtered/selected set
+- [x] 7. Pattern + sound filters combine as independent axes correctly
+- [x] 8. Zero HTML construction in generators; zero phonics computation in renderers (code review)
+- [x] 9. Print/Export call shared `printWorksheet`/`exportWorksheetPdf` exclusively — no direct `window.print()`, no module `@page` CSS
 
-**Open questions:** — none blocking. §7 resolved against the real `print.js`/`export-pdf.js`:
-`.paper-page` is reused as-is, zero shared-file edits needed (see decision log). One cheap,
-non-blocking pre-flight check remains: confirm no other module (`worksheets/` or
-`math-worksheets/`, neither reviewed) already defines `.paper-page` with conflicting assumptions
-— low risk, and cheap to catch immediately if it happens, not something to chase down in advance.
+**Open questions:** — none. Pre-flight check completed: `src/math/math.css` defines `.paper-page`
+with consistent values (same 8.5in × 11in, white background, flex-column). No functional conflict;
+phonics-specific overrides scoped to `.phx-page.paper-page` (see decision log).
 
 ---
 
