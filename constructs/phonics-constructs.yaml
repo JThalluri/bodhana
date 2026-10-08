@@ -262,6 +262,17 @@ vowelTeamExceptions:
   - { word: charlie,    pattern: ie, sound: long_e }
   # ---- ie = short_e ----
   - { word: friend,  pattern: ie, sound: short_e }
+  # ---- ie = short_e (-ient/-ience suffix family; ie team in these words is reduced/unstressed, not long_i) ----
+  - { word: patient,    pattern: ie, sound: short_e }
+  - { word: patience,   pattern: ie, sound: short_e }
+  - { word: ancient,    pattern: ie, sound: short_e }
+  - { word: efficient,  pattern: ie, sound: short_e }
+  - { word: sufficient, pattern: ie, sound: short_e }
+  - { word: conscience, pattern: ie, sound: short_e }
+  - { word: convenient, pattern: ie, sound: short_e }
+  - { word: lenient,    pattern: ie, sound: short_e }
+  - { word: obedient,   pattern: ie, sound: short_e }
+  - { word: audience,   pattern: ie, sound: short_e }
   # ---- ey = long_e ----
   - { word: key,     pattern: ey, sound: long_e }
   - { word: monkey,  pattern: ey, sound: long_e }

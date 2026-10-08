@@ -9,9 +9,70 @@
 
 .phx-settings {
   display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+/* ── Vertical tab strip ─────────────────────────────────────────────────────── */
+
+.phx-stab-strip {
+  display: flex;
   flex-direction: column;
+  width: 54px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-surface);
+  padding: 4px 0;
+}
+
+.phx-stab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 4px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  min-height: 52px;
+  line-height: 1.2;
+  transition: color var(--transition), background var(--transition);
+}
+
+.phx-stab i { font-size: 15px; line-height: 1; }
+
+.phx-stab:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.phx-stab.active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset -2px 0 0 var(--accent);
+}
+
+.phx-stab-panels {
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.phx-stab-panel {
+  display: none;
+  flex-direction: column;
+  height: 100%;
   overflow-y: auto;
 }
+
+.phx-stab-panel.active { display: flex; }
 
 .phx-settings-section {
   padding: 14px 16px;
@@ -73,6 +134,13 @@
 .phx-toggle-row .toggle-switch.toggle-sm { width: 34px; height: 20px; }
 .phx-toggle-row .toggle-switch.toggle-sm .toggle-track::after { width: 16px; height: 16px; }
 .phx-toggle-row .toggle-switch.toggle-sm input:checked + .toggle-track::after { transform: translateX(14px); }
+
+.phx-activity-note {
+  margin: 6px 0 0;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-style: italic;
+}
 
 /* Dropzone */
 
@@ -207,11 +275,20 @@
   font-size: var(--text-sm);
 }
 
+.phx-word-sel-item.phx-word-selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
 .phx-word-sel-word {
-  color: var(--text-primary);
+  color: var(--text-muted);
   font-weight: 600;
   flex: 1;
   min-width: 0;
+}
+
+.phx-word-sel-item.phx-word-selected .phx-word-sel-word {
+  color: var(--accent);
 }
 
 .phx-reorder-btns {
@@ -241,10 +318,16 @@
 
 .phx-preview {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: auto;
-  background: var(--bg-body);
+  /* overflow:hidden !important from .tool-body > .tool-preview overrides this element;
+     actual scroll lives in .phx-preview-scroll below */
+}
+
+.phx-preview-scroll {
+  height: 100%;
+  overflow: auto;
   padding: var(--space-5) var(--space-4);
+  box-sizing: border-box;
+  background: var(--bg-body);
 }
 
 /* ── Paper page ─────────────────────────────────────────────────────────────── */
@@ -333,6 +416,13 @@
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+}
+
+/* Minimum dimensions for worksheet boxes — must be usable fill-in targets whether empty or not */
+.phx-ws-box {
+  min-width: 2.4em;
+  min-height: 2.2em;
+  font-size: 1.1rem;
 }
 
 /* Worksheet-context override for wd-grapheme-box */
@@ -428,12 +518,48 @@
   margin-top: 2px;
 }
 
+/* ── Word search input ───────────────────────────────────────────────────────── */
+
+.phx-word-search {
+  width: 100%;
+  padding: 5px 8px;
+  font-size: var(--text-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.phx-word-search:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+/* Words panel: list fills remaining height */
+
+.phx-settings-section.phx-words-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-bottom: none;
+}
+
+.phx-settings-section.phx-words-panel .phx-word-sel-list {
+  flex: 1;
+  max-height: none;
+  overflow-y: auto;
+}
+
 /* ── Print overrides ─────────────────────────────────────────────────────────── */
 
 @media print {
   .phx-tool { display: block !important; height: auto !important; }
   .phx-settings, .phx-toolbar, .tool-header { display: none !important; }
-  .phx-body, .phx-preview { display: block !important; overflow: visible !important; }
-  .phx-preview { padding: 0 !important; background: white !important; }
+  .phx-body, .phx-preview, .phx-preview-scroll { display: block !important; overflow: visible !important; }
+  .phx-preview-scroll { padding: 0 !important; background: white !important; }
   .tool-pages { display: block !important; }
 }

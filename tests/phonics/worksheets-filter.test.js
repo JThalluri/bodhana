@@ -20,6 +20,7 @@ function makeFilters(overrides = {}) {
     diffMin: 1, diffMax: 3,
     phonemeMin: 1, phonemeMax: 20,
     letterMin: 1, letterMax: 30,
+    syllableMin: 1, syllableMax: 8,
     ...overrides,
   };
 }
@@ -30,6 +31,8 @@ function matchesFilters(record, filters) {
   if (record.difficulty < f.diffMin || record.difficulty > f.diffMax) return false;
   if (record.phoneme_count < f.phonemeMin || record.phoneme_count > f.phonemeMax) return false;
   if (record.letter_count < f.letterMin || record.letter_count > f.letterMax) return false;
+  const sc = record.syllable_count ?? 1;
+  if (sc < f.syllableMin || sc > f.syllableMax) return false;
   if (f.activePatterns.size > 0) {
     const wordPats = new Set([
       ...(record.digraphs || '').split(',').filter(Boolean),
@@ -136,5 +139,16 @@ describe('AC 7 — bounds filters work correctly', () => {
   it('difficulty bounds excludes words outside range', () => {
     const f = makeFilters({ diffMin: 2, diffMax: 3 });
     expect(matchesFilters(ship, f)).toBe(false);        // ship is difficulty 1
+  });
+
+  it('syllable bounds excludes words outside range', () => {
+    // ship = 1 syllable, gingerbread = 3 syllables
+    const fHigh = makeFilters({ syllableMin: 2, syllableMax: 8 });
+    expect(matchesFilters(ship, fHigh)).toBe(false);        // 1 syllable < 2
+    expect(matchesFilters(gingerbread, fHigh)).toBe(true);  // 3 syllables in range
+
+    const fLow = makeFilters({ syllableMin: 1, syllableMax: 2 });
+    expect(matchesFilters(ship, fLow)).toBe(true);          // 1 syllable in range
+    expect(matchesFilters(gingerbread, fLow)).toBe(false);  // 3 syllables > 2
   });
 });

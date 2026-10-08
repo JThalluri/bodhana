@@ -378,3 +378,8 @@ vowelTeamSounds:
   - { word: yellow,   pattern: ow, sound: long_o }
   - { word: route,    pattern: ou, sound: oo_long }
   - { word: wound,    pattern: ou, sound: oo_long }
+
+  # -ient/-ience suffix family: ie is reduced/unstressed, NOT long_i (hardening-pass addition)
+  - { word: convenient, pattern: ie, sound: short_e }
+  - { word: patient,    pattern: ie, sound: short_e }
+  - { word: efficient,  pattern: ie, sound: short_e }

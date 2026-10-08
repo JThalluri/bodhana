@@ -197,7 +197,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-08T14:05:48.803Z",
+  "generatedAt": "2026-10-08T23:35:53.522Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -520,7 +520,7 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:c46544d57c85aa96fbf1691cef2079eb940d82c4c6233c7e16a7d5c439961a5e",
+  "sourceHash": "sha256:59db0c81b157f1fbb69523ce557ac1e9d5e5bb2a8f1020b14703efbd437fd88d",
   "suffixStripRules": [
     {
       "always": true,
@@ -1462,6 +1462,66 @@
       "pattern": "ie",
       "sound": "short_e",
       "word": "friend"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "patient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "patience"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "ancient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "efficient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "sufficient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "conscience"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "convenient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "lenient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "obedient"
+    },
+    {
+      "note": null,
+      "pattern": "ie",
+      "sound": "short_e",
+      "word": "audience"
     },
     {
       "note": null,

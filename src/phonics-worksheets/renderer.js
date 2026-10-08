@@ -1,8 +1,9 @@
-const WORDS_PER_PAGE = 10;
+export const DEFAULT_WORDS_PER_PAGE = 10;
 
-function paginate(words) {
+function paginate(words, wordsPerPage) {
+  const n = Math.max(1, wordsPerPage || DEFAULT_WORDS_PER_PAGE);
   const pages = [];
-  for (let i = 0; i < words.length; i += WORDS_PER_PAGE) pages.push(words.slice(i, i + WORDS_PER_PAGE));
+  for (let i = 0; i < words.length; i += n) pages.push(words.slice(i, i + n));
   return pages.length ? pages : [[]];
 }
 
@@ -19,18 +20,18 @@ function pageShell(title, body) {
   </div>`;
 }
 
-export function renderSheet(sheetData, { showSolutions = false } = {}) {
+export function renderSheet(sheetData, { showSolutions = false, wordsPerPage = DEFAULT_WORDS_PER_PAGE } = {}) {
   switch (sheetData.type) {
-    case 'dissect':       return renderDissect(sheetData, showSolutions);
-    case 'elkonin':       return renderElkonin(sheetData, showSolutions);
-    case 'onsetRime':     return renderOnsetRime(sheetData, showSolutions);
-    case 'syllableSplit': return renderSyllableSplit(sheetData, showSolutions);
+    case 'dissect':       return renderDissect(sheetData, showSolutions, wordsPerPage);
+    case 'elkonin':       return renderElkonin(sheetData, showSolutions, wordsPerPage);
+    case 'onsetRime':     return renderOnsetRime(sheetData, showSolutions, wordsPerPage);
+    case 'syllableSplit': return renderSyllableSplit(sheetData, showSolutions, wordsPerPage);
     default: return '';
   }
 }
 
-function renderDissect(data, showSolutions) {
-  return paginate(data.words).map(page => {
+function renderDissect(data, showSolutions, wordsPerPage) {
+  return paginate(data.words, wordsPerPage).map(page => {
     const rows = page.map(item => `
       <div class="phx-word-row">
         <span class="phx-word-label">${item.word}</span>
@@ -44,8 +45,8 @@ function renderDissect(data, showSolutions) {
   }).join('');
 }
 
-function renderElkonin(data, showSolutions) {
-  return paginate(data.words).map(page => {
+function renderElkonin(data, showSolutions, wordsPerPage) {
+  return paginate(data.words, wordsPerPage).map(page => {
     const rows = page.map(item => `
       <div class="phx-word-row">
         <span class="phx-word-label">${item.word}</span>
@@ -59,8 +60,8 @@ function renderElkonin(data, showSolutions) {
   }).join('');
 }
 
-function renderOnsetRime(data, showSolutions) {
-  return paginate(data.words).map(page => {
+function renderOnsetRime(data, showSolutions, wordsPerPage) {
+  return paginate(data.words, wordsPerPage).map(page => {
     const rows = page.map(item => `
       <div class="phx-word-row phx-or-row">
         <span class="phx-word-label">${item.word}</span>
@@ -77,8 +78,8 @@ function renderOnsetRime(data, showSolutions) {
   }).join('');
 }
 
-function renderSyllableSplit(data, showSolutions) {
-  return paginate(data.words).map(page => {
+function renderSyllableSplit(data, showSolutions, wordsPerPage) {
+  return paginate(data.words, wordsPerPage).map(page => {
     const rows = page.map(item => `
       <div class="phx-word-row">
         <span class="phx-word-label">${item.word}</span>

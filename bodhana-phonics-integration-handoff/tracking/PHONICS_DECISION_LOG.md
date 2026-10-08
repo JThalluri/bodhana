@@ -758,3 +758,87 @@ Rationale: spec §3 describes the UI affordance; zero ACs validate the filter's 
 the gap explicitly so it appears on the next phase's scope review rather than being silently absent.
 Spec impact: §3 Bounds & Type select widget partially out of scope for v1. Requires its own AC
 and a lexical word-list strategy (e.g. CMU dict subset) before it can be built correctly.
+
+---
+
+## 2026-10-08 — ie vowel-team exceptions: -ient/-ience suffix family corrected to short_e
+
+Phase: hardening pass (post Phase 5)
+Context: visual QA confirmed `convenient` displayed `ie → /ī/ (bike)` in the Detail panel — the
+`ie` default sound (`long_i`) was wrong for all words where `ie` appears in a `-tient`/`-tience`/
+`-cient`/`-cience` suffix pattern. 10 candidate words identified by tokenizing each and confirming
+`ie` is matched as a vowel team in all of them. `science` confirmed as correct (long_i = /saɪ.əns/)
+and excluded.
+Decision: added 10 `ie = short_e` exception rows to `vowelTeamExceptions` in
+`phonics-constructs.yaml`: patient, patience, ancient, efficient, sufficient, conscience,
+convenient, lenient, obedient, audience.
+Label choice: `short_e` (option a — pragmatic classroom approximation). The phonetically precise
+choice would be a new `unstressed_ie` label, but `short_e` is close enough for classroom use,
+doesn't add a new entry to the sound filter UI, and is consistent with the existing `friend`
+exception which uses the same label for the same reason (reduced ie).
+Alternatives considered: (a) new `unstressed_ie`/`schwa` label — rejected: adds a filter chip
+teachers need to learn, and the distinction is below the granularity this tool targets.
+Regression: full 721-test suite passes with zero regressions. Three new fixtures added to
+`phonics-regression-fixtures.v2.yaml` (convenient, patient, efficient).
+Spec impact: none — this is a constructs-data correction, not a spec change.
+
+---
+
+## 2026-10-08 — Onset & Rime: caution note added, no silent filtering
+
+Phase: hardening pass (post Phase 5)
+Context: visual QA showed the activity loaded with a business/compliance word list (account,
+adjustments, americanexpress) — onset-rime as a teaching activity only makes pedagogical sense
+for short, mostly single-syllable words. The algorithm itself is linguistically correct: vowel-
+initial words have an empty onset; cat → c/at, chip → ch/ip both verified.
+Decision: added a dismissible caution note in the Activity settings panel: "Works best with
+short, single-syllable words." Shown when Onset & Rime is the active activity, hidden otherwise.
+No silent filtering — a teacher may deliberately use the activity on longer words.
+Alternatives considered: filter the word list to single-syllable words only when this activity
+is selected — rejected because it would silently change the word selection without the teacher's
+explicit choice.
+Spec impact: none — the note is a UX addition not tied to any AC.
+
+---
+
+## 2026-10-08 — Cross-module handoff: file-based signposting only (no in-memory store)
+
+Phase: hardening pass (post Phase 5)
+Context: cross-module in-memory state was explicitly descoped during Phase 5 drafting (no
+portal/router-level shared state mechanism exists). The file-based round-trip already works;
+the gap was UX clarity around it.
+Decision: file-based handoff only, better signposting:
+(1) Dictionary Builder's `doExportPhonicsCSV` now sets the status to "CSV exported — load it
+in Phonics Worksheets → Word Source to generate worksheets." after the download.
+(2) Phonics Worksheets' dropzone text changed from generic "Drop a .txt or .csv file here" to
+"Drop a word list (.txt) or Dictionary Builder export (.csv)".
+Alternatives considered: in-memory shared-session store — rejected; requires portal/router-layer
+changes (mount/unmount lifecycle currently has no cross-module state) and is out of scope for
+this pass. Noted as a potential future improvement if the router is ever extended.
+Spec impact: none — cross-module state was never an AC in any phase.
+
+---
+
+## 2026-10-08 — Settings pane redesign: 5-tab vertical strip (Source / Activity / Filters / Bounds / Words)
+
+Phase: hardening pass (post Phase 5)
+Context: the flat scrolling settings column with 7 stacked sections (~600px scrollable) was hard
+to navigate and buried rarely-changed bounds settings alongside frequently-changed source/activity
+controls. The spec (Part D) called for a vertical tab strip along the settings pane's left edge.
+Decision: settings pane restructured into 5 vertical tabs. Final grouping chosen:
+  - Source — dropzone + demo button (word loading entry point, visited once per session)
+  - Activity — type select, show solutions, words/page, onset-rime note (changed per worksheet)
+  - Filters — pattern filter accordions + vowel sound chips (power-user refinement)
+  - Bounds — Scope & Sequence (decodable/level) + Word Properties (difficulty/phonemes/letters/syllables)
+  - Words — substring search + word selection list with reorder controls
+Implementation: `wireTabs` from `src/shared/shell-ui.js` (D1 generalization) wired with classes
+`phx-stab` / `phx-stab-panel`. Strip is 54px wide, icon+label stacked vertically. Active tab
+indicated by inset right-side box-shadow (accent color). Panel fills remaining settings width.
+Also delivered in this pass: syllable count bounds (D4) added to Bounds tab and `matchesFilters`;
+substring word search (D5) added to Words tab panel with search-as-you-type list filtering that
+preserves original `data-idx` for correct up/down/remove operations.
+Alternatives considered: accordion-within-flat-column — rejected because it still requires
+scrolling to reach different sections; the tab strip makes any group one click away.
+Regression: 722 tests pass (up from 721 — 1 new syllable-bounds test case added to
+`tests/phonics/worksheets-filter.test.js`).
+Spec impact: Part D fully implemented.

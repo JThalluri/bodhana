@@ -82,15 +82,15 @@ export function buildDictBuilderUI(container) {
             </button>
             <button class="btn btn-secondary btn-sm" id="dbBtnMerge" disabled
               title="Combine base dictionary + new words, sort everything together">
-              <i class="fas fa-compress-arrows-alt"></i> Full Merge
+              <i class="fas fa-compress-arrows-alt"></i> Merge
             </button>
             <button class="btn btn-secondary btn-sm" id="dbBtnAppend" disabled
               title="Keep base dictionary as-is, append only the net-new words at the end">
-              <i class="fas fa-file-import"></i> Append Delta
+              <i class="fas fa-file-import"></i> Append
             </button>
             <button class="btn btn-secondary btn-sm" id="dbBtnPhonicsCSV" disabled
               title="Export phonics analysis as CSV (requires Enrich)">
-              <i class="fas fa-file-csv"></i> Export Phonics CSV
+              <i class="fas fa-file-csv"></i> Export
             </button>
             <span class="tool-action-separator" aria-hidden="true"></span>
             <button class="btn btn-danger btn-sm" id="dbBtnClear">
@@ -671,6 +671,7 @@ function doExportPhonicsCSV() {
   a.download = `phonics_${timestamp()}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+  setStatus('success', 'CSV exported — load it in <strong>Phonics Worksheets → Word Source</strong> to generate worksheets.');
 }
 
 function doExportFlagsJSON() {

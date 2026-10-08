@@ -1,38 +1,48 @@
 /**
- * Render the tab-strip + panel skeleton for .tool-info-pane.
- * Purely generic: no Dictionary-Builder-specific code.
+ * Layout-agnostic tab markup — generates the strip + panels skeleton.
+ * Panel content is filled by the caller. CSS classes control orientation.
  *
  * @param {{ id: string, label: string, icon?: string }[]} tabs
+ * @param {{ stripClass?: string, tabClass?: string, panelsClass?: string, panelClass?: string }} [opts]
  * @returns {string} HTML string
  */
-export function infoPaneTabsMarkup(tabs) {
+export function tabsMarkup(tabs, {
+  stripClass  = 'info-tabs',
+  tabClass    = 'info-tab',
+  panelsClass = 'info-tab-panels',
+  panelClass  = 'info-tab-panel',
+} = {}) {
   return `
-    <div class="info-tabs" role="tablist">
+    <div class="${stripClass}" role="tablist">
       ${tabs.map((t, i) => `
-        <button class="info-tab${i === 0 ? ' active' : ''}" role="tab"
+        <button class="${tabClass}${i === 0 ? ' active' : ''}" role="tab"
                 aria-selected="${i === 0}" data-tab="${t.id}">
           ${t.icon ? `<i class="fas ${t.icon}"></i>` : ''} ${t.label}
         </button>
       `).join('')}
     </div>
-    <div class="info-tab-panels">
+    <div class="${panelsClass}">
       ${tabs.map((t, i) => `
-        <div class="info-tab-panel${i === 0 ? ' active' : ''}" role="tabpanel" data-panel="${t.id}"></div>
+        <div class="${panelClass}${i === 0 ? ' active' : ''}" role="tabpanel" data-panel="${t.id}"></div>
       `).join('')}
     </div>
   `;
 }
 
 /**
- * Wire click-to-activate on the tab strip inside container.
- * Returns { activate(tabId) } so the caller can switch tabs programmatically.
+ * Wire click-to-activate. Works for any tab flavor — horizontal info-pane tabs,
+ * vertical settings tabs, etc. Only the CSS classes differ.
  *
  * @param {HTMLElement} container
+ * @param {{ tabClass?: string, panelClass?: string }} [opts]
  * @returns {{ activate: (tabId: string) => void }}
  */
-export function wireInfoPaneTabs(container) {
-  const tabs   = container.querySelectorAll('.info-tab');
-  const panels = container.querySelectorAll('.info-tab-panel');
+export function wireTabs(container, {
+  tabClass   = 'info-tab',
+  panelClass = 'info-tab-panel',
+} = {}) {
+  const tabs   = container.querySelectorAll(`.${tabClass}`);
+  const panels = container.querySelectorAll(`.${panelClass}`);
   function activate(tabId) {
     tabs.forEach(t => {
       const on = t.dataset.tab === tabId;
@@ -44,6 +54,10 @@ export function wireInfoPaneTabs(container) {
   tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.tab)));
   return { activate };
 }
+
+// Thin wrappers — Phase 4's call sites keep working unchanged
+export function infoPaneTabsMarkup(tabs) { return tabsMarkup(tabs); }
+export function wireInfoPaneTabs(container) { return wireTabs(container); }
 
 export function themeToggleMarkup(extraClass = '') {
   return `

@@ -2,12 +2,12 @@ import {
   parseWords, isPreParsedCSV,
   PHONICS_PATTERNS, SOUND_LABELS,
 } from '../phonics/PhonicsEngine.mjs';
-import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { themeToggleMarkup, wireTabs } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
 import { exportWorksheetPdf } from '../shared/export-pdf.js';
 import { DEFAULT_COMMON_WORDS } from '../shared/default-common-words.js';
 import { generateDissect, generateElkonin, generateOnsetRime, generateSyllableSplit } from './generator.js';
-import { renderSheet } from './renderer.js';
+import { renderSheet, DEFAULT_WORDS_PER_PAGE } from './renderer.js';
 
 // Demo list: validated words from the phonics regression fixture corpus
 const DEMO_WORDS = [
@@ -30,6 +30,8 @@ function makeState() {
     worksheetWords: [],
     activityType: 'dissect',
     showSolutions: false,
+    wordsPerPage: DEFAULT_WORDS_PER_PAGE,
+    wordSearch: '',
     filters: {
       decodableOnly: false,
       maxLevel: 8,
@@ -38,6 +40,7 @@ function makeState() {
       diffMin: 1, diffMax: 3,
       phonemeMin: 1, phonemeMax: 20,
       letterMin: 1, letterMax: 30,
+      syllableMin: 1, syllableMax: 8,
     },
   };
 }
@@ -98,6 +101,8 @@ function matchesFilters(record) {
   if (record.difficulty < f.diffMin || record.difficulty > f.diffMax) return false;
   if (record.phoneme_count < f.phonemeMin || record.phoneme_count > f.phonemeMax) return false;
   if (record.letter_count < f.letterMin || record.letter_count > f.letterMax) return false;
+  const sc = record.syllable_count ?? 1;
+  if (sc < f.syllableMin || sc > f.syllableMax) return false;
   if (f.activePatterns.size > 0) {
     const wordPats = new Set([
       ...(record.digraphs || '').split(',').filter(Boolean),
@@ -142,7 +147,7 @@ function renderPreview() {
     default: return;
   }
 
-  container.innerHTML = renderSheet(sheetData, { showSolutions: state.showSolutions });
+  container.innerHTML = renderSheet(sheetData, { showSolutions: state.showSolutions, wordsPerPage: state.wordsPerPage });
 }
 
 // ── Word selection list ───────────────────────────────────────────────────────
@@ -153,23 +158,46 @@ function renderWordSelList() {
   if (!list) return;
   if (countEl) countEl.textContent = `(${state.worksheetWords.length})`;
 
-  if (!state.worksheetWords.length) {
-    list.innerHTML = '<div class="phx-sel-empty">No words to show.</div>';
+  // Pool = all words matching current bounds/filter settings
+  const pool = state.allWords.filter(matchesFilters);
+  if (!pool.length) {
+    list.innerHTML = '<div class="phx-sel-empty">No words loaded.</div>';
     return;
   }
 
-  list.innerHTML = state.worksheetWords.map((r, idx) => `
-    <div class="phx-word-sel-item" data-idx="${idx}">
-      <span class="phx-word-sel-word">${r.word}</span>
-      <div class="phx-reorder-btns">
-        <button class="btn btn-ghost btn-sm phx-btn-up" data-idx="${idx}"
-          ${idx === 0 ? 'disabled' : ''} aria-label="Move up">&#9650;</button>
-        <button class="btn btn-ghost btn-sm phx-btn-down" data-idx="${idx}"
-          ${idx === state.worksheetWords.length - 1 ? 'disabled' : ''} aria-label="Move down">&#9660;</button>
-        <button class="btn btn-ghost btn-sm phx-btn-remove" data-idx="${idx}"
-          aria-label="Remove">&#215;</button>
-      </div>
-    </div>`).join('');
+  const shown = state.wordSearch
+    ? pool.filter(r => r.word.toLowerCase().includes(state.wordSearch))
+    : pool;
+
+  if (!shown.length) {
+    list.innerHTML = '<div class="phx-sel-empty">No matches.</div>';
+    return;
+  }
+
+  // Map word → position in worksheetWords for reorder buttons
+  const selIdxMap = new Map(state.worksheetWords.map((r, i) => [r.word, i]));
+
+  list.innerHTML = shown.map(r => {
+    const selIdx = selIdxMap.get(r.word);
+    const isSel = selIdx !== undefined;
+    return `
+      <div class="phx-word-sel-item${isSel ? ' phx-word-selected' : ''}" data-word="${r.word}">
+        <span class="phx-word-sel-word">${r.word}</span>
+        <div class="phx-reorder-btns">
+          ${isSel ? `
+            <button class="btn btn-ghost btn-sm phx-btn-up" data-idx="${selIdx}"
+              ${selIdx === 0 ? 'disabled' : ''} aria-label="Move up">&#9650;</button>
+            <button class="btn btn-ghost btn-sm phx-btn-down" data-idx="${selIdx}"
+              ${selIdx === state.worksheetWords.length - 1 ? 'disabled' : ''} aria-label="Move down">&#9660;</button>
+            <button class="btn btn-ghost btn-sm phx-btn-remove" data-idx="${selIdx}"
+              aria-label="Remove">&#215;</button>
+          ` : `
+            <button class="btn btn-ghost btn-sm phx-btn-add" data-word="${r.word}"
+              aria-label="Add to worksheet">&#43;</button>
+          `}
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ── Status helper ─────────────────────────────────────────────────────────────
@@ -258,118 +286,165 @@ export function buildPhonicsWorksheetsUI(container) {
 
         <div class="phx-settings tool-settings no-print">
 
-          <div class="phx-settings-section">
-            <p class="phx-section-label">Word Source</p>
-            <div class="phx-dropzone" id="phxDropzone">
-              <i class="fas fa-file-upload phx-drop-icon"></i>
-              <p class="phx-drop-text">Drop a <strong>.txt</strong> or <strong>.csv</strong> file here</p>
-              <p class="phx-drop-hint">or <span class="phx-browse-link" id="phxBrowseLink">browse</span></p>
-              <input type="file" id="phxFileInput" accept=".txt,.csv" style="display:none">
-            </div>
-            <button class="btn btn-ghost btn-sm phx-demo-btn" id="phxBtnDemo">
-              <i class="fas fa-list"></i> Load demo list
+          <div class="phx-stab-strip" role="tablist">
+            <button class="phx-stab active" role="tab" aria-selected="true" data-tab="source">
+              <i class="fas fa-file-upload"></i><span>Source</span>
+            </button>
+            <button class="phx-stab" role="tab" aria-selected="false" data-tab="activity">
+              <i class="fas fa-tasks"></i><span>Activity</span>
+            </button>
+            <button class="phx-stab" role="tab" aria-selected="false" data-tab="filters">
+              <i class="fas fa-filter"></i><span>Filters</span>
+            </button>
+            <button class="phx-stab" role="tab" aria-selected="false" data-tab="bounds">
+              <i class="fas fa-sliders-h"></i><span>Bounds</span>
+            </button>
+            <button class="phx-stab" role="tab" aria-selected="false" data-tab="words">
+              <i class="fas fa-list"></i><span>Words</span>
             </button>
           </div>
 
-          <div class="phx-settings-section">
-            <p class="phx-section-label">Activity</p>
-            <div class="phx-field-row">
-              <label for="phxActivityType">Type</label>
-              <select class="tb-select" id="phxActivityType">
-                <option value="dissect">Dissect the Word</option>
-                <option value="elkonin">Elkonin Sound Boxes</option>
-                <option value="onsetRime">Onset &amp; Rime</option>
-                <option value="syllableSplit">Syllable Split</option>
-              </select>
-            </div>
-            <label class="phx-toggle-row">
-              <span>Show solutions</span>
-              <span class="toggle-switch toggle-sm">
-                <input type="checkbox" id="phxShowSolutions">
-                <span class="toggle-track"></span>
-              </span>
-            </label>
-          </div>
+          <div class="phx-stab-panels">
 
-          <div class="phx-settings-section">
-            <p class="phx-section-label">Scope &amp; Sequence</p>
-            <label class="phx-toggle-row">
-              <span>Decodable words only</span>
-              <span class="toggle-switch toggle-sm">
-                <input type="checkbox" id="phxDecodableOnly">
-                <span class="toggle-track"></span>
-              </span>
-            </label>
-            <div class="phx-field-row">
-              <label for="phxMaxLevel">Max level</label>
-              <input class="tb-num" type="number" id="phxMaxLevel" min="1" max="8" value="8">
-            </div>
-          </div>
-
-          <div class="phx-settings-section">
-            <p class="phx-section-label">Pattern Filter</p>
-            <div class="phx-pattern-filter">${patternFilterHtml}</div>
-          </div>
-
-          <div class="phx-settings-section">
-            <p class="phx-section-label">Vowel Sound Filter</p>
-            <div class="phx-sound-chips">${soundChipsHtml}</div>
-          </div>
-
-          <div class="phx-settings-section">
-            <p class="phx-section-label">Bounds</p>
-            <div class="phx-field-row">
-              <label>Difficulty</label>
-              <div class="phx-range-pair">
-                <input class="tb-num" type="number" id="phxDiffMin" min="1" max="3" value="1">
-                <span class="phx-range-sep">–</span>
-                <input class="tb-num" type="number" id="phxDiffMax" min="1" max="3" value="3">
+            <div class="phx-stab-panel active" role="tabpanel" data-panel="source">
+              <div class="phx-settings-section">
+                <div class="phx-dropzone" id="phxDropzone">
+                  <i class="fas fa-file-upload phx-drop-icon"></i>
+                  <p class="phx-drop-text">Drop a word list <strong>(.txt)</strong> or Dictionary Builder export <strong>(.csv)</strong></p>
+                  <p class="phx-drop-hint">or <span class="phx-browse-link" id="phxBrowseLink">browse</span></p>
+                  <input type="file" id="phxFileInput" accept=".txt,.csv" style="display:none">
+                </div>
+                <button class="btn btn-ghost btn-sm phx-demo-btn" id="phxBtnDemo">
+                  <i class="fas fa-list"></i> Load demo list
+                </button>
               </div>
             </div>
-            <div class="phx-field-row">
-              <label>Phonemes</label>
-              <div class="phx-range-pair">
-                <input class="tb-num" type="number" id="phxPhonemeMin" min="1" max="20" value="1">
-                <span class="phx-range-sep">–</span>
-                <input class="tb-num" type="number" id="phxPhonemeMax" min="1" max="20" value="20">
+
+            <div class="phx-stab-panel" role="tabpanel" data-panel="activity">
+              <div class="phx-settings-section">
+                <div class="phx-field-row">
+                  <label for="phxActivityType">Type</label>
+                  <select class="tb-select" id="phxActivityType">
+                    <option value="dissect">Dissect the Word</option>
+                    <option value="elkonin">Elkonin Sound Boxes</option>
+                    <option value="onsetRime">Onset &amp; Rime</option>
+                    <option value="syllableSplit">Syllable Split</option>
+                  </select>
+                </div>
+                <label class="phx-toggle-row">
+                  <span>Show solutions</span>
+                  <span class="toggle-switch toggle-sm">
+                    <input type="checkbox" id="phxShowSolutions">
+                    <span class="toggle-track"></span>
+                  </span>
+                </label>
+                <div class="phx-field-row">
+                  <label for="phxWordsPerPage">Words per page</label>
+                  <input class="tb-num" type="number" id="phxWordsPerPage"
+                    min="1" max="30" value="${DEFAULT_WORDS_PER_PAGE}">
+                </div>
+                <p class="phx-activity-note" id="phxOnsetRimeNote" style="display:none">
+                  Works best with short, single-syllable words.
+                </p>
               </div>
             </div>
-            <div class="phx-field-row">
-              <label>Letters</label>
-              <div class="phx-range-pair">
-                <input class="tb-num" type="number" id="phxLetterMin" min="1" max="30" value="1">
-                <span class="phx-range-sep">–</span>
-                <input class="tb-num" type="number" id="phxLetterMax" min="1" max="30" value="30">
+
+            <div class="phx-stab-panel" role="tabpanel" data-panel="filters">
+              <div class="phx-settings-section">
+                <p class="phx-section-label">Patterns</p>
+                <div class="phx-pattern-filter">${patternFilterHtml}</div>
+              </div>
+              <div class="phx-settings-section">
+                <p class="phx-section-label">Vowel Sounds</p>
+                <div class="phx-sound-chips">${soundChipsHtml}</div>
               </div>
             </div>
-          </div>
 
-          <div class="phx-settings-section">
-            <p class="phx-section-label">
-              Word Selection <span id="phxWordSelCount"></span>
-            </p>
-            <div class="phx-word-sel-actions">
-              <button class="btn btn-ghost btn-sm" id="phxBtnSelAll">All</button>
-              <button class="btn btn-ghost btn-sm" id="phxBtnSelNone">None</button>
-              <button class="btn btn-ghost btn-sm" id="phxBtnShuffle">
-                <i class="fas fa-random"></i> Shuffle
-              </button>
-              <button class="btn btn-ghost btn-sm" id="phxBtnResetOrder">
-                <i class="fas fa-undo"></i> Reset
-              </button>
+            <div class="phx-stab-panel" role="tabpanel" data-panel="bounds">
+              <div class="phx-settings-section">
+                <p class="phx-section-label">Scope &amp; Sequence</p>
+                <label class="phx-toggle-row">
+                  <span>Decodable words only</span>
+                  <span class="toggle-switch toggle-sm">
+                    <input type="checkbox" id="phxDecodableOnly">
+                    <span class="toggle-track"></span>
+                  </span>
+                </label>
+                <div class="phx-field-row">
+                  <label for="phxMaxLevel">Max level</label>
+                  <input class="tb-num" type="number" id="phxMaxLevel" min="1" max="8" value="8">
+                </div>
+              </div>
+              <div class="phx-settings-section">
+                <p class="phx-section-label">Word Properties</p>
+                <div class="phx-field-row">
+                  <label>Difficulty</label>
+                  <div class="phx-range-pair">
+                    <input class="tb-num" type="number" id="phxDiffMin" min="1" max="3" value="1">
+                    <span class="phx-range-sep">–</span>
+                    <input class="tb-num" type="number" id="phxDiffMax" min="1" max="3" value="3">
+                  </div>
+                </div>
+                <div class="phx-field-row">
+                  <label>Phonemes</label>
+                  <div class="phx-range-pair">
+                    <input class="tb-num" type="number" id="phxPhonemeMin" min="1" max="20" value="1">
+                    <span class="phx-range-sep">–</span>
+                    <input class="tb-num" type="number" id="phxPhonemeMax" min="1" max="20" value="20">
+                  </div>
+                </div>
+                <div class="phx-field-row">
+                  <label>Letters</label>
+                  <div class="phx-range-pair">
+                    <input class="tb-num" type="number" id="phxLetterMin" min="1" max="30" value="1">
+                    <span class="phx-range-sep">–</span>
+                    <input class="tb-num" type="number" id="phxLetterMax" min="1" max="30" value="30">
+                  </div>
+                </div>
+                <div class="phx-field-row">
+                  <label>Syllables</label>
+                  <div class="phx-range-pair">
+                    <input class="tb-num" type="number" id="phxSyllableMin" min="1" max="8" value="1">
+                    <span class="phx-range-sep">–</span>
+                    <input class="tb-num" type="number" id="phxSyllableMax" min="1" max="8" value="8">
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="phx-word-sel-list" id="phxWordSelList">
-              <div class="phx-sel-empty">No words loaded.</div>
-            </div>
-          </div>
 
+            <div class="phx-stab-panel" role="tabpanel" data-panel="words">
+              <div class="phx-settings-section phx-words-panel">
+                <input class="phx-word-search" type="text" id="phxWordSearch"
+                  placeholder="Search words…">
+                <p class="phx-section-label">
+                  Word Selection <span id="phxWordSelCount"></span>
+                </p>
+                <div class="phx-word-sel-actions">
+                  <button class="btn btn-ghost btn-sm" id="phxBtnSelAll">All</button>
+                  <button class="btn btn-ghost btn-sm" id="phxBtnSelNone">None</button>
+                  <button class="btn btn-ghost btn-sm" id="phxBtnShuffle">
+                    <i class="fas fa-random"></i> Shuffle
+                  </button>
+                  <button class="btn btn-ghost btn-sm" id="phxBtnResetOrder">
+                    <i class="fas fa-undo"></i> Reset
+                  </button>
+                </div>
+                <div class="phx-word-sel-list" id="phxWordSelList">
+                  <div class="phx-sel-empty">No words loaded.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
 
         <div class="phx-preview tool-preview">
-          <div class="tool-pages" id="phxPagesContainer">
-            <div class="empty-state">
-              <i class="fas fa-file-alt"></i>
-              <p>Load a word list to get started.</p>
+          <div class="phx-preview-scroll">
+            <div class="tool-pages" id="phxPagesContainer">
+              <div class="empty-state">
+                <i class="fas fa-file-alt"></i>
+                <p>Load a word list to get started.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -381,6 +456,11 @@ export function buildPhonicsWorksheetsUI(container) {
 }
 
 function wireEvents(container) {
+  wireTabs(container.querySelector('.phx-settings'), {
+    tabClass: 'phx-stab',
+    panelClass: 'phx-stab-panel',
+  });
+
   container.querySelector('#phxBtnPrint')?.addEventListener('click', () => printWorksheet());
   container.querySelector('#phxBtnExport')?.addEventListener('click', () =>
     exportWorksheetPdf({ filenameBase: `phonics_${state.activityType}` })
@@ -416,12 +496,19 @@ function wireEvents(container) {
 
   container.querySelector('#phxActivityType')?.addEventListener('change', e => {
     state.activityType = e.target.value;
+    const note = container.querySelector('#phxOnsetRimeNote');
+    if (note) note.style.display = e.target.value === 'onsetRime' ? '' : 'none';
     renderPreview();
   });
 
   container.querySelector('#phxShowSolutions')?.addEventListener('change', e => {
     state.showSolutions = e.target.checked;
     renderPreview();
+  });
+
+  container.querySelector('#phxWordsPerPage')?.addEventListener('change', e => {
+    const v = Number(e.target.value);
+    if (v >= 1) { state.wordsPerPage = v; renderPreview(); }
   });
 
   container.querySelector('#phxDecodableOnly')?.addEventListener('change', e => {
@@ -438,6 +525,7 @@ function wireEvents(container) {
     ['#phxDiffMin', 'diffMin'], ['#phxDiffMax', 'diffMax'],
     ['#phxPhonemeMin', 'phonemeMin'], ['#phxPhonemeMax', 'phonemeMax'],
     ['#phxLetterMin', 'letterMin'], ['#phxLetterMax', 'letterMax'],
+    ['#phxSyllableMin', 'syllableMin'], ['#phxSyllableMax', 'syllableMax'],
   ].forEach(([id, key]) => {
     container.querySelector(id)?.addEventListener('change', e => {
       state.filters[key] = Number(e.target.value);
@@ -473,14 +561,30 @@ function wireEvents(container) {
     onFiltersChanged();
   });
 
+  container.querySelector('#phxWordSearch')?.addEventListener('input', e => {
+    state.wordSearch = e.target.value.trim().toLowerCase();
+    renderWordSelList();
+  });
+
   container.querySelector('#phxBtnSelAll')?.addEventListener('click', () => {
-    state.worksheetWords = state.allWords.filter(matchesFilters);
+    const pool = state.allWords.filter(matchesFilters);
+    const visible = state.wordSearch
+      ? pool.filter(r => r.word.toLowerCase().includes(state.wordSearch))
+      : pool;
+    const selectedSet = new Set(state.worksheetWords.map(r => r.word));
+    visible.forEach(r => { if (!selectedSet.has(r.word)) state.worksheetWords.push(r); });
     renderWordSelList();
     renderPreview();
   });
 
   container.querySelector('#phxBtnSelNone')?.addEventListener('click', () => {
-    state.worksheetWords = [];
+    const pool = state.allWords.filter(matchesFilters);
+    const toRemove = new Set(
+      (state.wordSearch
+        ? pool.filter(r => r.word.toLowerCase().includes(state.wordSearch))
+        : pool).map(r => r.word)
+    );
+    state.worksheetWords = state.worksheetWords.filter(r => !toRemove.has(r.word));
     renderWordSelList();
     renderPreview();
   });
@@ -501,10 +605,23 @@ function wireEvents(container) {
   });
 
   container.querySelector('#phxWordSelList')?.addEventListener('click', e => {
+    const add    = e.target.closest('.phx-btn-add');
     const up     = e.target.closest('.phx-btn-up');
     const down   = e.target.closest('.phx-btn-down');
     const remove = e.target.closest('.phx-btn-remove');
-    const btn    = up || down || remove;
+
+    if (add) {
+      const word = add.dataset.word;
+      const record = state.allWords.find(r => r.word === word);
+      if (record && !state.worksheetWords.some(r => r.word === word)) {
+        state.worksheetWords.push(record);
+        renderWordSelList();
+        renderPreview();
+      }
+      return;
+    }
+
+    const btn = up || down || remove;
     if (!btn) return;
     const i = Number(btn.dataset.idx);
     if (up && i > 0) {

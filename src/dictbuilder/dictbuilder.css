@@ -5,6 +5,19 @@
   min-height: 0;
 }
 
+/* Stack title + status vertically so header-main stays compact and buttons get the full row. */
+.db-tool .tool-header-main {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+/* Dict Builder has 7 buttons — override the shared inner grid so primary actions
+   get all available space instead of being capped at --tool-preview-width. */
+.db-tool .tool-header-actions {
+  grid-template-columns: 1fr auto;
+}
+
 .db-main {
   background: var(--tool-workspace-bg);
 }
@@ -296,9 +309,8 @@
   border: 1px solid var(--border);
   font-size: var(--text-sm);
   align-content: start;
-  flex: 1;
-  min-height: 0;
   background: var(--bg-surface);
+  width: 100%;
 }
 
 .db-word-item {
