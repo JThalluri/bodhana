@@ -76,6 +76,7 @@ soundLabels:
   oi:       "/oi/ (coin)"
   aw:       "/ô/ (saw)"
   air:      "/âr/ (air)"
+  hiatus:   "(hiatus — two separate vowel sounds across a syllable boundary, as in re-act)"
 
 defaultVowelSound:
   ai: long_a
@@ -141,6 +142,17 @@ vowelTeamExceptions:
   - { word: breathed,  pattern: ea, sound: long_e }
   - { word: breather,  pattern: ea, sound: long_e }
   - { word: breathing, pattern: ea, sound: long_e }
+  # ---- ea = hiatus (two separate vowel sounds across a syllable boundary) ----
+  # Note: 'area' excluded — tokenizes as [are|a]; rControlled3 'are' claims those chars first.
+  - { word: caveat,      pattern: ea, sound: hiatus, note: "ca-ve-at, hiatus not a team" }
+  - { word: react,       pattern: ea, sound: hiatus, note: "re-act, hiatus not a team" }
+  - { word: reaction,    pattern: ea, sound: hiatus, note: "re-ac-tion, hiatus not a team" }
+  - { word: reactivate,  pattern: ea, sound: hiatus, note: "re-ac-ti-vate, hiatus not a team" }
+  - { word: create,      pattern: ea, sound: hiatus, note: "cre-ate, hiatus not a team" }
+  - { word: creation,    pattern: ea, sound: hiatus, note: "cre-a-tion, hiatus not a team" }
+  - { word: recreate,    pattern: ea, sound: hiatus, note: "re-cre-ate, hiatus not a team" }
+  - { word: idea,        pattern: ea, sound: hiatus, note: "i-de-a, hiatus not a team" }
+  - { word: theater,     pattern: ea, sound: hiatus, note: "the-a-ter, hiatus not a team" }
   # ---- oo = oo_short ----
   - { word: book,   pattern: oo, sound: oo_short }
   - { word: look,   pattern: oo, sound: oo_short }

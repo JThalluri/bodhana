@@ -197,7 +197,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-08T23:35:53.522Z",
+  "generatedAt": "2026-10-09T14:43:18.676Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -505,6 +505,7 @@
   "soundLabels": {
     "air": "/âr/ (air)",
     "aw": "/ô/ (saw)",
+    "hiatus": "(hiatus — two separate vowel sounds across a syllable boundary, as in re-act)",
     "long_a": "/ā/ (cake)",
     "long_e": "/ē/ (see)",
     "long_i": "/ī/ (bike)",
@@ -520,7 +521,7 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:59db0c81b157f1fbb69523ce557ac1e9d5e5bb2a8f1020b14703efbd437fd88d",
+  "sourceHash": "sha256:553542fdbda01ea3a58ce85d7f2e660a0cbb9664ba7ba7a1443aa3f7e45eeea0",
   "suffixStripRules": [
     {
       "always": true,
@@ -814,6 +815,60 @@
       "pattern": "ea",
       "sound": "long_e",
       "word": "breathing"
+    },
+    {
+      "note": "ca-ve-at, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "caveat"
+    },
+    {
+      "note": "re-act, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "react"
+    },
+    {
+      "note": "re-ac-tion, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "reaction"
+    },
+    {
+      "note": "re-ac-ti-vate, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "reactivate"
+    },
+    {
+      "note": "cre-ate, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "create"
+    },
+    {
+      "note": "cre-a-tion, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "creation"
+    },
+    {
+      "note": "re-cre-ate, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "recreate"
+    },
+    {
+      "note": "i-de-a, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "idea"
+    },
+    {
+      "note": "the-a-ter, hiatus not a team",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "theater"
     },
     {
       "note": null,

@@ -388,3 +388,15 @@ vowelTeamSounds:
   - { word: convenient, pattern: ie, sound: short_e }
   - { word: patient,    pattern: ie, sound: short_e }
   - { word: efficient,  pattern: ie, sound: short_e }
+
+  # ea-hiatus family: ea spans a syllable boundary, not a true vowel-team digraph
+  # (area excluded: tokenizes as [are|a]; rControlled3 'are' claims the characters first)
+  - { word: caveat,     pattern: ea, sound: hiatus }
+  - { word: react,      pattern: ea, sound: hiatus }
+  - { word: reaction,   pattern: ea, sound: hiatus }
+  - { word: reactivate, pattern: ea, sound: hiatus }
+  - { word: create,     pattern: ea, sound: hiatus }
+  - { word: creation,   pattern: ea, sound: hiatus }
+  - { word: recreate,   pattern: ea, sound: hiatus }
+  - { word: idea,       pattern: ea, sound: hiatus }
+  - { word: theater,    pattern: ea, sound: hiatus }

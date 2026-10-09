@@ -131,7 +131,13 @@ export function renderWordDetail(word, record, {
 
       <div class="wd-word-header">
         <span class="wd-word">${word}</span>
+        <button class="btn btn-sm btn-ghost wd-speak-btn" data-action="speak-word" title="Speak word">
+          <i class="fas fa-volume-up"></i>
+        </button>
         <span class="wd-syllables">${syllables.join(' · ')}</span>
+        <button class="btn btn-sm btn-ghost wd-speak-btn" data-action="speak-syllables" title="Speak syllables">
+          <i class="fas fa-volume-up"></i>
+        </button>
       </div>
 
       <div class="wd-graphemes">

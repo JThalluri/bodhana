@@ -568,6 +568,59 @@ describe('buildChangelogEntriesForList — AC 8', () => {
   });
 });
 
+// ── Remove-path regression — add then remove restores expectedFailure state ───
+
+describe('Remove-path regression — add then remove reverts expectedFailure state', () => {
+  it('dream: add → daydream nowPassing; remove → daydream reverts (not nowPassing)', () => {
+    // Add dream
+    const addPatch     = validatePatchSchemaForList({ add: ['dream'] }, 'compoundPart');
+    const withDreamRaw = applyPatchToRawList(rawObj, addPatch, 'compoundPart');
+    const withDreamCompiled = compileConstructs(withDreamRaw);
+
+    const addDiff = runSyllableRegressionDiff(compiledObj, withDreamCompiled, fixturesObj);
+    expect(addDiff.find(x => x.word === 'daydream').nowPassing).toBe(true); // precondition
+
+    // Remove dream
+    const removePatch     = validatePatchSchemaForList({ remove: ['dream'] }, 'compoundPart');
+    const restoredRaw     = applyPatchToRawList(withDreamRaw, removePatch, 'compoundPart');
+    const restoredCompiled = compileConstructs(restoredRaw);
+
+    expect(restoredCompiled.compoundParts).not.toContain('dream');
+
+    // diff from the "with dream" baseline back to restored — daydream regresses
+    const removeDiff = runSyllableRegressionDiff(withDreamCompiled, restoredCompiled, fixturesObj);
+    const entry = removeDiff.find(x => x.word === 'daydream');
+    expect(entry).toBeDefined();
+    expect(entry.nowPassing).toBe(false);         // expectedFailure target not reached
+    expect(entry.oldSplit).toEqual(['day', 'dream']); // was correct
+    expect(entry.newSplit).not.toEqual(['day', 'dream']); // reverted to fallback split
+  });
+
+  it('log: add → logging nowPassing; remove → logging reverts (not nowPassing)', () => {
+    // Add log
+    const addPatch    = validatePatchSchemaForList({ add: ['log'] }, 'rootWord');
+    const withLogRaw  = applyPatchToRawList(rawObj, addPatch, 'rootWord');
+    const withLogCompiled = compileConstructs(withLogRaw);
+
+    const addDiff = runSyllableRegressionDiff(compiledObj, withLogCompiled, fixturesObj);
+    expect(addDiff.find(x => x.word === 'logging').nowPassing).toBe(true); // precondition
+
+    // Remove log
+    const removePatch     = validatePatchSchemaForList({ remove: ['log'] }, 'rootWord');
+    const restoredRaw     = applyPatchToRawList(withLogRaw, removePatch, 'rootWord');
+    const restoredCompiled = compileConstructs(restoredRaw);
+
+    expect(restoredCompiled.rootWords).not.toContain('log');
+
+    const removeDiff = runSyllableRegressionDiff(withLogCompiled, restoredCompiled, fixturesObj);
+    const entry = removeDiff.find(x => x.word === 'logging');
+    expect(entry).toBeDefined();
+    expect(entry.nowPassing).toBe(false);
+    expect(entry.oldSplit).toEqual(['log', 'ging']); // was correct
+    expect(entry.newSplit).not.toEqual(['log', 'ging']); // reverted to undouble-blocked split
+  });
+});
+
 // ── End-to-end merge proof (full pipeline, no UI) ─────────────────────────────
 
 describe('E2E merge proof — daydream (compoundPart) and logging (rootWord)', () => {

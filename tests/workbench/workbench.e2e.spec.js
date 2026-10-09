@@ -781,14 +781,18 @@ async function proceedToStep2ListMode(page) {
   await page.waitForSelector('#listQInput');
 }
 
-async function navigateToStep5ListMode(page, word, candidateBtnId, patchYaml) {
+async function navigateToStep5ListMode(page, word, candidateBtnId, patchYaml, reason = null) {
   await page.fill('#listQInput', word);
   await page.waitForTimeout(700); // debounce
   await page.waitForSelector(`#${candidateBtnId}`);
   await page.click(`#${candidateBtnId}`);
   await page.waitForSelector('#btnStep3Next');
   await page.click('#btnStep3Next');
-  await page.waitForSelector('#btnStep4Next');
+  await page.waitForSelector('#btnStep4Next'); // Step 4: Export Context Bundle
+  if (reason) {
+    await page.fill('#reasonInput', reason);
+    await page.waitForTimeout(100);
+  }
   await page.click('#btnStep4Next');
   await page.waitForSelector('#patchInput');
   if (patchYaml) {
@@ -849,7 +853,8 @@ wb.describe('Step 7 — Compound Part: daydream → nowPassing', () => {
     await page.check('input[name="mode"][value="compoundPart"]');
     await proceedToStep2ListMode(page);
     await navigateToStep5ListMode(page, 'daydream', 'btnCand_R_dream',
-      'patch:\n  add:\n    - dream');
+      'patch:\n  add:\n    - dream',
+      'dream missing from compoundParts — enables daydream compound-split');
     await runSandboxAndWaitStep7(page);
 
     await expect(page.locator('.msg.ok').first()).toContainText('Validator passed');
@@ -859,9 +864,15 @@ wb.describe('Step 7 — Compound Part: daydream → nowPassing', () => {
     await expect(page.locator('#btnStep7Next')).toBeVisible();
     await expect(page.locator('#btnStep7Next')).toBeEnabled();
 
-    // Proceed through Step 8 and confirm merge completes
+    // Step 8: assert changelog format before confirming
     await page.click('#btnStep7Next');
     await page.waitForSelector('#btnConfirmMerge');
+    const changelogEntry = page.locator('.code-block code').first();
+    await expect(changelogEntry).toContainText('| dream | compoundParts | added |');
+    await expect(changelogEntry).toContainText('| dream missing from compoundParts');
+    const entryText = await changelogEntry.textContent();
+    expect(entryText).toMatch(/^\| dream \| compoundParts \| added \| \d{4}-\d{2}-\d{2} \| .+ \|$/);
+
     await page.click('#btnConfirmMerge');
     await page.waitForSelector('.msg.ok');
     await expect(page.locator('.msg.ok').filter({ hasText: 'Merge complete' })).toBeVisible();
@@ -876,7 +887,8 @@ wb.describe('Step 7 — Root Word: logging → nowPassing', () => {
     await page.check('input[name="mode"][value="rootWord"]');
     await proceedToStep2ListMode(page);
     await navigateToStep5ListMode(page, 'logging', 'btnRootCand_log',
-      'patch:\n  add:\n    - log');
+      'patch:\n  add:\n    - log',
+      'log missing from rootWords — enables logging to undouble correctly');
     await runSandboxAndWaitStep7(page);
 
     await expect(page.locator('.msg.ok').first()).toContainText('Validator passed');
@@ -886,8 +898,15 @@ wb.describe('Step 7 — Root Word: logging → nowPassing', () => {
     await expect(page.locator('#btnStep7Next')).toBeVisible();
     await expect(page.locator('#btnStep7Next')).toBeEnabled();
 
+    // Step 8: assert changelog format before confirming
     await page.click('#btnStep7Next');
     await page.waitForSelector('#btnConfirmMerge');
+    const changelogEntry = page.locator('.code-block code').first();
+    await expect(changelogEntry).toContainText('| log | rootWords | added |');
+    await expect(changelogEntry).toContainText('| log missing from rootWords');
+    const entryText = await changelogEntry.textContent();
+    expect(entryText).toMatch(/^\| log \| rootWords \| added \| \d{4}-\d{2}-\d{2} \| .+ \|$/);
+
     await page.click('#btnConfirmMerge');
     await page.waitForSelector('.msg.ok');
     await expect(page.locator('.msg.ok').filter({ hasText: 'Merge complete' })).toBeVisible();

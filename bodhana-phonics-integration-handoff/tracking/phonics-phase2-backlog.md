@@ -79,6 +79,32 @@ and the VCV rule fires between them, producing `se|ve|ral` instead of `sev|er|al
 
 ---
 
+## RESOLVED — `ea` hiatus words misclassified as a vowel team
+
+**Found during:** Compound Part / Root Word Workbench mode testing (Phase 2 extension sign-off).
+
+**Resolved in:** phonics_integration branch, spec `Phonics dictbuilder tts manual entry ea hiatus spec v1.0.md`, Part C.
+
+**What shipped:**
+- New `soundLabels` entry: `hiatus: "(hiatus — two separate vowel sounds across a syllable boundary, as in re-act)"`.
+  Generic by design — reusable for any future pattern/word hitting the same situation, not scoped to `ea`.
+- 9 `vowelTeamExceptions` rows added (starter list): `caveat`, `react`, `reaction`, `reactivate`,
+  `create`, `creation`, `recreate`, `idea`, `theater` — all with `pattern: ea, sound: hiatus`.
+- 9 regression fixtures added to `phonics-regression-fixtures.v2.yaml` (vowelTeamSounds section),
+  one per word above.
+- Verified via programmatic Workbench sandbox (workbench-core.mjs): 0 conflicts in blast radius,
+  0 unexpected regressions in existing fixtures; all 9 words resolve to `ea:hiatus` after patch.
+
+**`area` excluded:** `area` tokenizes as `[are|a]` — the rControlled3 pattern `are` claims
+positions 0-2 before the `ea` sequence is ever reached, making an `ea` exception row a dead rule.
+The Workbench blast radius correctly excludes it. More words from the original scope list
+(`ideal`, `linear`, `real`) can be checked the same way and added via the Workbench as needed.
+
+**More can be added later** via the Workbench's Vowel Sound mode for pattern `ea` — the
+`hiatus` label now exists in the table and will appear in any future exception row targeting this family.
+
+---
+
 ## RESOLVED — Constructs Workbench now covers compoundParts/rootWords
 
 **Found during:** Phase 2 review (see original entry above — moved to resolved).

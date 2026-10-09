@@ -3,6 +3,8 @@ import { themeToggleMarkup, infoPaneTabsMarkup, wireInfoPaneTabs } from '../shar
 import PhonicsEngine from '../phonics/PhonicsEngine.mjs';
 import { renderWordDetail } from '../shared/phonicsWordDetail.js';
 import { DEFAULT_COMMON_WORDS } from '../shared/default-common-words.js';
+import { speakText, speakSequence, isSpeechSupported, cancelSpeech } from '../shared/speech.js';
+import { tokenizeManualInput } from './manual-entry-helpers.js';
 
 const state = {
   files: [],
@@ -135,6 +137,16 @@ export function buildDictBuilderUI(container) {
                 <span class="toggle-track"></span>
               </span>
             </label>
+          </section>
+
+          <section class="db-settings-section">
+            <div class="db-section-label">Add Words Manually</div>
+            <input type="text" class="db-manual-input" id="dbManualInput"
+              placeholder="e.g. caveat react theater" />
+            <div class="db-manual-preview" id="dbManualPreview"></div>
+            <button class="btn btn-sm btn-secondary" id="dbManualAddAll" disabled>
+              Add all
+            </button>
           </section>
 
           <section class="db-settings-section">
@@ -409,6 +421,7 @@ function runEnrich() {
 
 function selectWord(word) {
   if (!word) return;
+  cancelSpeech();
   state.selectedWord = word;
   renderWordGrid();
   renderDetailPanel();
@@ -458,6 +471,18 @@ function renderDetailPanel() {
   // Wire export-flags button
   const exportBtn = panel.querySelector('[data-action="export-flags"]');
   exportBtn?.addEventListener('click', doExportFlagsJSON);
+
+  // Wire TTS buttons (only present in enriched state)
+  const speakWordBtn = panel.querySelector('[data-action="speak-word"]');
+  const speakSylBtn  = panel.querySelector('[data-action="speak-syllables"]');
+  if (!isSpeechSupported()) {
+    [speakWordBtn, speakSylBtn].forEach(b => {
+      if (b) { b.disabled = true; b.title = 'Text-to-speech not supported in this browser'; }
+    });
+  } else {
+    speakWordBtn?.addEventListener('click', () => speakText(word));
+    speakSylBtn?.addEventListener('click',  () => speakSequence(PhonicsEngine.splitSyllables(word)));
+  }
 }
 
 // ── Exclude ───────────────────────────────────────────────────────────────────
@@ -704,6 +729,10 @@ function doClear() {
   updateActionButtons();
   setStatus('info', '');
   renderDetailPanel();
+  // Manual entry cleared on Clear — extracted list is gone so any preview is stale
+  const manualInput = document.getElementById('dbManualInput');
+  if (manualInput) manualInput.value = '';
+  renderManualPreview();
   // Base dictionary is kept intentionally — it's a separate persistent input
 }
 
@@ -714,6 +743,66 @@ function setStatus(type, html) {
   if (!el) return;
   el.className = `tb-status status-msg ${type}`;
   el.innerHTML = html;
+}
+
+// ── Manual word entry ─────────────────────────────────────────────────────────
+
+function addManualWord(word) {
+  if (state.extracted.includes(word)) return; // defensive; UI prevents this
+  const record = PhonicsEngine.parseWord(word);
+  if (!record) return;
+
+  state.extracted.push(word);
+  state.phonicsByWord[word] = record; // cache immediately — already computed for preview
+  state.freq[word] = state.freq[word] || 1;
+
+  // Deliberately does NOT call findPossiblePlurals/applyPluralExclusions — §B.3:
+  // re-running plural detection on manual add risks silently changing exclusion
+  // state on words the teacher already curated.
+  updateSummary();
+  renderWordGrid();
+  updateActionButtons();
+  selectWord(word);
+}
+
+let _manualDebounce = null;
+
+function renderManualPreview() {
+  const raw     = document.getElementById('dbManualInput')?.value ?? '';
+  const tokens  = tokenizeManualInput(raw);
+  const preview = document.getElementById('dbManualPreview');
+  const addAll  = document.getElementById('dbManualAddAll');
+  if (!preview) return;
+
+  if (!tokens.length) {
+    preview.innerHTML = '';
+    if (addAll) addAll.disabled = true;
+    return;
+  }
+
+  let anyAddable = false;
+  preview.innerHTML = tokens.map(({ cleaned }) => {
+    const inDict = state.extracted.includes(cleaned);
+    if (!inDict) anyAddable = true;
+    return `
+      <div class="db-manual-row">
+        <span class="db-manual-word">${cleaned}</span>
+        ${inDict
+          ? `<span class="db-manual-status">already in dictionary</span>`
+          : `<button class="btn btn-xs btn-primary db-manual-add-btn"
+               data-manual-add="${cleaned}">Add</button>`
+        }
+      </div>`;
+  }).join('');
+
+  if (addAll) addAll.disabled = !anyAddable;
+
+  preview.querySelectorAll('.db-manual-add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      addManualWord(btn.dataset.manualAdd);
+      renderManualPreview();
+    });
+  });
 }
 
 // ── Wire events ───────────────────────────────────────────────────────────────
@@ -786,6 +875,19 @@ function wireEvents() {
     updateSummary();
     renderWordGrid();
     updateActionButtons();
+  });
+
+  document.getElementById('dbManualInput')?.addEventListener('input', () => {
+    clearTimeout(_manualDebounce);
+    _manualDebounce = setTimeout(renderManualPreview, 300);
+  });
+
+  document.getElementById('dbManualAddAll')?.addEventListener('click', () => {
+    const raw = document.getElementById('dbManualInput')?.value ?? '';
+    tokenizeManualInput(raw)
+      .filter(t => !state.extracted.includes(t.cleaned))
+      .forEach(t => addManualWord(t.cleaned));
+    renderManualPreview();
   });
 }
 
