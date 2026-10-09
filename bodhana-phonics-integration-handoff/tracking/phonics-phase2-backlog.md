@@ -129,9 +129,10 @@ and the VCV rule fires between them, producing `se|ve|ral` instead of `sev|er|al
 **Note on gingerbread/reindeer:** Both words currently split correctly via the nucleus
 fallback path (gingerbread → ['gin','ger','bread'], reindeer → ['rein','deer']) even without
 their compound parts in the list. Adding ginger/rein/deer to compoundParts via the new tool
-would not change the split output (same result via compound path), but the tool now provides
-the safe workflow to make those additions if desired. See the "COMPOUND_PARTS incomplete"
-entry above for the open tracking item.
+would not change the split output (same result via compound path), but the tool provides
+the safe workflow to make those additions if desired. The "COMPOUND_PARTS incomplete" entry
+for these words has been moved to RESOLVED — the motivating examples turned out to already
+be fixed in Phase 1, confirmed via no-op detection during this phase.
 
 ---
 
