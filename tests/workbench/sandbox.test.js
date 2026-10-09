@@ -34,7 +34,7 @@ beforeAll(() => {
   compiledObj = compileConstructs(rawObj);
 });
 
-// ── AC 3 — Blast radius ───────────────────────────────────────────────────────
+// ── AC 3 — Blast radius ──────────────────────────────────────────────────────
 
 describe('AC 3 — computeBlastRadius for pattern "ea"', () => {
   it('includes all vowelTeamSounds fixture words with pattern ea', () => {
@@ -96,6 +96,34 @@ describe('AC 3 — computeBlastRadius for pattern "ea"', () => {
     expect(entry).toBeDefined();
     expect(entry.sound).toBe('long_e');
     expect(entry.tier).toBe('default');
+  });
+});
+
+// ── AC 3b — Tokenizer-verified blast radius (false-positive substring filter) ─
+
+describe('AC 3b — computeBlastRadius excludes false-positive substring matches', () => {
+  it('targeting ea excludes bear (tokenizes as b|ear — r-controlled ear wins)', () => {
+    const radius = computeBlastRadius('ea', compiledObj, fixturesObj);
+    const words  = new Set(radius.map(r => r.word));
+    // bear contains 'ea' as a substring but tokenize('bear') → ['b','ear']
+    // 'ea' is never produced as a token; it must not appear in the blast radius
+    expect(words).not.toContain('bear');
+  });
+
+  it('targeting ea excludes beard (tokenizes as b|ear|d — same ear-wins rule)', () => {
+    const radius = computeBlastRadius('ea', compiledObj, fixturesObj);
+    const words  = new Set(radius.map(r => r.word));
+    expect(words).not.toContain('beard');
+  });
+
+  it('genuine ea words are still present after the tokenizer filter', () => {
+    const radius = computeBlastRadius('ea', compiledObj, fixturesObj);
+    const words  = new Set(radius.map(r => r.word));
+    // These words genuinely tokenize with ea as a vowel-team token
+    expect(words).toContain('bread');
+    expect(words).toContain('speak');
+    expect(words).toContain('head');
+    expect(words).toContain('dead');
   });
 });
 

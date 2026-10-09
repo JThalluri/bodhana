@@ -64,6 +64,7 @@ const jsyaml      = read('tools/constructs-workbench/vendor/js-yaml.min.js');
 const compileCore = stripModuleSyntax(read('scripts/constructs-compile-core.mjs'));
 const validate    = stripModuleSyntax(read('scripts/constructs-validate.mjs'));
 const vowelSounds = stripModuleSyntax(read('src/phonics/core/vowelSounds.mjs'));
+const tokenizeJs  = stripModuleSyntax(read('src/phonics/core/tokenize.mjs'));
 const coreJs      = stripModuleSyntax(read('tools/constructs-workbench/workbench-core.mjs'));
 const appJs       = stripModuleSyntax(read('tools/constructs-workbench/app.js'));
 
@@ -76,6 +77,8 @@ const inlineScript = [
   validate,
   '// ── src/phonics/core/vowelSounds.mjs ─────────────────────────────────────',
   vowelSounds,
+  '// ── src/phonics/core/tokenize.mjs ───────────────────────────────────────',
+  tokenizeJs,
   '// ── tools/constructs-workbench/workbench-core.mjs ────────────────────────',
   coreJs,
   '// ── tools/constructs-workbench/app.js ────────────────────────────────────',

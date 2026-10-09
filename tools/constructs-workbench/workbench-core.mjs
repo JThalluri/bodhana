@@ -8,6 +8,7 @@
  *   ../../scripts/constructs-compile-core.mjs  — compileConstructs()
  *   ../../scripts/constructs-validate.mjs      — validateAll(), ValidationError
  *   ../../src/phonics/core/vowelSounds.mjs     — buildExceptionMap etc.
+ *   ../../src/phonics/core/tokenize.mjs        — buildSortedPatterns, tokenize
  */
 
 import {
@@ -15,6 +16,11 @@ import {
   lookupExceptionWithTier,
   soundForVowelTeam,
 } from '../../src/phonics/core/vowelSounds.mjs';
+
+import {
+  buildSortedPatterns,
+  tokenize,
+} from '../../src/phonics/core/tokenize.mjs';
 
 // ── Patch schema ─────────────────────────────────────────────────────────────
 
@@ -163,15 +169,24 @@ export function computeBlastRadius(pattern, compiledObj, fixturesObj) {
     if (word && word.includes(pattern)) wordSet.add(word);
   }
 
-  const exMap       = buildExceptionMap(compiledObj.vowelTeamExceptions || []);
+  const exMap        = buildExceptionMap(compiledObj.vowelTeamExceptions || []);
   const defaultSound = compiledObj.defaultVowelSound?.[pattern] ?? null;
+  // Build sorted patterns once — required to verify the pattern is a genuine
+  // tokenized vowel-team token in each word (not merely a substring match).
+  // e.g. bear/beard contain 'ea' as a substring but tokenize as b|ear/b|ear|d;
+  // 'ear' (r-controlled) wins at that position and 'ea' is never produced.
+  const sortedPats = buildSortedPatterns(compiledObj.patternCategories || {});
 
-  return [...wordSet].filter(w => w.includes(pattern)).sort().map(word => {
-    const result = lookupExceptionWithTier(word, pattern, exMap);
-    const sound  = result?.sound ?? defaultSound;
-    const tier   = result?.tier  ?? (sound ? 'default' : null);
-    return { word, sound, tier };
-  });
+  return [...wordSet]
+    .filter(w => w.includes(pattern))
+    .filter(w => tokenize(w, sortedPats).includes(pattern))
+    .sort()
+    .map(word => {
+      const result = lookupExceptionWithTier(word, pattern, exMap);
+      const sound  = result?.sound ?? defaultSound;
+      const tier   = result?.tier  ?? (sound ? 'default' : null);
+      return { word, sound, tier };
+    });
 }
 
 // ── Regression diff ───────────────────────────────────────────────────────────

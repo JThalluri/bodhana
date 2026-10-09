@@ -23,6 +23,7 @@ Rebuild whenever you edit any of these source files:
 - `scripts/constructs-compile-core.mjs`
 - `scripts/constructs-validate.mjs`
 - `src/phonics/core/vowelSounds.mjs`
+- `src/phonics/core/tokenize.mjs`
 
 The build script (`build-standalone.mjs`) reads all six files, strips ES module
 `import`/`export` syntax, and concatenates everything into a single self-contained HTML file.
