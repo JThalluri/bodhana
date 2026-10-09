@@ -163,6 +163,12 @@ Nothing writes to disk before this step. Nothing in steps 1–7 modifies any fil
 
 ---
 
+## When something looks wrong but isn't a flat-list fix
+
+The Workbench's patch mechanism is deliberately scoped to `vowelTeamExceptions`, `compoundParts`, and `rootWords` only. If you suspect a problem in the tokenizer, syllable-splitter, or validator — anything that would require a code change to `src/phonics/core/*.mjs` or `scripts/constructs-validate.mjs` — do not try to force it through the Workbench's UI. Instead, open [`CONSTRUCT_INVESTIGATION_BRIEF_TEMPLATE.md`](CONSTRUCT_INVESTIGATION_BRIEF_TEMPLATE.md), fill in Sections 1 and 4, and hand it directly to a build agent. The template's classification step (§2) will tell you whether it's actually a code problem or just a data gap the Workbench can handle after all.
+
+---
+
 ## Files
 
 | File | Purpose |

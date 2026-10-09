@@ -160,7 +160,7 @@ export function renderWordDetail(word, record, {
         <div class="wd-section-label">Flag for Review</div>
         <div class="wd-flag-row">
           <input class="wd-flag-note" data-flag-note type="text"
-            placeholder="Optional note" />
+            placeholder="What should this be instead, and why? (e.g. 'ie should sound long_e like believe, not long_i')" />
           <button class="btn btn-sm btn-secondary" data-action="flag"
             ${alreadyFlagged ? 'disabled' : ''}>
             ${alreadyFlagged ? '<i class="fas fa-check"></i> Flagged' : '<i class="fas fa-flag"></i> Flag'}
@@ -169,6 +169,9 @@ export function renderWordDetail(word, record, {
         ${flagCount > 0 ? `
           <button class="btn btn-sm btn-ghost wd-export-flags-btn" data-action="export-flags">
             <i class="fas fa-download"></i> Export ${flagCount} flag${flagCount !== 1 ? 's' : ''}
+          </button>
+          <button class="btn btn-sm btn-ghost wd-export-briefs-btn" data-action="export-briefs">
+            <i class="fas fa-file-alt"></i> Export briefs
           </button>` : ''}
       </div>
 

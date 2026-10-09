@@ -5,6 +5,7 @@ import { renderWordDetail } from '../shared/phonicsWordDetail.js';
 import { DEFAULT_COMMON_WORDS } from '../shared/default-common-words.js';
 import { speakText, speakSequence, isSpeechSupported, cancelSpeech } from '../shared/speech.js';
 import { tokenizeManualInput } from './manual-entry-helpers.js';
+import { buildInvestigationBriefs } from '../shared/investigationBriefs.js';
 
 const state = {
   files: [],
@@ -472,6 +473,10 @@ function renderDetailPanel() {
   const exportBtn = panel.querySelector('[data-action="export-flags"]');
   exportBtn?.addEventListener('click', doExportFlagsJSON);
 
+  // Wire export-briefs button
+  const exportBriefsBtn = panel.querySelector('[data-action="export-briefs"]');
+  exportBriefsBtn?.addEventListener('click', doExportInvestigationBriefs);
+
   // Wire TTS buttons (only present in enriched state)
   const speakWordBtn = panel.querySelector('[data-action="speak-word"]');
   const speakSylBtn  = panel.querySelector('[data-action="speak-syllables"]');
@@ -707,6 +712,18 @@ function doExportFlagsJSON() {
   const a = document.createElement('a');
   a.href = url;
   a.download = `phonics-flags_${timestamp()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function doExportInvestigationBriefs() {
+  if (!state.flagged.length) return;
+  const md = buildInvestigationBriefs(state.flagged);
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `phonics-investigation-briefs_${timestamp()}.md`;
   a.click();
   URL.revokeObjectURL(url);
 }

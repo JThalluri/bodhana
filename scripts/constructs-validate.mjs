@@ -169,6 +169,24 @@ export function checkExceptionTableSelfConsistency(constructs) {
 }
 
 /**
+ * 5.6 Grapheme integrity — for every tokenizer fixture, the graphemes field
+ * must join back to the original word with no gaps or extra characters.
+ * Invariant: graphemes.split('|').join('') === word
+ */
+export function checkGraphemeIntegrity(fixtures) {
+  const failures = [];
+  for (const f of fixtures.tokenizer || []) {
+    const joined = f.graphemes.split('|').join('');
+    if (joined !== f.word) {
+      failures.push(`${f.word}: graphemes "${f.graphemes}" joins to "${joined}", not "${f.word}"`);
+    }
+  }
+  if (failures.length) {
+    throw new ValidationError('grapheme-integrity', failures);
+  }
+}
+
+/**
  * 5.5 Additional structural checks.
  */
 export function checkStructure(constructs) {
@@ -239,4 +257,5 @@ export function validateAll(constructs, fixtures) {
   checkExceptionTableSelfConsistency(constructs);
   checkReachability(constructs, fixtures);
   checkSuffixAndExceptionBranchCoverage(constructs, fixtures);
+  checkGraphemeIntegrity(fixtures);
 }
