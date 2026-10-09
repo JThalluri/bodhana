@@ -28,7 +28,7 @@ export function speakText(text, opts = {}) {
 export function speakSequence(parts, opts = {}) {
   if (!isSpeechSupported() || !parts?.length) return;
   cancelSpeech();
-  const pauseMs = opts.pauseMs ?? 400;
+  const pauseMs = opts.pauseMs ?? 200;
   let i = 0;
   function speakNext() {
     if (i >= parts.length) { opts.onDone?.(); return; }
