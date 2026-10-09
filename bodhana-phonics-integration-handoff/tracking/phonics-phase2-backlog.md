@@ -97,6 +97,41 @@ and the VCV rule fires between them, producing `se|ve|ral` instead of `sev|er|al
 
 ---
 
+## OPEN — Constructs Workbench patch mechanism doesn't cover compoundParts/rootWords
+
+**Found during:** Phase 2 review, while using the Workbench for a real `ea` correction and
+checking its output for gaps.
+
+**Issue:** The Workbench's six-step workflow (blast radius → context bundle → LLM patch →
+sandbox → hard-gated regression diff → merge) only covers `vowelTeamExceptions`. But
+`compoundParts` and `rootWords` have the same "flat list requiring careful, reviewed
+enrichment" shape — and already have a known, open gap: `gingerbread`/`reindeer` can't
+compound-split because `ginger`/`rein`/`deer` aren't in `compoundParts` (see the existing
+"COMPOUND_PARTS incomplete for gingerbread/reindeer" entry in this file). Right now, fixing
+that requires hand-editing the YAML directly, with no blast-radius preview, no sandbox-apply,
+no regression-diff safety net — exactly the unsafe workflow the Workbench was built to
+eliminate for vowel exceptions.
+
+Blends/digraphs/trigraphs/clusters3/floss are explicitly NOT included in this gap — they're
+flat category-membership lists with no per-word nuance to get wrong, so they don't need this
+kind of tool.
+
+**Not patched. Deferred, pending:**
+1. The current Phase 2 bug fixes (the `computeBlastRadius` substring-vs-real-token bug, and
+   the related `checkExceptionTableSelfConsistency` finding) must land and be confirmed
+   working first — this extension builds on the same mechanism, and should not be started on
+   top of a known-buggy foundation.
+2. A dedicated spec for extending the Workbench's patch target to `compoundParts` and
+   `rootWords` — same workflow shape, different containment check (substring-of-word rather
+   than substring-of-vowel-team-sound), different patch schema (add/remove word entries rather
+   than word/pattern/sound rows, since these are plain string lists, not structured rows).
+
+This was explicitly anticipated and deliberately deferred in the original Phase 2 spec (§5):
+"Extending this patch format to compoundParts/rootWords later... is a natural, small extension
+of this same mechanism — same six steps, same gating — but is explicitly not built now."
+
+---
+
 ## RESOLVED — for audit trail only, no action needed
 
 - **`rd,rk,rm,rn,rl,rt` blend patterns removed** (were structurally unreachable — `rControlled`
