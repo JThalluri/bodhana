@@ -280,6 +280,10 @@ syllableSplit:
   - { word: selfie,      split: [self, ie] }
 
   # Suffix-rule coverage — one per tryStripSuffix rule
+  - { word: transactions, split: [tran, sac, tions] }
+  - { word: versions,     split: [ver, sions] }
+  # Compound split — helplines (both halves in compoundParts)
+  - { word: helplines,    split: [help, lines] }
   - { word: nation,    split: [na, tion] }
   - { word: vision,     split: [vi, sion] }
   - { word: payment,    split: [pay, ment] }

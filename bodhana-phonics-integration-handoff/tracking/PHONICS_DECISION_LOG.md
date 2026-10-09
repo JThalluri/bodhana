@@ -951,3 +951,33 @@ server would serve.
 
 Spec impact: `tools/constructs-workbench/README.md` updated — standalone file is now Option A
 (recommended), local server is Option B. AC 1 is now satisfiable in its original `file://` form.
+
+---
+
+## 2026-10-09 — Flag resolution: transactions, helplines, elephant, guarantees
+
+**Staleness check**: ran all 4 words through live engine before proceeding.
+
+### RESOLVED: transactions → tran-sac-tions (was tran-sac-ti-ons)
+
+Classification: (b) Data gap — missing `tions` suffix rule.
+
+Added `{ suffix: tions, minStem: 2, always: true }` and `{ suffix: sions, minStem: 2, always: true }` to `suffixStripRules` in `phonics-constructs.yaml`, immediately before the existing `tion`/`sion` rules (first-match wins). Also fixes: `nations`, `locations`, `creations`, and all other `-tions`/`-sions` words.
+
+Regression fixtures added: `transactions → [tran, sac, tions]`, `versions → [ver, sions]`.
+
+### RESOLVED: helplines → help-lines (was hel-plines)
+
+Classification: (b) Data gap — `help` and `lines` missing from `compoundParts`.
+
+Added both to `compoundParts`. `lines` already syllabifies to 1 syllable (treated as a unit), so compound path correctly gives `help-lines`.
+
+Regression fixture added: `helplines → [help, lines]`.
+
+### NOT FIXABLE (data): elephant → e-lep-hant (should be el-e-phant)
+
+Classification: (c) Structural limitation — VCV open-syllable preference fires on `e-l-e`, splits before `l`, yielding `e-` (open first syllable). Neither `rootWords` nor `compoundParts` affects direct syllabification. Fixing requires either (1) adding a closed-syllable override mechanism to the algorithm, or (2) an explicit syllable-split exception table. Deferred to Phase 2 backlog.
+
+### NOT FIXABLE (data): guarantees → gu-a-ran-tees (should be guar-an-tees)
+
+Classification: (c) Structural limitation — `u` and `a` in `guar` are identified as separate vowel nuclei by `identifyVowelNuclei`, creating a spurious VCV split. The `ar` r-controlled pattern is a 2-char token but the preceding `u` is still counted as its own nucleus. Not addressable via `compoundParts`/`rootWords`. Deferred to Phase 2 backlog.

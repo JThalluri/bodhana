@@ -95,6 +95,7 @@
     "hand",
     "foot",
     "head",
+    "help",
     "arm",
     "leg",
     "eye",
@@ -161,6 +162,7 @@
     "stand",
     "set",
     "line",
+    "lines",
     "ware",
     "wear",
     "pad",
@@ -197,7 +199,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-09T21:58:50.215Z",
+  "generatedAt": "2026-10-09T23:17:16.647Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -521,8 +523,22 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:553542fdbda01ea3a58ce85d7f2e660a0cbb9664ba7ba7a1443aa3f7e45eeea0",
+  "sourceHash": "sha256:d8d4155c5b3ad4232490ff5ee72dfcf15a1a1b581a3b65ca67aec2dd91143e2e",
   "suffixStripRules": [
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 2,
+      "suffix": "tions",
+      "undouble": false
+    },
+    {
+      "always": true,
+      "edOnly": false,
+      "minStem": 2,
+      "suffix": "sions",
+      "undouble": false
+    },
     {
       "always": true,
       "edOnly": false,

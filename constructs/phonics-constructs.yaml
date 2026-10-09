@@ -415,6 +415,7 @@ compoundParts:
   - hand
   - foot
   - head
+  - help
   - arm
   - leg
   - eye
@@ -481,6 +482,7 @@ compoundParts:
   - stand
   - set
   - line
+  - lines
   - ware
   - wear
   - pad
@@ -604,6 +606,8 @@ rootWords:
 
 suffixStripRules:
   # ORDER MATTERS — first match wins, exactly as the runtime rules[] array.
+  - { suffix: tions, minStem: 2, always: true }
+  - { suffix: sions, minStem: 2, always: true }
   - { suffix: tion,  minStem: 2, always: true }
   - { suffix: sion,  minStem: 2, always: true }
   - { suffix: ment,  minStem: 3, always: true }
