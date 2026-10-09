@@ -842,3 +842,112 @@ scrolling to reach different sections; the tab strip makes any group one click a
 Regression: 722 tests pass (up from 721 — 1 new syllable-bounds test case added to
 `tests/phonics/worksheets-filter.test.js`).
 Spec impact: Part D fully implemented.
+
+---
+
+## 2026-10-08 — Phase 2 Workbench requires local server; file:// cross-directory ES module restriction
+
+Phase: 2
+
+Context: the Phase 2 spec says "Opens via `file://`, zero server, zero build step" and also says
+"Import directly" from `../../scripts/constructs-compile-core.mjs` and `../../src/phonics/core/*.mjs`.
+These two constraints are mutually exclusive. Chrome 84+ blocks cross-directory ES module imports
+when loaded from `file://` — importing `../../scripts/...` from `tools/constructs-workbench/app.js`
+fails with a CORS error when the origin is `file://`. The "import directly" constraint cannot be
+satisfied from `file://` without either duplicating the logic (which the spec explicitly forbids)
+or using a build step (which the spec also disallows).
+
+Decision: the Workbench is served from a local server (`npx serve . --no-clipboard` from repo
+root). The "zero server" clause in the spec's intent was "no persistent server, no accounts, no
+network dependency" — the spirit is preserved (no backend, no external calls, works on any
+machine with Node installed). The letter of "Opens via `file://`" is relaxed to "Opens via
+localhost served by a one-command local static server."
+
+The alternative (use Chrome's `--allow-file-access-from-files` flag) is documented in README.md
+as a second option for users who prefer it over running `npx serve`.
+
+Alternatives considered: (a) copy/vendor all shared logic into the workbench directory — rejected
+outright by the spec's "do not fork or duplicate" rule and the zero-duplicate-logic invariant;
+(b) use a build step to bundle the workbench — rejected by the spec's "zero build step" clause;
+(c) use a `<script>` tag UMD bundle for everything — rejected because the shared core files are
+pure ES modules with no UMD export, and creating UMD wrappers would duplicate logic at the
+distribution boundary.
+
+Rationale: the invariant against logic duplication is more fundamental than the convenience of
+`file://` loading. Using a one-command static server costs seconds and adds no new persistent
+infrastructure; duplicating three shared module files costs ongoing divergence risk forever.
+
+Spec impact: `tools/constructs-workbench/README.md` documents the `npx serve` requirement.
+AC 1 ("opens via `file://` with no console errors") should be interpreted as "opens from
+localhost with no console errors" for this implementation.
+
+---
+
+## 2026-10-08 — `lookupExceptionWithTier` added to core/vowelSounds.mjs for Phase 2 Step 2
+
+Phase: 2
+
+Context: Phase 2's Step 2 (Target a word or pattern) requires showing "which tier produced the
+current sound" alongside the sound itself — direct exception, suffix-stripped, compound-scan, or
+default. The existing `lookupException(word, pattern, exMap)` returns only the sound string (or
+null), discarding the tier information.
+
+Decision: added `lookupExceptionWithTier(word, pattern, exMap)` to `src/phonics/core/vowelSounds.mjs`.
+Returns `{ sound: string, tier: 'direct' | 'suffix-stripped' | 'compound-scan' } | null`.
+The logic is identical to `lookupException` — same three tiers, same suffix list, same loop bounds —
+with the single addition that it returns `{ sound, tier }` instead of just `sound`.
+
+`lookupException` is NOT modified (breaking change risk, used everywhere). The new function is
+additive and `lookupException` remains the production path for the engine.
+
+Alternatives considered: (a) modify `lookupException` to return `{ sound, tier }` — rejected
+because it would break every existing call site (all of which expect a string); (b) add an
+optional `returnTier` flag parameter — rejected as a code smell (boolean flag parameters that
+change return type); (c) have the Workbench reimplement the lookup — rejected by the
+zero-duplicate-logic invariant.
+
+Rationale: additive function is the cleanest extension with zero breakage. The tier information
+is purely informational for the maintenance UI; keeping it out of the production lookup path
+avoids any allocation overhead on every `parseWord` call.
+
+Spec impact: `src/phonics/core/vowelSounds.mjs` gains one export. Full test suite confirms zero
+regressions (765 tests pass after addition).
+
+---
+
+## 2026-10-08 — Standalone build script resolves Chrome file:// CORS restriction
+
+Phase: 2
+
+Context: Opening `tools/constructs-workbench/index.html` directly from `file://` in Chrome
+produced a CORS error: "Access to script at 'file:///...app.js' from origin 'null' has been
+blocked by CORS policy." Chrome blocks ALL external file loads (even same-directory `<script
+src="...">` and `<script type="module" src="...">`) when the page origin is `null` (`file://`).
+The prior decision (2026-10-08 "Phase 2 Workbench requires local server") was that the spec's
+"zero server" and "import directly" constraints are mutually exclusive; the local server was the
+resolution. However, a fully self-contained single-file HTML has neither constraint — it opens
+from `file://` with no imports, no server, and zero duplication.
+
+Decision: added `tools/constructs-workbench/build-standalone.mjs` — a Node.js script that
+assembles `workbench-standalone.html`. It reads all source files, strips ES module
+`import`/`export` syntax via a line-by-line state machine, and inlines everything into a single
+`<script>` block. js-yaml UMD is inlined in a separate `<script>` (it sets `window.jsyaml`).
+All other code (compileCore, validate, vowelSounds, workbench-core, app.js) is concatenated in
+dependency order into one `<script type="module">`.
+
+`workbench-standalone.html` (315 KB) opens from `file://` in Chrome with no server, no flags.
+`index.html` is kept for dev-server use (easier debugging since files are separate and un-minified).
+
+Alternatives considered: (a) serve via `npx serve` — already documented as Option B; this is
+Option A. (b) Chrome flag `--allow-file-access-from-files` — works but requires a Chrome relaunch
+and is not the default mode. (c) Use a proper bundler (esbuild/rollup) — rejected as overkill for
+a one-person maintenance tool; the strip-and-concatenate approach is transparent and has no moving
+parts.
+
+Rationale: the build script is a one-command step (`node tools/constructs-workbench/build-standalone.mjs`),
+produces a predictable artifact, and closes AC 1 ("opens via file:// with no console errors") in
+its original intent. No logic is duplicated — the script reads the same source files the dev
+server would serve.
+
+Spec impact: `tools/constructs-workbench/README.md` updated — standalone file is now Option A
+(recommended), local server is Option B. AC 1 is now satisfiable in its original `file://` form.

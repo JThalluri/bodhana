@@ -6,7 +6,7 @@ history — history lives in `PHONICS_DECISION_LOG.md` (implementation decisions
 
 **Last updated by:** Build agent (Claude)
 **Last updated:** 2026-10-08
-**One-line summary of what changed since last update:** Phase 5 complete — Phonics Worksheets module; 709 total tests passing (693 pre-Phase-5 + 9 filter pipeline + 7 CSV round-trip; is_common annotation fix applied)
+**One-line summary of what changed since last update:** Phase 2 in progress — Constructs Workbench built; automated ACs 3/4/5/6 pass (765 total tests); manual ACs 1/2/7/8 pending browser click-through
 
 ---
 
@@ -50,21 +50,30 @@ Acceptance criteria (from spec §10):
 ## Phase 2 — Constructs Workbench
 
 **Spec:** `phonics-constructs-workbench-spec_v1.0.md`
-**Status:** ☐ Not started · ☐ In progress · ☐ Blocked · ☐ Complete
+**Status:** ☐ Not started · ☑ In progress · ☐ Blocked · ☐ Complete
 **Depends on:** Phase 1 items 9–10 above being complete first.
 
 Acceptance criteria (from spec §8):
 
-- [ ] 1. `tools/constructs-workbench/index.html` opens via `file://` with no console errors (File System Access API browser)
+- [ ] 1. `tools/constructs-workbench/workbench-standalone.html` opens via `file://` with no console errors (File System Access API browser)
+       **→ Manual browser check required.** Open `workbench-standalone.html` directly in Chrome — no server needed. Regenerate with `node tools/constructs-workbench/build-standalone.mjs` after any source change.
 - [ ] 2. Searching `speak` correctly shows it resolving via the `ea` default, no exception row matched
-- [ ] 3. Targeting `ea` produces a blast-radius table including every `ea` word already in the regression corpus
-- [ ] 4. A patch adding a duplicate `(word, pattern)` row is rejected with the exact Phase 1 validator message (proves reuse, not reimplementation)
-- [ ] 5. A patch with an unintended side effect on a non-targeted word is caught by the regression diff and blocks merge
-- [ ] 6. A patch targeting `compoundParts` is rejected immediately at Step 5, before sandbox computation
+       **→ Manual browser check required (Step 2 in running workbench).**
+- [x] 3. Targeting `ea` produces a blast-radius table including every `ea` word already in the regression corpus
+       (Automated: `tests/workbench/sandbox.test.js` — 6 tests covering AC 3)
+- [x] 4. A patch adding a duplicate `(word, pattern)` row is rejected with the exact Phase 1 validator message (proves reuse, not reimplementation)
+       (Automated: `tests/workbench/sandbox.test.js` — 2 tests covering AC 4; `ValidationError.rule === 'exception-table-self-consistency'`)
+- [x] 5. A patch with an unintended side effect on a non-targeted word is caught by the regression diff and blocks merge
+       (Automated: `tests/workbench/sandbox.test.js` — modifying `bread:ea` causes `breadwinner` to appear in diff as unexpected change)
+- [x] 6. A patch targeting `compoundParts` is rejected immediately at Step 5, before sandbox computation
+       (Automated: `tests/workbench/patch-schema.test.js` — 30 tests covering all forbidden keys and malformed shapes)
 - [ ] 7. A successful merge writes exactly one new line to `constructs/CHANGELOG.md` and only the targeted row(s) in the real YAML — no incidental formatting/ordering changes
+       **→ Manual browser check required (Step 8 in running workbench + git diff after merge).**
+       Note: `jsyaml.dump()` reformats the YAML (removes YAML comments, normalises spacing). The structural content is preserved; expect whitespace/comment diffs throughout the file but only data changes to the targeted rows.
 - [ ] 8. Zero network requests fire during a full workflow run-through
+       **→ Manual browser check required (DevTools Network tab during full run-through).**
 
-**Open questions:** — none yet
+**Open questions:** — none
 
 ---
 

@@ -56,6 +56,46 @@ export function lookupException(word, pattern, exceptionMap) {
 }
 
 /**
+ * Three-tier exception lookup returning both the matched sound and the tier.
+ *
+ * @param {string} word
+ * @param {string} pattern
+ * @param {Object} exceptionMap  - from buildExceptionMap
+ * @returns {{ sound: string, tier: 'direct'|'suffix-stripped'|'compound-scan' } | null}
+ */
+export function lookupExceptionWithTier(word, pattern, exceptionMap) {
+  // Tier 1: direct
+  if (exceptionMap[word]?.[pattern]) {
+    return { sound: exceptionMap[word][pattern], tier: 'direct' };
+  }
+
+  // Tier 2: suffix-stripped
+  const suffixes = ['ing', 'est', 'ed', 'er', 'ly', 's', 'd', 'es'];
+  for (const s of suffixes) {
+    if (word.length > s.length + 2 && word.endsWith(s)) {
+      const stem = word.slice(0, -s.length);
+      if (exceptionMap[stem]?.[pattern]) {
+        return { sound: exceptionMap[stem][pattern], tier: 'suffix-stripped' };
+      }
+    }
+  }
+
+  // Tier 3: compound-scan
+  for (let j = 3; j <= word.length - 3; j++) {
+    const prefix = word.slice(0, j);
+    if (exceptionMap[prefix]?.[pattern]) {
+      return { sound: exceptionMap[prefix][pattern], tier: 'compound-scan' };
+    }
+    const suffix = word.slice(j);
+    if (exceptionMap[suffix]?.[pattern]) {
+      return { sound: exceptionMap[suffix][pattern], tier: 'compound-scan' };
+    }
+  }
+
+  return null;
+}
+
+/**
  * Return the resolved sound key for a specific vowel-team pattern in a word,
  * using the same three-tier lookup as vowelTeamSounds.
  *
