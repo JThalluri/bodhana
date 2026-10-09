@@ -115,10 +115,11 @@ wb.describe('Step 1 — File Loading', () => {
     await expect(page.locator('#btnStep1Next')).toBeEnabled();
   });
 
-  wb('fixtures message shows vowelTeamSounds entry count', async ({ page }) => {
+  wb('fixtures message shows vowelTeamSounds and syllableSplit entry counts', async ({ page }) => {
     await loadFiles(page);
     const msgs = page.locator('.msg.ok');
-    await expect(msgs.nth(1)).toContainText('vowelTeamSounds entries');
+    await expect(msgs.nth(1)).toContainText('vowelTeamSounds');
+    await expect(msgs.nth(1)).toContainText('syllableSplit entries');
   });
 
   wb('continues to Step 2 with search input', async ({ page }) => {
