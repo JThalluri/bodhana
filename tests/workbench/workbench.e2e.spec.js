@@ -772,3 +772,162 @@ wb.describe('Step 7 — Sandbox: Unexpected Regression Change → Hard Gate', ()
     await expect(page.locator('#btnStep7Next')).not.toBeAttached();
   });
 });
+
+// ── List-mode helpers ─────────────────────────────────────────────────────────
+
+async function proceedToStep2ListMode(page) {
+  await page.waitForSelector('#btnStep1Next');
+  await page.click('#btnStep1Next');
+  await page.waitForSelector('#listQInput');
+}
+
+async function navigateToStep5ListMode(page, word, candidateBtnId, patchYaml) {
+  await page.fill('#listQInput', word);
+  await page.waitForTimeout(700); // debounce
+  await page.waitForSelector(`#${candidateBtnId}`);
+  await page.click(`#${candidateBtnId}`);
+  await page.waitForSelector('#btnStep3Next');
+  await page.click('#btnStep3Next');
+  await page.waitForSelector('#btnStep4Next');
+  await page.click('#btnStep4Next');
+  await page.waitForSelector('#patchInput');
+  if (patchYaml) {
+    await page.fill('#patchInput', patchYaml);
+    await page.waitForTimeout(300);
+  }
+}
+
+// ── Suite 13: Step 2 — Compound Part Mode ────────────────────────────────────
+
+wb.describe('Step 2 — Compound Part Mode', () => {
+  wb('daydream: identifies dream as the missing half', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="compoundPart"]');
+    await proceedToStep2ListMode(page);
+    await page.fill('#listQInput', 'daydream');
+    await page.waitForTimeout(700);
+    await expect(page.locator('#btnCand_R_dream')).toBeVisible();
+  });
+
+  wb('something: already compound-splits — no target button shown', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="compoundPart"]');
+    await proceedToStep2ListMode(page);
+    await page.fill('#listQInput', 'something');
+    await page.waitForTimeout(700);
+    await expect(page.locator('.msg.ok')).toContainText('already compound-splits');
+  });
+});
+
+// ── Suite 14: Step 2 — Root Word Mode ────────────────────────────────────────
+
+wb.describe('Step 2 — Root Word Mode', () => {
+  wb('logging: identifies log as the missing root', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="rootWord"]');
+    await proceedToStep2ListMode(page);
+    await page.fill('#listQInput', 'logging');
+    await page.waitForTimeout(700);
+    await expect(page.locator('#btnRootCand_log')).toBeVisible();
+  });
+
+  wb('slimmer: slim is in rootWords — strips correctly', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="rootWord"]');
+    await proceedToStep2ListMode(page);
+    await page.fill('#listQInput', 'slimmer');
+    await page.waitForTimeout(700);
+    await expect(page.locator('.msg.ok')).toContainText('strips correctly');
+  });
+});
+
+// ── Suite 15: Compound Part — Happy Path (daydream → nowPassing) ─────────────
+
+wb.describe('Step 7 — Compound Part: daydream → nowPassing', () => {
+  wb('adding dream: daydream is nowPassing, no unexpected regressions, merge allowed', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="compoundPart"]');
+    await proceedToStep2ListMode(page);
+    await navigateToStep5ListMode(page, 'daydream', 'btnCand_R_dream',
+      'patch:\n  add:\n    - dream');
+    await runSandboxAndWaitStep7(page);
+
+    await expect(page.locator('.msg.ok').first()).toContainText('Validator passed');
+    await expect(page.locator('.msg.ok').filter({ hasText: 'known-failure' }).first()).toBeVisible();
+    await expect(page.locator('tr.now-passing td', { hasText: 'daydream' }).first()).toBeVisible();
+    await expect(page.locator('.hard-gate')).not.toBeAttached();
+    await expect(page.locator('#btnStep7Next')).toBeVisible();
+    await expect(page.locator('#btnStep7Next')).toBeEnabled();
+
+    // Proceed through Step 8 and confirm merge completes
+    await page.click('#btnStep7Next');
+    await page.waitForSelector('#btnConfirmMerge');
+    await page.click('#btnConfirmMerge');
+    await page.waitForSelector('.msg.ok');
+    await expect(page.locator('.msg.ok').filter({ hasText: 'Merge complete' })).toBeVisible();
+  });
+});
+
+// ── Suite 16: Root Word — Happy Path (logging → nowPassing) ──────────────────
+
+wb.describe('Step 7 — Root Word: logging → nowPassing', () => {
+  wb('adding log: logging is nowPassing, no unexpected regressions, merge allowed', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="rootWord"]');
+    await proceedToStep2ListMode(page);
+    await navigateToStep5ListMode(page, 'logging', 'btnRootCand_log',
+      'patch:\n  add:\n    - log');
+    await runSandboxAndWaitStep7(page);
+
+    await expect(page.locator('.msg.ok').first()).toContainText('Validator passed');
+    await expect(page.locator('.msg.ok').filter({ hasText: 'known-failure' }).first()).toBeVisible();
+    await expect(page.locator('tr.now-passing td', { hasText: 'logging' }).first()).toBeVisible();
+    await expect(page.locator('.hard-gate')).not.toBeAttached();
+    await expect(page.locator('#btnStep7Next')).toBeVisible();
+    await expect(page.locator('#btnStep7Next')).toBeEnabled();
+
+    await page.click('#btnStep7Next');
+    await page.waitForSelector('#btnConfirmMerge');
+    await page.click('#btnConfirmMerge');
+    await page.waitForSelector('.msg.ok');
+    await expect(page.locator('.msg.ok').filter({ hasText: 'Merge complete' })).toBeVisible();
+  });
+});
+
+// ── Suite 17: Cross-list Patch Rejection ─────────────────────────────────────
+
+wb.describe('Step 5 — List Mode: cross-list patch rejection', () => {
+  wb('compound mode: patch targeting rootWords rejected synchronously', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="compoundPart"]');
+    await proceedToStep2ListMode(page);
+    await navigateToStep5ListMode(page, 'daydream', 'btnCand_R_dream', null);
+    await page.fill('#patchInput', 'patch:\n  rootWords:\n    - log');
+    await page.waitForTimeout(300);
+    await expect(page.locator('.msg.err')).toContainText('rootWords');
+    await expect(page.locator('#btnRunSandbox')).toBeDisabled();
+  });
+
+  wb('compound mode: vowelTeamExceptions-shaped object in add array rejected synchronously', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="compoundPart"]');
+    await proceedToStep2ListMode(page);
+    await navigateToStep5ListMode(page, 'daydream', 'btnCand_R_dream', null);
+    await page.fill('#patchInput',
+      'patch:\n  add:\n    - { word: ginger, pattern: er, sound: short_e }');
+    await page.waitForTimeout(300);
+    await expect(page.locator('.msg.err')).toContainText('object');
+    await expect(page.locator('#btnRunSandbox')).toBeDisabled();
+  });
+
+  wb('rootWord mode: patch targeting compoundParts rejected synchronously', async ({ page }) => {
+    await loadFiles(page);
+    await page.check('input[name="mode"][value="rootWord"]');
+    await proceedToStep2ListMode(page);
+    await navigateToStep5ListMode(page, 'logging', 'btnRootCand_log', null);
+    await page.fill('#patchInput', 'patch:\n  compoundParts:\n    - dream');
+    await page.waitForTimeout(300);
+    await expect(page.locator('.msg.err')).toContainText('compoundParts');
+    await expect(page.locator('#btnRunSandbox')).toBeDisabled();
+  });
+});

@@ -48,30 +48,6 @@ there's a cheap way to test a general rule against the regression corpus without
 
 ---
 
-## RESOLVED — `COMPOUND_PARTS` incomplete for `gingerbread` / `reindeer` (stale — already fixed in Phase 1)
-
-**Originally found during:** v1 fixture pass, carried into v2 unresolved.
-
-**Resolved in:** Phase 1 (pattern-fallback pass). Both words were promoted off `expectedFailure`
-at that time and confirmed correct independently of `compoundParts`. The backlog entry was never
-updated to reflect this — a hygiene miss caught during the Phase 2 workbench no-op detection
-work, when the Compound Part tool's `wouldChange` flag correctly identified adding ginger/rein/deer
-as no-ops: the nucleus fallback already produces the pedagogically correct split for both words.
-
-**Verified via recursive trace (Phase 2):**
-- `gingerbread` → nuclei fallback: `gin|ger|bread`. If `ginger` were added, the compound path
-  would recursively split `ginger` → `gin|ger`, then `bread` → `bread`. Identical result.
-  `wouldChange: false` is correct.
-- `reindeer` → nuclei fallback: `rein|deer` (`ei` + 3-char `eer` vowel team, VCCV split at `nd`).
-  If `rein`+`deer` were both added, compound path gives same two segments. `wouldChange: false`.
-
-**Residual action (none required):** the `expectedFailure` fixtures for both words were already
-removed from `phonics-regression-fixtures.v2.yaml` during Phase 1 when they started passing.
-Adding ginger/rein/deer to `compoundParts` via the workbench is safe (the tool will flag it as
-a no-op) but produces no split change.
-
----
-
 ## OPEN — Pattern fallback misidentifies `er` in VCV context (`several`, `general`, etc.)
 
 **Found during:** Phase 1 review after all 323 tests were passing.
@@ -149,3 +125,27 @@ be fixed in Phase 1, confirmed via no-op detection during this phase.
 - **`dge` trigraph had zero fixture coverage** — closed with `fudge → f\|u\|dge`.
 - **`scr` and `igh` claimed covered in v1 coverage matrix but had no fixture** — closed with
   `scrap` (scr) and `night` (igh).
+
+---
+
+## RESOLVED — `COMPOUND_PARTS` incomplete for `gingerbread` / `reindeer` (stale — already fixed in Phase 1)
+
+**Originally found during:** v1 fixture pass, carried into v2 unresolved.
+
+**Resolved in:** Phase 1 (pattern-fallback pass). Both words were promoted off `expectedFailure`
+at that time and confirmed correct independently of `compoundParts`. The backlog entry was never
+updated to reflect this — a hygiene miss caught during the Phase 2 workbench no-op detection
+work, when the Compound Part tool's `wouldChange` flag correctly identified adding ginger/rein/deer
+as no-ops: the nucleus fallback already produces the pedagogically correct split for both words.
+
+**Verified via recursive trace (Phase 2):**
+- `gingerbread` → nuclei fallback: `gin|ger|bread`. If `ginger` were added, the compound path
+  would recursively split `ginger` → `gin|ger`, then `bread` → `bread`. Identical result.
+  `wouldChange: false` is correct.
+- `reindeer` → nuclei fallback: `rein|deer` (`ei` + 3-char `eer` vowel team, VCCV split at `nd`).
+  If `rein`+`deer` were both added, compound path gives same two segments. `wouldChange: false`.
+
+**Residual action (none required):** the `expectedFailure` fixtures for both words were already
+removed from `phonics-regression-fixtures.v2.yaml` during Phase 1 when they started passing.
+Adding ginger/rein/deer to `compoundParts` via the workbench is safe (the tool will flag it as
+a no-op) but produces no split change.

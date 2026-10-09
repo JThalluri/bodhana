@@ -503,7 +503,8 @@ function renderStep2RootWord() {
       ? `<div class="msg info" style="margin-top:8px">Current split: <strong>${currentSplit.join(' | ')}</strong></div>`
       : '';
 
-    if (actualResult) {
+    const genuineBlocked = blockedCandidates.filter(bc => bc.wouldChange);
+    if (actualResult && genuineBlocked.length === 0) {
       const undoubledNote = actualResult.suffix !== actualResult.suffix.slice(-actualResult.suffix.length + 1)
         ? ` (undoubled: "${actualResult.stem}${actualResult.suffix}")`
         : '';

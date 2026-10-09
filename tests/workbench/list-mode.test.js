@@ -567,3 +567,50 @@ describe('buildChangelogEntriesForList — AC 8', () => {
     expect(lines.filter(l => l.includes('removed'))).toHaveLength(1);
   });
 });
+
+// ── End-to-end merge proof (full pipeline, no UI) ─────────────────────────────
+
+describe('E2E merge proof — daydream (compoundPart) and logging (rootWord)', () => {
+  it('daydream: { add: dream } → dream in compoundParts, daydream fixture nowPassing, no unexpected changes', () => {
+    const patch = validatePatchSchemaForList({ add: ['dream'] }, 'compoundPart');
+    const sandboxRaw = applyPatchToRawList(rawObj, patch, 'compoundPart');
+    const sandboxCompiled = compileConstructs(sandboxRaw);
+
+    expect(sandboxCompiled.compoundParts).toContain('dream');
+
+    const diff = runSyllableRegressionDiff(compiledObj, sandboxCompiled, fixturesObj);
+    const d = diff.find(x => x.word === 'daydream');
+    expect(d).toBeDefined();
+    expect(d.nowPassing).toBe(true);
+    expect(d.newSplit).toEqual(['day', 'dream']);
+
+    // No unexpected regressions — only the nowPassing entry should appear
+    const unexpected = diff.filter(x => !x.nowPassing);
+    expect(unexpected).toHaveLength(0);
+
+    const lines = buildChangelogEntriesForList(patch, 'compoundPart', 'enables daydream compound-split', '2026-10-08');
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toBe('| dream | compoundParts | added | 2026-10-08 | enables daydream compound-split |');
+  });
+
+  it('logging: { add: log } → log in rootWords, logging fixture nowPassing, no unexpected changes', () => {
+    const patch = validatePatchSchemaForList({ add: ['log'] }, 'rootWord');
+    const sandboxRaw = applyPatchToRawList(rawObj, patch, 'rootWord');
+    const sandboxCompiled = compileConstructs(sandboxRaw);
+
+    expect(sandboxCompiled.rootWords).toContain('log');
+
+    const diff = runSyllableRegressionDiff(compiledObj, sandboxCompiled, fixturesObj);
+    const d = diff.find(x => x.word === 'logging');
+    expect(d).toBeDefined();
+    expect(d.nowPassing).toBe(true);
+    expect(d.newSplit).toEqual(['log', 'ging']);
+
+    const unexpected = diff.filter(x => !x.nowPassing);
+    expect(unexpected).toHaveLength(0);
+
+    const lines = buildChangelogEntriesForList(patch, 'rootWord', 'enables logging to split correctly', '2026-10-08');
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toBe('| log | rootWords | added | 2026-10-08 | enables logging to split correctly |');
+  });
+});
