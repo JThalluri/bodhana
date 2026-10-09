@@ -97,38 +97,35 @@ and the VCV rule fires between them, producing `se|ve|ral` instead of `sev|er|al
 
 ---
 
-## OPEN — Constructs Workbench patch mechanism doesn't cover compoundParts/rootWords
+## RESOLVED — Constructs Workbench now covers compoundParts/rootWords
 
-**Found during:** Phase 2 review, while using the Workbench for a real `ea` correction and
-checking its output for gaps.
+**Found during:** Phase 2 review (see original entry above — moved to resolved).
 
-**Issue:** The Workbench's six-step workflow (blast radius → context bundle → LLM patch →
-sandbox → hard-gated regression diff → merge) only covers `vowelTeamExceptions`. But
-`compoundParts` and `rootWords` have the same "flat list requiring careful, reviewed
-enrichment" shape — and already have a known, open gap: `gingerbread`/`reindeer` can't
-compound-split because `ginger`/`rein`/`deer` aren't in `compoundParts` (see the existing
-"COMPOUND_PARTS incomplete for gingerbread/reindeer" entry in this file). Right now, fixing
-that requires hand-editing the YAML directly, with no blast-radius preview, no sandbox-apply,
-no regression-diff safety net — exactly the unsafe workflow the Workbench was built to
-eliminate for vowel exceptions.
+**Resolved in:** phonics_integration branch, spec `phonics-workbench-compound-rootwords-extension-spec_v1.0.md`.
 
-Blends/digraphs/trigraphs/clusters3/floss are explicitly NOT included in this gap — they're
-flat category-membership lists with no per-word nuance to get wrong, so they don't need this
-kind of tool.
+**What shipped:**
+- Mode selector added to Step 1: Vowel Sound / Compound Part / Root Word.
+- Compound Part mode: Step 2 analyses a word via the real `tryCompoundSplit` loop, shows
+  which halves are missing from the current `compoundParts` set, and lets the user target
+  a specific candidate. Step 3 blast radius shows every word in the fixture pool that the
+  algorithm would consider as a compound half, with current and sandboxed splits side by side.
+- Root Word mode: Step 2 runs the real `tryStripSuffix` and surfaces any candidate root
+  blocked by missing `rootWords` entries.
+- `validatePatchSchemaForList` — mode-scoped schema: only `add`/`remove`, items must be plain
+  strings (not word/pattern/sound objects), cross-mode targeting rejected immediately.
+- `runSyllableRegressionDiff` sibling to `runRegressionDiff`: re-runs all `syllableSplit`
+  fixtures, surfaces `nowPassing` for `expectedFailure: true` entries that now match their
+  target, same hard-gate merge logic.
+- `buildChangelogEntriesForList`: format `| word | list | action | date | reason |`.
+- `syllables.mjs` + `vowelNuclei.mjs` added to standalone bundle (128 KB → 172 KB).
+- 42 new unit tests; full suite: 813 tests passing.
 
-**Not patched. Deferred, pending:**
-1. The current Phase 2 bug fixes (the `computeBlastRadius` substring-vs-real-token bug, and
-   the related `checkExceptionTableSelfConsistency` finding) must land and be confirmed
-   working first — this extension builds on the same mechanism, and should not be started on
-   top of a known-buggy foundation.
-2. A dedicated spec for extending the Workbench's patch target to `compoundParts` and
-   `rootWords` — same workflow shape, different containment check (substring-of-word rather
-   than substring-of-vowel-team-sound), different patch schema (add/remove word entries rather
-   than word/pattern/sound rows, since these are plain string lists, not structured rows).
-
-This was explicitly anticipated and deliberately deferred in the original Phase 2 spec (§5):
-"Extending this patch format to compoundParts/rootWords later... is a natural, small extension
-of this same mechanism — same six steps, same gating — but is explicitly not built now."
+**Note on gingerbread/reindeer:** Both words currently split correctly via the nucleus
+fallback path (gingerbread → ['gin','ger','bread'], reindeer → ['rein','deer']) even without
+their compound parts in the list. Adding ginger/rein/deer to compoundParts via the new tool
+would not change the split output (same result via compound path), but the tool now provides
+the safe workflow to make those additions if desired. See the "COMPOUND_PARTS incomplete"
+entry above for the open tracking item.
 
 ---
 

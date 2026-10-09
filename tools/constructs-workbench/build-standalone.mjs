@@ -65,6 +65,8 @@ const compileCore = stripModuleSyntax(read('scripts/constructs-compile-core.mjs'
 const validate    = stripModuleSyntax(read('scripts/constructs-validate.mjs'));
 const vowelSounds = stripModuleSyntax(read('src/phonics/core/vowelSounds.mjs'));
 const tokenizeJs  = stripModuleSyntax(read('src/phonics/core/tokenize.mjs'));
+const vowelNuclei = stripModuleSyntax(read('src/phonics/core/vowelNuclei.mjs'));
+const syllables   = stripModuleSyntax(read('src/phonics/core/syllables.mjs'));
 const coreJs      = stripModuleSyntax(read('tools/constructs-workbench/workbench-core.mjs'));
 const appJs       = stripModuleSyntax(read('tools/constructs-workbench/app.js'));
 
@@ -79,6 +81,10 @@ const inlineScript = [
   vowelSounds,
   '// ── src/phonics/core/tokenize.mjs ───────────────────────────────────────',
   tokenizeJs,
+  '// ── src/phonics/core/vowelNuclei.mjs ────────────────────────────────────',
+  vowelNuclei,
+  '// ── src/phonics/core/syllables.mjs ──────────────────────────────────────',
+  syllables,
   '// ── tools/constructs-workbench/workbench-core.mjs ────────────────────────',
   coreJs,
   '// ── tools/constructs-workbench/app.js ────────────────────────────────────',
@@ -95,7 +101,7 @@ const template = read('tools/constructs-workbench/index.html');
 const replacement =
   `  <!-- All JS inlined for file:// compatibility -->\n` +
   `  <script>\n${jsyaml}\n  </script>\n` +
-  `  <script type="module">\n${inlineScript}\n  </script>`;
+  `  <script>\n${inlineScript}\n  </script>`;
 const patched = template.replace(
   /[ \t]*<!-- Vendor YAML parser[^]*?<\/script>\n[ \t]*<!-- App logic[^]*?<\/script>/,
   () => replacement

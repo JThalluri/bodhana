@@ -24,6 +24,8 @@ Rebuild whenever you edit any of these source files:
 - `scripts/constructs-validate.mjs`
 - `src/phonics/core/vowelSounds.mjs`
 - `src/phonics/core/tokenize.mjs`
+- `src/phonics/core/vowelNuclei.mjs`
+- `src/phonics/core/syllables.mjs`
 
 The build script (`build-standalone.mjs`) reads all six files, strips ES module
 `import`/`export` syntax, and concatenates everything into a single self-contained HTML file.
@@ -39,6 +41,23 @@ npx serve . --no-clipboard
 
 ---
 
+## The three modes
+
+After loading files in Step 1, select a mode:
+
+- **Vowel Sound** — fix a `vowelTeamExceptions` entry (existing flow, unchanged)
+- **Compound Part** — add or remove an entry in `compoundParts`
+- **Root Word** — add or remove an entry in `rootWords`
+
+All three modes share the same 8-step structure and the same hard-gate rules
+(validator → regression diff → blast-radius diff → merge). Only the patch
+schema and the regression diff fixture type differ per mode.
+
+`blends`, `digraphs`, `trigraphs`, `clusters3`, and `floss` are not covered —
+they are flat category-membership lists with no per-word nuance.
+
+---
+
 ## The eight-step workflow
 
 ### Step 1 — Load
@@ -48,6 +67,8 @@ Open two files:
 2. `constructs/fixtures/phonics-regression-fixtures.v2.yaml` — the regression corpus
 
 Both are required. If either fails to parse, the error is shown and you cannot proceed.
+
+After both load successfully, choose a mode (Vowel Sound / Compound Part / Root Word).
 
 **I/O path**: Chrome/Edge uses the File System Access API (file handles persist for the session,
 enabling direct write-back on merge). Firefox/Safari falls back to upload/download.
@@ -148,13 +169,15 @@ Nothing writes to disk before this step. Nothing in steps 1–7 modifies any fil
 |------|---------|
 | `index.html` | Standalone shell — styles + loads vendor + mounts app.js |
 | `app.js` | UI layer — 8-step state machine, DOM rendering, FSA I/O |
-| `workbench-core.mjs` | Pure logic — validatePatchSchema, applyPatchToRaw, computeBlastRadius, runRegressionDiff, buildChangelogEntries |
+| `workbench-core.mjs` | Pure logic — validatePatchSchema, applyPatchToRaw, computeBlastRadius, runRegressionDiff, buildChangelogEntries, plus list-mode siblings |
 | `vendor/js-yaml.min.js` | Bundled YAML parser (UMD build of js-yaml, sets window.jsyaml) |
 
 Shared logic is imported directly — never forked:
 - `../../scripts/constructs-compile-core.mjs` — `compileConstructs()`
 - `../../scripts/constructs-validate.mjs` — `validateAll()`, `ValidationError`
 - `../../src/phonics/core/vowelSounds.mjs` — `buildExceptionMap`, `lookupExceptionWithTier`, `soundForVowelTeam`
+- `../../src/phonics/core/vowelNuclei.mjs` — `buildVowelNucleiList`
+- `../../src/phonics/core/syllables.mjs` — `tryCompoundSplit`, `tryStripSuffix`, `splitSyllables`
 
 ---
 

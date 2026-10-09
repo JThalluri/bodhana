@@ -280,6 +280,26 @@ code { font-family: 'Menlo', 'Consolas', monospace; font-size: 12px; background:
 .code-block { font-family: 'Menlo', 'Consolas', monospace; font-size: 12px; background: #1e293b; color: #e2e8f0; padding: 12px 14px; border-radius: 6px; line-height: 1.7; overflow-x: auto; }
 .result-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; }
 .result-row { font-size: 13px; margin-bottom: 6px; }
+
+/* ── Mode selector ────────────────────────────────────────────── */
+.mode-selector { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.mode-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 13px;
+  color: #1e293b;
+  background: #fff;
+  transition: border-color 0.12s, background 0.12s;
+}
+.mode-opt:hover { border-color: #f97316; background: #fff7ed; }
+.mode-opt input[type=radio] { margin-top: 2px; flex-shrink: 0; accent-color: #f97316; }
+.mode-opt span { line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -328,7 +348,7 @@ code { font-family: 'Menlo', 'Consolas', monospace; font-size: 12px; background:
 `)}return r}var mi=x(x({},ti),{},{schema:rt,skipInvalid:!1,noRefs:!1,flowLevel:-1,sortKeys:!1,transform:()=>{}});function hi(e,t){let n=String(e),r=String(t);return n<r?-1:+(n>r)}function gi(e,t={}){let n=x(x({},mi),t),r=Rn(e,n.schema,{noRefs:n.noRefs,skipInvalid:n.skipInvalid});if(n.flowLevel>=0&&Hn(r,(e,t)=>{if(!(t.depth<n.flowLevel))return(e.kind===`sequence`||e.kind===`mapping`)&&(e.style=E.FLOW),Bn}),n.sortKeys){let e=n.sortKeys===!0?hi:n.sortKeys;Hn(r,t=>{t.kind===`mapping`&&t.items.sort((t,n)=>e(t.key.kind===`scalar`?t.key.value:``,n.key.kind===`scalar`?n.key.value:``))})}return n.transform(r),pi(r,x(x({},He(n,Object.keys(ti))),{},{schema:n.schema}))}var $=-1;function _i(e){return`tagStart`in e&&e.tagStart!==$?e.tagStart:`anchorStart`in e&&e.anchorStart!==$?e.anchorStart:`valueStart`in e&&e.valueStart!==$?e.valueStart:`start`in e?e.start:0}function vi(e,t){return t.tagStart===$?``:e.source.slice(t.tagStart,t.tagEnd)}function yi(e,t){return t.anchorStart===$?void 0:e.source.slice(t.anchorStart,t.anchorEnd)}function bi(e,t){let n=wt(e.source,t),r=vi(e,t),i,a=!1;return r===``?i=t.style===T.PLAIN?e.schema.resolveImplicitScalarTag(n).tag.tagName:e.schema.defaultScalarTag.tagName:(a=!0,i=r),{kind:`scalar`,tag:i,tagged:a,style:t.style,anchor:yi(e,t),value:n}}function xi(e,t,n){let r=vi(e,t),i,a=!1;return r===``?i=n:(i=r,a=!0),{tag:i,tagged:a,style:t.style,anchor:yi(e,t)}}function Si(e,t){let n=e.frames[e.frames.length-1];n.kind===`document`?n.doc.contents=t:n.kind===`sequence`?n.node.items.push(t):n.key?(n.node.items.push({key:n.key,value:t}),n.key=null):n.key=t}function Ci(e,t){let n={source:t.source,schema:t.schema,eventIndex:0,position:0,frames:[],documents:[]};for(;n.eventIndex<e.length;){let t=e[n.eventIndex++];switch(n.position=_i(t),t.type){case w.DOCUMENT:{let e={contents:null,explicitStart:t.explicitStart,explicitEnd:t.explicitEnd,directives:t.directives};n.frames.push({kind:`document`,doc:e});break}case w.SCALAR:Si(n,bi(n,t));break;case w.SEQUENCE:{let{tag:e,tagged:r,style:i,anchor:a}=xi(n,t,`tag:yaml.org,2002:seq`),o={kind:`sequence`,tag:e,tagged:r,style:i,anchor:a,items:[]};n.frames.push({kind:`sequence`,node:o});break}case w.MAPPING:{let{tag:e,tagged:r,style:i,anchor:a}=xi(n,t,`tag:yaml.org,2002:map`),o={kind:`mapping`,tag:e,tagged:r,style:i,anchor:a,items:[]};n.frames.push({kind:`mapping`,node:o,key:null});break}case w.ALIAS:Si(n,{kind:`alias`,anchor:n.source.slice(t.anchorStart,t.anchorEnd)});break;case w.POP:{let e=n.frames.pop();if(e.kind===`mapping`&&e.key)throw Error(`incomplete mapping pair in event stream`);e.kind===`document`?n.documents.push(e.doc):Si(n,e.node);break}}}return n.documents}var wi=w.DOCUMENT,Ti=w.SEQUENCE,Ei=w.MAPPING,Di=w.SCALAR,Oi=w.ALIAS,ki=w.POP,Ai=T.PLAIN,ji=T.SINGLE_QUOTED,Mi=T.DOUBLE_QUOTED,Ni=T.LITERAL_BLOCK,Pi=T.FOLDED_BLOCK,Fi=E.BLOCK,Ii=E.FLOW,Li=D.CLIP,Ri=D.STRIP,zi=D.KEEP;e.CHOMPING_CLIP=Li,e.CHOMPING_KEEP=zi,e.CHOMPING_MODE=D,e.CHOMPING_STRIP=Ri,e.COLLECTION_STYLE=E,e.COLLECTION_STYLE_BLOCK=Fi,e.COLLECTION_STYLE_FLOW=Ii,e.CORE_SCHEMA=tt,e.DEFAULT_SCALAR_STYLE_RULES=Wn,e.DUMP_SCHEMA=rt,e.EVENT_ALIAS=Oi,e.EVENT_DOCUMENT=wi,e.EVENT_ID=w,e.EVENT_MAPPING=Ei,e.EVENT_POP=ki,e.EVENT_SCALAR=Di,e.EVENT_SEQUENCE=Ti,e.FAILSAFE_SCHEMA=$e,e.JSON_SCHEMA=et,e.NOT_RESOLVED=t,e.SCALAR_STYLE=T,e.SCALAR_STYLE_DOUBLE_QUOTED=Mi,e.SCALAR_STYLE_FOLDED_BLOCK=Pi,e.SCALAR_STYLE_LITERAL_BLOCK=Ni,e.SCALAR_STYLE_PLAIN=Ai,e.SCALAR_STYLE_SINGLE_QUOTED=ji,e.Schema=S,e.VISIT_BREAK=zn,e.VISIT_SKIP=Bn,e.YAML11_SCHEMA=nt,e.YAMLException=C,e.binaryTag=Fe,e.boolCoreTag=p,e.boolJsonTag=ee,e.boolYaml11Tag=re,e.constructFromEvents=Ht,e.defineMappingTag=i,e.defineScalarTag=n,e.defineSequenceTag=r,e.dump=gi,e.eventsToAst=Ci,e.floatCoreTag=xe,e.floatJsonTag=Ee,e.floatYaml11Tag=_,e.getScalarValue=wt,e.intCoreTag=ce,e.intJsonTag=pe,e.intYaml11Tag=g,e.jsToAst=Rn,e.legacyMapTag=ot,e.load=Fn,e.loadAll=Pn,e.mapTag=Ge,e.mergeTag=je,e.nullCoreTag=s,e.nullJsonTag=c,e.nullYaml11Tag=u,e.omapTag=Ue,e.pairsTag=We,e.parseEvents=jn,e.present=pi,e.realMapTag=it,e.seqTag=Ve,e.setTag=Ke,e.strTag=a,e.timestampTag=Be,e.visit=Hn});
 //# sourceMappingURL=js-yaml.umd.min.js.map
   </script>
-  <script type="module">
+  <script>
 // ── constructs-compile-core.mjs ──────────────────────────────────────────
 
 /**
@@ -887,6 +907,437 @@ function tokenize(word, sortedPatterns, opts = {}) {
 }
 
 
+// ── src/phonics/core/vowelNuclei.mjs ────────────────────────────────────
+
+/**
+ * vowelNuclei.mjs — vowel nucleus identification for syllable splitting
+ *
+ * Permanent, shared, production code. No global state.
+ */
+
+const VOWEL_CHARS = new Set(['a', 'e', 'i', 'o', 'u']);
+
+function clean(word) {
+  return String(word == null ? '' : word).toLowerCase().replace(/[^a-z]/g, '');
+}
+
+function isVowelChar(ch) {
+  return VOWEL_CHARS.has(ch);
+}
+
+/**
+ * 'y' is a consonant only when it starts the word and is immediately followed
+ * by a vowel (yes, you, yacht). Otherwise it acts as a vowel (happy, gym, fly).
+ */
+function isYVowel(w, i) {
+  if (i === 0 && i + 1 < w.length && isVowelChar(w[i + 1])) return false;
+  return true;
+}
+
+/**
+ * Build the vowel nuclei list from compiled constructs.
+ * Combines rControlled3 + specific trigraphs-as-nuclei + vowelTeams, deduped,
+ * sorted longest-first.
+ *
+ * @param {Object} patternCategories
+ * @returns {string[]}
+ */
+function buildVowelNucleiList(patternCategories) {
+  // 'igh' acts as a vowel nucleus (night, fight) even though it is a trigraph
+  const trigraphNuclei = ['igh'];
+  const list = [
+    ...patternCategories.rControlled3,
+    ...patternCategories.vowelTeams.filter(p => p.length >= 3), // eigh, ough, augh first
+    ...trigraphNuclei,
+    ...patternCategories.vowelTeams.filter(p => p.length < 3),
+  ];
+  // Deduplicate, keep longest first
+  const seen = new Set();
+  const deduped = [];
+  for (const p of list) {
+    if (!seen.has(p)) { seen.add(p); deduped.push(p); }
+  }
+  return deduped.sort((a, b) => b.length - a.length);
+}
+
+/**
+ * Identify vowel nuclei in a word — positions and patterns used for syllable
+ * boundary detection.
+ *
+ * A nucleus is a maximal vowel-team match (longest-first), a bare vowel char,
+ * or 'y' acting as a vowel. Silent final 'e' is dropped when the word has 2+
+ * nuclei and the 'e' is preceded by a consonant (or followed only by s/d).
+ *
+ * @param {string} word
+ * @param {string[]} vowelNucleiList  - sorted longest-first (from buildVowelNucleiList)
+ * @returns {{ start: number, end: number, pattern: string }[]}
+ */
+function identifyVowelNuclei(word, vowelNucleiList) {
+  const w = clean(word);
+  const nuclei = [];
+  let i = 0;
+
+  while (i < w.length) {
+    // 'u' after 'q' is always consonantal — check before pattern matching so
+    // that vowel-team patterns starting with 'u' (ue, ui) don't grab it.
+    if (w[i] === 'u' && i > 0 && w[i - 1] === 'q') {
+      i += 1;
+      continue;
+    }
+
+    let matched = null;
+    for (const p of vowelNucleiList) {
+      if (w.substr(i, p.length) === p) {
+        matched = p;
+        break;
+      }
+    }
+    if (matched) {
+      nuclei.push({ start: i, end: i + matched.length, pattern: matched });
+      i += matched.length;
+      continue;
+    }
+    const ch = w[i];
+    if (isVowelChar(ch) || (ch === 'y' && isYVowel(w, i))) {
+      nuclei.push({ start: i, end: i + 1, pattern: ch });
+      i += 1;
+      continue;
+    }
+    i += 1;
+  }
+
+  // Drop silent final 'e' when the word has ≥2 nuclei and the 'e' is preceded
+  // by a consonant. Applies to magic-e (flame, name) and inflected forms (cooked,
+  // breathes). Words like maybe/steakhouse that should keep 'e' as a syllable
+  // are handled earlier via compound-split before reaching this code.
+  if (nuclei.length >= 2) {
+    const last = nuclei[nuclei.length - 1];
+    if (last.pattern === 'e' && last.start > 0 && !isVowelChar(w[last.start - 1])) {
+      const after = w.slice(last.end);
+      const isSilent = last.end === w.length ||
+                       (after.length === 1 && (after === 's' || after === 'd'));
+      if (isSilent) nuclei.pop();
+    }
+  }
+
+  return nuclei;
+}
+
+
+// ── src/phonics/core/syllables.mjs ──────────────────────────────────────
+
+/**
+ * syllables.mjs — syllable splitting + helper functions
+ *
+ * Permanent, shared, production code. No global state.
+ * All lookup data (compoundParts, rootWords, suffixRules, etc.) is passed
+ * explicitly so this module has zero side effects.
+ */
+
+
+function clean(word) {
+  return String(word == null ? '' : word).toLowerCase().replace(/[^a-z]/g, '');
+}
+
+function isVowelChar(ch) {
+  return 'aeiou'.indexOf(ch) !== -1;
+}
+
+/**
+ * Build the compound-parts lookup set from the raw array.
+ * Entries shorter than 2 characters are excluded at this point (compiler
+ * already hard-fails on them; this is a runtime safety net only).
+ *
+ * @param {string[]} list
+ * @returns {Set<string>}
+ */
+function buildCompoundPartsSet(list) {
+  const s = new Set();
+  for (const w of list) {
+    if (w.length >= 2) s.add(w);
+  }
+  return s;
+}
+
+/**
+ * Build the root-words lookup set from the raw array.
+ * Entries shorter than 3 characters are excluded (compiler enforces minimum).
+ *
+ * @param {string[]} list
+ * @returns {Set<string>}
+ */
+function buildRootWordsSet(list) {
+  const s = new Set();
+  for (const w of list) {
+    if (w.length >= 3) s.add(w);
+  }
+  return s;
+}
+
+/**
+ * Build the pattern-category map used by the VCCV fallback.
+ * Maps each pattern string → its category name.
+ *
+ * @param {Object} patternCategories
+ * @returns {Map<string, string>}
+ */
+function buildPatternCategoryMap(patternCategories) {
+  const m = new Map();
+  for (const [cat, patterns] of Object.entries(patternCategories)) {
+    for (const p of patterns) {
+      if (!m.has(p)) m.set(p, cat);
+    }
+  }
+  return m;
+}
+
+/**
+ * Attempt to split word into two compound halves.
+ * Both halves must be >= 3 chars and present in compoundPartsSet.
+ * Tries longest-left-half first so 'something' → ['some','thing'],
+ * not ['so','mething'].
+ *
+ * @param {string} word
+ * @param {Set<string>} compoundPartsSet
+ * @returns {string[] | null}
+ */
+function tryCompoundSplit(word, compoundPartsSet) {
+  if (word.length < 5) return null;
+  // Right half must be ≥ 2 chars; left half must be ≥ 3 chars.
+  for (let i = word.length - 2; i >= 3; i--) {
+    const left  = word.slice(0, i);
+    const right = word.slice(i);
+    if (compoundPartsSet.has(left) && compoundPartsSet.has(right)) {
+      return [left, right];
+    }
+  }
+  return null;
+}
+
+/**
+ * Attempt to strip a suffix from a word. Returns { stem, suffix } or null.
+ * Includes un-doubling logic (running→run+ning, bigger→big+ger).
+ * The '-ed' rule only fires when the stem ends in 't' or 'd' (wanted, needed).
+ *
+ * @param {string} word
+ * @param {object[]} suffixStripRules  - from compiled constructs
+ * @param {Set<string>} rootWordsSet
+ * @returns {{ stem: string, suffix: string } | null}
+ */
+function tryStripSuffix(word, suffixStripRules, rootWordsSet) {
+  for (const r of suffixStripRules) {
+    if (word.length < r.suffix.length + r.minStem) continue;
+    if (!word.endsWith(r.suffix)) continue;
+
+    let stem = word.slice(0, -r.suffix.length);
+    let actualSuffix = r.suffix;
+    let didUndouble = false;
+
+    // '-ed' only adds a syllable after t or d
+    if (r.edOnly) {
+      const lastCh = stem[stem.length - 1];
+      if (lastCh !== 't' && lastCh !== 'd') continue;
+    }
+
+    // Stem must contain a vowel
+    if (!/[aeiouy]/.test(stem)) continue;
+
+    // Un-double final consonant only when the un-doubled form is a known root
+    if (r.undouble && stem.length >= 3) {
+      const c1 = stem[stem.length - 1];
+      const c2 = stem[stem.length - 2];
+      if (c1 === c2 && !/[aeiou]/.test(c1) && c1 !== 'l' && c1 !== 's' && c1 !== 'f') {
+        const candidate = stem.slice(0, -1);
+        if (rootWordsSet.has(candidate)) {
+          actualSuffix = c1 + r.suffix;
+          stem = candidate;
+          didUndouble = true;
+        }
+      }
+    }
+
+    // When always:false, only strip if undoubling fired OR the stem is a known root.
+    // Also accept stem+'e' so that e-drop roots (believe→believ, achieve→achiev)
+    // match when the final-e was elided before the suffix was added.
+    if (!r.always && !didUndouble &&
+        !rootWordsSet.has(stem) && !rootWordsSet.has(stem + 'e')) continue;
+
+    return { stem, suffix: actualSuffix };
+  }
+  return null;
+}
+
+/**
+ * Split a word into syllables. Heuristic, compound/suffix-aware.
+ *
+ * @param {string} word
+ * @param {SyllableCtx} ctx   - pre-built lookup structures (see below)
+ * @param {number} [depth]    - recursion guard, start at 0
+ * @returns {string[]}
+ *
+ * @typedef {{ vowelNucleiList: string[], compoundPartsSet: Set<string>,
+ *             rootWordsSet: Set<string>, suffixStripRules: object[],
+ *             patternCategoryMap: Map<string,string> }} SyllableCtx
+ */
+function splitSyllables(word, ctx, depth = 0) {
+  const w = clean(word);
+  if (!w) return [];
+  if (depth > 4) return [w]; // runaway recursion guard
+
+  // 1. Compound split: some|thing, rain|bow, any|one
+  const compound = tryCompoundSplit(w, ctx.compoundPartsSet);
+  if (compound) {
+    return [
+      ...splitSyllables(compound[0], ctx, depth + 1),
+      ...splitSyllables(compound[1], ctx, depth + 1),
+    ];
+  }
+
+  // 2. -Cle ending: ta|ble, lit|tle, ap|ple
+  let stem = w;
+  let cleSuffix = '';
+  if (w.length > 4 && w.endsWith('le')) {
+    const cIdx = w.length - 3;
+    const c = w[cIdx];
+    if (!isVowelChar(c) && c !== 'l') {
+      cleSuffix = w.slice(cIdx);
+      stem = w.slice(0, cIdx);
+    }
+  }
+
+  // 3. Suffix strip: a|maz|ing, run|ning, teach|er
+  const stripped = tryStripSuffix(stem, ctx.suffixStripRules, ctx.rootWordsSet);
+  if (stripped && stripped.stem.length >= 2) {
+    const stemSyls = splitSyllables(stripped.stem, ctx, depth + 1);
+    const withSuffix = [...stemSyls, stripped.suffix];
+    return cleSuffix ? [...withSuffix, cleSuffix] : withSuffix;
+  }
+
+  // 4. Pattern-based fallback
+  const nuclei = identifyVowelNuclei(stem, ctx.vowelNucleiList);
+  if (nuclei.length <= 1) {
+    return cleSuffix ? [stem, cleSuffix] : [stem];
+  }
+
+  const boundaries = [];
+  for (let n = 0; n < nuclei.length - 1; n++) {
+    const cur = nuclei[n];
+    const nxt = nuclei[n + 1];
+    const between = stem.slice(cur.end, nxt.start);
+    const len = between.length;
+    let split;
+
+    if (len === 0) {
+      // Adjacent vowels → hiatus (cre·ate, play·er)
+      split = cur.end;
+    } else if (len === 1) {
+      // VCV → split before the consonant (o·pen, ti·ger)
+      split = cur.end;
+      // Guard against bare-consonant syllable
+      if (split < 1 || !/[aeiouy]/.test(stem.slice(0, split))) {
+        split = cur.end + 1;
+      }
+    } else if (len === 2) {
+      // VCCV: keep digraphs together (fa·ther), split other pairs (rab·bit)
+      if (between === 'th' || between === 'sh' || between === 'ch' || between === 'wh') {
+        split = cur.end;
+      } else {
+        split = cur.end + 1;
+      }
+    } else {
+      // VCCCV+: keep last two together if they form a blend/digraph/cluster
+      const lastTwo = between.slice(-2);
+      const cat = ctx.patternCategoryMap.get(lastTwo);
+      if (cat === 'blends' || cat === 'digraphs' || cat === 'clusters3') {
+        split = nxt.start - 2;
+      } else {
+        split = nxt.start - 1;
+      }
+    }
+
+    const prevBoundary = boundaries.length ? boundaries[boundaries.length - 1] : 0;
+    if (split > prevBoundary) boundaries.push(split);
+  }
+
+  const syllables = [];
+  let start = 0;
+  for (const b of boundaries) {
+    if (b > start) syllables.push(stem.slice(start, b));
+    start = b;
+  }
+  if (start < stem.length) syllables.push(stem.slice(start));
+  if (cleSuffix) syllables.push(cleSuffix);
+
+  return syllables.length ? syllables : [w];
+}
+
+/**
+ * Count syllables in a word using a fast vowel-nucleus heuristic.
+ * This is independent of splitSyllables and does not require the full ctx.
+ *
+ * @param {string} word
+ * @returns {number}
+ */
+function countSyllables(word) {
+  const w = String(word == null ? '' : word).toLowerCase().replace(/[^a-z]/g, '');
+  if (!w) return 0;
+  if (w.length <= 3) return 1;
+  let cleaned = w;
+  if (cleaned.endsWith('e') && cleaned.length > 2) {
+    const isLe = cleaned[cleaned.length - 2] === 'l' &&
+                 cleaned.length > 3 &&
+                 !isVowelChar(cleaned[cleaned.length - 3]);
+    if (!isLe) cleaned = cleaned.slice(0, -1);
+  }
+  let count = 0;
+  let prev = false;
+  for (const ch of cleaned) {
+    const v = isVowelChar(ch);
+    if (v && !prev) count++;
+    prev = v;
+  }
+  return Math.max(1, count);
+}
+
+/**
+ * Compute onset (initial consonants) and rime (vowel + everything after).
+ *
+ * @param {string} word
+ * @returns {{ onset: string, rime: string }}
+ */
+function onsetRime(word) {
+  const w = String(word == null ? '' : word).toLowerCase().replace(/[^a-z]/g, '');
+  let i = 0;
+  while (i < w.length && !isVowelChar(w[i])) i++;
+  return { onset: w.slice(0, i), rime: w.slice(i) };
+}
+
+/**
+ * Find words in pool that are minimal pairs of word.
+ * Two words are minimal pairs when they share the same rime (onset differs)
+ * or the same onset (rime differs) — the classic onset–rime definition.
+ *
+ * @param {string} word
+ * @param {string[]} pool
+ * @returns {{ word: string, sharedOnset: boolean, sharedRime: boolean }[]}
+ */
+function findMinimalPairs(word, pool) {
+  const target = clean(word);
+  const { onset: targetOnset, rime: targetRime } = onsetRime(target);
+  return pool
+    .map(clean)
+    .filter(w => w && w !== target)
+    .filter(w => {
+      const { onset, rime } = onsetRime(w);
+      return onset === targetOnset || rime === targetRime;
+    })
+    .map(w => {
+      const { onset, rime } = onsetRime(w);
+      return { word: w, sharedOnset: onset === targetOnset, sharedRime: rime === targetRime };
+    });
+}
+
+
 // ── tools/constructs-workbench/workbench-core.mjs ────────────────────────
 
 /**
@@ -900,7 +1351,11 @@ function tokenize(word, sortedPatterns, opts = {}) {
  *   ../../scripts/constructs-validate.mjs      — validateAll(), ValidationError
  *   ../../src/phonics/core/vowelSounds.mjs     — buildExceptionMap etc.
  *   ../../src/phonics/core/tokenize.mjs        — buildSortedPatterns, tokenize
+ *   ../../src/phonics/core/syllables.mjs       — tryCompoundSplit, tryStripSuffix, splitSyllables etc.
+ *   ../../src/phonics/core/vowelNuclei.mjs     — buildVowelNucleiList
  */
+
+
 
 
 
@@ -1136,6 +1591,411 @@ function buildChangelogEntries(patch, oldCompiled, reason, date) {
   return lines;
 }
 
+// ── List mode — patch schema ──────────────────────────────────────────────────
+
+const LIST_MODE_GLOBAL_FORBIDDEN = [
+  'patternCategories', 'defaultVowelSound', 'suffixStripRules',
+  'patternCategoryDefaultLevels', 'patternLevelOverrides',
+  'scopeLevels', 'soundLabels', 'vowelTeamExceptions',
+];
+
+/**
+ * Validate a patch for compoundPart or rootWord mode.
+ *
+ * Only "add" and "remove" are valid ops (no "modify").
+ * Items must be plain strings — objects with word/pattern/sound are rejected immediately.
+ * Mode-scoped: compoundPart patches may not touch rootWords, and vice versa.
+ *
+ * @param {object} patchRaw
+ * @param {'compoundPart'|'rootWord'} mode
+ * @returns {{ add?: string[], remove?: string[] }}
+ */
+function validatePatchSchemaForList(patchRaw, mode) {
+  if (!patchRaw || typeof patchRaw !== 'object') {
+    throw new Error('Patch must be a YAML object');
+  }
+
+  const keys = Object.keys(patchRaw);
+  const patch = (keys.length === 1 && patchRaw.patch !== undefined)
+    ? patchRaw.patch
+    : patchRaw;
+
+  if (!patch || typeof patch !== 'object' || Array.isArray(patch)) {
+    throw new Error('Patch must be an object with "add" and/or "remove" keys');
+  }
+
+  const targetList = mode === 'compoundPart' ? 'compoundParts' : 'rootWords';
+  const otherList  = mode === 'compoundPart' ? 'rootWords' : 'compoundParts';
+
+  for (const key of Object.keys(patch)) {
+    if (LIST_MODE_GLOBAL_FORBIDDEN.includes(key)) {
+      throw new Error(
+        `Patch schema violation: key "${key}" is not allowed — ` +
+        `only "add"/"remove" targeting ${targetList} are valid in ${mode} mode`
+      );
+    }
+    if (key === otherList) {
+      throw new Error(
+        `Patch schema violation: "${key}" is not allowed in ${mode} mode — ` +
+        `this patch targets the wrong list`
+      );
+    }
+    if (key === 'modify') {
+      throw new Error(
+        `Patch schema violation: "modify" is not valid in ${mode} mode — ` +
+        `${targetList} is a flat string list, use "add"/"remove" only`
+      );
+    }
+    if (key !== 'add' && key !== 'remove') {
+      throw new Error(
+        `Patch schema violation: unknown key "${key}" — ` +
+        `only "add" and "remove" are valid in ${mode} mode`
+      );
+    }
+  }
+
+  for (const op of ['add', 'remove']) {
+    const items = patch[op];
+    if (items === undefined) continue;
+    if (!Array.isArray(items)) {
+      throw new Error(`patch.${op} must be an array`);
+    }
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item !== null && typeof item === 'object') {
+        throw new Error(
+          `patch.${op}[${i}] must be a string, not an object — ` +
+          `${mode} mode patches are plain word entries, not word/pattern/sound rows`
+        );
+      }
+      if (typeof item !== 'string' || !item.trim()) {
+        throw new Error(`patch.${op}[${i}] must be a non-empty string`);
+      }
+    }
+  }
+
+  return patch;
+}
+
+// ── List mode — patch apply ───────────────────────────────────────────────────
+
+/**
+ * Apply a validated list-mode patch to a raw constructs object.
+ * Returns a deep-copied new object — never mutates rawObj.
+ *
+ * @param {object} rawObj
+ * @param {{ add?: string[], remove?: string[] }} patch
+ * @param {'compoundPart'|'rootWord'} mode
+ * @returns {object}
+ */
+function applyPatchToRawList(rawObj, patch, mode) {
+  const newRaw = JSON.parse(JSON.stringify(rawObj));
+  const listKey = mode === 'compoundPart' ? 'compoundParts' : 'rootWords';
+  const list = [...(newRaw[listKey] || [])];
+
+  for (const word of patch.remove || []) {
+    const idx = list.indexOf(word);
+    if (idx >= 0) list.splice(idx, 1);
+  }
+
+  for (const word of patch.add || []) {
+    if (!list.includes(word)) list.push(word);
+  }
+
+  newRaw[listKey] = list;
+  return newRaw;
+}
+
+// ── List mode — Step 2 analysis ───────────────────────────────────────────────
+
+/**
+ * Analyse a word for Compound Part mode (Step 2).
+ *
+ * Runs the real tryCompoundSplit against the word. If it already splits,
+ * returns { alreadySplits: true, split }. If not, enumerates every candidate
+ * split point the real algorithm's loop would consider and shows which halves
+ * are already in compoundPartsSet.
+ *
+ * Each candidate includes wouldChange: whether enabling the compound path at
+ * that boundary (by adding whichever halves are missing) would actually produce
+ * a different syllable split from what pattern-fallback already gives today.
+ * When wouldChange is false the addition is a no-op and the Target button
+ * should not be shown.
+ *
+ * @param {string} word
+ * @param {object} compiledObj
+ * @returns {{ alreadySplits: boolean, split: string[]|null, currentSplit: string[], candidates?: Array }}
+ */
+function analyzeCompoundWord(word, compiledObj) {
+  const w = word.toLowerCase().replace(/[^a-z]/g, '');
+  const compoundPartsSet = buildCompoundPartsSet(compiledObj.compoundParts || []);
+  const split = tryCompoundSplit(w, compoundPartsSet);
+  const ctx = buildSyllableCtx(compiledObj);
+  const currentSplit = splitSyllables(w, ctx);
+
+  if (split) {
+    return { alreadySplits: true, split, currentSplit };
+  }
+
+  const candidates = [];
+  if (w.length >= 5) {
+    for (let i = w.length - 2; i >= 3; i--) {
+      const left  = w.slice(0, i);
+      const right = w.slice(i);
+      const leftInSet  = compoundPartsSet.has(left);
+      const rightInSet = compoundPartsSet.has(right);
+
+      // Simulate enabling the compound path at this boundary: add whichever
+      // halves are missing, then re-run the full splitSyllables pipeline.
+      const testSet = new Set([...compoundPartsSet, left, right]);
+      const testCtx = { ...ctx, compoundPartsSet: testSet };
+      const newSplit    = splitSyllables(w, testCtx);
+      const wouldChange = JSON.stringify(newSplit) !== JSON.stringify(currentSplit);
+
+      candidates.push({ left, right, leftInSet, rightInSet, wouldChange, newSplit });
+    }
+  }
+
+  return { alreadySplits: false, split: null, currentSplit, candidates };
+}
+
+/**
+ * Analyse a word for Root Word mode (Step 2).
+ *
+ * Runs the real tryStripSuffix against the word. Returns the match result,
+ * the word's current split, and any candidates where undoubling was blocked
+ * by a missing root entry.
+ *
+ * Each blocked candidate includes wouldChange: whether adding it to rootWords
+ * would actually produce a different syllable split from what the algorithm
+ * already gives today. When wouldChange is false the addition is a no-op.
+ *
+ * @param {string} word
+ * @param {object} compiledObj
+ * @returns {{ actualResult: object|null, currentSplit: string[], blockedCandidates: Array }}
+ */
+function analyzeRootWord(word, compiledObj) {
+  const w = word.toLowerCase().replace(/[^a-z]/g, '');
+  const rootWordsSet = buildRootWordsSet(compiledObj.rootWords || []);
+  const rules = compiledObj.suffixStripRules || [];
+  const ctx = buildSyllableCtx(compiledObj);
+  const currentSplit = splitSyllables(w, ctx);
+
+  const actualResult = tryStripSuffix(w, rules, rootWordsSet);
+
+  const blockedCandidates = [];
+  for (const r of rules) {
+    if (w.length < r.suffix.length + r.minStem) continue;
+    if (!w.endsWith(r.suffix)) continue;
+
+    const stem = w.slice(0, -r.suffix.length);
+
+    if (r.edOnly) {
+      const lastCh = stem[stem.length - 1];
+      if (lastCh !== 't' && lastCh !== 'd') continue;
+    }
+
+    if (!/[aeiouy]/.test(stem)) continue;
+
+    if (r.undouble && stem.length >= 3) {
+      const c1 = stem[stem.length - 1];
+      const c2 = stem[stem.length - 2];
+      if (c1 === c2 && !/[aeiou]/.test(c1) && c1 !== 'l' && c1 !== 's' && c1 !== 'f') {
+        const candidate = stem.slice(0, -1);
+        if (!rootWordsSet.has(candidate)) {
+          const testSet  = new Set([...rootWordsSet, candidate]);
+          const testCtx  = { ...ctx, rootWordsSet: testSet };
+          const newSplit    = splitSyllables(w, testCtx);
+          const wouldChange = JSON.stringify(newSplit) !== JSON.stringify(currentSplit);
+          blockedCandidates.push({
+            suffix: r.suffix,
+            undoubledSuffix: c1 + r.suffix,
+            candidate,
+            wouldChange,
+            newSplit,
+          });
+        }
+      }
+    }
+  }
+
+  return { actualResult, currentSplit, blockedCandidates };
+}
+
+// ── List mode — blast radius ──────────────────────────────────────────────────
+
+function buildSyllableCtx(compiledObj) {
+  return {
+    vowelNucleiList:    buildVowelNucleiList(compiledObj.patternCategories || {}),
+    compoundPartsSet:   buildCompoundPartsSet(compiledObj.compoundParts || []),
+    rootWordsSet:       buildRootWordsSet(compiledObj.rootWords || []),
+    suffixStripRules:   compiledObj.suffixStripRules || [],
+    patternCategoryMap: buildPatternCategoryMap(compiledObj.patternCategories || {}),
+  };
+}
+
+function listModeWordPool(fixturesObj) {
+  const wordSet = new Set();
+  for (const f of [
+    ...(fixturesObj.vowelTeamSounds || []),
+    ...(fixturesObj.syllableSplit   || []),
+    ...(fixturesObj.tokenizer        || []),
+  ]) {
+    if (f.word) wordSet.add(String(f.word).toLowerCase().replace(/[^a-z]/g, ''));
+  }
+  return wordSet;
+}
+
+/**
+ * Compute the blast radius for adding/removing a compoundParts candidate.
+ *
+ * Scans the full word pool for every word where the real tryCompoundSplit loop
+ * would consider `candidate` as a valid half (respecting ≥3/≥2 char bounds).
+ * For each match, computes current split and what split would be with candidate
+ * toggled into the set.
+ *
+ * @param {string} candidate
+ * @param {object} compiledObj
+ * @param {object} fixturesObj
+ * @returns {Array<{ word, currentSplit, newSplit, changes }>}
+ */
+function computeCompoundBlastRadius(candidate, compiledObj, fixturesObj) {
+  const wordSet = listModeWordPool(fixturesObj);
+
+  const affected = [...wordSet].filter(word => {
+    if (word.length < 5) return false;
+    for (let i = word.length - 2; i >= 3; i--) {
+      if (word.slice(0, i) === candidate || word.slice(i) === candidate) return true;
+    }
+    return false;
+  });
+
+  const oldCtx = buildSyllableCtx(compiledObj);
+  const newCompoundPartsSet = new Set([...oldCtx.compoundPartsSet, candidate]);
+  const newCtx = { ...oldCtx, compoundPartsSet: newCompoundPartsSet };
+
+  return affected.sort().map(word => {
+    const currentSplit = splitSyllables(word, oldCtx);
+    const newSplit     = splitSyllables(word, newCtx);
+    const changes      = JSON.stringify(currentSplit) !== JSON.stringify(newSplit);
+    return { word, currentSplit, newSplit, changes };
+  });
+}
+
+/**
+ * Compute the blast radius for adding/removing a rootWords candidate.
+ *
+ * Scans the full word pool for every word ending in any suffixStripRules suffix
+ * whose stripped-and-undoubled stem equals the candidate.
+ *
+ * @param {string} candidate
+ * @param {object} compiledObj
+ * @param {object} fixturesObj
+ * @returns {Array<{ word, currentSplit, newSplit, changes }>}
+ */
+function computeRootWordBlastRadius(candidate, compiledObj, fixturesObj) {
+  const wordSet = listModeWordPool(fixturesObj);
+  const rules   = compiledObj.suffixStripRules || [];
+
+  const affected = [...wordSet].filter(word => {
+    for (const r of rules) {
+      if (word.length < r.suffix.length + r.minStem) continue;
+      if (!word.endsWith(r.suffix)) continue;
+
+      const stem = word.slice(0, -r.suffix.length);
+
+      if (r.edOnly) {
+        const lastCh = stem[stem.length - 1];
+        if (lastCh !== 't' && lastCh !== 'd') continue;
+      }
+
+      if (!/[aeiouy]/.test(stem)) continue;
+
+      if (r.undouble && stem.length >= 3) {
+        const c1 = stem[stem.length - 1];
+        const c2 = stem[stem.length - 2];
+        if (c1 === c2 && !/[aeiou]/.test(c1) && c1 !== 'l' && c1 !== 's' && c1 !== 'f') {
+          if (stem.slice(0, -1) === candidate) return true;
+        }
+      }
+
+      if (stem === candidate) return true;
+    }
+    return false;
+  });
+
+  const oldCtx = buildSyllableCtx(compiledObj);
+  const newRootWordsSet = new Set([...oldCtx.rootWordsSet, candidate]);
+  const newCtx = { ...oldCtx, rootWordsSet: newRootWordsSet };
+
+  return affected.sort().map(word => {
+    const currentSplit = splitSyllables(word, oldCtx);
+    const newSplit     = splitSyllables(word, newCtx);
+    const changes      = JSON.stringify(currentSplit) !== JSON.stringify(newSplit);
+    return { word, currentSplit, newSplit, changes };
+  });
+}
+
+// ── Syllable regression diff ──────────────────────────────────────────────────
+
+/**
+ * Re-run every syllableSplit fixture against two compiled objects and return
+ * rows where the resulting split array differs.
+ *
+ * Sibling to runRegressionDiff; reuses the same nowPassing/expectedFailure
+ * logic — a syllableSplit fixture with expectedFailure: true that now matches
+ * its documented target split is marked nowPassing and excluded from the
+ * merge-blocking set.
+ *
+ * @param {object} oldCompiled
+ * @param {object} newCompiled
+ * @param {object} fixturesObj
+ * @returns {Array<{ word, target, oldSplit, newSplit, nowPassing }>}
+ */
+function runSyllableRegressionDiff(oldCompiled, newCompiled, fixturesObj) {
+  const oldCtx = buildSyllableCtx(oldCompiled);
+  const newCtx = buildSyllableCtx(newCompiled);
+
+  const diffs = [];
+  for (const f of fixturesObj.syllableSplit || []) {
+    const word     = String(f.word);
+    const oldSplit = splitSyllables(word, oldCtx);
+    const newSplit = splitSyllables(word, newCtx);
+    if (JSON.stringify(oldSplit) !== JSON.stringify(newSplit)) {
+      const target     = f.split;
+      const nowPassing = f.expectedFailure === true &&
+                         JSON.stringify(newSplit) === JSON.stringify(target);
+      diffs.push({ word, target, oldSplit, newSplit, nowPassing });
+    }
+  }
+  return diffs;
+}
+
+// ── List mode — CHANGELOG entry builder ──────────────────────────────────────
+
+/**
+ * Build markdown table rows for the CHANGELOG in list mode.
+ * Format: | word | list | action | date | reason |
+ *
+ * @param {{ add?: string[], remove?: string[] }} patch
+ * @param {'compoundPart'|'rootWord'} mode
+ * @param {string} reason
+ * @param {string} date  - ISO date (YYYY-MM-DD)
+ * @returns {string[]}
+ */
+function buildChangelogEntriesForList(patch, mode, reason, date) {
+  const listName   = mode === 'compoundPart' ? 'compoundParts' : 'rootWords';
+  const safeReason = (reason || '').replace(/\|/g, '/').trim() || '(no reason given)';
+  const lines = [];
+  for (const word of patch.add || []) {
+    lines.push(`| ${word} | ${listName} | added | ${date} | ${safeReason} |`);
+  }
+  for (const word of patch.remove || []) {
+    lines.push(`| ${word} | ${listName} | removed | ${date} | ${safeReason} |`);
+  }
+  return lines;
+}
+
 
 // ── tools/constructs-workbench/app.js ────────────────────────────────────
 
@@ -1166,10 +2026,18 @@ const S = {
   fixturesObj:      null,
   compiledObj:      null,
 
-  // Step 2 — targeting
+  // Mode selector (set in Step 1)
+  mode: 'vowelSound',  // 'vowelSound' | 'compoundPart' | 'rootWord'
+
+  // Step 2 — targeting (vowelSound mode)
   query:          '',
-  detectedTeams:  [],  // [{ pattern, sound, tier }] for word; or [] if pattern-mode
+  detectedTeams:  [],
   targetedPattern: null,
+
+  // Step 2 — targeting (list modes)
+  listQuery:          '',
+  listAnalysis:       null,
+  targetedCandidate:  null,
 
   // Step 3 — blast radius
   blastRadius: [],
@@ -1192,6 +2060,10 @@ const S = {
   expectedWords:   new Set(),
   unexpectedChanges: [],
 
+  // Step 6/7 — syllable regression diff (list modes only)
+  syllableRegressionDiff:     [],
+  syllableUnexpectedChanges:  [],
+
   // Step 8 — merge
   changelogHandle: null,
   changelogText:   null,
@@ -1212,6 +2084,15 @@ const STEPS = [
   { num: 8, label: 'Merge' },
 ];
 
+const STEP_LABELS_LIST = {
+  2: 'Target a Word',
+};
+
+function stepLabel(num) {
+  if (S.mode !== 'vowelSound' && STEP_LABELS_LIST[num]) return STEP_LABELS_LIST[num];
+  return STEPS.find(s => s.num === num)?.label ?? '';
+}
+
 function renderSidebar() {
   const el = document.getElementById('sidebar');
   el.innerHTML = `
@@ -1226,7 +2107,7 @@ function renderSidebar() {
       const cls = isBlocked ? 'blocked' : isDone ? 'done' : isActive ? 'active' : '';
       return `<button class="wb-step ${cls}" data-step="${s.num}" ${s.num > S.step && !isDone ? 'disabled' : ''}>
         <span class="step-num">${isDone ? '✓' : s.num}</span>
-        <span class="step-lbl">${s.label}</span>
+        <span class="step-lbl">${stepLabel(s.num)}</span>
       </button>`;
     }).join('')}
   `;
@@ -1278,12 +2159,31 @@ function tierBadge(tier) {
 
 function renderStep1() {
   const constructs = S.constructsText
-    ? ok(`constructs loaded — ${(S.rawObj.vowelTeamExceptions||[]).length} exception rows`)
+    ? ok(`constructs loaded — ${(S.rawObj.vowelTeamExceptions||[]).length} exception rows, ${(S.rawObj.compoundParts||[]).length} compoundParts, ${(S.rawObj.rootWords||[]).length} rootWords`)
     : '';
   const fixtures = S.fixturesText
-    ? ok(`fixtures loaded — ${(S.fixturesObj.vowelTeamSounds||[]).length} vowelTeamSounds entries`)
+    ? ok(`fixtures loaded — ${(S.fixturesObj.vowelTeamSounds||[]).length} vowelTeamSounds, ${(S.fixturesObj.syllableSplit||[]).length} syllableSplit entries`)
     : '';
   const canProceed = S.compiledObj !== null;
+
+  const modeSelector = canProceed ? `
+    ${card('What do you want to fix?', `
+      <div class="mode-selector">
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="vowelSound" ${S.mode === 'vowelSound' ? 'checked' : ''}>
+          <span><strong>Vowel Sound</strong> — fix a vowelTeamExceptions entry (existing flow)</span>
+        </label>
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="compoundPart" ${S.mode === 'compoundPart' ? 'checked' : ''}>
+          <span><strong>Compound Part</strong> — add/remove an entry in compoundParts</span>
+        </label>
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="rootWord" ${S.mode === 'rootWord' ? 'checked' : ''}>
+          <span><strong>Root Word</strong> — add/remove an entry in rootWords</span>
+        </label>
+      </div>
+    `)}
+  ` : '';
 
   return `
     <h2>Step 1 — Load Files</h2>
@@ -1303,6 +2203,7 @@ function renderStep1() {
         : `<label>Upload fixtures YAML: <input type="file" id="fileFixtures" accept=".yaml,.yml"></label>`
       }
     `)}
+    ${modeSelector}
     ${canProceed
       ? `<button class="btn-primary lg" id="btnStep1Next">Continue to Step 2 →</button>`
       : `<button class="btn-primary lg" disabled>Continue to Step 2 →</button>`
@@ -1318,6 +2219,9 @@ function wireStep1() {
     document.getElementById('fileConstructs')?.addEventListener('change', e => loadFileUpload(e, 'constructs'));
     document.getElementById('fileFixtures')?.addEventListener('change', e => loadFileUpload(e, 'fixtures'));
   }
+  document.querySelectorAll('input[name="mode"]').forEach(radio => {
+    radio.addEventListener('change', e => { S.mode = e.target.value; });
+  });
   document.getElementById('btnStep1Next')?.addEventListener('click', () => next());
 }
 
@@ -1376,6 +2280,20 @@ function loadFileUpload(event, which) {
 // ── Step 2: Target ────────────────────────────────────────────────────────────
 
 function renderStep2() {
+  if (S.mode === 'compoundPart') return renderStep2Compound();
+  if (S.mode === 'rootWord')     return renderStep2RootWord();
+  return renderStep2VowelSound();
+}
+
+function wireStep2() {
+  if (S.mode === 'compoundPart') { wireStep2Compound(); return; }
+  if (S.mode === 'rootWord')     { wireStep2RootWord(); return; }
+  wireStep2VowelSound();
+}
+
+// Step 2 — Vowel Sound mode (unchanged) ────────────────────────────────────────
+
+function renderStep2VowelSound() {
   const defaults    = S.compiledObj?.defaultVowelSound ?? {};
   const exMap       = buildExceptionMap(S.compiledObj?.vowelTeamExceptions ?? []);
   const q           = S.query.trim().toLowerCase();
@@ -1384,7 +2302,6 @@ function renderStep2() {
 
   if (q.length > 0) {
     if (isPattern) {
-      // Pattern mode: show default + all exception rows for this pattern
       const rows = (S.compiledObj.vowelTeamExceptions || []).filter(r => r.pattern === q);
       resultHtml = `
         <div class="result-box">
@@ -1401,7 +2318,6 @@ function renderStep2() {
         <button class="btn-primary" id="btnTarget">Target pattern "${q}" →</button>
       `;
     } else if (q.length >= 2) {
-      // Word mode: detect vowel teams in the word
       const patternsSorted = Object.keys(defaults).sort((a, b) => b.length - a.length);
       const found = patternsSorted.filter(p => q.includes(p));
       if (found.length === 0) {
@@ -1442,7 +2358,7 @@ function renderStep2() {
   `;
 }
 
-function wireStep2() {
+function wireStep2VowelSound() {
   const inp = document.getElementById('qInput');
   let debounceTimer;
   inp?.addEventListener('input', e => {
@@ -1461,9 +2377,199 @@ function wireStep2() {
   });
 }
 
+// Step 2 — Compound Part mode ──────────────────────────────────────────────────
+
+function renderStep2Compound() {
+  const q = S.listQuery.trim().toLowerCase().replace(/[^a-z]/g, '');
+  let analysisHtml = '';
+
+  if (q.length >= 4) {
+    const analysis = analyzeCompoundWord(q, S.compiledObj);
+
+    const currentSplitHtml = analysis.currentSplit && analysis.currentSplit.length
+      ? `<div class="msg info" style="margin-top:8px">Current split: <strong>${analysis.currentSplit.join(' | ')}</strong>${analysis.alreadySplits ? ' (compound path)' : ' (fallback path — not via compoundParts)'}</div>`
+      : '';
+
+    if (analysis.alreadySplits) {
+      analysisHtml = card('Result', `
+        ${ok(`✓ "${q}" already compound-splits as [${analysis.split.join(' | ')}] — both halves are in compoundParts.`)}
+        ${currentSplitHtml}
+        <p class="hint">Nothing to target. If the split is wrong, check vowelTeamExceptions instead.</p>
+      `);
+    } else {
+      const anyGenuine = (analysis.candidates || []).some(c => c.wouldChange);
+
+      const candidateRows = (analysis.candidates || []).map(c => {
+        const leftStatus  = c.leftInSet  ? '<span class="tier-direct">✓ in list</span>' : '<span class="tier-default">✗ missing</span>';
+        const rightStatus = c.rightInSet ? '<span class="tier-direct">✓ in list</span>' : '<span class="tier-default">✗ missing</span>';
+
+        let action;
+        if (!c.wouldChange) {
+          action = `<span class="tier-default" style="font-size:11px">no-op — adding both gives same split (${(c.newSplit || analysis.currentSplit).join('·')})</span>`;
+        } else {
+          const canTargetLeft  = !c.leftInSet && c.rightInSet && c.left.length >= 3;
+          const canTargetRight = !c.rightInSet && c.leftInSet;
+          const canTargetBoth  = !c.leftInSet && !c.rightInSet;
+          action = [
+            canTargetLeft  ? `<button class="btn-secondary sm" data-candidate="${c.left}"  id="btnCand_L_${c.left}">Target "${c.left}"</button>`  : '',
+            canTargetRight ? `<button class="btn-secondary sm" data-candidate="${c.right}" id="btnCand_R_${c.right}">Target "${c.right}"</button>` : '',
+            canTargetBoth  ? `<button class="btn-secondary sm" data-candidate="${c.left}"  id="btnCand_L_${c.left}">Target "${c.left}"</button>
+                              <button class="btn-secondary sm" data-candidate="${c.right}" id="btnCand_R_${c.right}">Target "${c.right}"</button>` : '',
+          ].filter(Boolean).join(' ');
+        }
+
+        return `<tr>
+          <td><code>${c.left}</code></td><td>${leftStatus}</td>
+          <td><code>${c.right}</code></td><td>${rightStatus}</td>
+          <td>${action}</td>
+        </tr>`;
+      }).join('');
+
+      const statusHtml = anyGenuine
+        ? err(`"${q}" does not compound-split — candidates below would change the split.`)
+        : `<div class="msg info">"${q}" does not compound-split, but the current fallback split is already correct — none of the candidates below would change the result.</div>`;
+
+      analysisHtml = card('Result', `
+        ${statusHtml}
+        ${currentSplitHtml}
+        <p class="hint">Candidate split points (algorithm bounds: left ≥ 3 chars, right ≥ 2 chars):</p>
+        ${candidateRows.length
+          ? `<table>
+              <thead><tr><th>left half</th><th>in list?</th><th>right half</th><th>in list?</th><th>action</th></tr></thead>
+              <tbody>${candidateRows}</tbody>
+             </table>`
+          : `<p class="hint">Word is too short (minimum 5 characters for compound split).</p>`
+        }
+      `);
+    }
+  }
+
+  return `
+    <h2>Step 2 — Target a Word (Compound Part)</h2>
+    ${card('Enter the word to analyse', `
+      <label for="listQInput">Enter a word to check for compound split (e.g. <code>gingerbread</code>):</label>
+      <input type="text" id="listQInput" placeholder="gingerbread" value="${S.listQuery}" autocomplete="off" spellcheck="false">
+    `)}
+    ${analysisHtml}
+  `;
+}
+
+function wireStep2Compound() {
+  const inp = document.getElementById('listQInput');
+  let debounceTimer;
+  inp?.addEventListener('input', e => {
+    S.listQuery = e.target.value;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => render(), 400);
+  });
+
+  document.querySelectorAll('[id^="btnCand_"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.targetedCandidate = btn.dataset.candidate;
+      S.blastRadius = computeCompoundBlastRadius(S.targetedCandidate, S.compiledObj, S.fixturesObj);
+      next();
+    });
+  });
+}
+
+// Step 2 — Root Word mode ──────────────────────────────────────────────────────
+
+function renderStep2RootWord() {
+  const q = S.listQuery.trim().toLowerCase().replace(/[^a-z]/g, '');
+  let analysisHtml = '';
+
+  if (q.length >= 3) {
+    const { actualResult, currentSplit, blockedCandidates } = analyzeRootWord(q, S.compiledObj);
+
+    const currentSplitHtml = currentSplit && currentSplit.length
+      ? `<div class="msg info" style="margin-top:8px">Current split: <strong>${currentSplit.join(' | ')}</strong></div>`
+      : '';
+
+    if (actualResult) {
+      const undoubledNote = actualResult.suffix !== actualResult.suffix.slice(-actualResult.suffix.length + 1)
+        ? ` (undoubled: "${actualResult.stem}${actualResult.suffix}")`
+        : '';
+      analysisHtml = card('Result', `
+        ${ok(`✓ "${q}" strips correctly: stem = "${actualResult.stem}", suffix = "${actualResult.suffix}"${undoubledNote}`)}
+        ${currentSplitHtml}
+        <p class="hint">The suffix rule matched and the stem was accepted. If the split looks wrong, try a different word.</p>
+      `);
+    } else if (blockedCandidates.length > 0) {
+      const anyGenuine = blockedCandidates.some(bc => bc.wouldChange);
+
+      const rows = blockedCandidates.map(bc => {
+        const action = bc.wouldChange
+          ? `<button class="btn-secondary sm" data-candidate="${bc.candidate}" id="btnRootCand_${bc.candidate}">Target "${bc.candidate}"</button>`
+          : `<span class="tier-default" style="font-size:11px">${bc.candidate} missing but fallback already gives ${currentSplit.join('·')} — no-op</span>`;
+        return `<tr>
+          <td><code>${bc.suffix}</code></td>
+          <td><code>${bc.undoubledSuffix}</code></td>
+          <td><code>${bc.candidate}</code></td>
+          <td><span class="tier-default">✗ missing from rootWords</span></td>
+          <td>${action}</td>
+        </tr>`;
+      }).join('');
+
+      const statusHtml = anyGenuine
+        ? err(`Undoubling blocked for "${q}" — the doubled-consonant root is missing from rootWords.`)
+        : `<div class="msg info">"${q}" — undoubling candidate missing, but the current fallback split is already correct. Adding it would have no effect.</div>`;
+
+      analysisHtml = card('Result', `
+        ${statusHtml}
+        ${currentSplitHtml}
+        <table>
+          <thead><tr><th>suffix</th><th>doubled suffix</th><th>candidate root</th><th>in list?</th><th>action</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `);
+    } else {
+      analysisHtml = card('Result', `
+        <p class="hint">No suffix rule matched "${q}", and no blocked undoubling candidates were found. Try checking whether the word uses a suffix from the suffixStripRules list.</p>
+      `);
+    }
+  }
+
+  return `
+    <h2>Step 2 — Target a Word (Root Word)</h2>
+    ${card('Enter the word to analyse', `
+      <label for="listQInput">Enter a word suspected of mis-splitting (e.g. <code>slimmer</code>):</label>
+      <input type="text" id="listQInput" placeholder="slimmer" value="${S.listQuery}" autocomplete="off" spellcheck="false">
+    `)}
+    ${analysisHtml}
+  `;
+}
+
+function wireStep2RootWord() {
+  const inp = document.getElementById('listQInput');
+  let debounceTimer;
+  inp?.addEventListener('input', e => {
+    S.listQuery = e.target.value;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => render(), 400);
+  });
+
+  document.querySelectorAll('[id^="btnRootCand_"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.targetedCandidate = btn.dataset.candidate;
+      S.blastRadius = computeRootWordBlastRadius(S.targetedCandidate, S.compiledObj, S.fixturesObj);
+      next();
+    });
+  });
+}
+
 // ── Step 3: Blast Radius ──────────────────────────────────────────────────────
 
 function renderStep3() {
+  if (S.mode !== 'vowelSound') return renderStep3List();
+  return renderStep3VowelSound();
+}
+
+function wireStep3() {
+  if (S.mode !== 'vowelSound') { wireStep3List(); return; }
+  wireStep3VowelSound();
+}
+
+function renderStep3VowelSound() {
   const p = S.targetedPattern;
   const rows = S.blastRadius;
 
@@ -1486,9 +2592,45 @@ function renderStep3() {
   `;
 }
 
-function wireStep3() {
+function wireStep3VowelSound() {
   document.getElementById('btnStep3Next')?.addEventListener('click', () => {
     S.contextBundle = buildContextBundle();
+    next();
+  });
+}
+
+function renderStep3List() {
+  const candidate = S.targetedCandidate;
+  const listName  = S.mode === 'compoundPart' ? 'compoundParts' : 'rootWords';
+  const rows = S.blastRadius;
+  const changedCount = rows.filter(r => r.changes).length;
+
+  return `
+    <h2>Step 3 — Blast Radius for <code>${candidate}</code> (${listName})</h2>
+    ${card(`${rows.length} word(s) in blast radius — ${changedCount} would change split`, `
+      <p class="hint">Words where the real algorithm would consider <code>${candidate}</code> as a valid half/root. Current split shown alongside what it would be if <code>${candidate}</code> were added.</p>
+      ${rows.length > 0
+        ? `<table>
+            <thead><tr><th>word</th><th>current split</th><th>split with "${candidate}" added</th><th>changes?</th></tr></thead>
+            <tbody>
+              ${rows.map(r => `<tr class="${r.changes ? 'diff-expected' : ''}">
+                <td><code>${r.word}</code></td>
+                <td>${r.currentSplit.join(' | ')}</td>
+                <td>${r.newSplit.join(' | ')}</td>
+                <td>${r.changes ? '<span class="tier-direct">✓ yes</span>' : '—'}</td>
+              </tr>`).join('')}
+            </tbody>
+           </table>`
+        : `<p class="hint">No words in the full fixture corpus contain "${candidate}" at a valid compound split position.</p>`
+      }
+    `)}
+    <button class="btn-primary lg" id="btnStep3Next">Continue to Step 4 →</button>
+  `;
+}
+
+function wireStep3List() {
+  document.getElementById('btnStep3Next')?.addEventListener('click', () => {
+    S.contextBundle = buildContextBundleList();
     next();
   });
 }
@@ -1543,12 +2685,49 @@ Valid sound keys: ${validSounds}
 `;
 }
 
+function buildContextBundleList() {
+  const candidate = S.targetedCandidate;
+  const listName  = S.mode === 'compoundPart' ? 'compoundParts' : 'rootWords';
+
+  const blastTable = S.blastRadius
+    .map(r => `  ${r.word.padEnd(20)} | ${r.currentSplit.join('|').padEnd(20)} | ${r.newSplit.join('|')} | ${r.changes ? 'CHANGES' : 'no change'}`)
+    .join('\n') || '  (no affected words found)';
+
+  const reason = S.mergeReason.trim() || '[FILL IN: describe why this entry should be added/removed]';
+
+  return `=== CONSTRUCTS WORKBENCH — CONTEXT BUNDLE (${listName} mode) ===
+Candidate to target: ${candidate}
+List: ${listName}
+
+--- Blast radius (words affected by adding "${candidate}") ---
+  word                 | current split        | split with candidate | effect
+${blastTable}
+
+--- Your reasoning ---
+${reason}
+
+=== PATCH SCHEMA INSTRUCTION ===
+Reply with ONLY a YAML block. No prose, no markdown fences, no explanation.
+Only "add" and "remove" are valid ops. Items are plain strings (word entries), NOT objects.
+Do NOT use word/pattern/sound rows — those are vowelTeamExceptions format, not valid here.
+
+patch:
+  add:
+    - ${candidate}
+  remove:
+    - <entry-to-remove>
+`;
+}
+
 function renderStep4() {
   return `
     <h2>Step 4 — Export Context Bundle</h2>
     ${card('Correction request (optional free-text)', `
       <label for="reasonInput">Describe what you want the LLM to fix. This gets included in the bundle and in CHANGELOG.</label>
-      <textarea id="reasonInput" rows="3" placeholder="e.g. speak should resolve to long_e — it currently falls through to the ea default which is correct but has no explicit anchor">${S.mergeReason}</textarea>
+      <textarea id="reasonInput" rows="3" placeholder="${S.mode === 'vowelSound'
+        ? 'e.g. speak should resolve to long_e — it currently falls through to the ea default which is correct but has no explicit anchor'
+        : 'e.g. ginger is missing from compoundParts — enables gingerbread to compound-split correctly'
+      }">${S.mergeReason}</textarea>
     `)}
     ${card('Context bundle', `
       <p class="hint">Copy this entire block and paste it to the LLM.</p>
@@ -1563,7 +2742,7 @@ function renderStep4() {
 function wireStep4() {
   document.getElementById('reasonInput')?.addEventListener('input', e => {
     S.mergeReason = e.target.value;
-    S.contextBundle = buildContextBundle();
+    S.contextBundle = S.mode === 'vowelSound' ? buildContextBundle() : buildContextBundleList();
     const ta = document.getElementById('bundleArea');
     if (ta) ta.value = S.contextBundle;
   });
@@ -1586,22 +2765,20 @@ function renderStep5() {
     if (S.patchError) {
       statusHtml = err(`Validation error: ${escHtml(S.patchError)}`);
     } else if (S.patchObj) {
-      const counts = [
-        S.patchObj.add    ? `${S.patchObj.add.length} add`    : '',
-        S.patchObj.modify ? `${S.patchObj.modify.length} modify` : '',
-        S.patchObj.remove ? `${S.patchObj.remove.length} remove` : '',
-      ].filter(Boolean).join(', ');
-      statusHtml = ok(`Schema valid — ${counts || 'empty patch'}`);
+      statusHtml = ok(`Schema valid — ${descPatch(S.patchObj)}`);
     }
   }
 
   const canProceed = S.patchObj !== null && !S.patchError;
+  const placeholder = S.mode === 'vowelSound'
+    ? 'patch:\n  add:\n    - { word: speak, pattern: ea, sound: long_e, note: &quot;anchor&quot; }'
+    : 'patch:\n  add:\n    - ginger';
 
   return `
     <h2>Step 5 — Paste Patch</h2>
     ${card('Paste the LLM\'s YAML response', `
       <p class="hint">Paste the entire YAML block. The schema is validated live before you can proceed.</p>
-      <textarea id="patchInput" rows="14" placeholder="patch:\n  add:\n    - { word: speak, pattern: ea, sound: long_e, note: &quot;anchor&quot; }" spellcheck="false">${escHtml(S.patchText)}</textarea>
+      <textarea id="patchInput" rows="14" placeholder="${placeholder}" spellcheck="false">${escHtml(S.patchText)}</textarea>
       ${statusHtml}
     `)}
     <button class="btn-primary lg" id="btnRunSandbox" ${canProceed ? '' : 'disabled'}>Run Sandbox →</button>
@@ -1617,12 +2794,13 @@ function wireStep5() {
     if (text) {
       try {
         const parsed = jsyaml.load(text);
-        S.patchObj = validatePatchSchema(parsed);
+        S.patchObj = S.mode === 'vowelSound'
+          ? validatePatchSchema(parsed)
+          : validatePatchSchemaForList(parsed, S.mode);
       } catch (ex) {
         S.patchError = ex.message;
       }
     }
-    // Re-render only the status area to avoid resetting cursor
     const existing = document.querySelector('.msg');
     const newStatus = S.patchError
       ? `<p class="msg err">Validation error: ${escHtml(S.patchError)}</p>`
@@ -1642,6 +2820,12 @@ function wireStep5() {
 }
 
 function descPatch(p) {
+  if (S.mode !== 'vowelSound') {
+    return [
+      p.add    ? `${p.add.length} add`    : '',
+      p.remove ? `${p.remove.length} remove` : '',
+    ].filter(Boolean).join(', ') || 'empty patch';
+  }
   return [
     p.add    ? `${p.add.length} add`    : '',
     p.modify ? `${p.modify.length} modify` : '',
@@ -1652,9 +2836,12 @@ function descPatch(p) {
 // ── Step 6: Run Sandbox ───────────────────────────────────────────────────────
 
 function renderStep6() {
+  const fixtureCount = S.mode === 'vowelSound'
+    ? `${(S.fixturesObj?.vowelTeamSounds||[]).length} vowelTeamSounds fixtures`
+    : `${(S.fixturesObj?.syllableSplit||[]).length} syllableSplit fixtures`;
   return `
     <h2>Step 6 — Sandbox</h2>
-    ${card('Running…', `<p class="hint">Applying patch, compiling, and running all ${(S.fixturesObj?.vowelTeamSounds||[]).length} vowelTeamSounds fixtures…</p>`)}
+    ${card('Running…', `<p class="hint">Applying patch, compiling, and running all ${fixtureCount}…</p>`)}
   `;
 }
 
@@ -1665,7 +2852,11 @@ function runSandbox() {
   render();
 
   try {
-    S.sandboxRaw      = applyPatchToRaw(S.rawObj, S.patchObj);
+    if (S.mode === 'vowelSound') {
+      S.sandboxRaw      = applyPatchToRaw(S.rawObj, S.patchObj);
+    } else {
+      S.sandboxRaw      = applyPatchToRawList(S.rawObj, S.patchObj, S.mode);
+    }
     S.sandboxCompiled = compileConstructs(S.sandboxRaw);
 
     S.validatorError = null;
@@ -1675,15 +2866,24 @@ function runSandbox() {
       S.validatorError = e;
     }
 
-    S.regressionDiff  = runRegressionDiff(S.compiledObj, S.sandboxCompiled, S.fixturesObj);
-    S.newBlastRadius  = computeBlastRadius(S.targetedPattern, S.sandboxCompiled, S.fixturesObj);
+    if (S.mode === 'vowelSound') {
+      S.regressionDiff  = runRegressionDiff(S.compiledObj, S.sandboxCompiled, S.fixturesObj);
+      S.newBlastRadius  = computeBlastRadius(S.targetedPattern, S.sandboxCompiled, S.fixturesObj);
 
-    S.expectedWords   = new Set([
-      ...(S.patchObj.add    || []).map(r => r.word),
-      ...(S.patchObj.modify || []).map(r => r.word),
-      ...(S.patchObj.remove || []).map(r => r.word),
-    ]);
-    S.unexpectedChanges = S.regressionDiff.filter(d => !S.expectedWords.has(d.word) && !d.nowPassing);
+      S.expectedWords   = new Set([
+        ...(S.patchObj.add    || []).map(r => r.word),
+        ...(S.patchObj.modify || []).map(r => r.word),
+        ...(S.patchObj.remove || []).map(r => r.word),
+      ]);
+      S.unexpectedChanges = S.regressionDiff.filter(d => !S.expectedWords.has(d.word) && !d.nowPassing);
+    } else {
+      S.syllableRegressionDiff    = runSyllableRegressionDiff(S.compiledObj, S.sandboxCompiled, S.fixturesObj);
+      S.syllableUnexpectedChanges = S.syllableRegressionDiff.filter(d => !d.nowPassing);
+      S.unexpectedChanges         = S.syllableUnexpectedChanges;
+
+      const blastFn = S.mode === 'compoundPart' ? computeCompoundBlastRadius : computeRootWordBlastRadius;
+      S.newBlastRadius = blastFn(S.targetedCandidate, S.sandboxCompiled, S.fixturesObj);
+    }
 
     goTo(7);
   } catch (e) {
@@ -1706,80 +2906,152 @@ function renderStep7() {
       </div>`
     : ok('✓ Validator passed — all 5 Phase 1 rules OK');
 
-  // Regression diff block
+  // Regression diff block (vowelSound) / Syllable diff block (list modes)
   let diffBlock;
-  if (S.regressionDiff.length === 0) {
-    diffBlock = ok('✓ Regression diff — no fixtures changed');
+  if (S.mode === 'vowelSound') {
+    diffBlock = renderVowelSoundDiffBlock();
   } else {
-    const nowPassingDiffs = S.regressionDiff.filter(d => d.nowPassing);
-    const regularDiffs    = S.regressionDiff.filter(d => !d.nowPassing);
-    const rows = S.regressionDiff.map(d => {
-      const isExpected  = S.expectedWords.has(d.word);
-      const rowClass    = d.nowPassing ? 'now-passing' : isExpected ? '' : 'unexpected';
-      const statusLabel = d.nowPassing
-        ? '✓ known-failure now passing'
-        : isExpected ? '✓ expected' : '⚠ unexpected';
-      return `<tr class="${rowClass}">
-        <td><code>${d.word}</code></td>
-        <td><code>${d.pattern}</code></td>
-        <td class="diff-old">${d.oldSound}</td>
-        <td class="diff-new">${d.newSound}</td>
-        <td>${statusLabel}</td>
-      </tr>`;
-    }).join('');
-    diffBlock = `
-      ${nowPassingDiffs.length > 0
-        ? `<div class="msg ok">✓ ${nowPassingDiffs.length} known-failure(s) now passing — check whether the backlog item can be closed</div>`
-        : ''
-      }
-      ${S.unexpectedChanges.length > 0
-        ? `<div class="hard-gate">
-            <div class="hard-gate-title">⛔ ${S.unexpectedChanges.length} unexpected regression change(s) — merge blocked</div>
-            <p>Revise the patch so only the intended words change.</p>
-           </div>`
-        : ok(`✓ Regression diff — all ${regularDiffs.length} change(s) are in the patch`)
-      }
-      <table>
-        <thead><tr><th>word</th><th>pattern</th><th>old sound</th><th>new sound</th><th>status</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `;
+    diffBlock = renderSyllableDiffBlock();
   }
 
   // Blast radius diff
-  const brOld = new Map(S.blastRadius.map(r => [r.word, r.sound]));
-  const brNew = new Map(S.newBlastRadius.map(r => [r.word, r.sound]));
-  const allBrWords = new Set([...brOld.keys(), ...brNew.keys()]);
-  const brRows = [...allBrWords].sort().map(w => {
-    const oSound = brOld.get(w) ?? '—';
-    const nSound = brNew.get(w) ?? '—';
-    const changed = oSound !== nSound;
-    const isExpected = S.expectedWords.has(w);
-    const rowClass = !changed ? '' : isExpected ? 'diff-expected' : 'unexpected';
-    return `<tr class="${rowClass}">
-      <td><code>${w}</code></td>
-      <td class="${changed && !isExpected ? 'diff-old' : ''}">${oSound}</td>
-      <td class="${changed ? 'diff-new' : ''}">${nSound}</td>
-      <td>${changed ? (isExpected ? '✓ intended' : '⚠ unintended') : '—'}</td>
-    </tr>`;
-  }).join('');
+  const brDiffHtml = renderBlastRadiusDiff();
 
   return `
     <h2>Step 7 — Review</h2>
     ${card('1. Validator', validatorBlock)}
     ${card('2. Regression Diff', diffBlock)}
-    ${card('3. Blast-Radius Diff', `
-      <table>
-        <thead><tr><th>word</th><th>old sound</th><th>new sound</th><th>change?</th></tr></thead>
-        <tbody>${brRows}</tbody>
-      </table>
-    `)}
+    ${card('3. Blast-Radius Diff', brDiffHtml)}
     ${isClean
       ? `<button class="btn-primary lg" id="btnStep7Next">Proceed to Merge →</button>`
       : `<p class="msg err">Merge is blocked. Fix the patch (Step 5) and re-run.</p>
          <button class="btn-secondary" id="btnBackToPatch">← Back to Step 5</button>`
     }
   `;
+}
+
+function renderVowelSoundDiffBlock() {
+  if (S.regressionDiff.length === 0) {
+    return ok('✓ Regression diff — no fixtures changed');
+  }
+  const nowPassingDiffs = S.regressionDiff.filter(d => d.nowPassing);
+  const regularDiffs    = S.regressionDiff.filter(d => !d.nowPassing);
+  const rows = S.regressionDiff.map(d => {
+    const isExpected  = S.expectedWords.has(d.word);
+    const rowClass    = d.nowPassing ? 'now-passing' : isExpected ? '' : 'unexpected';
+    const statusLabel = d.nowPassing
+      ? '✓ known-failure now passing'
+      : isExpected ? '✓ expected' : '⚠ unexpected';
+    return `<tr class="${rowClass}">
+      <td><code>${d.word}</code></td>
+      <td><code>${d.pattern}</code></td>
+      <td class="diff-old">${d.oldSound}</td>
+      <td class="diff-new">${d.newSound}</td>
+      <td>${statusLabel}</td>
+    </tr>`;
+  }).join('');
+  return `
+    ${nowPassingDiffs.length > 0
+      ? `<div class="msg ok">✓ ${nowPassingDiffs.length} known-failure(s) now passing — check whether the backlog item can be closed</div>`
+      : ''
+    }
+    ${S.unexpectedChanges.length > 0
+      ? `<div class="hard-gate">
+          <div class="hard-gate-title">⛔ ${S.unexpectedChanges.length} unexpected regression change(s) — merge blocked</div>
+          <p>Revise the patch so only the intended words change.</p>
+         </div>`
+      : ok(`✓ Regression diff — all ${regularDiffs.length} change(s) are in the patch`)
+    }
+    <table>
+      <thead><tr><th>word</th><th>pattern</th><th>old sound</th><th>new sound</th><th>status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderSyllableDiffBlock() {
+  if (S.syllableRegressionDiff.length === 0) {
+    return ok('✓ Syllable regression diff — no syllableSplit fixtures changed');
+  }
+  const nowPassingDiffs = S.syllableRegressionDiff.filter(d => d.nowPassing);
+  const rows = S.syllableRegressionDiff.map(d => {
+    const rowClass    = d.nowPassing ? 'now-passing' : 'unexpected';
+    const statusLabel = d.nowPassing ? '✓ known-failure now passing' : '⚠ unexpected';
+    return `<tr class="${rowClass}">
+      <td><code>${d.word}</code></td>
+      <td>${(d.target || []).join(' | ')}</td>
+      <td class="diff-old">${d.oldSplit.join(' | ')}</td>
+      <td class="diff-new">${d.newSplit.join(' | ')}</td>
+      <td>${statusLabel}</td>
+    </tr>`;
+  }).join('');
+  return `
+    ${nowPassingDiffs.length > 0
+      ? `<div class="msg ok">✓ ${nowPassingDiffs.length} known-failure(s) now passing — check whether the backlog item can be closed</div>`
+      : ''
+    }
+    ${S.syllableUnexpectedChanges.length > 0
+      ? `<div class="hard-gate">
+          <div class="hard-gate-title">⛔ ${S.syllableUnexpectedChanges.length} unexpected syllable regression change(s) — merge blocked</div>
+          <p>Revise the patch so no currently-passing fixtures regress.</p>
+         </div>`
+      : ok(`✓ Syllable regression diff — ${nowPassingDiffs.length > 0 ? `${nowPassingDiffs.length} known-failure(s) now passing, ` : ''}no unexpected changes`)
+    }
+    <table>
+      <thead><tr><th>word</th><th>target split</th><th>old split</th><th>new split</th><th>status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderBlastRadiusDiff() {
+  if (S.mode === 'vowelSound') {
+    const brOld = new Map(S.blastRadius.map(r => [r.word, r.sound]));
+    const brNew = new Map(S.newBlastRadius.map(r => [r.word, r.sound]));
+    const allBrWords = new Set([...brOld.keys(), ...brNew.keys()]);
+    const brRows = [...allBrWords].sort().map(w => {
+      const oSound = brOld.get(w) ?? '—';
+      const nSound = brNew.get(w) ?? '—';
+      const changed = oSound !== nSound;
+      const isExpected = S.expectedWords.has(w);
+      const rowClass = !changed ? '' : isExpected ? 'diff-expected' : 'unexpected';
+      return `<tr class="${rowClass}">
+        <td><code>${w}</code></td>
+        <td class="${changed && !isExpected ? 'diff-old' : ''}">${oSound}</td>
+        <td class="${changed ? 'diff-new' : ''}">${nSound}</td>
+        <td>${changed ? (isExpected ? '✓ intended' : '⚠ unintended') : '—'}</td>
+      </tr>`;
+    }).join('');
+    return `
+      <table>
+        <thead><tr><th>word</th><th>old sound</th><th>new sound</th><th>change?</th></tr></thead>
+        <tbody>${brRows}</tbody>
+      </table>
+    `;
+  } else {
+    // List mode blast radius diff: compare currentSplit vs newSplit from the new blast radius
+    const brOldMap = new Map(S.blastRadius.map(r => [r.word, r.currentSplit]));
+    const brNewMap = new Map(S.newBlastRadius.map(r => [r.word, r.newSplit]));
+    const allWords = new Set([...brOldMap.keys(), ...brNewMap.keys()]);
+    const brRows = [...allWords].sort().map(w => {
+      const oldSplit = brOldMap.get(w) || [];
+      const newSplit = brNewMap.get(w) || [];
+      const changed  = JSON.stringify(oldSplit) !== JSON.stringify(newSplit);
+      const rowClass = changed ? 'diff-expected' : '';
+      return `<tr class="${rowClass}">
+        <td><code>${w}</code></td>
+        <td>${oldSplit.join(' | ')}</td>
+        <td class="${changed ? 'diff-new' : ''}">${newSplit.join(' | ')}</td>
+        <td>${changed ? '✓ changed' : '—'}</td>
+      </tr>`;
+    }).join('');
+    return `
+      <table>
+        <thead><tr><th>word</th><th>old split</th><th>new split</th><th>change?</th></tr></thead>
+        <tbody>${brRows}</tbody>
+      </table>
+    `;
+  }
 }
 
 function wireStep7() {
@@ -1799,23 +3071,32 @@ function renderStep8() {
     `;
   }
 
-  const changelogLines = buildChangelogEntries(
-    S.patchObj, S.compiledObj, S.mergeReason,
-    new Date().toISOString().slice(0, 10)
-  );
+  const date = new Date().toISOString().slice(0, 10);
+  const changelogLines = S.mode === 'vowelSound'
+    ? buildChangelogEntries(S.patchObj, S.compiledObj, S.mergeReason, date)
+    : buildChangelogEntriesForList(S.patchObj, S.mode, S.mergeReason, date);
 
-  const summary = [
-    S.patchObj.add    ? `${S.patchObj.add.length} row(s) added`    : '',
-    S.patchObj.modify ? `${S.patchObj.modify.length} row(s) modified` : '',
-    S.patchObj.remove ? `${S.patchObj.remove.length} row(s) removed` : '',
-  ].filter(Boolean).join(', ');
+  let summary;
+  if (S.mode === 'vowelSound') {
+    summary = [
+      S.patchObj.add    ? `${S.patchObj.add.length} row(s) added`    : '',
+      S.patchObj.modify ? `${S.patchObj.modify.length} row(s) modified` : '',
+      S.patchObj.remove ? `${S.patchObj.remove.length} row(s) removed` : '',
+    ].filter(Boolean).join(', ');
+  } else {
+    const listName = S.mode === 'compoundPart' ? 'compoundParts' : 'rootWords';
+    summary = [
+      S.patchObj.add    ? `${S.patchObj.add.length} entr${S.patchObj.add.length === 1 ? 'y' : 'ies'} added to ${listName}`    : '',
+      S.patchObj.remove ? `${S.patchObj.remove.length} entr${S.patchObj.remove.length === 1 ? 'y' : 'ies'} removed from ${listName}` : '',
+    ].filter(Boolean).join(', ');
+  }
 
   const changelogHtml = changelogLines.map(l => `<code>${escHtml(l)}</code>`).join('<br>');
 
   return `
     <h2>Step 8 — Merge</h2>
     ${card('What will be written', `
-      <p><strong>vowelTeamExceptions changes:</strong> ${summary}</p>
+      <p><strong>Changes:</strong> ${summary}</p>
       <p><strong>CHANGELOG entries to append:</strong></p>
       <div class="code-block">${changelogHtml}</div>
       ${hasFSA
@@ -1851,8 +3132,12 @@ async function loadChangelogFSA() {
 async function performMerge() {
   S.mergeError = null;
   try {
+    const date = new Date().toISOString().slice(0, 10);
+
     // 1. Apply patch to real rawObj and serialize
-    const mergedRaw  = applyPatchToRaw(S.rawObj, S.patchObj);
+    const mergedRaw = S.mode === 'vowelSound'
+      ? applyPatchToRaw(S.rawObj, S.patchObj)
+      : applyPatchToRawList(S.rawObj, S.patchObj, S.mode);
     const updatedYaml = jsyaml.dump(mergedRaw, { lineWidth: 120, noRefs: true, sortKeys: false });
 
     // 2. Write constructs YAML
@@ -1865,8 +3150,9 @@ async function performMerge() {
     }
 
     // 3. Append CHANGELOG entries
-    const date  = new Date().toISOString().slice(0, 10);
-    const lines = buildChangelogEntries(S.patchObj, S.compiledObj, S.mergeReason, date);
+    const lines = S.mode === 'vowelSound'
+      ? buildChangelogEntries(S.patchObj, S.compiledObj, S.mergeReason, date)
+      : buildChangelogEntriesForList(S.patchObj, S.mode, S.mergeReason, date);
     const appendText = lines.join('\n') + '\n';
 
     if (hasFSA && S.changelogHandle) {
@@ -1875,11 +3161,10 @@ async function performMerge() {
       await writable.write(existingText.trimEnd() + '\n' + appendText);
       await writable.close();
     } else {
-      // Download a fragment for manual append
       downloadText(appendText, `changelog-append.${Date.now()}.txt`);
     }
 
-    // 4. Update in-memory state so the session reflects the merge
+    // 4. Update in-memory state
     S.rawObj      = mergedRaw;
     S.compiledObj = compileConstructs(mergedRaw);
     S.constructsText = updatedYaml;
