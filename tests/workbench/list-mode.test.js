@@ -309,21 +309,20 @@ describe('analyzeRootWord — wouldChange false positives (glimmer) and genuine 
     expect(entry.newSplit).toEqual(['glim', 'mer']); // same either way
   });
 
-  it('running without run: adding run is a genuine fix (runn|ing → run|ning)', () => {
-    // -ing is always:true. Without 'run' in rootWords undoubling is blocked, but the
-    // always:true rule still fires and produces stem='runn', suffix='ing' → ['runn','ing'].
-    // (The nucleus fallback would give ['run','ning'] but it never runs — suffix fires first.)
-    // Adding 'run' enables undoubling → stem='run', suffix='ning' → ['run','ning'].
-    const rawWithoutRun = JSON.parse(JSON.stringify(rawObj));
-    rawWithoutRun.rootWords = rawWithoutRun.rootWords.filter(w => w !== 'run');
-    const compiledWithoutRun = compileConstructs(rawWithoutRun);
-
-    const result = analyzeRootWord('running', compiledWithoutRun);
-    expect(result.currentSplit).toEqual(['runn', 'ing']); // always:true fires early
-    const entry = result.blockedCandidates.find(bc => bc.candidate === 'run');
+  it('logging: log is naturally missing from rootWords — adding it is a genuine fix (logg|ing → log|ging)', () => {
+    // 'log' is not in rootWords (verified by AC6 precondition test).
+    // -ing is always:true. Without 'log': undoubling blocked, always:true still fires with
+    // stem='logg', suffix='ing' → ['logg','ing']. The nucleus fallback (VCCV on 'gg') would
+    // also give ['logg','ing'] — but it never runs because the suffix fires first.
+    // Adding 'log': undoubling fires → stem='log', re-appended 'g' + 'ing' = 'ging' →
+    // ['log','ging']. Different from current → wouldChange: true.
+    expect(compiledObj.rootWords).not.toContain('log'); // precondition: natural, no setup needed
+    const result = analyzeRootWord('logging', compiledObj);
+    expect(result.currentSplit).toEqual(['logg', 'ing']);
+    const entry = result.blockedCandidates.find(bc => bc.candidate === 'log');
     expect(entry).toBeDefined();
-    expect(entry.wouldChange).toBe(true);  // genuine fix
-    expect(entry.newSplit).toEqual(['run', 'ning']);
+    expect(entry.wouldChange).toBe(true);
+    expect(entry.newSplit).toEqual(['log', 'ging']);
   });
 });
 

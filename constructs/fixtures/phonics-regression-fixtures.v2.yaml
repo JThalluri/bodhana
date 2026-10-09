@@ -291,6 +291,11 @@ syllableSplit:
   - { word: careful,    split: [care, ful] }
   - { word: biggest,    split: [big, gest] }
 
+  # Genuine-positive regression targets — require a compoundParts or rootWords addition to pass
+  # These are the canonical validation cases for the Compound Part / Root Word workbench modes.
+  - { word: daydream, split: [day, dream], expectedFailure: true, reason: "'dream' missing from compoundParts; fallback VCCV gives ['dayd','ream']. Adding 'dream' enables compound path → ['day','dream']." }
+  - { word: logging,  split: [log, ging],  expectedFailure: true, reason: "'log' missing from rootWords; -ing always:true fires without undoubling → ['logg','ing']. Adding 'log' enables undoubling → ['log','ging']." }
+
 vowelTeamSounds:
   # format: { word, pattern, sound }  — pattern:sound pairs matching vowel_team_sounds output
   - { word: easy,          pattern: ea,    sound: long_e }

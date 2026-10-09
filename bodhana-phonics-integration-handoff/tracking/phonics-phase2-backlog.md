@@ -48,21 +48,27 @@ there's a cheap way to test a general rule against the regression corpus without
 
 ---
 
-## OPEN — `COMPOUND_PARTS` incomplete for `gingerbread` / `reindeer`
+## RESOLVED — `COMPOUND_PARTS` incomplete for `gingerbread` / `reindeer` (stale — already fixed in Phase 1)
 
-**Found during:** v1 fixture pass, carried into v2 unresolved. (Flagged twice in the fixture docs
-but never actually logged here until now — exactly the kind of drift this file exists to prevent.)
+**Originally found during:** v1 fixture pass, carried into v2 unresolved.
 
-**Issue:** `tryCompoundSplit` requires BOTH halves of a word to be ≥3-char entries in
-`COMPOUND_PARTS`. `bread` is present, `ginger` is not → `gingerbread` cannot compound-split.
-Neither `rein` nor `deer` is present → `reindeer` cannot compound-split either.
+**Resolved in:** Phase 1 (pattern-fallback pass). Both words were promoted off `expectedFailure`
+at that time and confirmed correct independently of `compoundParts`. The backlog entry was never
+updated to reflect this — a hygiene miss caught during the Phase 2 workbench no-op detection
+work, when the Compound Part tool's `wouldChange` flag correctly identified adding ginger/rein/deer
+as no-ops: the nucleus fallback already produces the pedagogically correct split for both words.
 
-**Not patched.** These are listed in the regression corpus as fixtures with an `expectedFailure`
-flag (see `phonics-regression-fixtures.v2.yaml`) rather than silently passing or silently being
-dropped — the corpus should keep asserting the *correct* target split even while it's known to
-fail, so this doesn't quietly disappear once Phase 1 is running clean. Revisit as part of the
-general `COMPOUND_PARTS`/`ROOT_WORDS` completeness audit already noted as out-of-scope-for-now in
-both fixture docs (§7 of v2).
+**Verified via recursive trace (Phase 2):**
+- `gingerbread` → nuclei fallback: `gin|ger|bread`. If `ginger` were added, the compound path
+  would recursively split `ginger` → `gin|ger`, then `bread` → `bread`. Identical result.
+  `wouldChange: false` is correct.
+- `reindeer` → nuclei fallback: `rein|deer` (`ei` + 3-char `eer` vowel team, VCCV split at `nd`).
+  If `rein`+`deer` were both added, compound path gives same two segments. `wouldChange: false`.
+
+**Residual action (none required):** the `expectedFailure` fixtures for both words were already
+removed from `phonics-regression-fixtures.v2.yaml` during Phase 1 when they started passing.
+Adding ginger/rein/deer to `compoundParts` via the workbench is safe (the tool will flag it as
+a no-op) but produces no split change.
 
 ---
 
