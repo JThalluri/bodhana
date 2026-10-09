@@ -202,6 +202,88 @@ describe('AC 5 — compound-scan side-effect surfaces in runRegressionDiff', () 
   });
 });
 
+// ── nowPassing — expectedFailure fixtures that become correct ─────────────────
+
+describe('nowPassing — expectedFailure fixture that starts passing', () => {
+  it('a side-effect that fixes an expectedFailure fixture is nowPassing and excluded from unexpectedChanges', () => {
+    // breadwinner:ea currently resolves to short_e (compound-scan from bread:short_e).
+    // Synthetic fixture documents the DESIRED state as long_e with expectedFailure: true.
+    // When bread:ea is patched to long_e, breadwinner now resolves to long_e → nowPassing.
+    const syntheticFixtures = {
+      ...fixturesObj,
+      vowelTeamSounds: [
+        ...fixturesObj.vowelTeamSounds.filter(f => !(f.word === 'breadwinner' && f.pattern === 'ea')),
+        { word: 'breadwinner', pattern: 'ea', sound: 'long_e', expectedFailure: true },
+      ],
+    };
+
+    const patch = validatePatchSchema({
+      modify: [{ word: 'bread', pattern: 'ea', sound: 'long_e', note: 'nowPassing test' }],
+    });
+
+    const sandboxRaw      = applyPatchToRaw(rawObj, patch);
+    const sandboxCompiled = compileConstructs(sandboxRaw);
+    const diff            = runRegressionDiff(compiledObj, sandboxCompiled, syntheticFixtures);
+
+    const bwDiff = diff.find(d => d.word === 'breadwinner' && d.pattern === 'ea');
+    expect(bwDiff).toBeDefined();
+    expect(bwDiff.nowPassing).toBe(true);
+
+    // breadwinner is NOT in the patch, but nowPassing → must not be in unexpectedChanges
+    const expectedWords = new Set(patch.modify.map(r => r.word));
+    const unexpected = diff.filter(d => !expectedWords.has(d.word) && !d.nowPassing);
+    expect(unexpected.some(d => d.word === 'breadwinner')).toBe(false);
+  });
+
+  it('a changed expectedFailure fixture that does NOT reach its documented target is still unexpected', () => {
+    // breadwinner:ea currently resolves to short_e.
+    // Synthetic fixture expects short_a with expectedFailure: true.
+    // After patching bread:ea → long_e, breadwinner resolves to long_e (not short_a).
+    // nowPassing must be false — and it still counts as unexpected.
+    const syntheticFixtures = {
+      ...fixturesObj,
+      vowelTeamSounds: [
+        ...fixturesObj.vowelTeamSounds.filter(f => !(f.word === 'breadwinner' && f.pattern === 'ea')),
+        { word: 'breadwinner', pattern: 'ea', sound: 'short_a', expectedFailure: true },
+      ],
+    };
+
+    const patch = validatePatchSchema({
+      modify: [{ word: 'bread', pattern: 'ea', sound: 'long_e', note: 'test' }],
+    });
+
+    const sandboxRaw      = applyPatchToRaw(rawObj, patch);
+    const sandboxCompiled = compileConstructs(sandboxRaw);
+    const diff            = runRegressionDiff(compiledObj, sandboxCompiled, syntheticFixtures);
+
+    const bwDiff = diff.find(d => d.word === 'breadwinner' && d.pattern === 'ea');
+    expect(bwDiff).toBeDefined();
+    expect(bwDiff.nowPassing).toBe(false); // long_e !== short_a
+
+    const expectedWords = new Set(patch.modify.map(r => r.word));
+    const unexpected = diff.filter(d => !expectedWords.has(d.word) && !d.nowPassing);
+    expect(unexpected.some(d => d.word === 'breadwinner')).toBe(true);
+  });
+
+  it('a regular (non-expectedFailure) fixture diff always has nowPassing = false', () => {
+    const patch = validatePatchSchema({
+      modify: [{ word: 'bread', pattern: 'ea', sound: 'long_e', note: 'test' }],
+    });
+
+    const sandboxRaw      = applyPatchToRaw(rawObj, patch);
+    const sandboxCompiled = compileConstructs(sandboxRaw);
+    const diff            = runRegressionDiff(compiledObj, sandboxCompiled, fixturesObj);
+
+    const breadDiff = diff.find(d => d.word === 'bread' && d.pattern === 'ea');
+    expect(breadDiff).toBeDefined();
+    expect(breadDiff.nowPassing).toBe(false);
+
+    const bwDiff = diff.find(d => d.word === 'breadwinner' && d.pattern === 'ea');
+    expect(bwDiff).toBeDefined();
+    expect(bwDiff.nowPassing).toBe(false);
+  });
+});
+
 // ── buildChangelogEntries ─────────────────────────────────────────────────────
 
 describe('buildChangelogEntries', () => {

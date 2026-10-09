@@ -474,10 +474,7 @@ function renderStep5() {
       <textarea id="patchInput" rows="14" placeholder="patch:\n  add:\n    - { word: speak, pattern: ea, sound: long_e, note: &quot;anchor&quot; }" spellcheck="false">${escHtml(S.patchText)}</textarea>
       ${statusHtml}
     `)}
-    ${canProceed
-      ? `<button class="btn-primary lg" id="btnRunSandbox">Run Sandbox →</button>`
-      : `<button class="btn-primary lg" disabled>Run Sandbox →</button>`
-    }
+    <button class="btn-primary lg" id="btnRunSandbox" ${canProceed ? '' : 'disabled'}>Run Sandbox →</button>
   `;
 }
 
@@ -556,7 +553,7 @@ function runSandbox() {
       ...(S.patchObj.modify || []).map(r => r.word),
       ...(S.patchObj.remove || []).map(r => r.word),
     ]);
-    S.unexpectedChanges = S.regressionDiff.filter(d => !S.expectedWords.has(d.word));
+    S.unexpectedChanges = S.regressionDiff.filter(d => !S.expectedWords.has(d.word) && !d.nowPassing);
 
     goTo(7);
   } catch (e) {
@@ -584,24 +581,33 @@ function renderStep7() {
   if (S.regressionDiff.length === 0) {
     diffBlock = ok('✓ Regression diff — no fixtures changed');
   } else {
+    const nowPassingDiffs = S.regressionDiff.filter(d => d.nowPassing);
+    const regularDiffs    = S.regressionDiff.filter(d => !d.nowPassing);
     const rows = S.regressionDiff.map(d => {
-      const isExpected = S.expectedWords.has(d.word);
-      const rowClass   = isExpected ? '' : 'unexpected';
+      const isExpected  = S.expectedWords.has(d.word);
+      const rowClass    = d.nowPassing ? 'now-passing' : isExpected ? '' : 'unexpected';
+      const statusLabel = d.nowPassing
+        ? '✓ known-failure now passing'
+        : isExpected ? '✓ expected' : '⚠ unexpected';
       return `<tr class="${rowClass}">
         <td><code>${d.word}</code></td>
         <td><code>${d.pattern}</code></td>
         <td class="diff-old">${d.oldSound}</td>
         <td class="diff-new">${d.newSound}</td>
-        <td>${isExpected ? '✓ expected' : '⚠ unexpected'}</td>
+        <td>${statusLabel}</td>
       </tr>`;
     }).join('');
     diffBlock = `
+      ${nowPassingDiffs.length > 0
+        ? `<div class="msg ok">✓ ${nowPassingDiffs.length} known-failure(s) now passing — check whether the backlog item can be closed</div>`
+        : ''
+      }
       ${S.unexpectedChanges.length > 0
         ? `<div class="hard-gate">
             <div class="hard-gate-title">⛔ ${S.unexpectedChanges.length} unexpected regression change(s) — merge blocked</div>
             <p>Revise the patch so only the intended words change.</p>
            </div>`
-        : ok(`✓ Regression diff — all ${S.regressionDiff.length} change(s) are in the patch`)
+        : ok(`✓ Regression diff — all ${regularDiffs.length} change(s) are in the patch`)
       }
       <table>
         <thead><tr><th>word</th><th>pattern</th><th>old sound</th><th>new sound</th><th>status</th></tr></thead>

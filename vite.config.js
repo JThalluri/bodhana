@@ -3,6 +3,9 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 
 export default defineConfig({
   plugins: [viteSingleFile()],
+  test: {
+    exclude: ['**/*.e2e.spec.js', 'node_modules/**'],
+  },
   build: {
     outDir: 'dist',
     target: 'esnext',

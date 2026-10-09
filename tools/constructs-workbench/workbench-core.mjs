@@ -196,7 +196,10 @@ export function runRegressionDiff(oldCompiled, newCompiled, fixturesObj) {
     const oldSound = soundForVowelTeam(f.word, f.pattern, oldExMap, oldDefault);
     const newSound = soundForVowelTeam(f.word, f.pattern, newExMap, newDefault);
     if (oldSound !== newSound) {
-      diffs.push({ word: String(f.word), pattern: String(f.pattern), expected: String(f.sound), oldSound, newSound });
+      // A known-failure fixture (expectedFailure: true) that now resolves to its documented
+      // correct target is good news — surface it distinctly, do not block merge.
+      const nowPassing = f.expectedFailure === true && newSound === String(f.sound);
+      diffs.push({ word: String(f.word), pattern: String(f.pattern), expected: String(f.sound), oldSound, newSound, nowPassing });
     }
   }
   return diffs;
