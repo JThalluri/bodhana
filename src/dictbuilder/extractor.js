@@ -68,12 +68,56 @@ async function parseOdt(file) {
   return paragraphs.map(p => p.textContent).join(' ');
 }
 
+function parseCsvRow(line) {
+  const cells = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      cells.push(cur); cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  cells.push(cur);
+  return cells;
+}
+
+// For Bodhana phonics-export CSVs: extract only the 'word' column so that rime/onset
+// partial-word columns don't pollute the word list. Detected by the 'graphemes' header.
+// Non-Bodhana CSVs fall back to flat-text tokenization (unchanged behaviour).
+function extractCsvWordColumn(text) {
+  const lines = text.split(/\r?\n/);
+  if (lines.length === 0) return text;
+  const header = parseCsvRow(lines[0]).map(h => h.trim().toLowerCase());
+  const isPhonicsExport = header.includes('graphemes');
+  if (!isPhonicsExport) return text;
+  const wordColIdx = header.indexOf('word');
+  if (wordColIdx < 0) return text;
+  const words = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const cell = parseCsvRow(line)[wordColIdx];
+    if (cell && cell.trim()) words.push(cell.trim());
+  }
+  return words.join('\n');
+}
+
 async function extractText(file) {
   const ext = file.name.split('.').pop().toLowerCase();
   switch (ext) {
     case 'pdf':  return parsePdf(file);
     case 'docx': return parseDocx(file);
     case 'odt':  return parseOdt(file);
+    case 'csv': {
+      const text = await readFileAsText(file);
+      return extractCsvWordColumn(text);
+    }
     default:     return readFileAsText(file);
   }
 }
@@ -91,7 +135,7 @@ export function tokenize(text, opts = {}) {
     if (!w) continue;
     const isAllCaps = isAllCapsWord(w);
     if (lowercase && isAllCaps) continue;
-    const key = isAllCaps ? w : w.toLowerCase();
+    const key = lowercase ? w.toLowerCase() : w;
     if (key.length >= minLen && key.length <= maxLen) {
       freq[key] = (freq[key] || 0) + 1;
     }
