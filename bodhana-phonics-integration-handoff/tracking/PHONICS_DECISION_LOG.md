@@ -981,3 +981,23 @@ Classification: (c) Structural limitation — VCV open-syllable preference fires
 ### NOT FIXABLE (data): guarantees → gu-a-ran-tees (should be guar-an-tees)
 
 Classification: (c) Structural limitation — `u` and `a` in `guar` are identified as separate vowel nuclei by `identifyVowelNuclei`, creating a spurious VCV split. The `ar` r-controlled pattern is a 2-char token but the preceding `u` is still counted as its own nucleus. Not addressable via `compoundParts`/`rootWords`. Deferred to Phase 2 backlog.
+
+---
+
+## 2026-10-09 — Phase 2 algorithm fixes: syllableSplitOverrides + suffix segments
+
+### -able/-ible as two-syllable suffixes
+
+Added optional `segments` field to `suffixStripRules`. `tryStripSuffix` now returns `suffixSegments` (the segments array if `r.segments` is present and undoubling didn't fire, otherwise `[actualSuffix]`). `splitSyllables` spreads `suffixSegments` instead of appending a single string.
+
+Decision: chose option (a) from the backlog — data-driven `segments` field in YAML rather than algorithmic re-split. This is explicit and auditable. The recursive re-split (option c) was rejected because it would incorrectly re-split `-tion` into `ti-on`.
+
+Caveat: the `-Cle` check (step 2 in `splitSyllables`) intercepts `visible` and `readable` before the suffix strip fires, so those two specific words cannot be fixed by `segments` alone. They are handled by `syllableSplitOverrides`.
+
+### syllableSplitOverrides — explicit pre-computed split table
+
+Added `syllableSplitOverrides` section to `phonics-constructs.yaml`. This is checked at step 0 in `splitSyllables` (before compound/suffix/fallback). Wired through compile-core → constructsLoader → PhonicsEngine ctx.
+
+Decision: chose option (c) from the backlog (curated list) over algorithmic approaches (a) and (b). Algorithmic approaches risk regressions across the full 900+ test corpus and require deep understanding of the VCV nucleus-detection system to audit safely. The curated list is transparent, zero-risk, and extensible with a one-line YAML entry.
+
+No `checkReachability`-style coverage rule added for overrides — these are safety-valve entries and don't need fixture enforcement beyond the existing syllableSplit fixtures.

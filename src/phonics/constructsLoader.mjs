@@ -60,6 +60,7 @@ export function loadConstructs(raw = rawConstructs) {
     compoundParts:             raw.compoundParts,
     rootWords:                 raw.rootWords,
     suffixStripRules:          raw.suffixStripRules,
+    syllableSplitOverrides:    raw.syllableSplitOverrides || [],
     meta: {
       schemaVersion: raw.schemaVersion,
       sourceHash:    raw.sourceHash,

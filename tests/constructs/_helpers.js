@@ -15,6 +15,7 @@ import {
   buildCompoundPartsSet,
   buildRootWordsSet,
   buildPatternCategoryMap,
+  buildSyllableSplitOverridesMap,
   buildExceptionMap,
 } from '../../src/phonics/core/index.mjs';
 
@@ -34,6 +35,7 @@ const vowelNucleiList   = buildVowelNucleiList(constructs.patternCategories);
 const compoundPartsSet  = buildCompoundPartsSet(constructs.compoundParts);
 const rootWordsSet      = buildRootWordsSet(constructs.rootWords);
 const patternCategoryMap = buildPatternCategoryMap(constructs.patternCategories);
+const syllableSplitOverridesMap = buildSyllableSplitOverridesMap(constructs.syllableSplitOverrides || []);
 const exceptionMap      = buildExceptionMap(constructs.vowelTeamExceptions);
 
 /** Context object passed to splitSyllables */
@@ -43,6 +45,7 @@ const syllableCtx = {
   rootWordsSet,
   suffixStripRules: constructs.suffixStripRules,
   patternCategoryMap,
+  syllableSplitOverridesMap,
 };
 
 export { constructs, fixtures, sortedPatterns, vowelNucleiList, exceptionMap, syllableCtx };

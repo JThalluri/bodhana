@@ -25,13 +25,17 @@ export function compileConstructs(raw, meta = {}) {
   }
 
   // Normalise suffixStripRules: fill in optional boolean fields with defaults
-  const suffixStripRules = (raw.suffixStripRules || []).map(r => ({
-    suffix:   String(r.suffix),
-    minStem:  Number(r.minStem),
-    always:   Boolean(r.always),
-    undouble: Boolean(r.undouble || false),
-    edOnly:   Boolean(r.edOnly || false),
-  }));
+  const suffixStripRules = (raw.suffixStripRules || []).map(r => {
+    const rule = {
+      suffix:   String(r.suffix),
+      minStem:  Number(r.minStem),
+      always:   Boolean(r.always),
+      undouble: Boolean(r.undouble || false),
+      edOnly:   Boolean(r.edOnly || false),
+    };
+    if (r.segments) rule.segments = r.segments.map(String);
+    return rule;
+  });
 
   // Normalise vowelTeamExceptions: ensure note field is null when absent
   const vowelTeamExceptions = (raw.vowelTeamExceptions || []).map(row => ({
@@ -58,6 +62,10 @@ export function compileConstructs(raw, meta = {}) {
     compoundParts:    [...(raw.compoundParts || [])].map(String),
     rootWords:        [...(raw.rootWords     || [])].map(String),
     suffixStripRules,
+    syllableSplitOverrides: (raw.syllableSplitOverrides || []).map(r => ({
+      word:  String(r.word),
+      split: r.split.map(String),
+    })),
   };
 }
 

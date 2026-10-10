@@ -11,6 +11,7 @@ export {
   buildCompoundPartsSet,
   buildRootWordsSet,
   buildPatternCategoryMap,
+  buildSyllableSplitOverridesMap,
   tryCompoundSplit,
   tryStripSuffix,
   splitSyllables,

@@ -267,7 +267,11 @@ syllableSplit:
   - { word: movie,       split: [mov, ie] }
   - { word: friendly,    split: [friend, ly] }
   - { word: friends,     split: [friends] }
-  - { word: several,     split: [sev, er, al], expectedFailure: true, reason: "identifyVowelNuclei uses only 3-char r-controlled patterns; bare 'er' at position 1 in 'sev-er-al' is seen as two single-vowel nuclei (e…e), so VCV fires and gives se|ve|ral — see backlog" }
+  - { word: several,     split: [sev, er, al] }
+  - { word: general,    split: [gen, er, al] }
+  - { word: federal,    split: [fed, er, al] }
+  - { word: elephant,   split: [el,  e,  phant] }
+  - { word: guarantees, split: [guar, an, tees] }
   - { word: monkey,      split: [mon, key] }
   - { word: turkey,      split: [tur, key] }
   - { word: shoulder,    split: [shoul, der] }
@@ -289,8 +293,16 @@ syllableSplit:
   - { word: payment,    split: [pay, ment] }
   - { word: kindness,   split: [kind, ness] }
   - { word: careless,   split: [care, less] }
-  - { word: readable,   split: [read, a, ble], expectedFailure: true, reason: "-able treated as one segment, undercounts by 1 syllable — see backlog item 1 (open)" }
-  - { word: visible,    split: [vis, i, ble], expectedFailure: true, reason: "-ible same issue as -able — see backlog item 1 (open)" }
+  - { word: readable,   split: [read, a, ble] }
+  - { word: visible,    split: [vis, i, ble] }
+  # ea-hiatus family (stem overrides fix suffix-stripped forms)
+  - { word: created,    split: [cre, at, ed] }
+  - { word: creating,   split: [cre, at, ing] }
+  - { word: creation,   split: [cre, a, tion] }
+  # smother family (ere rControlled3 boundary fix)
+  - { word: smother,    split: [smoth, er] }
+  - { word: smothered,  split: [smoth, ered] }
+  - { word: smothering, split: [smoth, er, ing] }
   - { word: famous,     split: [fa, mous] }
   - { word: careful,    split: [care, ful] }
   - { word: biggest,    split: [big, gest] }

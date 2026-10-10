@@ -613,8 +613,8 @@ suffixStripRules:
   - { suffix: ment,  minStem: 3, always: true }
   - { suffix: ness,  minStem: 3, always: true }
   - { suffix: less,  minStem: 3, always: true }
-  - { suffix: able,  minStem: 3, always: true }
-  - { suffix: ible,  minStem: 3, always: true }
+  - { suffix: able,  minStem: 3, always: true, segments: [a, ble] }
+  - { suffix: ible,  minStem: 3, always: true, segments: [i, ble] }
   - { suffix: ie,    minStem: 2, always: false }
   - { suffix: ous,   minStem: 3, always: false }
   - { suffix: ful,   minStem: 3, always: true }
@@ -623,3 +623,33 @@ suffixStripRules:
   - { suffix: est,   minStem: 4, always: true,  undouble: true }
   - { suffix: er,    minStem: 5, always: false, undouble: true }
   - { suffix: ed,    minStem: 2, always: true,  edOnly: true }
+
+# Explicit syllable-split overrides for words the VCV heuristic splits incorrectly.
+# The short-vowel first syllable causes VCV open-syllable preference to fire wrongly
+# (e.g. `sev-e-ral` instead of `sev-er-al`). These are checked before any other logic.
+syllableSplitOverrides:
+  # VCV open-syllable false positives — short first vowel treated as open
+  - { word: several,    split: [sev,  er, al]  }
+  - { word: general,    split: [gen,  er, al]  }
+  - { word: federal,    split: [fed,  er, al]  }
+  - { word: mineral,    split: [min,  er, al]  }
+  - { word: liberal,    split: [lib,  er, al]  }
+  - { word: camera,     split: [cam,  er, a]   }
+  - { word: elephant,   split: [el,   e, phant] }
+  - { word: guarantees, split: [guar, an, tees] }
+  # -able/-ible intercepted by -Cle check before suffix strip can fire
+  - { word: readable,   split: [read, a, ble]  }
+  - { word: visible,    split: [vis,  i, ble]  }
+  # ea-hiatus family: ea treated as vowel team inside stem, blocking correct split
+  # Adding the bare stem (crea/creat) covers suffix-stripped forms (creation/created/creating)
+  - { word: crea,       split: [cre,  a]        }
+  - { word: creat,      split: [cre,  at]       }
+  - { word: create,     split: [cre,  ate]      }
+  - { word: creates,    split: [cre,  ates]     }
+  - { word: creator,    split: [cre,  a, tor]   }
+  - { word: recreate,   split: [re,   cre, ate]  }
+  # ere rControlled3 groups e-r-e across suffix boundary, wrong boundary for smother family
+  # Adding 'smother' covers 'smothering' (suffix strip calls splitSyllables('smother'))
+  - { word: smother,    split: [smoth, er]       }
+  - { word: smothered,  split: [smoth, ered]     }
+  - { word: smothers,   split: [smoth, ers]      }

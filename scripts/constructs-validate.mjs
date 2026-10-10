@@ -234,13 +234,35 @@ export function checkStructure(constructs) {
     }
   }
 
-  // suffixStripRules: non-empty lowercase-alpha suffix, positive integer minStem
+  // suffixStripRules: non-empty lowercase-alpha suffix, positive integer minStem,
+  // optional segments must be a non-empty array of lowercase-alpha strings
   for (const r of constructs.suffixStripRules) {
     if (!r.suffix || !/^[a-z]+$/.test(r.suffix)) {
       violations.push(`suffixStripRules entry has invalid suffix: "${r.suffix}"`);
     }
     if (!Number.isInteger(r.minStem) || r.minStem < 1) {
       violations.push(`suffixStripRules entry for "${r.suffix}" has invalid minStem: ${r.minStem}`);
+    }
+    if (r.segments !== undefined) {
+      if (!Array.isArray(r.segments) || r.segments.length < 2 ||
+          r.segments.some(s => !/^[a-z]+$/.test(s))) {
+        violations.push(`suffixStripRules entry for "${r.suffix}" has invalid segments: must be array of ≥2 lowercase-alpha strings`);
+      } else if (r.segments.join('') !== r.suffix) {
+        violations.push(`suffixStripRules entry for "${r.suffix}": segments "${r.segments.join(',')}" do not concatenate to suffix`);
+      }
+    }
+  }
+
+  // syllableSplitOverrides: each entry must have a non-empty word and a split array of ≥2 segments
+  for (const entry of constructs.syllableSplitOverrides || []) {
+    if (!entry.word || !/^[a-z]+$/.test(entry.word)) {
+      violations.push(`syllableSplitOverrides entry has invalid word: "${entry.word}"`);
+    }
+    if (!Array.isArray(entry.split) || entry.split.length < 2 ||
+        entry.split.some(s => !/^[a-z]+$/.test(s))) {
+      violations.push(`syllableSplitOverrides entry for "${entry.word}" has invalid split: must be array of ≥2 lowercase-alpha strings`);
+    } else if (entry.split.join('') !== entry.word) {
+      violations.push(`syllableSplitOverrides entry for "${entry.word}": split segments don't concatenate to word`);
     }
   }
 

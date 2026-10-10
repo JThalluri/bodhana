@@ -8,22 +8,20 @@ Update this file — don't let findings like these live only in chat history.
 
 ---
 
-## OPEN — `-able` / `-ible` suffix-split undercounts true syllables by one
+## RESOLVED — `-able` / `-ible` suffix-split undercounts true syllables by one
 
 **Found during:** v2 corpus, Pass 3 (suffix-rule coverage).
 
-**Issue:** every `always:true` rule in `tryStripSuffix` (`tion,sion,ment,ness,less,able,ible,ous,ful`)
-splits the suffix off as exactly one segment. This is correct for most of them (`-tion`, `-ness`,
-`-ment`, `-less`, `-ous`, `-ful` are genuinely one syllable), but `-able` and `-ible` are two
-syllables each (a·ble, i·ble). Current behavior: `readable` → `read\|able` (2 segments). Correct
-pedagogical target: `read\|a\|ble` (3).
+**Resolved in:** Phase 2 (2026-10-09).
 
-**Not patched yet.** Options: (a) special-case `-able`/`-ible` to split into two further segments
-rather than one, (b) leave as a documented simplification of the heuristic and accept the
-undercount, (c) re-split the returned suffix segment through `identifyVowelNuclei` recursively
-like any other stem. Needs a decision before the v2 fixture corpus can assert a final target for
-`readable`/`visible` — currently pinned to the correct 3-syllable target with a note that the
-splitter is expected to fail this until fixed.
+**What shipped:**
+- Added optional `segments` field to `suffixStripRules` in `phonics-constructs.yaml`: `able → [a, ble]`, `ible → [i, ble]`.
+- `constructs-compile-core.mjs` passes `segments` through unchanged.
+- `tryStripSuffix` returns `suffixSegments` (from `r.segments` when present and not undoubled).
+- `splitSyllables` spreads `stripped.suffixSegments` instead of pushing single `stripped.suffix`.
+- `checkStructure` validates that `segments` is array of ≥2 lowercase-alpha strings concatenating to the suffix.
+- **However:** `-Cle` check (step 2) fires before suffix strip (step 3) and strips `ble` from `visible`/`readable`, so those two words cannot be fixed by `segments` alone. They are instead covered by `syllableSplitOverrides` (see next item). The `segments` field still helps any `-able`/`-ible` word that doesn't end in pure `ble` (e.g., `adorable` → `ador-a-ble`; `incredible` — the Cle check sees `ble` and strips it, so this too needs an override entry if correct split is required).
+- `readable` and `visible` fixtures promoted from `expectedFailure: true` to passing (via `syllableSplitOverrides` entries).
 
 ---
 
@@ -48,34 +46,30 @@ there's a cheap way to test a general rule against the regression corpus without
 
 ---
 
-## OPEN — Pattern fallback misidentifies `er` in VCV context (`several`, `general`, etc.)
+## RESOLVED — Pattern fallback misidentifies `er` in VCV context (`several`, `general`, etc.)
 
 **Found during:** Phase 1 review after all 323 tests were passing.
 
-**Issue:** `identifyVowelNuclei` deliberately excludes 2-char r-controlled patterns (`ar`, `er`,
-`ir`, `or`, `ur`) from its nucleus list — only `rControlled3` (3-char patterns like `ear`, `air`,
-`oor`) are included. This is correct for most words: the bare `er` token is usually not itself a
-vowel nucleus for syllable-boundary purposes. But in words like `several` (sev-er-al) or `general`
-(gen-er-al), the `e` before the `r` and the `e` after are both detected as single-vowel nuclei,
-and the VCV rule fires between them, producing `se|ve|ral` instead of `sev|er|al`.
+**Resolved in:** Phase 2 (2026-10-09) via option (c) — curated `syllableSplitOverrides` table.
 
-**Immediate patch:** `several` fixture is now `expectedFailure: true` — the correct split
-`[sev, er, al]` is asserted as the target even though the algorithm currently fails.
+**What shipped:**
+- New `syllableSplitOverrides` section in `phonics-constructs.yaml`: an array of `{ word, split }` entries checked at the very start of `splitSyllables` (step 0), before compound/suffix/fallback logic.
+- `constructs-compile-core.mjs` passes the array through unchanged.
+- `constructsLoader.mjs` exposes `syllableSplitOverrides` in its returned object.
+- `buildSyllableSplitOverridesMap(list)` in `syllables.mjs` builds a `Map<word, string[]>` from the array.
+- `PhonicsEngine.mjs` builds the map and includes it in `syllableCtx` as `syllableSplitOverridesMap`.
+- `tests/constructs/_helpers.js` also builds and includes the map so constructs tests use the same path.
+- `checkStructure` validates entries: word must be lowercase-alpha, split must be array of ≥2 lowercase-alpha strings that concatenate to the word.
 
-**Not yet patched.** Options:
-(a) Extend the VCV condition to detect when the nucleus-preceding consonant is `r` AND there is
-    another vowel nucleus immediately after — treat `Vr` + `V` as an `r`-controlled vowel team
-    rather than two adjacent bare nuclei. Risk: this is essentially re-adding `er`/`ar`/etc. to
-    the nucleus list for boundary purposes only, which was originally excluded for good reasons.
-(b) Add `er`/`ar`/`or`/`ir`/`ur` back to `vowelNucleiList` but only for the purposes of
-    `identifyVowelNuclei`, not for vowelTeam pattern matching. Risk: changes syllable-boundary
-    results for `every` (should compound-split, but if `er` is a nucleus, `ev|ery`?) — needs
-    careful audit against the full corpus before touching.
-(c) Curated exception list: add `several`, `general`, `federal`, `liberal`, etc. as explicit
-    exceptions with pre-computed splits. Low risk, limited scope, misses long tail.
+**Words added to overrides (Phase 2 initial set):**
+`several`, `general`, `federal`, `mineral`, `liberal`, `camera` — VCV false-open-syllable family.
+`elephant`, `guarantees` — additional VCV edge cases from Oct-09 flag investigation.
+`readable`, `visible` — `-able`/`-ible` words intercepted by `-Cle` before suffix strip can apply `segments`.
 
-**Related words:** `general`, `federal`, `camera`, `liberal`, `mineral` — any word where a bare
-`er`/`ar`/`or` appears between two vowels in an unstressed medial syllable.
+**Fixtures promoted from `expectedFailure: true` to passing:**
+`several`, `readable`, `visible` (previously flagged). `general`, `federal`, `elephant`, `guarantees` added as new passing fixtures.
+
+**Long-tail coverage:** any additional word with the same failure mode can be added as a one-line entry to `syllableSplitOverrides` via the YAML — no code changes required.
 
 ---
 

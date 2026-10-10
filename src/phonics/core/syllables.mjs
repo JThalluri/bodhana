@@ -48,6 +48,21 @@ export function buildRootWordsSet(list) {
 }
 
 /**
+ * Build the syllable-split overrides map.
+ * Maps each word → its pre-computed syllable array, bypassing the heuristic.
+ *
+ * @param {Array<{word: string, split: string[]}>} list
+ * @returns {Map<string, string[]>}
+ */
+export function buildSyllableSplitOverridesMap(list) {
+  const m = new Map();
+  for (const entry of list) {
+    m.set(entry.word, entry.split);
+  }
+  return m;
+}
+
+/**
  * Build the pattern-category map used by the VCCV fallback.
  * Maps each pattern string → its category name.
  *
@@ -135,7 +150,8 @@ export function tryStripSuffix(word, suffixStripRules, rootWordsSet) {
     if (!r.always && !didUndouble &&
         !rootWordsSet.has(stem) && !rootWordsSet.has(stem + 'e')) continue;
 
-    return { stem, suffix: actualSuffix };
+    const suffixSegments = r.segments && !didUndouble ? r.segments : [actualSuffix];
+    return { stem, suffix: actualSuffix, suffixSegments };
   }
   return null;
 }
@@ -156,6 +172,10 @@ export function splitSyllables(word, ctx, depth = 0) {
   const w = clean(word);
   if (!w) return [];
   if (depth > 4) return [w]; // runaway recursion guard
+
+  // 0. Explicit override — bypasses heuristic for VCV edge cases
+  const override = ctx.syllableSplitOverridesMap?.get(w);
+  if (override) return override;
 
   // 1. Compound split: some|thing, rain|bow, any|one
   const compound = tryCompoundSplit(w, ctx.compoundPartsSet);
@@ -182,7 +202,7 @@ export function splitSyllables(word, ctx, depth = 0) {
   const stripped = tryStripSuffix(stem, ctx.suffixStripRules, ctx.rootWordsSet);
   if (stripped && stripped.stem.length >= 2) {
     const stemSyls = splitSyllables(stripped.stem, ctx, depth + 1);
-    const withSuffix = [...stemSyls, stripped.suffix];
+    const withSuffix = [...stemSyls, ...stripped.suffixSegments];
     return cleSuffix ? [...withSuffix, cleSuffix] : withSuffix;
   }
 

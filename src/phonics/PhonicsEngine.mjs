@@ -14,6 +14,7 @@ import {
   buildCompoundPartsSet,
   buildRootWordsSet,
   buildPatternCategoryMap,
+  buildSyllableSplitOverridesMap,
   splitSyllables,
   countSyllables,
   onsetRime,
@@ -39,6 +40,7 @@ const vowelNucleiList   = buildVowelNucleiList(c.patternCategories);
 const compoundPartsSet  = buildCompoundPartsSet(c.compoundParts);
 const rootWordsSet      = buildRootWordsSet(c.rootWords);
 const patternCategoryMap = buildPatternCategoryMap(c.patternCategories);
+const syllableSplitOverridesMap = buildSyllableSplitOverridesMap(c.syllableSplitOverrides || []);
 
 const syllableCtx = {
   vowelNucleiList,
@@ -46,6 +48,7 @@ const syllableCtx = {
   rootWordsSet,
   suffixStripRules: c.suffixStripRules,
   patternCategoryMap,
+  syllableSplitOverridesMap,
 };
 
 // ---------------------------------------------------------------------------
