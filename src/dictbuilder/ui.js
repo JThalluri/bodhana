@@ -6,6 +6,7 @@ import { DEFAULT_COMMON_WORDS } from '../shared/default-common-words.js';
 import { speakText, speakSequence, isSpeechSupported, cancelSpeech } from '../shared/speech.js';
 import { tokenizeManualInput } from './manual-entry-helpers.js';
 import { buildInvestigationBriefs } from '../shared/investigationBriefs.js';
+import { fetchWiktionaryDefinition } from '../shared/dictionaryLookup.js';
 
 const state = {
   files: [],
@@ -23,6 +24,9 @@ const state = {
 
 // Assigned once at mount via wireInfoPaneTabs — used by selectWord()
 let infoPaneTabs = null;
+
+// AbortController for any in-flight Wiktionary lookup
+let _lookupController = null;
 
 // ── Notes tab static content ──────────────────────────────────────────────────
 
@@ -423,6 +427,8 @@ function runEnrich() {
 function selectWord(word) {
   if (!word) return;
   cancelSpeech();
+  _lookupController?.abort();
+  _lookupController = null;
   state.selectedWord = word;
   renderWordGrid();
   renderDetailPanel();
@@ -487,6 +493,39 @@ function renderDetailPanel() {
   } else {
     speakWordBtn?.addEventListener('click', () => speakText(word));
     speakSylBtn?.addEventListener('click',  () => speakSequence(PhonicsEngine.splitSyllables(word)));
+  }
+
+  // Wire lookup button (only present in enriched state)
+  const lookupBtn = panel.querySelector('[data-action="lookup"]');
+  if (lookupBtn && word) {
+    lookupBtn.addEventListener('click', async () => {
+      const resultArea = panel.querySelector('[data-lookup-result]');
+      lookupBtn.disabled = true;
+      _lookupController = new AbortController();
+      try {
+        const result = await fetchWiktionaryDefinition(word, { signal: _lookupController.signal });
+        if (resultArea) {
+          if (result) {
+            resultArea.innerHTML =
+              `<div class="wd-lookup-queried-word">${result.word}</div>` +
+              `<div class="wd-lookup-snippet">${escapeHtml(result.snippet)}</div>` +
+              `<a class="wd-lookup-attribution" href="${result.sourceUrl}" target="_blank" rel="noopener noreferrer">` +
+              `View full Wiktionary entry ↗</a>`;
+          } else {
+            resultArea.innerHTML = '<div class="wd-lookup-not-found">No definition found.</div>';
+          }
+          resultArea.style.display = '';
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError' && resultArea) {
+          resultArea.innerHTML = `<div class="wd-lookup-not-found">Couldn’t reach the dictionary right now.</div>`;
+          resultArea.style.display = '';
+        }
+      } finally {
+        lookupBtn.disabled = false;
+        _lookupController = null;
+      }
+    });
   }
 }
 
@@ -755,6 +794,14 @@ function doClear() {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function setStatus(type, html) {
   const el = document.getElementById('dbStatus');
   if (!el) return;
@@ -909,6 +956,8 @@ function wireEvents() {
 }
 
 export function unmount() {
+  _lookupController?.abort();
+  _lookupController = null;
   resetState();
   infoPaneTabs = null;
 }

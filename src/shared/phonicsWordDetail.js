@@ -131,9 +131,14 @@ export function renderWordDetail(word, record, {
 
       <div class="wd-word-header">
         <span class="wd-word">${word}</span>
-        <button class="btn btn-sm btn-ghost wd-speak-btn" data-action="speak-word" title="Speak word">
-          <i class="fas fa-volume-up"></i>
-        </button>
+        <div class="wd-btn-row">
+          <button class="btn btn-sm btn-ghost wd-speak-btn" data-action="speak-word" title="Speak word">
+            <i class="fas fa-volume-up"></i>
+          </button>
+          <button class="btn btn-sm btn-ghost" data-action="lookup" title="Look up in Wiktionary">
+            <i class="fas fa-book"></i> Look up
+          </button>
+        </div>
         <span class="wd-syllables">${syllables.join(' · ')}</span>
         <button class="btn btn-sm btn-ghost wd-speak-btn" data-action="speak-syllables" title="Speak syllables">
           <i class="fas fa-volume-up"></i>
@@ -155,6 +160,8 @@ export function renderWordDetail(word, record, {
             <span class="wd-stat-value">${s.value}</span>
           </span>`).join('')}
       </div>
+
+      <div class="wd-lookup-result" data-lookup-result style="display:none"></div>
 
       <div class="wd-section wd-flag-section">
         <div class="wd-section-label">Flag for Review</div>
