@@ -199,7 +199,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-09T23:17:16.647Z",
+  "generatedAt": "2026-10-12T15:22:35.744Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -523,7 +523,7 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:d8d4155c5b3ad4232490ff5ee72dfcf15a1a1b581a3b65ca67aec2dd91143e2e",
+  "sourceHash": "sha256:15ff34abc299f1e3f8618b3a5d281f60152f45964dff12a8cd5c9d7e7d376264",
   "suffixStripRules": [
     {
       "always": true,
@@ -578,6 +578,10 @@
       "always": true,
       "edOnly": false,
       "minStem": 3,
+      "segments": [
+        "a",
+        "ble"
+      ],
       "suffix": "able",
       "undouble": false
     },
@@ -585,6 +589,10 @@
       "always": true,
       "edOnly": false,
       "minStem": 3,
+      "segments": [
+        "i",
+        "ble"
+      ],
       "suffix": "ible",
       "undouble": false
     },
@@ -643,6 +651,153 @@
       "minStem": 2,
       "suffix": "ed",
       "undouble": false
+    }
+  ],
+  "syllableSplitOverrides": [
+    {
+      "split": [
+        "sev",
+        "er",
+        "al"
+      ],
+      "word": "several"
+    },
+    {
+      "split": [
+        "gen",
+        "er",
+        "al"
+      ],
+      "word": "general"
+    },
+    {
+      "split": [
+        "fed",
+        "er",
+        "al"
+      ],
+      "word": "federal"
+    },
+    {
+      "split": [
+        "min",
+        "er",
+        "al"
+      ],
+      "word": "mineral"
+    },
+    {
+      "split": [
+        "lib",
+        "er",
+        "al"
+      ],
+      "word": "liberal"
+    },
+    {
+      "split": [
+        "cam",
+        "er",
+        "a"
+      ],
+      "word": "camera"
+    },
+    {
+      "split": [
+        "el",
+        "e",
+        "phant"
+      ],
+      "word": "elephant"
+    },
+    {
+      "split": [
+        "guar",
+        "an",
+        "tees"
+      ],
+      "word": "guarantees"
+    },
+    {
+      "split": [
+        "read",
+        "a",
+        "ble"
+      ],
+      "word": "readable"
+    },
+    {
+      "split": [
+        "vis",
+        "i",
+        "ble"
+      ],
+      "word": "visible"
+    },
+    {
+      "split": [
+        "cre",
+        "a"
+      ],
+      "word": "crea"
+    },
+    {
+      "split": [
+        "cre",
+        "at"
+      ],
+      "word": "creat"
+    },
+    {
+      "split": [
+        "cre",
+        "ate"
+      ],
+      "word": "create"
+    },
+    {
+      "split": [
+        "cre",
+        "ates"
+      ],
+      "word": "creates"
+    },
+    {
+      "split": [
+        "cre",
+        "a",
+        "tor"
+      ],
+      "word": "creator"
+    },
+    {
+      "split": [
+        "re",
+        "cre",
+        "ate"
+      ],
+      "word": "recreate"
+    },
+    {
+      "split": [
+        "smoth",
+        "er"
+      ],
+      "word": "smother"
+    },
+    {
+      "split": [
+        "smoth",
+        "ered"
+      ],
+      "word": "smothered"
+    },
+    {
+      "split": [
+        "smoth",
+        "ers"
+      ],
+      "word": "smothers"
     }
   ],
   "vowelTeamExceptions": [

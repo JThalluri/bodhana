@@ -3,7 +3,7 @@ import { themeToggleMarkup, infoPaneTabsMarkup, wireInfoPaneTabs } from '../shar
 import PhonicsEngine from '../phonics/PhonicsEngine.mjs';
 import { renderWordDetail } from '../shared/phonicsWordDetail.js';
 import { DEFAULT_COMMON_WORDS } from '../shared/default-common-words.js';
-import { speakText, speakSequence, isSpeechSupported, cancelSpeech } from '../shared/speech.js';
+import { speakText, isSpeechSupported, cancelSpeech } from '../shared/speech.js';
 import { tokenizeManualInput } from './manual-entry-helpers.js';
 import { buildInvestigationBriefs } from '../shared/investigationBriefs.js';
 import { fetchWiktionaryDefinition } from '../shared/dictionaryLookup.js';
@@ -483,16 +483,15 @@ function renderDetailPanel() {
   const exportBriefsBtn = panel.querySelector('[data-action="export-briefs"]');
   exportBriefsBtn?.addEventListener('click', doExportInvestigationBriefs);
 
-  // Wire TTS buttons (only present in enriched state)
+  // Wire TTS button (only present in enriched state)
   const speakWordBtn = panel.querySelector('[data-action="speak-word"]');
-  const speakSylBtn  = panel.querySelector('[data-action="speak-syllables"]');
   if (!isSpeechSupported()) {
-    [speakWordBtn, speakSylBtn].forEach(b => {
-      if (b) { b.disabled = true; b.title = 'Text-to-speech not supported in this browser'; }
-    });
+    if (speakWordBtn) {
+      speakWordBtn.disabled = true;
+      speakWordBtn.title = 'Text-to-speech not supported in this browser';
+    }
   } else {
     speakWordBtn?.addEventListener('click', () => speakText(word));
-    speakSylBtn?.addEventListener('click',  () => speakSequence(PhonicsEngine.splitSyllables(word)));
   }
 
   // Wire lookup button (only present in enriched state)

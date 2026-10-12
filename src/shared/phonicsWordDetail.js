@@ -140,9 +140,6 @@ export function renderWordDetail(word, record, {
           </button>
         </div>
         <span class="wd-syllables">${syllables.join(' · ')}</span>
-        <button class="btn btn-sm btn-ghost wd-speak-btn" data-action="speak-syllables" title="Speak syllables">
-          <i class="fas fa-volume-up"></i>
-        </button>
       </div>
 
       <div class="wd-graphemes">
