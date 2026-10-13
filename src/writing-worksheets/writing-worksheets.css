@@ -7,9 +7,96 @@
 
 /* ── Settings ─────────────────────────────────────────── */
 
+.hw-settings-pane {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.hw-stab-strip {
+  display: flex;
+  flex-direction: column;
+  width: 52px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-surface);
+  padding: 4px 0;
+}
+
+.hw-stab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 4px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color var(--transition), background var(--transition);
+}
+
+.hw-stab i {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.hw-stab:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.hw-stab.active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset -2px 0 0 var(--accent);
+}
+
+.hw-stab-panels {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.hw-stab-panel {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.hw-stab-panel.active {
+  display: flex;
+}
+
+.hw-settings-pane .ws-field {
+  grid-template-columns: minmax(0, 88px) minmax(0, 1fr);
+  column-gap: 8px;
+}
+
 .hw-settings-pane .ws-field:has(#hwTypeSelect),
 .hw-settings-pane .ws-field:has(select) {
-  grid-template-columns: minmax(0, 1fr) 180px;
+  grid-template-columns: minmax(0, 88px) minmax(0, 1fr);
+}
+
+.hw-settings-pane .ws-field label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hw-settings-pane .ws-field .tb-select,
+.hw-settings-pane .ws-field .tb-num,
+.hw-settings-pane .ws-field .hw-text,
+.hw-settings-pane .ws-field .hw-color {
+  min-width: 0;
 }
 
 .hw-settings-pane .ws-field.is-disabled label {
@@ -32,8 +119,31 @@
 }
 
 .hw-wide {
-  grid-template-columns: 90px minmax(0, 1fr) !important;
   margin-top: 10px;
+}
+
+.hw-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.hw-stack label {
+  width: 100%;
+}
+
+.hw-ref-title-input {
+  min-height: calc(1.5em * 3 + 16px);
+  resize: vertical;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+  line-height: 1.5;
 }
 
 .hw-color {
@@ -60,6 +170,12 @@
   font-size: var(--text-xs);
   line-height: 1.5;
   color: var(--text-muted);
+}
+
+.hw-progressive-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
 }
 
 .hw-settings-pane [hidden] {

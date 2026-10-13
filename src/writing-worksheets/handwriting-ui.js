@@ -2,7 +2,7 @@
 // Mounted by src/worksheets/index.js when the type switcher selects
 // "handwriting". No settings are persisted (session-only state).
 
-import { themeToggleMarkup } from '../shared/shell-ui.js';
+import { themeToggleMarkup, wireTabs } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
 import { exportWorksheetPdf } from '../shared/export-pdf.js';
 import { REF_TITLE_DEFAULTS, FONT_OPTIONS, freshState, getPath, setPath, clamp } from './state.js';
@@ -78,6 +78,26 @@ function markup() {
 
       <div class="tool-body">
         <div class="hw-settings-pane tool-settings no-print">
+          <div class="hw-stab-strip" role="tablist">
+            <button class="hw-stab active" role="tab" aria-selected="true" data-tab="setup">
+              <i class="fas fa-sliders-h"></i><span>Setup</span>
+            </button>
+            <button class="hw-stab" role="tab" aria-selected="false" data-tab="content">
+              <i class="fas fa-align-left"></i><span>Content</span>
+            </button>
+            <button class="hw-stab" role="tab" aria-selected="false" data-tab="lines">
+              <i class="fas fa-grip-lines"></i><span>Lines</span>
+            </button>
+            <button class="hw-stab" role="tab" aria-selected="false" data-tab="text">
+              <i class="fas fa-font"></i><span>Text</span>
+            </button>
+            <button class="hw-stab" role="tab" aria-selected="false" data-tab="layout">
+              <i class="fas fa-border-style"></i><span>Layout</span>
+            </button>
+          </div>
+
+          <div class="hw-stab-panels">
+            <div class="hw-stab-panel active" role="tabpanel" data-panel="setup">
           <div class="ws-settings-section tool-type-section">
             <div class="ws-section-title">Worksheet</div>
             <div class="ws-field">
@@ -99,16 +119,30 @@ function markup() {
               </select>
             </div>
             <p class="hw-hint">Choosing a tier loads its preset. Every value below stays editable.</p>
+            <div class="hw-progressive-section" id="hwScaffoldingSection" hidden>
+              <div class="ws-section-title">Tracing Lines</div>
+              ${sel('scaffolding.fadingMethod', 'Tracing', [['none', 'None'], ['faded_tracing', 'Faded tracing (2 rows)']], 'Alternating format only.')}
+              <div id="hwTracingOpacityRow">
+                ${num('scaffolding.tracingOpacity', 'Tracing opacity', { min: 0.05, max: 0.7, step: 0.05 })}
+              </div>
+              ${num('scaffolding.blankRowsBetween', 'Practice rows', { min: 1, max: 4, step: 1, title: 'Rows after each model line (alternating format).' })}
+              ${chk('scaffolding.showLineNumbers', 'Line numbers')}
+            </div>
+            <div class="hw-warning-section" id="hwWarnings" hidden>
+              <div class="overflow-warning" role="status"></div>
+            </div>
           </div>
+            </div>
 
+            <div class="hw-stab-panel" role="tabpanel" data-panel="content">
           <div class="ws-settings-section">
             <div class="ws-section-title">Content</div>
             <textarea id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
               placeholder="One item or sentence per line."></textarea>
             <p class="hw-hint" id="hwContentHint"></p>
-            <div class="ws-field hw-wide" id="hwRefTitleRow">
+            <div class="ws-field hw-wide hw-stack" id="hwRefTitleRow">
               <label for="hw-refTitle">Box title</label>
-              <input class="tb-num hw-text" type="text" id="hw-refTitle" data-path="refTitle" maxlength="120">
+              <textarea class="hw-text hw-ref-title-input" id="hw-refTitle" data-path="refTitle" maxlength="120" rows="3"></textarea>
             </div>
             <div class="ws-field" id="hwSeedRow" title="Same seed → same jumbled order.">
               <label for="hwSeed">Seed</label>
@@ -118,7 +152,9 @@ function markup() {
               </div>
             </div>
           </div>
+            </div>
 
+            <div class="hw-stab-panel" role="tabpanel" data-panel="lines">
           <div class="ws-settings-section">
             <div class="ws-section-title">Line Geometry</div>
             ${sel('geometry.gridType', 'Ruling', [
@@ -136,7 +172,9 @@ function markup() {
             ${color('geometry.lineColorMidline', 'Midline / sub-lines')}
             ${color('geometry.lineColorBaseline', 'Baseline')}
           </div>
+            </div>
 
+            <div class="hw-stab-panel" role="tabpanel" data-panel="text">
           <div class="ws-settings-section">
             <div class="ws-section-title">Typography</div>
             ${sel('typography.fontFamily', 'Font', FONT_OPTIONS.map(f => [f, f]))}
@@ -146,7 +184,9 @@ function markup() {
             ${num('typography.baselineShiftPx', 'Baseline shift px', { min: -30, max: 30, step: 1, title: 'Nudge text up (−) or down (+).' })}
             ${num('typography.letterSpacingEm', 'Letter spacing (em)', { min: -0.05, max: 0.3, step: 0.01 })}
           </div>
+            </div>
 
+            <div class="hw-stab-panel" role="tabpanel" data-panel="layout">
           <div class="ws-settings-section">
             <div class="ws-section-title">Layout</div>
             ${num('layout.totalPages', 'Pages', { min: 1, max: 20, step: 1, title: 'Copy-from-box format only. Other formats paginate automatically.' })}
@@ -158,17 +198,8 @@ function markup() {
             ${chk('layout.showLeftMarginVerticalLine', 'Margin line')}
             ${color('layout.leftMarginLineColor', 'Margin line color')}
           </div>
+            </div>
 
-          <div class="ws-settings-section">
-            <div class="ws-section-title">Scaffolding</div>
-            ${sel('scaffolding.fadingMethod', 'Tracing', [['none', 'None'], ['faded_tracing', 'Faded tracing (2 rows)']], 'Alternating format only.')}
-            ${num('scaffolding.tracingOpacity', 'Tracing opacity', { min: 0.05, max: 0.7, step: 0.05 })}
-            ${num('scaffolding.blankRowsBetween', 'Practice rows', { min: 1, max: 4, step: 1, title: 'Rows after each model line (alternating format).' })}
-            ${chk('scaffolding.showLineNumbers', 'Line numbers')}
-          </div>
-
-          <div class="ws-settings-section hw-warning-section" id="hwWarnings" hidden>
-            <div class="overflow-warning" role="status"></div>
           </div>
         </div>
 
@@ -192,6 +223,10 @@ export function buildHandwritingUI(container, onTypeChange) {
   unmountHandwriting();
   _alive = true;
   container.innerHTML = markup();
+  wireTabs(container.querySelector('.hw-settings-pane'), {
+    tabClass: 'hw-stab',
+    panelClass: 'hw-stab-panel',
+  });
 
   let state = freshState();
   let seed = state.seed ?? randomSeed();
@@ -246,6 +281,8 @@ export function buildHandwritingUI(container, onTypeChange) {
     $('#hwSeyesNote').hidden = !seyes;
     $('#hwSeedRow').hidden = fmt !== 'jumbled';
     $('#hwRefTitleRow').hidden = fmt === 'alternating';
+    $('#hwScaffoldingSection').hidden = fmt !== 'alternating';
+    $('#hwTracingOpacityRow').hidden = fmt !== 'alternating' || state.scaffolding.fadingMethod !== 'faded_tracing';
     $('#hwContentHint').textContent = {
       alternating: 'One word or sentence per line (or a single comma-separated line). Long lines wrap; each wrapped line gets its own model and practice rows.',
       top_box: 'Shown in a box on page 1; students copy it onto the lines below.',
