@@ -81,15 +81,15 @@ export function buildWordPuzzleUI(container) {
             </div>
             <div class="wp-set-field">
               <label for="wpWordsPerPuzzle">Words per puzzle</label>
-              <input class="tb-num" type="number" id="wpWordsPerPuzzle" value="10" min="1" max="50" />
+              <input class="tb-num" type="number" id="wpWordsPerPuzzle" value="30" min="1" max="50" />
             </div>
             <div class="wp-set-field" id="wpRowsLabel">
               <label for="wpRows">Grid rows</label>
-              <input class="tb-num" type="number" id="wpRows" value="12" min="10" max="26" />
+              <input class="tb-num" type="number" id="wpRows" value="22" min="10" max="26" />
             </div>
             <div class="wp-set-field" id="wpColsLabel">
               <label for="wpCols">Grid columns</label>
-              <input class="tb-num" type="number" id="wpCols" value="12" min="10" max="26" />
+              <input class="tb-num" type="number" id="wpCols" value="22" min="10" max="26" />
             </div>
           </div>
 
@@ -99,7 +99,7 @@ export function buildWordPuzzleUI(container) {
             <div class="wp-set-field">
               <label for="wpMinWordLength">Min letters</label>
               <select class="tb-select" id="wpMinWordLength">
-                ${minLens.map(n => `<option value="${n}"${n===4?' selected':''}>${n}</option>`).join('')}
+                ${minLens.map(n => `<option value="${n}"${n===5?' selected':''}>${n}</option>`).join('')}
               </select>
             </div>
             <div class="wp-set-field">
@@ -116,8 +116,8 @@ export function buildWordPuzzleUI(container) {
             <div class="wp-set-field">
               <label for="wpFontFamily">Font</label>
               <select class="tb-select" id="wpFontFamily">
-                <option value="'Nunito', sans-serif">Nunito</option>
                 <option value="'Andika', sans-serif">Andika</option>
+                <option value="'Nunito', sans-serif">Nunito</option>
                 <option value="'Comic Sans MS', cursive">Comic Sans</option>
                 <option value="'Patrick Hand', cursive">Patrick Hand</option>
                 <option value="'Quicksand', sans-serif">Quicksand</option>
@@ -129,7 +129,7 @@ export function buildWordPuzzleUI(container) {
             </div>
             <div class="wp-set-field">
               <label for="wpCellPadding">Cell padding</label>
-              <input class="tb-num" type="number" id="wpCellPadding" value="6" min="0" max="20" />
+              <input class="tb-num" type="number" id="wpCellPadding" value="7" min="0" max="20" />
             </div>
             <div class="wp-set-field">
               <label for="wpCaseMode">Letter case</label>
@@ -212,14 +212,14 @@ function readOpts() {
   const v = (id) => document.getElementById(id)?.value ?? '';
   return {
     mode:           v('wpMode') || 'wordsearch',
-    wordsPerPuzzle: n('wpWordsPerPuzzle', 10),
-    rows:           n('wpRows', 12),
-    cols:           n('wpCols', 12),
+    wordsPerPuzzle: n('wpWordsPerPuzzle', 30),
+    rows:           n('wpRows', 22),
+    cols:           n('wpCols', 22),
     puzzleCount:    n('wpPuzzleCount', 2),
     difficulty:     v('wpDifficulty') || 'medium',
-    minWordLength:  n('wpMinWordLength', 4),
-    maxWordLength:  n('wpMaxWordLength', 10),
-    fontFamily:     v('wpFontFamily') || "'Nunito', sans-serif",
+    minWordLength:  n('wpMinWordLength', 5),
+    maxWordLength:  n('wpMaxWordLength', 12),
+    fontFamily:     v('wpFontFamily') || "'Andika', sans-serif",
     fontSize:       n('wpFontSize', 20),
     cellPadding:    n('wpCellPadding', 6),
     caseMode:       v('wpCaseMode') || 'lowercase',
