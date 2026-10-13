@@ -142,6 +142,14 @@ export function buildDictBuilderUI(container) {
                 <span class="toggle-track"></span>
               </span>
             </label>
+
+            <label class="db-toggle-row" title="Show only words that are not already in the base dictionary">
+              <span>Exclude existing</span>
+              <span class="toggle-switch toggle-sm">
+                <input type="checkbox" id="dbExcludeExisting" />
+                <span class="toggle-track"></span>
+              </span>
+            </label>
           </section>
 
           <section class="db-settings-section">
@@ -188,6 +196,14 @@ export function buildDictBuilderUI(container) {
               <input type="file" id="dbBaseInput" accept=".txt,.text" style="display:none;" />
             </div>
             <div id="dbBaseInfo"></div>
+
+            <label class="db-toggle-row" title="When exporting with a base dictionary, apply this session's include/exclude decisions to matching base words">
+              <span>Update base words</span>
+              <span class="toggle-switch toggle-sm">
+                <input type="checkbox" id="dbUpdateBaseWords" />
+                <span class="toggle-track"></span>
+              </span>
+            </label>
           </section>
 
         </div>
@@ -221,6 +237,7 @@ export function buildDictBuilderUI(container) {
 
   resetState();
   wireEvents();
+  updateActionButtons();
   renderDetailPanel(); // initialize Detail tab with "no word selected" state
 }
 
@@ -257,6 +274,62 @@ function getSortedWords() {
     );
   }
   return [...state.extracted]; // already alpha-sorted from tokenize()
+}
+
+function excludeExistingEnabled() {
+  return document.getElementById('dbExcludeExisting')?.checked ?? false;
+}
+
+function updateBaseWordsEnabled() {
+  const toggle = document.getElementById('dbUpdateBaseWords');
+  return (toggle?.checked ?? false) && !excludeExistingEnabled();
+}
+
+function syncUpdateBaseToggle() {
+  const toggle = document.getElementById('dbUpdateBaseWords');
+  const row = toggle?.closest('.db-toggle-row');
+  if (!toggle) return;
+
+  const disabled = excludeExistingEnabled();
+  toggle.disabled = disabled;
+  if (disabled) toggle.checked = false;
+  row?.classList.toggle('db-toggle-row-disabled', disabled);
+}
+
+function getCuratableWords() {
+  const words = excludeExistingEnabled()
+    ? state.extracted.filter(w => !hasBaseWord(w))
+    : state.extracted;
+  return uniqueWordsByKey(words);
+}
+
+function getSortedCuratableWords() {
+  const curatable = new Set(getCuratableWords());
+  return getSortedWords().filter(w => curatable.has(w));
+}
+
+function activeCuratedWords() {
+  return getSortedCuratableWords().filter(w => !state.excluded.has(w));
+}
+
+function uniqueWordsByKey(words) {
+  const seen = new Set();
+  return words.filter(word => {
+    const key = wordKey(word);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function refreshCurationView() {
+  if (state.selectedWord && !getCuratableWords().includes(state.selectedWord)) {
+    state.selectedWord = null;
+    renderDetailPanel();
+  }
+  updateSummary();
+  renderWordGrid();
+  updateActionButtons();
 }
 
 // ── Source documents ─────────────────────────────────────────────────────────
@@ -307,18 +380,16 @@ function fileIcon(name) {
 async function loadBaseDictionary(file) {
   try {
     const text = await readFileAsText(file);
-    const lines = text.split(/\r?\n/).map(l => normalizeDownloadWord(l.trim())).filter(Boolean);
+    const lines = normalizeDownloadWords(text.split(/\r?\n/).map(l => l.trim()));
     state.baseWordsList = lines;
-    state.baseWordsSet = new Set(lines);
+    state.baseWordsSet = new Set(lines.map(wordKey));
     state.baseFileName = file.name;
     renderBaseInfo();
-    updateActionButtons();
     if (state.extracted.length) {
       refreshPluralInfo();
       applyPluralExclusions();
-      updateSummary();
-      renderWordGrid();
     }
+    refreshCurationView();
   } catch (err) {
     setStatus('error', `❌ ${err.message}`);
   }
@@ -329,13 +400,11 @@ function clearBaseDictionary() {
   state.baseWordsSet = new Set();
   state.baseFileName = '';
   renderBaseInfo();
-  updateActionButtons();
   if (state.extracted.length) {
     refreshPluralInfo();
     applyPluralExclusions();
-    updateSummary();
-    renderWordGrid();
   }
+  refreshCurationView();
 }
 
 function renderBaseInfo() {
@@ -368,6 +437,10 @@ async function runExtract() {
     setStatus('error', 'Add at least one source document first.');
     return;
   }
+  if (excludeExistingEnabled() && !state.baseWordsList.length) {
+    setStatus('error', 'Add a base dictionary before excluding existing words.');
+    return;
+  }
   const extractBtn = document.getElementById('dbBtnExtract');
   if (extractBtn) extractBtn.disabled = true;
   state.excluded = new Set();
@@ -391,12 +464,15 @@ async function runExtract() {
     if (errors.length) {
       setStatus('error', `⚠️ ${errors.length} file(s) failed: ${errors.map(e => e.name).join(', ')}`);
     } else {
-      setStatus('success', `<i class="fas fa-check-circle"></i> ${words.length} word${words.length !== 1 ? 's' : ''} extracted`);
+      const curatableCount = getCuratableWords().length;
+      const existingCount = uniqueWordsByKey(words).length - curatableCount;
+      const hiddenNote = excludeExistingEnabled() && existingCount
+        ? ` (${existingCount} existing hidden)`
+        : '';
+      setStatus('success', `<i class="fas fa-check-circle"></i> ${curatableCount} word${curatableCount !== 1 ? 's' : ''} ready${hiddenNote}`);
     }
 
-    updateSummary();
-    renderWordGrid();
-    updateActionButtons();
+    refreshCurationView();
     renderDetailPanel(); // reset detail (selection was cleared)
   } catch (err) {
     setStatus('error', `❌ ${err.message}`);
@@ -408,16 +484,14 @@ async function runExtract() {
 // ── Enrich ────────────────────────────────────────────────────────────────────
 
 function runEnrich() {
-  const toEnrich = state.extracted.filter(w => !(w in state.phonicsByWord));
+  const toEnrich = getCuratableWords().filter(w => !(w in state.phonicsByWord));
   if (!toEnrich.length) {
     setStatus('info', 'Already enriched.');
     return;
   }
   const records = PhonicsEngine.parseWords(toEnrich);
   records.forEach(r => { state.phonicsByWord[r.word] = r; });
-  updateSummary();
-  renderWordGrid();
-  updateActionButtons();
+  refreshCurationView();
   if (state.selectedWord) renderDetailPanel(); // refresh if open word just got enriched
   setStatus('success', `<i class="fas fa-check-circle"></i> ${records.length} word${records.length !== 1 ? 's' : ''} enriched`);
 }
@@ -436,7 +510,7 @@ function selectWord(word) {
 }
 
 function isCommon(word) {
-  if (state.baseWordsList.length) return state.baseWordsSet.has(word);
+  if (state.baseWordsList.length) return hasBaseWord(word);
   return DEFAULT_COMMON_WORDS.has(word);
 }
 
@@ -551,16 +625,19 @@ function updateSummary() {
   if (!el) return;
   if (!state.extracted.length) { el.innerHTML = ''; return; }
 
-  const total    = state.extracted.length;
-  const excl     = state.excluded.size;
-  const pluralCt = Object.keys(state.pluralInfo).length;
-  const newCt    = state.extracted.filter(w => !hasBaseWord(w)).length;
+  const uniqueExtracted = uniqueWordsByKey(state.extracted);
+  const total    = uniqueExtracted.length;
+  const curatableWords = getCuratableWords();
+  const curatableSet = new Set(curatableWords);
+  const excl     = curatableWords.filter(w => state.excluded.has(w)).length;
+  const pluralCt = Object.keys(state.pluralInfo).filter(w => curatableSet.has(w)).length;
+  const newCt    = uniqueExtracted.filter(w => !hasBaseWord(w)).length;
   const exCt     = total - newCt;
-  const enrichedCt = Object.keys(state.phonicsByWord).length;
+  const enrichedCt = curatableWords.filter(w => w in state.phonicsByWord).length;
 
   let html = '';
   if (state.baseWordsList.length) {
-    html += `<span class="db-sum-chip db-sum-existing">${exCt} in base</span>`;
+    html += `<span class="db-sum-chip db-sum-existing">${exCt} in base${excludeExistingEnabled() ? ' hidden' : ''}</span>`;
     html += `<span class="db-sum-sep">·</span>`;
     html += `<span class="db-sum-chip db-sum-new">${newCt} new</span>`;
   } else {
@@ -613,7 +690,17 @@ function renderWordGrid() {
     return;
   }
 
-  grid.innerHTML = getSortedWords().map(w => {
+  const words = getSortedCuratableWords();
+  if (!words.length) {
+    grid.innerHTML = `
+      <div class="db-empty-hint">
+        <i class="fas fa-check-circle"></i>
+        <p>No net-new words found against the base dictionary.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = words.map(w => {
     const isExisting = hasBaseWord(w);
     const isExcluded = state.excluded.has(w);
     const isSelected = state.selectedWord === w;
@@ -647,9 +734,11 @@ function renderWordGrid() {
 
 function updateActionButtons() {
   const hasBase     = state.baseWordsList.length > 0;
-  const hasActive   = state.extracted.some(w => !state.excluded.has(w));
-  const hasNewDelta = hasActive && state.extracted.some(w => !state.excluded.has(w) && !hasBaseWord(w));
-  const hasEnriched = Object.keys(state.phonicsByWord).length > 0;
+  const curatableWords = getCuratableWords();
+  const hasActive   = curatableWords.some(w => !state.excluded.has(w));
+  const hasNewDelta = curatableWords.some(w => !state.excluded.has(w) && !hasBaseWord(w));
+  const canUpdateBase = hasBase && updateBaseWordsEnabled() && state.extracted.length > 0;
+  const hasEnriched = curatableWords.some(w => w in state.phonicsByWord);
 
   const enrichBtn = document.getElementById('dbBtnEnrich');
   const dlBtn     = document.getElementById('dbBtnDownload');
@@ -657,17 +746,19 @@ function updateActionButtons() {
   const appendBtn = document.getElementById('dbBtnAppend');
   const csvBtn    = document.getElementById('dbBtnPhonicsCSV');
 
-  if (enrichBtn) enrichBtn.disabled = !state.extracted.length;
+  syncUpdateBaseToggle();
+
+  if (enrichBtn) enrichBtn.disabled = !curatableWords.length;
   if (dlBtn)     dlBtn.disabled     = !hasActive;
-  if (mergeBtn)  mergeBtn.disabled  = !(hasBase && hasActive);
-  if (appendBtn) appendBtn.disabled = !(hasBase && hasNewDelta);
+  if (mergeBtn)  mergeBtn.disabled  = !(hasBase && (hasNewDelta || canUpdateBase));
+  if (appendBtn) appendBtn.disabled = !(hasBase && (hasNewDelta || canUpdateBase));
   if (csvBtn)    csvBtn.disabled    = !hasEnriched;
 }
 
 // ── Downloads ─────────────────────────────────────────────────────────────────
 
 function activeExtracted() {
-  return getSortedWords().filter(w => !state.excluded.has(w));
+  return activeCuratedWords();
 }
 
 function isAllCapsDownloadWord(word) {
@@ -681,11 +772,23 @@ function normalizeDownloadWord(word) {
 }
 
 function normalizeDownloadWords(words) {
-  return [...new Set(words.map(normalizeDownloadWord).filter(Boolean))];
+  const seen = new Set();
+  const normalized = [];
+  for (const word of words.map(normalizeDownloadWord).filter(Boolean)) {
+    const key = wordKey(word);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    normalized.push(word);
+  }
+  return normalized;
 }
 
 function hasBaseWord(word) {
-  return state.baseWordsSet.has(normalizeDownloadWord(word));
+  return state.baseWordsSet.has(wordKey(word));
+}
+
+function wordKey(word) {
+  return String(word || '').trim().toLowerCase();
 }
 
 function timestamp() {
@@ -712,18 +815,46 @@ function doDownloadStandalone() {
   downloadTxt(activeExtracted(), `dictionary_${timestamp()}.txt`);
 }
 
+function wordsForBaseExport({ sortNewWords = false } = {}) {
+  const activeWords = activeExtracted();
+
+  if (!updateBaseWordsEnabled()) {
+    const newOnly = activeWords.filter(w => !hasBaseWord(w));
+    return [...state.baseWordsList, ...(sortNewWords ? [...newOnly].sort((a, b) => a.localeCompare(b)) : newOnly)];
+  }
+
+  const extractedKeys = new Set(state.extracted.map(wordKey));
+  const activeByKey = new Map(activeWords.map(w => [wordKey(w), w]));
+  const emitted = new Set();
+  const words = [];
+
+  for (const baseWord of state.baseWordsList) {
+    const key = wordKey(baseWord);
+    if (!extractedKeys.has(key)) {
+      words.push(baseWord);
+      emitted.add(key);
+      continue;
+    }
+    if (activeByKey.has(key)) {
+      words.push(activeByKey.get(key));
+      emitted.add(key);
+    }
+  }
+
+  const newWords = activeWords
+    .filter(w => !emitted.has(wordKey(w)))
+    .sort((a, b) => a.localeCompare(b));
+  return [...words, ...newWords];
+}
+
 function doDownloadFullMerge() {
-  const newOnly = state.extracted.filter(w => !state.excluded.has(w) && !hasBaseWord(w));
-  const merged  = normalizeDownloadWords([...state.baseWordsList, ...newOnly]);
+  const merged = normalizeDownloadWords(wordsForBaseExport());
   merged.sort((a, b) => a.localeCompare(b));
   downloadTxt(merged, `${baseStem()}_merged_${timestamp()}.txt`);
 }
 
 function doDownloadAppendDelta() {
-  const delta = normalizeDownloadWords(state.extracted
-    .filter(w => !state.excluded.has(w) && !hasBaseWord(w))
-  ).sort((a, b) => a.localeCompare(b));
-  downloadTxt([...state.baseWordsList, ...delta], `${baseStem()}_updated_${timestamp()}.txt`);
+  downloadTxt(wordsForBaseExport({ sortNewWords: true }), `${baseStem()}_updated_${timestamp()}.txt`);
 }
 
 function doExportPhonicsCSV() {
@@ -935,9 +1066,19 @@ function wireEvents() {
   document.getElementById('dbExcludePlurals')?.addEventListener('change', () => {
     if (!state.extracted.length) return;
     applyPluralExclusions();
-    updateSummary();
-    renderWordGrid();
-    updateActionButtons();
+    refreshCurationView();
+  });
+
+  document.getElementById('dbExcludeExisting')?.addEventListener('change', () => {
+    syncUpdateBaseToggle();
+    if (excludeExistingEnabled() && !state.baseWordsList.length) {
+      setStatus('error', 'Add a base dictionary before excluding existing words.');
+    }
+    refreshCurationView();
+  });
+
+  document.getElementById('dbUpdateBaseWords')?.addEventListener('change', () => {
+    refreshCurationView();
   });
 
   document.getElementById('dbManualInput')?.addEventListener('input', () => {
