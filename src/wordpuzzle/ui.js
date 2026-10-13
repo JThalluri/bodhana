@@ -14,9 +14,11 @@ export const DIFFICULTY = {
 };
 
 const state = {
+  allWords: [],
   dictionary: [],
   puzzles: [],
   showSolutions: false,
+  wordSearch: '',
 };
 
 const minLens = [3,4,5,6,7,8,9,10,11,12,13,14,15];
@@ -142,17 +144,28 @@ export function buildWordPuzzleUI(container) {
             <div class="wp-section-title">Dictionary</div>
 
             <div class="wp-set-field">
-              <label class="wp-file-btn btn btn-secondary btn-sm" for="wpFileInput" title="Load word list (.txt)">
+              <label class="wp-file-btn btn btn-secondary btn-sm" for="wpFileInput" title="Load word list (.txt) or Dictionary Builder export (.csv)">
                 <i class="fas fa-folder-open"></i> Load
                 <span class="badge badge-accent" id="wpFileBadge">49</span>
               </label>
-              <input type="file" id="wpFileInput" accept=".txt,.text" style="display:none;" />
+              <input type="file" id="wpFileInput" accept=".txt,.text,.csv" style="display:none;" />
               <button class="btn btn-danger btn-sm" id="wpBtnClearDict" title="Clear dictionary">
                 <i class="fas fa-times"></i>
               </button>
             </div>
             <div class="wp-set-field">
               <span class="tb-status status-msg info" id="wpDictStatus">Demo (49 words)</span>
+            </div>
+            <input class="wp-word-search" type="text" id="wpWordSearch" placeholder="Search words..." />
+            <div class="wp-word-sel-header">
+              <span>Word Selection <span id="wpWordSelCount"></span></span>
+              <div class="wp-word-sel-actions">
+                <button class="btn btn-ghost btn-sm" id="wpBtnSelAll">All</button>
+                <button class="btn btn-ghost btn-sm" id="wpBtnSelNone">None</button>
+              </div>
+            </div>
+            <div class="wp-word-sel-list" id="wpWordSelList">
+              <div class="wp-word-sel-empty">No words loaded.</div>
             </div>
           </div>
 
@@ -188,7 +201,7 @@ export function buildWordPuzzleUI(container) {
     </div>
   `;
 
-  state.dictionary = Array.from(new Set(DEMO_WORDS));
+  setDictionaryWords(DEMO_WORDS, { statusText: `Demo (${DEMO_WORDS.length} words)`, statusType: 'info' });
   onModeChange();
   wireEvents();
   runGenerate();
@@ -211,6 +224,61 @@ function readOpts() {
     cellPadding:    n('wpCellPadding', 6),
     caseMode:       v('wpCaseMode') || 'lowercase',
   };
+}
+
+function setDictionaryWords(words, { statusText = '', statusType = 'success' } = {}) {
+  state.allWords = Array.from(new Set(words));
+  state.dictionary = [...state.allWords];
+  updateDictionaryStatus(statusText || `${state.allWords.length} words`, statusType);
+  renderWordSelection();
+}
+
+function updateDictionaryStatus(text, type = 'info') {
+  const dictStatus = document.getElementById('wpDictStatus');
+  const badge = document.getElementById('wpFileBadge');
+  if (dictStatus) {
+    dictStatus.className = `tb-status status-msg ${type}`;
+    dictStatus.textContent = text;
+  }
+  if (badge) badge.textContent = state.dictionary.length;
+}
+
+function visibleDictionaryWords() {
+  const query = state.wordSearch;
+  return query
+    ? state.allWords.filter(word => word.includes(query))
+    : state.allWords;
+}
+
+function renderWordSelection() {
+  const list = document.getElementById('wpWordSelList');
+  const count = document.getElementById('wpWordSelCount');
+  if (count) count.textContent = `(${state.dictionary.length}/${state.allWords.length})`;
+  if (!list) return;
+
+  if (!state.allWords.length) {
+    list.innerHTML = '<div class="wp-word-sel-empty">No words loaded.</div>';
+    return;
+  }
+
+  const shown = visibleDictionaryWords();
+  if (!shown.length) {
+    list.innerHTML = '<div class="wp-word-sel-empty">No matches.</div>';
+    return;
+  }
+
+  const selected = new Set(state.dictionary);
+  list.innerHTML = shown.map(word => {
+    const isSelected = selected.has(word);
+    return `
+      <div class="wp-word-sel-item${isSelected ? ' wp-word-selected' : ''}" data-word="${word}">
+        <span class="wp-word-sel-word">${word}</span>
+        ${isSelected
+          ? `<button class="btn btn-ghost btn-sm wp-btn-remove-word" data-word="${word}" aria-label="Remove ${word}">&times;</button>`
+          : `<button class="btn btn-ghost btn-sm wp-btn-add-word" data-word="${word}" aria-label="Add ${word}">+</button>`
+        }
+      </div>`;
+  }).join('');
 }
 
 function onModeChange() {
@@ -322,30 +390,63 @@ function wireEvents() {
   document.getElementById('wpFileInput')?.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const dictStatus = document.getElementById('wpDictStatus');
-    const badge = document.getElementById('wpFileBadge');
     try {
       const words = await loadDictionaryFromFile(file);
-      state.dictionary = words;
-      const msg = words.length ? `${words.length} words` : '⚠️ No valid words';
-      if (dictStatus) { dictStatus.className = `tb-status status-msg ${words.length ? 'success' : 'error'}`; dictStatus.textContent = msg; }
-      if (badge) badge.textContent = words.length;
+      setDictionaryWords(words, {
+        statusText: words.length ? `${words.length} words` : 'No valid words',
+        statusType: words.length ? 'success' : 'error',
+      });
     } catch (err) {
-      if (dictStatus) { dictStatus.className = 'tb-status status-msg error'; dictStatus.textContent = `❌ ${err.message}`; }
+      state.allWords = [];
       state.dictionary = [];
-      if (badge) badge.textContent = '0';
+      updateDictionaryStatus(`Error: ${err.message}`, 'error');
+      renderWordSelection();
     }
     e.target.value = '';
   });
 
   document.getElementById('wpBtnClearDict')?.addEventListener('click', () => {
+    state.allWords = [];
     state.dictionary = [];
     state.puzzles = [];
-    const badge = document.getElementById('wpFileBadge');
-    const dictStatus = document.getElementById('wpDictStatus');
-    if (badge) badge.textContent = '0';
-    if (dictStatus) { dictStatus.className = 'tb-status status-msg info'; dictStatus.textContent = 'No dictionary'; }
+    updateDictionaryStatus('No dictionary', 'info');
+    renderWordSelection();
     doRender();
+  });
+
+  document.getElementById('wpWordSearch')?.addEventListener('input', e => {
+    state.wordSearch = e.target.value.trim().toLowerCase();
+    renderWordSelection();
+  });
+
+  document.getElementById('wpBtnSelAll')?.addEventListener('click', () => {
+    const selected = new Set(state.dictionary);
+    visibleDictionaryWords().forEach(word => selected.add(word));
+    state.dictionary = state.allWords.filter(word => selected.has(word));
+    updateDictionaryStatus(`${state.dictionary.length} selected`, state.dictionary.length ? 'success' : 'error');
+    renderWordSelection();
+  });
+
+  document.getElementById('wpBtnSelNone')?.addEventListener('click', () => {
+    const toRemove = new Set(visibleDictionaryWords());
+    state.dictionary = state.dictionary.filter(word => !toRemove.has(word));
+    updateDictionaryStatus(`${state.dictionary.length} selected`, state.dictionary.length ? 'success' : 'error');
+    renderWordSelection();
+  });
+
+  document.getElementById('wpWordSelList')?.addEventListener('click', e => {
+    const add = e.target.closest('.wp-btn-add-word');
+    const remove = e.target.closest('.wp-btn-remove-word');
+    if (!add && !remove) return;
+
+    const word = (add || remove).dataset.word;
+    if (add && !state.dictionary.includes(word)) {
+      state.dictionary.push(word);
+    } else if (remove) {
+      state.dictionary = state.dictionary.filter(w => w !== word);
+    }
+    updateDictionaryStatus(`${state.dictionary.length} selected`, state.dictionary.length ? 'success' : 'error');
+    renderWordSelection();
   });
 
   ['wpFontFamily', 'wpFontSize', 'wpCellPadding', 'wpCaseMode'].forEach(id => {
@@ -368,6 +469,9 @@ function handleKeydown(e) {
 
 export function unmount() {
   document.removeEventListener('keydown', handleKeydown);
+  state.allWords = [];
+  state.dictionary = [];
   state.puzzles = [];
   state.showSolutions = false;
+  state.wordSearch = '';
 }
