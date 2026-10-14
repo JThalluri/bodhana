@@ -31,7 +31,8 @@ function gridToHTML(grid, rows, cols, showSolutions) {
     for (let c = 0; c < cols; c++) {
       const cell = grid[r][c];
       if (!cell) {
-        html += `<td class="mp-cell mp-cell-black"></td>`;
+        const ignoreClass = isIgnoreCell(grid, r, c) ? ' mp-cell-ignore' : '';
+        html += `<td class="mp-cell mp-cell-black${ignoreClass}"></td>`;
       } else {
         // Directional border classes:
         // mp-br and mp-bb are always applied to equation cells.
@@ -59,6 +60,15 @@ function gridToHTML(grid, rows, cols, showSolutions) {
   }
   html += '</tbody>';
   return html;
+}
+
+function isIgnoreCell(grid, r, c) {
+  return !!(
+    grid[r - 1]?.[c]
+    && grid[r + 1]?.[c]
+    && grid[r]?.[c - 1]
+    && grid[r]?.[c + 1]
+  );
 }
 
 function esc(s) {

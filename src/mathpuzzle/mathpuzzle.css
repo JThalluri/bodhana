@@ -361,6 +361,15 @@
     background: white !important;
   }
 
+  .mp-cell-black.mp-cell-ignore {
+    background:
+      repeating-linear-gradient(45deg, transparent 0 5px, #cbd5e1 5px 6px),
+      repeating-linear-gradient(-45deg, transparent 0 5px, #cbd5e1 5px 6px),
+      white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   /* Equation cells: border only on sides computed by renderer.
      mp-br + mp-bb are always present; mp-bt / mp-bl only on open edges.
      With border-spacing: 0, each junction gets exactly one 2px line. */
