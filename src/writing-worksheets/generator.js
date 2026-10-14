@@ -51,11 +51,21 @@ function shuffleUntilDifferent(items, rng) {
 
 // ─── Content parsing ───────────────────────────────────────────
 
-/** Alternating items: one per line; a single line falls back to commas. */
+function normalizeWordText(text) {
+  return String(text).replace(/[,\|;]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function pipeDisplayText(text) {
+  return normalizeWordText(text).split(' ').filter(Boolean).join(' | ');
+}
+
+/** Alternating items: one per line; a single line falls back to word separators. */
 export function parseItems(text) {
   const lines = String(text).split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  if (lines.length === 1 && lines[0].includes(',')) {
-    return lines[0].split(',').map(s => s.trim()).filter(Boolean);
+  const singleLineWordList = lines.length === 1
+    && (/[,|;]/.test(lines[0]) || /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/.test(lines[0]));
+  if (singleLineWordList) {
+    return normalizeWordText(lines[0]).split(' ').filter(Boolean);
   }
   return lines;
 }
@@ -155,7 +165,9 @@ function buildRefBlock(state, geo, format, rng, sentences, maxHeight) {
 
   const list = format === 'jumbled' ? shuffleUntilDifferent(sentences, rng) : null;
   const paragraphs = list ? null
-    : String(state.userContentText).split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    : String(state.userContentText).split(/\r?\n/)
+      .map(s => (format === 'top_box' ? pipeDisplayText(s) : s.trim()))
+      .filter(Boolean);
   if (!(list ?? paragraphs).length) return { block: null, warnings };
 
   // The reference text is read, not traced, so it may shrink (down to 14px)

@@ -10,6 +10,7 @@ import { TIERS, applyTier } from './presets.js';
 import { buildModel, randomSeed } from './generator.js';
 import { renderPages } from './renderer.js';
 import { ensureFont, isFontReady } from './typography.js';
+import { loadDictionaryFromFile } from '../wordpuzzle/dictionary.js';
 
 let _listeners = [];
 let _rafId = 0;
@@ -136,13 +137,35 @@ function markup() {
 
             <div class="hw-stab-panel" role="tabpanel" data-panel="content">
           <div class="ws-settings-section">
-            <div class="ws-section-title">Content</div>
-            <textarea id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
-              placeholder="One item or sentence per line."></textarea>
-            <p class="hw-hint" id="hwContentHint"></p>
+            <div class="ws-section-title hw-section-title-row">
+              <span>Content</span>
+              <span class="hw-info-icon" id="hwContentHint" role="img" aria-label="Content help" tabindex="0" title=""></span>
+            </div>
             <div class="ws-field hw-wide hw-stack" id="hwRefTitleRow">
               <label for="hw-refTitle">Box title</label>
               <textarea class="hw-text hw-ref-title-input" id="hw-refTitle" data-path="refTitle" maxlength="120" rows="3"></textarea>
+            </div>
+            <textarea id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
+              placeholder="One item or sentence per line."></textarea>
+            <div class="hw-dict-panel">
+              <div class="hw-dict-actions">
+                <label class="btn btn-secondary btn-sm hw-file-btn" for="hwDictFileInput" title="Load word list (.txt) or Dictionary Builder export (.csv)">
+                  <i class="fas fa-folder-open"></i> Dictionary
+                </label>
+                <input type="file" id="hwDictFileInput" accept=".txt,.text,.csv" style="display:none;">
+                <span class="tb-status status-msg info" id="hwDictStatus">No dictionary</span>
+              </div>
+              <input class="hw-word-search" type="text" id="hwWordSearch" placeholder="Search words...">
+              <div class="hw-word-sel-header">
+                <span>Word Selection <span id="hwWordSelCount">(0/0)</span></span>
+                <div class="hw-word-sel-actions">
+                  <button class="btn btn-ghost btn-sm" id="hwBtnSelAll">All</button>
+                  <button class="btn btn-ghost btn-sm" id="hwBtnSelNone">None</button>
+                </div>
+              </div>
+              <div class="hw-word-sel-list" id="hwWordSelList">
+                <div class="hw-word-sel-empty">Load a dictionary to choose words.</div>
+              </div>
             </div>
             <div class="ws-field" id="hwSeedRow" title="Same seed → same jumbled order.">
               <label for="hwSeed">Seed</label>
@@ -230,6 +253,12 @@ export function buildHandwritingUI(container, onTypeChange) {
 
   let state = freshState();
   let seed = state.seed ?? randomSeed();
+  const dictionary = {
+    allWords: [],
+    selectedWords: [],
+    appendedWords: new Set(),
+    search: '',
+  };
 
   const $ = sel => container.querySelector(sel);
   const pagesEl = $('#hwPagesContainer');
@@ -238,7 +267,103 @@ export function buildHandwritingUI(container, onTypeChange) {
   const warnEl = warnSection.querySelector('.overflow-warning');
   const tierEl = $('#hwTier');
   const seedEl = $('#hwSeed');
+  const contentEl = $('#hw-userContentText');
   const bound = [...container.querySelectorAll('[data-path]')];
+
+  const contentWords = text => String(text || '')
+    .replace(/[,\|;]+/g, ' ')
+    .split(/\s+/)
+    .map(w => w.trim())
+    .filter(Boolean);
+
+  const normalizeContentText = text => contentWords(text).join(' ');
+
+  function setContentText(text) {
+    state.userContentText = normalizeContentText(text);
+    contentEl.value = state.userContentText;
+  }
+
+  function visibleDictionaryWords() {
+    return dictionary.search
+      ? dictionary.allWords.filter(word => word.includes(dictionary.search))
+      : dictionary.allWords;
+  }
+
+  function updateDictionaryStatus(text, type = 'info') {
+    const status = $('#hwDictStatus');
+    if (!status) return;
+    status.className = `tb-status status-msg ${type}`;
+    status.textContent = text;
+  }
+
+  function renderWordSelection() {
+    const list = $('#hwWordSelList');
+    const count = $('#hwWordSelCount');
+    if (count) count.textContent = `(${dictionary.selectedWords.length}/${dictionary.allWords.length})`;
+    if (!list) return;
+
+    if (!dictionary.allWords.length) {
+      list.innerHTML = '<div class="hw-word-sel-empty">Load a dictionary to choose words.</div>';
+      return;
+    }
+
+    const shown = visibleDictionaryWords();
+    if (!shown.length) {
+      list.innerHTML = '<div class="hw-word-sel-empty">No matches.</div>';
+      return;
+    }
+
+    const selected = new Set(dictionary.selectedWords);
+    list.innerHTML = shown.map(word => {
+      const isSelected = selected.has(word);
+      return `
+        <div class="hw-word-sel-item${isSelected ? ' hw-word-selected' : ''}" data-word="${word}">
+          <span class="hw-word-sel-word">${word}</span>
+          ${isSelected
+            ? `<button class="btn btn-ghost btn-sm hw-btn-remove-word" data-word="${word}" aria-label="Remove ${word}">&times;</button>`
+            : `<button class="btn btn-ghost btn-sm hw-btn-add-word" data-word="${word}" aria-label="Add ${word}">+</button>`
+          }
+        </div>`;
+    }).join('');
+  }
+
+  function appendDictionaryWords(words) {
+    const selected = new Set(dictionary.selectedWords);
+    const existing = new Set(contentWords(state.userContentText).map(w => w.toLowerCase()));
+    const additions = [];
+
+    for (const word of words) {
+      selected.add(word);
+      if (!existing.has(word)) {
+        additions.push(word);
+        dictionary.appendedWords.add(word);
+        existing.add(word);
+      }
+    }
+
+    dictionary.selectedWords = dictionary.allWords.filter(word => selected.has(word));
+    if (additions.length) {
+      setContentText([...contentWords(state.userContentText), ...additions].join(' '));
+      scheduleRender();
+    }
+    updateDictionaryStatus(`${dictionary.selectedWords.length} selected`, dictionary.selectedWords.length ? 'success' : 'info');
+    renderWordSelection();
+  }
+
+  function removeDictionaryWords(words) {
+    const toRemove = new Set(words);
+    dictionary.selectedWords = dictionary.selectedWords.filter(word => !toRemove.has(word));
+
+    const appendedToRemove = new Set(words.filter(word => dictionary.appendedWords.has(word)));
+    if (appendedToRemove.size) {
+      setContentText(contentWords(state.userContentText).filter(word => !appendedToRemove.has(word.toLowerCase())).join(' '));
+      appendedToRemove.forEach(word => dictionary.appendedWords.delete(word));
+      scheduleRender();
+    }
+
+    updateDictionaryStatus(`${dictionary.selectedWords.length} selected`, dictionary.selectedWords.length ? 'success' : 'info');
+    renderWordSelection();
+  }
 
   function syncControls() {
     for (const el of bound) {
@@ -283,9 +408,9 @@ export function buildHandwritingUI(container, onTypeChange) {
     $('#hwRefTitleRow').hidden = fmt === 'alternating';
     $('#hwScaffoldingSection').hidden = fmt !== 'alternating';
     $('#hwTracingOpacityRow').hidden = fmt !== 'alternating' || state.scaffolding.fadingMethod !== 'faded_tracing';
-    $('#hwContentHint').textContent = {
-      alternating: 'One word or sentence per line (or a single comma-separated line). Long lines wrap; each wrapped line gets its own model and practice rows.',
-      top_box: 'Shown in a box on page 1; students copy it onto the lines below.',
+    $('#hwContentHint').title = {
+      alternating: 'One word or sentence per line (or a single space-separated word line). Long lines wrap; each wrapped line gets its own model and practice rows.',
+      top_box: 'Shown in a box on page 1 with light pipe separators; students copy it onto the lines below.',
       jumbled: 'One sentence per line, in the correct order. They are shuffled in the box.',
     }[fmt];
   }
@@ -328,8 +453,12 @@ export function buildHandwritingUI(container, onTypeChange) {
   function onFieldChange(e) {
     const el = e.target;
     const path = el.dataset.path;
-    const value = readControl(el);
+    let value = readControl(el);
     if (value === null) return;
+    if (path === 'userContentText' && e.type === 'change') {
+      value = normalizeContentText(value);
+      el.value = value;
+    }
 
     if (path === 'exerciseFormat') {
       const prevDefault = REF_TITLE_DEFAULTS[state.exerciseFormat];
@@ -386,9 +515,55 @@ export function buildHandwritingUI(container, onTypeChange) {
     scheduleRender();
   });
 
+  on($('#hwDictFileInput'), 'change', async e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const words = await loadDictionaryFromFile(file);
+      dictionary.allWords = words;
+      dictionary.selectedWords = [];
+      dictionary.appendedWords.clear();
+      updateDictionaryStatus(words.length ? `${words.length} words loaded` : 'No valid words', words.length ? 'success' : 'error');
+      renderWordSelection();
+    } catch (err) {
+      dictionary.allWords = [];
+      dictionary.selectedWords = [];
+      dictionary.appendedWords.clear();
+      updateDictionaryStatus(`Error: ${err.message}`, 'error');
+      renderWordSelection();
+    }
+    e.target.value = '';
+  });
+
+  on($('#hwWordSearch'), 'input', e => {
+    dictionary.search = e.target.value.trim().toLowerCase();
+    renderWordSelection();
+  });
+
+  on($('#hwBtnSelAll'), 'click', () => {
+    appendDictionaryWords(visibleDictionaryWords());
+  });
+
+  on($('#hwBtnSelNone'), 'click', () => {
+    removeDictionaryWords(visibleDictionaryWords());
+  });
+
+  on($('#hwWordSelList'), 'click', e => {
+    const add = e.target.closest('.hw-btn-add-word');
+    const remove = e.target.closest('.hw-btn-remove-word');
+    if (!add && !remove) return;
+    const word = (add || remove).dataset.word;
+    if (add) appendDictionaryWords([word]);
+    else removeDictionaryWords([word]);
+  });
+
   on($('#hwResetBtn'), 'click', () => {
     state = freshState();
     seed = randomSeed();
+    dictionary.selectedWords = [];
+    dictionary.appendedWords.clear();
+    updateDictionaryStatus(dictionary.allWords.length ? `${dictionary.allWords.length} words loaded` : 'No dictionary', dictionary.allWords.length ? 'success' : 'info');
+    renderWordSelection();
     syncControls();
     scheduleRender();
   });

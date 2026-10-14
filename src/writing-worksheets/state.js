@@ -6,8 +6,8 @@
 export const DEFAULT_STATE = {
   activeTier: 'tier3',            // 'tier1' | 'tier2' | 'tier3' | 'tier4' | 'tier5'
   exerciseFormat: 'top_box',      // 'alternating' | 'top_box' | 'jumbled'
-  userContentText: 'apple, banana, carrot, dates, elderberry, fig',
-  refTitle: 'Read, then copy below',
+  userContentText: 'apple banana carrot dates elderberry fig',
+  refTitle: 'Write your own sentences using these words',
 
   geometry: {
     gridType: 'zaner_bloser',     // 'zaner_bloser' | 'seyes_french' | 'single_rule'

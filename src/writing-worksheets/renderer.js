@@ -60,9 +60,14 @@ function refBlockHTML(ref) {
     ? `<div class="hw-ref-title">${ref.titleLines.map(esc).join('<br>')}</div>`
     : '';
   const bodyStyle = `font-size:${ref.bodyPx}px;line-height:${ref.bodyLH}px`;
+  const paragraphHTML = p => {
+    const parts = String(p).split(/\s*\|\s*/).filter(Boolean);
+    if (parts.length <= 1) return esc(p);
+    return parts.map((part, idx) => `${esc(part)}${idx < parts.length - 1 ? '<span class="hw-ref-delim"> | </span>' : ''}`).join('');
+  };
   const body = ref.list
     ? `<ol class="hw-ref-list" style="${bodyStyle}">${ref.list.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`
-    : `<div class="hw-ref-body" style="${bodyStyle}">${ref.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+    : `<div class="hw-ref-body" style="${bodyStyle}">${ref.paragraphs.map(p => `<p>${paragraphHTML(p)}</p>`).join('')}</div>`;
   return `<div class="hw-ref-block" style="height:${ref.height}px">${title}${body}</div>`;
 }
 
