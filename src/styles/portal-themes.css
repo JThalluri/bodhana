@@ -1,0 +1,264 @@
+/* Screen-only portal chrome. Printable pages retain their original palettes. */
+@media screen {
+  html[data-theme="light"] {
+    color-scheme: light;
+    --bg-body: #edf2f4;
+    --bg-surface: #ffffff;
+    --bg-input: #ffffff;
+    --bg-hover: #e4ecef;
+    --border: #c5d0d7;
+    --text-primary: #1e293b;
+    --text-secondary: #405662;
+    --text-muted: #526571;
+    --accent: #a83b12;
+    --color-add: #1d4ed8;
+    --color-sub: #c52f3e;
+    --color-div: #4f46c7;
+    --success: #176c3c;
+    --danger: #bd2938;
+    --danger-hover: #a0222f;
+    --sidebar-bg: #e4ecef;
+    --sidebar-border: #b7c6cf;
+    --sidebar-text: #344c59;
+    --sidebar-hover: #d4e0e6;
+    --tool-workspace-bg: #dce4e9;
+    --light-header-bg: #edf3f5;
+    --light-settings-bg: #f8fafb;
+    --light-info-bg: #f2f6f8;
+    --light-rail-bg: #e7eef2;
+    --light-control-border: #8396a2;
+  }
+
+  html[data-theme="light"] .portal-sidebar {
+    box-shadow: 1px 0 0 var(--sidebar-border);
+  }
+
+  html[data-theme="light"] :is(.sidebar-toggle:hover, .nav-item:hover) {
+    color: var(--text-primary);
+  }
+
+  html[data-theme="light"] .nav-item.active {
+    color: #8c310d;
+    background: #f8e7dd;
+    border-left-color: var(--accent);
+  }
+
+  html[data-theme="light"] :is(.portal-topbar, .tool-header, .award-preview-toolbar, .info-tabs) {
+    background: var(--light-header-bg);
+    border-bottom-color: var(--sidebar-border);
+  }
+
+  html[data-theme="light"] .tool-body > .tool-settings {
+    background: var(--light-settings-bg);
+    border-right: 1px solid var(--sidebar-border);
+  }
+
+  html[data-theme="light"] .tool-info-pane {
+    background: var(--light-info-bg);
+    border-left: 1px solid var(--sidebar-border);
+    color: var(--text-primary);
+  }
+
+  html[data-theme="light"] .tool-body > .tool-preview {
+    border-right-color: var(--sidebar-border);
+  }
+
+  html[data-theme="light"] .phx-preview-scroll {
+    background: var(--tool-workspace-bg);
+  }
+
+  html[data-theme="light"] :is(.phx-stab-strip, .hw-stab-strip) {
+    background: var(--light-rail-bg);
+    border-right-color: var(--sidebar-border);
+  }
+
+  html[data-theme="light"] :is(.phx-stab, .hw-stab).active {
+    background: #f8e7dd;
+    color: #8c310d;
+  }
+
+  html[data-theme="light"] .tool-type-section {
+    background: var(--light-header-bg);
+  }
+
+  html[data-theme="light"] :is(.tool-header-title, .mw-section-title, .pv-section-title, .frac-section-title, .mg-section-title, .db-section-label, .phx-section-label, .hw-section-label, .award-section-title, .ws-section-title) {
+    color: var(--text-secondary);
+  }
+
+  html[data-theme="light"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"])) {
+    border-color: var(--light-control-border);
+  }
+
+  html[data-theme="light"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(input, textarea)::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+
+  html[data-theme="light"] :is(.tool-header, .tool-settings, .tool-info-pane, .db-summary, .portal-sidebar, .portal-topbar) :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  html[data-theme="light"] .toggle-track {
+    background: #8a9ca8;
+  }
+
+  html[data-theme="light"] .toggle-switch input:checked + .toggle-track {
+    background: var(--accent);
+  }
+
+  html[data-theme="light"] .toggle-switch input:focus-visible + .toggle-track {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  html[data-theme="light"] .tool-settings input[type="checkbox"] {
+    accent-color: var(--accent);
+  }
+
+  html[data-theme="light"] .btn-secondary {
+    border-color: #a6b6c0;
+  }
+
+  html[data-theme="light"] .db-summary {
+    background: var(--light-settings-bg);
+  }
+
+  html[data-theme="light"] :is(.db-dropzone, .db-base-zone, .phx-dropzone) {
+    background: var(--bg-surface);
+    border-color: var(--light-control-border);
+  }
+
+  html[data-theme="light"] :is(.wd-stats-row, .wd-lookup-result) {
+    background: #e7eef2;
+  }
+
+  html[data-theme="light"] .wd-badge-rcontrolled {
+    color: #6530c8;
+  }
+
+  html[data-theme="light"] .db-sum-sep {
+    color: var(--text-muted);
+  }
+
+  /* Worksheet previews retain the original light palette, including token-based ink. */
+  html[data-theme="light"] :is(.paper-page, .pv-worksheet, .frac-worksheet, .mg-worksheet, .mp-puzzle-page, .sdk-puzzle-page, .wp-puzzle-block, .hw-worksheet, .award-cert-page) {
+    --bg-body: #f0f4f8;
+    --bg-surface: #ffffff;
+    --bg-input: #f8fafc;
+    --bg-hover: #f1f5f9;
+    --border: #e2e8f0;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent: #c2410c;
+    --color-add: #3b82f6;
+    --color-sub: #ef4444;
+    --color-div: #6366f1;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+  }
+}
+
+@media screen {
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --text-muted: #9aacc2;
+    --accent-text: #2b1608;
+    --color-add: #93c5fd;
+    --color-sub: #fda4af;
+    --color-mul: #5eead4;
+    --color-div: #c4b5fd;
+    --dark-control-border: #73859b;
+    --dark-danger-text: #2d0a10;
+  }
+
+  html[data-theme="dark"] .btn-danger {
+    color: var(--dark-danger-text);
+  }
+
+  html[data-theme="dark"] .db-word-exclude-btn:hover {
+    color: var(--dark-danger-text) !important;
+  }
+
+  html[data-theme="dark"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"])) {
+    border-color: var(--dark-control-border);
+  }
+
+  html[data-theme="dark"] .btn-secondary {
+    border-color: var(--dark-control-border);
+  }
+
+  html[data-theme="dark"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(input, textarea)::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+
+  html[data-theme="dark"] :is(.tool-header, .tool-settings, .tool-info-pane, .db-summary, .portal-sidebar, .portal-topbar) :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  html[data-theme="dark"] .toggle-track {
+    background: #64748b;
+  }
+
+  html[data-theme="dark"] .toggle-switch input:checked + .toggle-track {
+    background: var(--accent);
+  }
+
+  html[data-theme="dark"] .toggle-switch input:focus-visible + .toggle-track {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  html[data-theme="dark"] .tool-settings input[type="checkbox"] {
+    accent-color: var(--accent);
+  }
+
+  html[data-theme="dark"] .db-sum-sep {
+    color: var(--text-muted);
+  }
+
+  html[data-theme="dark"] :is(.db-word-plural, .db-word-existing.db-word-plural, .db-sum-plural, .wd-badge-blend) {
+    color: var(--color-add);
+  }
+
+  html[data-theme="dark"] .wd-badge-rcontrolled {
+    color: var(--color-div);
+  }
+
+  html[data-theme="dark"] .wd-badge-cluster {
+    color: #a5b4fc;
+  }
+
+  html[data-theme="dark"] .award-warning {
+    color: #fbbf24;
+  }
+
+  html[data-theme="dark"] .hw-warning-section .overflow-warning {
+    color: #fde68a;
+    background: #422b0c;
+    border-color: #b7791f;
+  }
+
+  html[data-theme="dark"] .phx-preview-scroll {
+    background: var(--tool-workspace-bg);
+  }
+
+  html[data-theme="dark"] .mathgames-icon { color: var(--color-div); }
+  html[data-theme="dark"] .sudoku-icon { color: var(--success); }
+  html[data-theme="dark"] .puzzle-icon { color: #fbbf24; }
+  html[data-theme="dark"] .worksheets-icon { color: #67e8f9; }
+
+  html[data-theme="dark"] :is(.paper-page, .pv-worksheet, .frac-worksheet, .mg-worksheet, .mp-puzzle-page, .sdk-puzzle-page, .wp-puzzle-block, .hw-worksheet, .award-cert-page) {
+    color-scheme: light;
+    --text-muted: #64748b;
+    --accent-text: #ffffff;
+    --color-add: #3b82f6;
+    --color-sub: #ef4444;
+    --color-mul: #0f766e;
+    --color-div: #6366f1;
+  }
+}
