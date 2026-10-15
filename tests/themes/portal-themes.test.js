@@ -45,6 +45,39 @@ describe('Portal theme boundaries', () => {
       expect(declarations(rule).opacity).toBe('1');
     }
   });
+  it('keeps resting control outlines softer than the previous high-contrast palette', () => {
+    const light = tokens('light');
+    const dark = tokens('dark');
+    expect(contrast(light['--light-control-border'], light['--bg-input']))
+      .toBeLessThan(contrast('#8396a2', light['--bg-input']));
+    expect(contrast(dark['--dark-control-border'], dark['--bg-input']))
+      .toBeLessThan(contrast('#73859b', dark['--bg-input']));
+  });
+  it('uses crisp one-pixel secondary button and control borders', () => {
+    const rules = [];
+    themes.walkRules(rule => {
+      if (rule.selector.endsWith('.btn-secondary') || rule.selector.includes(':is(select, textarea,')) rules.push(rule);
+    });
+    expect(rules).toHaveLength(4);
+    for (const rule of rules) expect(declarations(rule)['border-width']).toBe('1px');
+  });
+  it('uses a distinct destructive hover and keyboard-focus state for word exclusion', () => {
+    const rules = [];
+    themes.walkRules(rule => { if (rule.selector.includes('.wp-btn-remove-word')) rules.push(rule); });
+    expect(rules).toHaveLength(2);
+    for (const rule of rules) {
+      expect(rule.selector).toContain(':is(:hover, :focus-visible)');
+      expect(declarations(rule).background).toBe('var(--danger)');
+      expect(declarations(rule).color).toBe(rule.selector.includes('"dark"') ? 'var(--dark-danger-text)' : 'var(--accent-text)');
+    }
+  });
+  it('separates light-mode navigation and settings from white content with legible grey surfaces', () => {
+    const light = tokens('light');
+    for (const bg of ['--sidebar-bg', '--light-header-bg', '--light-settings-bg', '--light-rail-bg']) {
+      expect(contrast(light[bg], light['--bg-surface'])).toBeGreaterThan(1.1);
+      expect(contrast(light['--text-muted'], light[bg])).toBeGreaterThanOrEqual(4.5);
+    }
+  });
   for (const theme of ['light', 'dark']) {
     it(`${theme} text meets AA contrast on body, panel, input, and hover surfaces`, () => {
       const values = tokens(theme);

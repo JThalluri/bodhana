@@ -17,16 +17,16 @@
     --success: #176c3c;
     --danger: #bd2938;
     --danger-hover: #a0222f;
-    --sidebar-bg: #e4ecef;
+    --sidebar-bg: #dce5ea;
     --sidebar-border: #b7c6cf;
     --sidebar-text: #344c59;
     --sidebar-hover: #d4e0e6;
     --tool-workspace-bg: #dce4e9;
-    --light-header-bg: #edf3f5;
-    --light-settings-bg: #f8fafb;
+    --light-header-bg: #e1e8ec;
+    --light-settings-bg: #edf1f4;
     --light-info-bg: #f2f6f8;
-    --light-rail-bg: #e7eef2;
-    --light-control-border: #8396a2;
+    --light-rail-bg: #dce5ea;
+    --light-control-border: #aebbc5;
   }
 
   html[data-theme="light"] .portal-sidebar {
@@ -87,6 +87,7 @@
 
   html[data-theme="light"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"])) {
     border-color: var(--light-control-border);
+    border-width: 1px;
   }
 
   html[data-theme="light"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(input, textarea)::placeholder {
@@ -117,7 +118,13 @@
   }
 
   html[data-theme="light"] .btn-secondary {
-    border-color: #a6b6c0;
+    border-color: #b4c0c9;
+    border-width: 1px;
+  }
+
+  html[data-theme="light"] .wp-btn-remove-word:is(:hover, :focus-visible) {
+    background: var(--danger);
+    color: var(--accent-text);
   }
 
   html[data-theme="light"] .db-summary {
@@ -170,7 +177,7 @@
     --color-sub: #fda4af;
     --color-mul: #5eead4;
     --color-div: #c4b5fd;
-    --dark-control-border: #73859b;
+    --dark-control-border: #485a70;
     --dark-danger-text: #2d0a10;
   }
 
@@ -184,10 +191,17 @@
 
   html[data-theme="dark"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"])) {
     border-color: var(--dark-control-border);
+    border-width: 1px;
   }
 
   html[data-theme="dark"] .btn-secondary {
     border-color: var(--dark-control-border);
+    border-width: 1px;
+  }
+
+  html[data-theme="dark"] .wp-btn-remove-word:is(:hover, :focus-visible) {
+    background: var(--danger);
+    color: var(--dark-danger-text);
   }
 
   html[data-theme="dark"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(input, textarea)::placeholder {
