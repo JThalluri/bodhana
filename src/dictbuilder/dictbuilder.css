@@ -12,6 +12,12 @@
   gap: 2px;
 }
 
+.db-tool #dbStatus {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Dict Builder has 7 buttons — override the shared inner grid so primary actions
    get all available space instead of being capped at --tool-preview-width. */
 .db-tool .tool-header-actions {
@@ -254,12 +260,14 @@
 
 .db-summary {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--space-2);
   font-size: var(--text-sm);
   min-height: 32px;
-  flex-wrap: wrap;
-  padding: 0 0 var(--space-2);
+  flex-shrink: 0;
+  padding: var(--space-2);
+  background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
 }
 
@@ -302,8 +310,34 @@
 
 .db-sum-hint {
   color: var(--text-muted);
-  font-size: var(--text-xs);
-  font-style: italic;
+  position: relative;
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+
+.db-summary-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.db-sum-metric { display: flex; flex-direction: column; gap: 2px; padding-right: 10px; font-size: 11px; color: var(--text-muted); }
+.db-sum-metric strong { font-size: 13px; color: var(--text-primary); }
+.db-sum-tooltip { display: none; position: absolute; right: 0; top: 100%; width: 240px; max-width: 70vw; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-surface); color: var(--text-primary); font: 12px/1.5 var(--font-ui); text-align: left; box-shadow: var(--shadow-sm); z-index: 20; }
+.db-sum-hint:hover .db-sum-tooltip,
+.db-sum-hint:focus .db-sum-tooltip { display: block; }
+.db-sum-tooltip { pointer-events: none; }
+.db-grid-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 28px; align-items: end; gap: 8px; }
+.db-grid-filter { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.db-grid-filter > label { color: var(--text-secondary); font-size: 11px; }
+.db-grid-filter .tb-select { width: 100%; min-width: 0; height: 30px; font-size: 12px; }
+.db-grid-filter .db-filter-active { border-color: var(--accent); }
+.db-filter-reset { width: 28px; height: 30px; }
+.db-filter-reset:disabled { opacity: 0.4; }
+
+@media (max-width: 450px) {
+  .db-grid-filters { grid-template-columns: repeat(2, minmax(0, 1fr)) 28px; }
+  .db-grid-filter:nth-child(odd) { grid-column: 1; }
+  .db-grid-filter:nth-child(even) { grid-column: 2; }
+  .db-grid-filter:nth-child(n + 3) { grid-row: 2; }
+  .db-filter-reset { grid-column: 3; grid-row: 2; }
 }
 
 /* Word grid --------------------------------------------------------------- */
@@ -459,6 +493,34 @@
 }
 
 @media (max-width: 700px) {
+  .db-tool .tool-header.tool-worksheet-header {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .db-tool .tool-header.tool-worksheet-header .tool-header-main {
+    width: 100%;
+    padding: 0;
+  }
+
+  .db-tool .tool-header.tool-worksheet-header .tool-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .db-tool .tool-primary-actions {
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+  .db-tool .tool-secondary-actions {
+    padding: 0;
+    border: 0;
+  }
+
   .db-main {
     flex-direction: column;
     overflow: auto;
