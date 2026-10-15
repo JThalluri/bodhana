@@ -525,6 +525,42 @@
   color: #333;
 }
 
+/* Money pages share the fractions paper and print shell. */
+.money-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  align-content: start;
+  column-gap: 24px;
+}
+
+.money-question { padding-bottom: 8px; }
+.money-question .frac-q-body { overflow-wrap: anywhere; }
+.money-two-col .frac-q-body { font-variant-numeric: tabular-nums; }
+.money-answer-blank { display: inline-block; width: 4em; border-bottom: 1px solid #777; height: 1em; margin-left: 6px; }
+.money-key-entry { font-size: 12px; line-height: 1.5; padding-bottom: 10px; break-inside: avoid; }
+.money-key-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 0 14px; }
+.money-tool [hidden] { display: none !important; }
+.money-tool .frac-field select { width: 145px; }
+.money-worksheet .frac-ws-typelabel { white-space: normal; text-align: right; }
+.money-worksheet .frac-ws-namedate { flex-wrap: wrap; gap: 4px 16px; }
+.money-worksheet .frac-ws-typelabel,
+.money-tool .frac-section-title { letter-spacing: 0; }
+
+@media screen and (max-width: 768px) {
+  .money-tool .tool-header.tool-worksheet-header { display: flex; flex-wrap: wrap; padding: 8px; gap: 8px; }
+  .money-tool .tool-header.tool-worksheet-header .tool-header-main { padding: 0; width: 100%; }
+  .money-tool .tool-header.tool-worksheet-header .tool-header-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .money-tool .tool-primary-actions { padding: 0; flex-wrap: wrap; }
+  .money-tool .tool-secondary-actions { padding: 0; border: 0; }
+  .money-tool .tool-body { flex-direction: column; }
+  .money-tool .tool-body > .tool-settings { width: 100% !important; flex: 0 0 240px !important; }
+  .money-tool .tool-body > .tool-preview { width: 100% !important; flex: 1 1 0 !important; min-height: 140px; }
+  .money-tool .tool-info-pane { display: none; }
+  .money-tool .tool-preview-scroll { padding: 12px 8px; }
+  .money-tool { --tool-page-scale: 0.43; }
+}
+
 /* Fractions worksheets */
 
 .frac-tool {

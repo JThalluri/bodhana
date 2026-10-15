@@ -1,5 +1,6 @@
 import { buildPlaceValueUI, unmountPlaceValue } from './pv-ui.js';
 import { buildFractionsUI, unmountFractions } from './fractions-ui.js';
+import { buildMoneyUI, unmountMoney } from './money-ui.js';
 
 let _listeners = [];
 let _currentType = null;
@@ -23,6 +24,8 @@ function unmountSubType() {
     unmountPlaceValue();
   } else if (_currentType === 'fractions-drill') {
     unmountFractions();
+  } else if (_currentType === 'money-counting') {
+    unmountMoney();
   }
 }
 
@@ -36,6 +39,7 @@ function worksheetTypeSelectorMarkup(currentType) {
           <option value="math-test"${currentType === 'math-test' ? ' selected' : ''}>Math Tests (Arithmetic)</option>
           <option value="place-value"${currentType === 'place-value' ? ' selected' : ''}>Place Value</option>
           <option value="fractions-drill"${currentType === 'fractions-drill' ? ' selected' : ''}>Fractions</option>
+          <option value="money-counting"${currentType === 'money-counting' ? ' selected' : ''}>Money Counting</option>
         </select>
       </div>
     </div>
@@ -61,6 +65,8 @@ async function mountSubType(type, container) {
     buildPlaceValueUI(container);
   } else if (type === 'fractions-drill') {
     buildFractionsUI(container);
+  } else if (type === 'money-counting') {
+    buildMoneyUI(container);
   }
 }
 

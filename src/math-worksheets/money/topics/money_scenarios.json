@@ -1,0 +1,1512 @@
+{
+  "schemaVersion": "1.0",
+  "topicId": "money_scenarios",
+  "title": "Real-World Money Scenarios",
+  "description": "Making change and counting combinations using exact denominations",
+  "board": "Custom",
+  "textbook": "Practical Life",
+  "grades": [1, 2, 3, 4],
+  "tags": ["real-world", "money", "decimals", "change-making"],
+  "questions": [
+    {
+      "questionId": "money-scen-001",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Mia has 2 one-dollar bills, 3 quarters, 2 dimes, and 1 nickel. How much money does she have?",
+      "answer": {"value": "3.00", "valueType": "decimal", "alternatives": ["$3.00", "3 dollars"], "unit": "dollars"},
+      "solutionSteps": ["Add: 2.00 + 0.75 + 0.20 + 0.05 = 3.00."]
+    },
+    {
+      "questionId": "money-scen-002",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Liam has 1 five-dollar bill, 2 one-dollar bills, 1 quarter, and 1 dime. How much money does he have?",
+      "answer": {"value": "7.35", "valueType": "decimal", "alternatives": ["$7.35", "7 dollars and 35 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 5.00 + 2.00 + 0.25 + 0.10 = 7.35."]
+    },
+    {
+      "questionId": "money-scen-003",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ava counts 3 quarters, 4 dimes, 2 nickels, and 3 pennies. How much money does she have?",
+      "answer": {"value": "1.28", "valueType": "decimal", "alternatives": ["$1.28", "1 dollar and 28 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 0.75 + 0.40 + 0.10 + 0.03 = 1.28."]
+    },
+    {
+      "questionId": "money-scen-004",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Noah has 1 ten-dollar bill, 2 one-dollar bills, and 1 quarter. How much money does he have?",
+      "answer": {"value": "12.25", "valueType": "decimal", "alternatives": ["$12.25", "12 dollars and 25 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 10.00 + 2.00 + 0.25 = 12.25."]
+    },
+    {
+      "questionId": "money-scen-005",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Emma has 2 dimes, 1 nickel, and 4 pennies. How much money does she have?",
+      "answer": {"value": "0.29", "valueType": "decimal", "alternatives": ["$0.29", "29 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 0.20 + 0.05 + 0.04 = 0.29."]
+    },
+    {
+      "questionId": "money-scen-006",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Oliver has 1 twenty-dollar bill, 1 five-dollar bill, and 3 one-dollar bills. How much money does he have?",
+      "answer": {"value": "28.00", "valueType": "decimal", "alternatives": ["$28.00", "28 dollars"], "unit": "dollars"},
+      "solutionSteps": ["Add: 20.00 + 5.00 + 3.00 = 28.00."]
+    },
+    {
+      "questionId": "money-scen-007",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Sophia has 4 quarters, 2 dimes, and 1 nickel. How much money does she have?",
+      "answer": {"value": "1.25", "valueType": "decimal", "alternatives": ["$1.25", "1 dollar and 25 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 1.00 + 0.20 + 0.05 = 1.25."]
+    },
+    {
+      "questionId": "money-scen-008",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ethan has 1 five-dollar bill, 3 quarters, and 3 dimes. How much money does he have?",
+      "answer": {"value": "6.05", "valueType": "decimal", "alternatives": ["$6.05", "6 dollars and 5 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 5.00 + 0.75 + 0.30 = 6.05."]
+    },
+    {
+      "questionId": "money-scen-009",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Isabella has 2 one-dollar bills, 5 dimes, and 5 pennies. How much money does she have?",
+      "answer": {"value": "2.55", "valueType": "decimal", "alternatives": ["$2.55", "2 dollars and 55 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 2.00 + 0.50 + 0.05 = 2.55."]
+    },
+    {
+      "questionId": "money-scen-010",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Mason has 1 ten-dollar bill, 1 five-dollar bill, and 2 quarters. How much money does he have?",
+      "answer": {"value": "15.50", "valueType": "decimal", "alternatives": ["$15.50", "15 dollars and 50 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 10.00 + 5.00 + 0.50 = 15.50."]
+    },
+    {
+      "questionId": "money-scen-011",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Charlotte has 3 one-dollar bills, 2 quarters, 2 dimes, and 1 penny. How much money does she have?",
+      "answer": {"value": "3.71", "valueType": "decimal", "alternatives": ["$3.71", "3 dollars and 71 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 3.00 + 0.50 + 0.20 + 0.01 = 3.71."]
+    },
+    {
+      "questionId": "money-scen-012",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "James has 1 quarter, 2 dimes, 3 nickels, and 4 pennies. How much money does he have?",
+      "answer": {"value": "0.64", "valueType": "decimal", "alternatives": ["$0.64", "64 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 0.25 + 0.20 + 0.15 + 0.04 = 0.64."]
+    },
+    {
+      "questionId": "money-scen-013",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Amelia has 1 five-dollar bill, 4 one-dollar bills, and 1 dime. How much money does she have?",
+      "answer": {"value": "9.10", "valueType": "decimal", "alternatives": ["$9.10", "9 dollars and 10 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 5.00 + 4.00 + 0.10 = 9.10."]
+    },
+    {
+      "questionId": "money-scen-014",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Benjamin has 2 twenty-dollar bills and 1 ten-dollar bill. How much money does he have?",
+      "answer": {"value": "50.00", "valueType": "decimal", "alternatives": ["$50.00", "50 dollars"], "unit": "dollars"},
+      "solutionSteps": ["Add: 20.00 + 20.00 + 10.00 = 50.00."]
+    },
+    {
+      "questionId": "money-scen-015",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Harper has 2 quarters, 4 nickels, and 6 pennies. How much money does she have?",
+      "answer": {"value": "0.76", "valueType": "decimal", "alternatives": ["$0.76", "76 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 0.50 + 0.20 + 0.06 = 0.76."]
+    },
+    {
+      "questionId": "money-scen-016",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Elijah has 1 ten-dollar bill, 3 one-dollar bills, 2 quarters, and 1 dime. How much money does he have?",
+      "answer": {"value": "13.60", "valueType": "decimal", "alternatives": ["$13.60", "13 dollars and 60 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 10.00 + 3.00 + 0.50 + 0.10 = 13.60."]
+    },
+    {
+      "questionId": "money-scen-017",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Evelyn has 5 dimes, 5 nickels, and 5 pennies. How much money does she have?",
+      "answer": {"value": "0.80", "valueType": "decimal", "alternatives": ["$0.80", "80 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 0.50 + 0.25 + 0.05 = 0.80."]
+    },
+    {
+      "questionId": "money-scen-018",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Daniel has 1 five-dollar bill, 1 one-dollar bill, 1 quarter, and 1 nickel. How much money does he have?",
+      "answer": {"value": "6.30", "valueType": "decimal", "alternatives": ["$6.30", "6 dollars and 30 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 5.00 + 1.00 + 0.25 + 0.05 = 6.30."]
+    },
+    {
+      "questionId": "money-scen-019",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Abigail has 4 quarters, 4 dimes, and 4 pennies. How much money does she have?",
+      "answer": {"value": "1.44", "valueType": "decimal", "alternatives": ["$1.44", "1 dollar and 44 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 1.00 + 0.40 + 0.04 = 1.44."]
+    },
+    {
+      "questionId": "money-scen-020",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Matthew has 1 twenty-dollar bill, 2 five-dollar bills, and 1 one-dollar bill. How much money does he have?",
+      "answer": {"value": "31.00", "valueType": "decimal", "alternatives": ["$31.00", "31 dollars"], "unit": "dollars"},
+      "solutionSteps": ["Add: 20.00 + 10.00 + 1.00 = 31.00."]
+    },
+    {
+      "questionId": "money-scen-021",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Avery has 3 one-dollar bills, 1 quarter, 3 dimes, and 2 nickels. How much money does she have?",
+      "answer": {"value": "3.65", "valueType": "decimal", "alternatives": ["$3.65", "3 dollars and 65 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 3.00 + 0.25 + 0.30 + 0.10 = 3.65."]
+    },
+    {
+      "questionId": "money-scen-022",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Jack has 2 five-dollar bills, 2 quarters, 2 dimes, and 2 pennies. How much money does he have?",
+      "answer": {"value": "10.72", "valueType": "decimal", "alternatives": ["$10.72", "10 dollars and 72 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 10.00 + 0.50 + 0.20 + 0.02 = 10.72."]
+    },
+    {
+      "questionId": "money-scen-023",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Luna has 1 ten-dollar bill, 4 quarters, and 4 dimes. How much money does she have?",
+      "answer": {"value": "11.40", "valueType": "decimal", "alternatives": ["$11.40", "11 dollars and 40 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 10.00 + 1.00 + 0.40 = 11.40."]
+    },
+    {
+      "questionId": "money-scen-024",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Henry has 1 one-dollar bill, 3 quarters, 2 nickels, and 1 penny. How much money does he have?",
+      "answer": {"value": "1.86", "valueType": "decimal", "alternatives": ["$1.86", "1 dollar and 86 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 1.00 + 0.75 + 0.10 + 0.01 = 1.86."]
+    },
+    {
+      "questionId": "money-scen-025",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Scarlett has 2 ten-dollar bills, 1 five-dollar bill, and 1 quarter. How much money does she have?",
+      "answer": {"value": "25.25", "valueType": "decimal", "alternatives": ["$25.25", "25 dollars and 25 cents"], "unit": "dollars"},
+      "solutionSteps": ["Add: 20.00 + 5.00 + 0.25 = 25.25."]
+    },
+    {
+      "questionId": "money-scen-026",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "You buy a toy for $6.32. You hand the teller a $10 bill. How much change should you get back in dollars, quarters, dimes, nickels, and pennies?",
+      "answer": {"value": "3.68", "valueType": "decimal", "alternatives": ["$3.68"], "unit": "dollars"},
+      "solutionSteps": ["Total cost: 6.32. Change: 10.00 - 6.32 = 3.68."]
+    },
+    {
+      "questionId": "money-scen-027",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A book costs $4.75. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "5.25", "valueType": "decimal", "alternatives": ["$5.25"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 4.75 = 5.25."]
+    },
+    {
+      "questionId": "money-scen-028",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A snack costs $2.40. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "2.60", "valueType": "decimal", "alternatives": ["$2.60"], "unit": "dollars"},
+      "solutionSteps": ["Change: 5.00 - 2.40 = 2.60."]
+    },
+    {
+      "questionId": "money-scen-029",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A craft kit costs $8.15. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "1.85", "valueType": "decimal", "alternatives": ["$1.85"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 8.15 = 1.85."]
+    },
+    {
+      "questionId": "money-scen-030",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "Stickers cost $3.67. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "1.33", "valueType": "decimal", "alternatives": ["$1.33"], "unit": "dollars"},
+      "solutionSteps": ["Change: 5.00 - 3.67 = 1.33."]
+    },
+    {
+      "questionId": "money-scen-031",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy two toys for $2.25 and $1.50. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "1.25", "valueType": "decimal", "alternatives": ["$1.25"], "unit": "dollars"},
+      "solutionSteps": ["Total: 2.25 + 1.50 = 3.75. Change: 5.00 - 3.75 = 1.25."]
+    },
+    {
+      "questionId": "money-scen-032",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Candy costs $0.85 and juice costs $1.20. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "2.95", "valueType": "decimal", "alternatives": ["$2.95"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.85 + 1.20 = 2.05. Change: 5.00 - 2.05 = 2.95."]
+    },
+    {
+      "questionId": "money-scen-033",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A pencil costs $0.35 and a notebook costs $2.10. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "2.55", "valueType": "decimal", "alternatives": ["$2.55"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.35 + 2.10 = 2.45. Change: 5.00 - 2.45 = 2.55."]
+    },
+    {
+      "questionId": "money-scen-034",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A ball costs $3.99. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "6.01", "valueType": "decimal", "alternatives": ["$6.01"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 3.99 = 6.01."]
+    },
+    {
+      "questionId": "money-scen-035",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A doll costs $7.45. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "2.55", "valueType": "decimal", "alternatives": ["$2.55"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 7.45 = 2.55."]
+    },
+    {
+      "questionId": "money-scen-036",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A toy car costs $4.10 and a ball costs $2.35. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "3.55", "valueType": "decimal", "alternatives": ["$3.55"], "unit": "dollars"},
+      "solutionSteps": ["Total: 4.10 + 2.35 = 6.45. Change: 10.00 - 6.45 = 3.55."]
+    },
+    {
+      "questionId": "money-scen-037",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "Markers cost $5.60. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "4.40", "valueType": "decimal", "alternatives": ["$4.40"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 5.60 = 4.40."]
+    },
+    {
+      "questionId": "money-scen-038",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Two stamps cost $0.55 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "3.90", "valueType": "decimal", "alternatives": ["$3.90"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.55 + 0.55 = 1.10. Change: 5.00 - 1.10 = 3.90."]
+    },
+    {
+      "questionId": "money-scen-039",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A kite costs $6.80. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "3.20", "valueType": "decimal", "alternatives": ["$3.20"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 6.80 = 3.20."]
+    },
+    {
+      "questionId": "money-scen-040",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A puzzle costs $4.25 and crayons cost $1.75. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "4.00", "valueType": "decimal", "alternatives": ["$4.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 4.25 + 1.75 = 6.00. Change: 10.00 - 6.00 = 4.00."]
+    },
+    {
+      "questionId": "money-scen-041",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Lunch costs $3.45 and milk costs $0.95. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "0.60", "valueType": "decimal", "alternatives": ["$0.60"], "unit": "dollars"},
+      "solutionSteps": ["Total: 3.45 + 0.95 = 4.40. Change: 5.00 - 4.40 = 0.60."]
+    },
+    {
+      "questionId": "money-scen-042",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A toy train costs $12.30. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "7.70", "valueType": "decimal", "alternatives": ["$7.70"], "unit": "dollars"},
+      "solutionSteps": ["Change: 20.00 - 12.30 = 7.70."]
+    },
+    {
+      "questionId": "money-scen-043",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "An art set costs $15.75. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "4.25", "valueType": "decimal", "alternatives": ["$4.25"], "unit": "dollars"},
+      "solutionSteps": ["Change: 20.00 - 15.75 = 4.25."]
+    },
+    {
+      "questionId": "money-scen-044",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A board game costs $11.20. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "8.80", "valueType": "decimal", "alternatives": ["$8.80"], "unit": "dollars"},
+      "solutionSteps": ["Change: 20.00 - 11.20 = 8.80."]
+    },
+    {
+      "questionId": "money-scen-045",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Bubbles cost $2.15 and chalk costs $1.65. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "1.20", "valueType": "decimal", "alternatives": ["$1.20"], "unit": "dollars"},
+      "solutionSteps": ["Total: 2.15 + 1.65 = 3.80. Change: 5.00 - 3.80 = 1.20."]
+    },
+    {
+      "questionId": "money-scen-046",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A yo-yo costs $3.05 and marbles cost $2.45. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "4.50", "valueType": "decimal", "alternatives": ["$4.50"], "unit": "dollars"},
+      "solutionSteps": ["Total: 3.05 + 2.45 = 5.50. Change: 10.00 - 5.50 = 4.50."]
+    },
+    {
+      "questionId": "money-scen-047",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A sticker book costs $6.55. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "3.45", "valueType": "decimal", "alternatives": ["$3.45"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 6.55 = 3.45."]
+    },
+    {
+      "questionId": "money-scen-048",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A jump rope costs $4.80. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "0.20", "valueType": "decimal", "alternatives": ["$0.20"], "unit": "dollars"},
+      "solutionSteps": ["Change: 5.00 - 4.80 = 0.20."]
+    },
+    {
+      "questionId": "money-scen-049",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A paint set costs $9.35. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "0.65", "valueType": "decimal", "alternatives": ["$0.65"], "unit": "dollars"},
+      "solutionSteps": ["Change: 10.00 - 9.35 = 0.65."]
+    },
+    {
+      "questionId": "money-scen-050",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A teddy bear costs $13.60. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "6.40", "valueType": "decimal", "alternatives": ["$6.40"], "unit": "dollars"},
+      "solutionSteps": ["Change: 20.00 - 13.60 = 6.40."]
+    },
+    {
+      "questionId": "money-scen-051",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a toy for $6.32 and a book for $2.15. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "1.53", "valueType": "decimal", "alternatives": ["$1.53"], "unit": "dollars"},
+      "solutionSteps": ["Total: 6.32 + 2.15 = 8.47. Change: 10.00 - 8.47 = 1.53."]
+    },
+    {
+      "questionId": "money-scen-052",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three items for $3.25, $2.10, and $1.65. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "3.00", "valueType": "decimal", "alternatives": ["$3.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 3.25 + 2.10 + 1.65 = 7.00. Change: 10.00 - 7.00 = 3.00."]
+    },
+    {
+      "questionId": "money-scen-053",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy snacks for $1.25, $0.75, and $2.35. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "0.65", "valueType": "decimal", "alternatives": ["$0.65"], "unit": "dollars"},
+      "solutionSteps": ["Total: 1.25 + 0.75 + 2.35 = 4.35. Change: 5.00 - 4.35 = 0.65."]
+    },
+    {
+      "questionId": "money-scen-054",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy craft items for $4.50, $3.25, and $1.15. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "1.10", "valueType": "decimal", "alternatives": ["$1.10"], "unit": "dollars"},
+      "solutionSteps": ["Total: 4.50 + 3.25 + 1.15 = 8.90. Change: 10.00 - 8.90 = 1.10."]
+    },
+    {
+      "questionId": "money-scen-055",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy toys for $7.80 and $5.45. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "6.75", "valueType": "decimal", "alternatives": ["$6.75"], "unit": "dollars"},
+      "solutionSteps": ["Total: 7.80 + 5.45 = 13.25. Change: 20.00 - 13.25 = 6.75."]
+    },
+    {
+      "questionId": "money-scen-056",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy items for $2.99, $1.50, and $0.85. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "4.66", "valueType": "decimal", "alternatives": ["$4.66"], "unit": "dollars"},
+      "solutionSteps": ["Total: 2.99 + 1.50 + 0.85 = 5.34. Change: 10.00 - 5.34 = 4.66."]
+    },
+    {
+      "questionId": "money-scen-057",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three stamps that cost $0.55 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "3.35", "valueType": "decimal", "alternatives": ["$3.35"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.55 + 0.55 + 0.55 = 1.65. Change: 5.00 - 1.65 = 3.35."]
+    },
+    {
+      "questionId": "money-scen-058",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy four pencils that cost $0.35 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "3.60", "valueType": "decimal", "alternatives": ["$3.60"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.35 + 0.35 + 0.35 + 0.35 = 1.40. Change: 5.00 - 1.40 = 3.60."]
+    },
+    {
+      "questionId": "money-scen-059",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy five stickers that cost $0.25 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "3.75", "valueType": "decimal", "alternatives": ["$3.75"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.25 + 0.25 + 0.25 + 0.25 + 0.25 = 1.25. Change: 5.00 - 1.25 = 3.75."]
+    },
+    {
+      "questionId": "money-scen-060",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three juice boxes that cost $1.20 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "1.40", "valueType": "decimal", "alternatives": ["$1.40"], "unit": "dollars"},
+      "solutionSteps": ["Total: 1.20 + 1.20 + 1.20 = 3.60. Change: 5.00 - 3.60 = 1.40."]
+    },
+    {
+      "questionId": "money-scen-061",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a toy for $8.99 and candy for $0.99. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "0.02", "valueType": "decimal", "alternatives": ["$0.02"], "unit": "dollars"},
+      "solutionSteps": ["Total: 8.99 + 0.99 = 9.98. Change: 10.00 - 9.98 = 0.02."]
+    },
+    {
+      "questionId": "money-scen-062",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a book for $6.45 and a pencil for $0.55. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "3.00", "valueType": "decimal", "alternatives": ["$3.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 6.45 + 0.55 = 7.00. Change: 10.00 - 7.00 = 3.00."]
+    },
+    {
+      "questionId": "money-scen-063",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a ball for $4.25, a bat for $5.50, and a glove for $6.75. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "3.50", "valueType": "decimal", "alternatives": ["$3.50"], "unit": "dollars"},
+      "solutionSteps": ["Total: 4.25 + 5.50 + 6.75 = 16.50. Change: 20.00 - 16.50 = 3.50."]
+    },
+    {
+      "questionId": "money-scen-064",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy markers for $3.80, paper for $2.45, and glue for $1.25. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "2.50", "valueType": "decimal", "alternatives": ["$2.50"], "unit": "dollars"},
+      "solutionSteps": ["Total: 3.80 + 2.45 + 1.25 = 7.50. Change: 10.00 - 7.50 = 2.50."]
+    },
+    {
+      "questionId": "money-scen-065",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a doll for $9.99 and ribbon for $1.50. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "8.51", "valueType": "decimal", "alternatives": ["$8.51"], "unit": "dollars"},
+      "solutionSteps": ["Total: 9.99 + 1.50 = 11.49. Change: 20.00 - 11.49 = 8.51."]
+    },
+    {
+      "questionId": "money-scen-066",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy lunch for $3.65, milk for $0.85, and a cookie for $1.25. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "4.25", "valueType": "decimal", "alternatives": ["$4.25"], "unit": "dollars"},
+      "solutionSteps": ["Total: 3.65 + 0.85 + 1.25 = 5.75. Change: 10.00 - 5.75 = 4.25."]
+    },
+    {
+      "questionId": "money-scen-067",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a game for $12.75 and dice for $2.25. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "5.00", "valueType": "decimal", "alternatives": ["$5.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 12.75 + 2.25 = 15.00. Change: 20.00 - 15.00 = 5.00."]
+    },
+    {
+      "questionId": "money-scen-068",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy an art set for $7.35, a brush for $1.65, and paint for $3.20. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "7.80", "valueType": "decimal", "alternatives": ["$7.80"], "unit": "dollars"},
+      "solutionSteps": ["Total: 7.35 + 1.65 + 3.20 = 12.20. Change: 20.00 - 12.20 = 7.80."]
+    },
+    {
+      "questionId": "money-scen-069",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a kite for $6.80 and string for $1.20. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "2.00", "valueType": "decimal", "alternatives": ["$2.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 6.80 + 1.20 = 8.00. Change: 10.00 - 8.00 = 2.00."]
+    },
+    {
+      "questionId": "money-scen-070",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a train for $13.45 and track for $4.55. You pay with a $20 bill. How much change do you get?",
+      "answer": {"value": "2.00", "valueType": "decimal", "alternatives": ["$2.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 13.45 + 4.55 = 18.00. Change: 20.00 - 18.00 = 2.00."]
+    },
+    {
+      "questionId": "money-scen-071",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy four juices that cost $1.25 each. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "5.00", "valueType": "decimal", "alternatives": ["$5.00"], "unit": "dollars"},
+      "solutionSteps": ["Total: 1.25 + 1.25 + 1.25 + 1.25 = 5.00. Change: 10.00 - 5.00 = 5.00."]
+    },
+    {
+      "questionId": "money-scen-072",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy six candies that cost $0.45 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "2.30", "valueType": "decimal", "alternatives": ["$2.30"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.45 + 0.45 + 0.45 + 0.45 + 0.45 + 0.45 = 2.70. Change: 5.00 - 2.70 = 2.30."]
+    },
+    {
+      "questionId": "money-scen-073",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three notebooks that cost $2.25 each. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "3.25", "valueType": "decimal", "alternatives": ["$3.25"], "unit": "dollars"},
+      "solutionSteps": ["Total: 2.25 + 2.25 + 2.25 = 6.75. Change: 10.00 - 6.75 = 3.25."]
+    },
+    {
+      "questionId": "money-scen-074",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy two toy cars that cost $4.60 each. You pay with a $10 bill. How much change do you get?",
+      "answer": {"value": "0.80", "valueType": "decimal", "alternatives": ["$0.80"], "unit": "dollars"},
+      "solutionSteps": ["Total: 4.60 + 4.60 = 9.20. Change: 10.00 - 9.20 = 0.80."]
+    },
+    {
+      "questionId": "money-scen-075",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy five marbles that cost $0.30 each. You pay with a $5 bill. How much change do you get?",
+      "answer": {"value": "3.50", "valueType": "decimal", "alternatives": ["$3.50"], "unit": "dollars"},
+      "solutionSteps": ["Total: 0.30 + 0.30 + 0.30 + 0.30 + 0.30 = 1.50. Change: 5.00 - 1.50 = 3.50."]
+    },
+    {
+      "questionId": "money-scen-076",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Riya has 2 ten-rupee notes, 3 five-rupee coins, 2 two-rupee coins, and 1 one-rupee coin. How much money does she have?",
+      "answer": {"value": "40.00", "valueType": "decimal", "alternatives": ["₹40.00", "40 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 20 + 15 + 4 + 1 = 40."]
+    },
+    {
+      "questionId": "money-scen-077",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Arjun has 1 fifty-rupee note, 2 ten-rupee notes, and 1 five-rupee coin. How much money does he have?",
+      "answer": {"value": "75.00", "valueType": "decimal", "alternatives": ["₹75.00", "75 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 50 + 20 + 5 = 75."]
+    },
+    {
+      "questionId": "money-scen-078",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Meera has 3 twenty-rupee notes, 2 ten-rupee notes, and 4 one-rupee coins. How much money does she have?",
+      "answer": {"value": "84.00", "valueType": "decimal", "alternatives": ["₹84.00", "84 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 60 + 20 + 4 = 84."]
+    },
+    {
+      "questionId": "money-scen-079",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Kabir has 1 hundred-rupee note, 1 twenty-rupee note, and 2 five-rupee coins. How much money does he have?",
+      "answer": {"value": "130.00", "valueType": "decimal", "alternatives": ["₹130.00", "130 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 100 + 20 + 10 = 130."]
+    },
+    {
+      "questionId": "money-scen-080",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Anaya has 4 five-rupee coins, 3 two-rupee coins, and 2 one-rupee coins. How much money does she have?",
+      "answer": {"value": "28.00", "valueType": "decimal", "alternatives": ["₹28.00", "28 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 20 + 6 + 2 = 28."]
+    },
+    {
+      "questionId": "money-scen-081",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Vihaan has 2 fifty-rupee notes, 1 twenty-rupee note, and 1 ten-rupee coin. How much money does he have?",
+      "answer": {"value": "130.00", "valueType": "decimal", "alternatives": ["₹130.00", "130 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 100 + 20 + 10 = 130."]
+    },
+    {
+      "questionId": "money-scen-082",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Diya has 5 ten-rupee coins, 2 five-rupee coins, and 3 fifty-paisa coins. How much money does she have?",
+      "answer": {"value": "61.50", "valueType": "decimal", "alternatives": ["₹61.50", "61 rupees and 50 paisa"], "unit": "rupees"},
+      "solutionSteps": ["Add: 50 + 10 + 1.50 = 61.50."]
+    },
+    {
+      "questionId": "money-scen-083",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ishaan has 1 twenty-rupee note, 3 two-rupee coins, and 2 fifty-paisa coins. How much money does he have?",
+      "answer": {"value": "27.00", "valueType": "decimal", "alternatives": ["₹27.00", "27 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 20 + 6 + 1 = 27."]
+    },
+    {
+      "questionId": "money-scen-084",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Saanvi has 2 hundred-rupee notes, 1 fifty-rupee note, and 2 ten-rupee notes. How much money does she have?",
+      "answer": {"value": "270.00", "valueType": "decimal", "alternatives": ["₹270.00", "270 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 200 + 50 + 20 = 270."]
+    },
+    {
+      "questionId": "money-scen-085",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Aarav has 3 twenty-rupee notes, 4 five-rupee coins, and 2 one-rupee coins. How much money does he have?",
+      "answer": {"value": "82.00", "valueType": "decimal", "alternatives": ["₹82.00", "82 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 60 + 20 + 2 = 82."]
+    },
+    {
+      "questionId": "money-scen-086",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Myra has 1 fifty-rupee note, 3 ten-rupee coins, and 4 fifty-paisa coins. How much money does she have?",
+      "answer": {"value": "82.00", "valueType": "decimal", "alternatives": ["₹82.00", "82 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 50 + 30 + 2 = 82."]
+    },
+    {
+      "questionId": "money-scen-087",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Vivaan has 2 ten-rupee notes, 2 five-rupee coins, 2 two-rupee coins, and 2 fifty-paisa coins. How much money does he have?",
+      "answer": {"value": "35.00", "valueType": "decimal", "alternatives": ["₹35.00", "35 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 20 + 10 + 4 + 1 = 35."]
+    },
+    {
+      "questionId": "money-scen-088",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Kiara has 4 twenty-rupee notes, 1 ten-rupee note, and 3 one-rupee coins. How much money does she have?",
+      "answer": {"value": "93.00", "valueType": "decimal", "alternatives": ["₹93.00", "93 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 80 + 10 + 3 = 93."]
+    },
+    {
+      "questionId": "money-scen-089",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Reyansh has 1 hundred-rupee note, 2 fifty-rupee notes, and 1 twenty-rupee note. How much money does he have?",
+      "answer": {"value": "220.00", "valueType": "decimal", "alternatives": ["₹220.00", "220 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 100 + 100 + 20 = 220."]
+    },
+    {
+      "questionId": "money-scen-090",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Aadhya has 6 five-rupee coins, 4 two-rupee coins, and 3 fifty-paisa coins. How much money does she have?",
+      "answer": {"value": "39.50", "valueType": "decimal", "alternatives": ["₹39.50", "39 rupees and 50 paisa"], "unit": "rupees"},
+      "solutionSteps": ["Add: 30 + 8 + 1.50 = 39.50."]
+    },
+    {
+      "questionId": "money-scen-091",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Krishna has 2 fifty-rupee notes, 2 twenty-rupee notes, and 2 ten-rupee notes. How much money does he have?",
+      "answer": {"value": "160.00", "valueType": "decimal", "alternatives": ["₹160.00", "160 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 100 + 40 + 20 = 160."]
+    },
+    {
+      "questionId": "money-scen-092",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Anvi has 3 ten-rupee coins, 3 five-rupee coins, and 3 one-rupee coins. How much money does she have?",
+      "answer": {"value": "48.00", "valueType": "decimal", "alternatives": ["₹48.00", "48 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 30 + 15 + 3 = 48."]
+    },
+    {
+      "questionId": "money-scen-093",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Shaurya has 1 twenty-rupee note, 5 two-rupee coins, and 6 fifty-paisa coins. How much money does he have?",
+      "answer": {"value": "33.00", "valueType": "decimal", "alternatives": ["₹33.00", "33 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 20 + 10 + 3 = 33."]
+    },
+    {
+      "questionId": "money-scen-094",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Pari has 2 hundred-rupee notes, 1 twenty-rupee note, and 1 five-rupee coin. How much money does she have?",
+      "answer": {"value": "225.00", "valueType": "decimal", "alternatives": ["₹225.00", "225 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 200 + 20 + 5 = 225."]
+    },
+    {
+      "questionId": "money-scen-095",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ayaan has 4 ten-rupee notes, 4 five-rupee coins, and 4 fifty-paisa coins. How much money does he have?",
+      "answer": {"value": "62.00", "valueType": "decimal", "alternatives": ["₹62.00", "62 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 40 + 20 + 2 = 62."]
+    },
+    {
+      "questionId": "money-scen-096",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Navya has 1 fifty-rupee note, 1 twenty-rupee note, 1 ten-rupee note, and 1 five-rupee coin. How much money does she have?",
+      "answer": {"value": "85.00", "valueType": "decimal", "alternatives": ["₹85.00", "85 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 50 + 20 + 10 + 5 = 85."]
+    },
+    {
+      "questionId": "money-scen-097",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Advik has 5 twenty-rupee notes, 2 ten-rupee coins, and 1 two-rupee coin. How much money does he have?",
+      "answer": {"value": "122.00", "valueType": "decimal", "alternatives": ["₹122.00", "122 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 100 + 20 + 2 = 122."]
+    },
+    {
+      "questionId": "money-scen-098",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ira has 2 hundred-rupee notes, 3 ten-rupee notes, and 4 fifty-paisa coins. How much money does she have?",
+      "answer": {"value": "232.00", "valueType": "decimal", "alternatives": ["₹232.00", "232 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 200 + 30 + 2 = 232."]
+    },
+    {
+      "questionId": "money-scen-099",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Rudra has 1 hundred-rupee note, 1 fifty-rupee note, 1 twenty-rupee note, and 1 ten-rupee note. How much money does he have?",
+      "answer": {"value": "180.00", "valueType": "decimal", "alternatives": ["₹180.00", "180 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 100 + 50 + 20 + 10 = 180."]
+    },
+    {
+      "questionId": "money-scen-100",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Zara has 3 fifty-rupee notes, 2 twenty-rupee notes, and 1 five-rupee coin. How much money does she have?",
+      "answer": {"value": "195.00", "valueType": "decimal", "alternatives": ["₹195.00", "195 rupees"], "unit": "rupees"},
+      "solutionSteps": ["Add: 150 + 40 + 5 = 195."]
+    },
+    {
+      "questionId": "money-scen-101",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A toy costs ₹32.50. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "17.50", "valueType": "decimal", "alternatives": ["₹17.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 50 - 32.50 = 17.50."]
+    },
+    {
+      "questionId": "money-scen-102",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A book costs ₹45.00. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "5.00", "valueType": "decimal", "alternatives": ["₹5.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 50 - 45 = 5."]
+    },
+    {
+      "questionId": "money-scen-103",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A snack costs ₹18.75. You pay with a ₹20 note. How much change do you get?",
+      "answer": {"value": "1.25", "valueType": "decimal", "alternatives": ["₹1.25"], "unit": "rupees"},
+      "solutionSteps": ["Change: 20 - 18.75 = 1.25."]
+    },
+    {
+      "questionId": "money-scen-104",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A craft kit costs ₹65.00. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "35.00", "valueType": "decimal", "alternatives": ["₹35.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 100 - 65 = 35."]
+    },
+    {
+      "questionId": "money-scen-105",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "Stickers cost ₹27.50. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "22.50", "valueType": "decimal", "alternatives": ["₹22.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 50 - 27.50 = 22.50."]
+    },
+    {
+      "questionId": "money-scen-106",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy two toys for ₹22.50 and ₹15.00. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "12.50", "valueType": "decimal", "alternatives": ["₹12.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 22.50 + 15.00 = 37.50. Change: 50 - 37.50 = 12.50."]
+    },
+    {
+      "questionId": "money-scen-107",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Candy costs ₹8.50 and juice costs ₹12.00. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "29.50", "valueType": "decimal", "alternatives": ["₹29.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 8.50 + 12.00 = 20.50. Change: 50 - 20.50 = 29.50."]
+    },
+    {
+      "questionId": "money-scen-108",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A pencil costs ₹3.50 and a notebook costs ₹21.00. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "25.50", "valueType": "decimal", "alternatives": ["₹25.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 3.50 + 21.00 = 24.50. Change: 50 - 24.50 = 25.50."]
+    },
+    {
+      "questionId": "money-scen-109",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A ball costs ₹39.50. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "10.50", "valueType": "decimal", "alternatives": ["₹10.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 50 - 39.50 = 10.50."]
+    },
+    {
+      "questionId": "money-scen-110",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A doll costs ₹74.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "25.50", "valueType": "decimal", "alternatives": ["₹25.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 100 - 74.50 = 25.50."]
+    },
+    {
+      "questionId": "money-scen-111",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A toy car costs ₹41.00 and a ball costs ₹23.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "35.50", "valueType": "decimal", "alternatives": ["₹35.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 41.00 + 23.50 = 64.50. Change: 100 - 64.50 = 35.50."]
+    },
+    {
+      "questionId": "money-scen-112",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "Markers cost ₹56.00. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "44.00", "valueType": "decimal", "alternatives": ["₹44.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 100 - 56 = 44."]
+    },
+    {
+      "questionId": "money-scen-113",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Two stamps cost ₹5.50 each. You pay with a ₹20 note. How much change do you get?",
+      "answer": {"value": "9.00", "valueType": "decimal", "alternatives": ["₹9.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 5.50 + 5.50 = 11.00. Change: 20 - 11 = 9."]
+    },
+    {
+      "questionId": "money-scen-114",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A kite costs ₹68.00. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "32.00", "valueType": "decimal", "alternatives": ["₹32.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 100 - 68 = 32."]
+    },
+    {
+      "questionId": "money-scen-115",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A puzzle costs ₹42.50 and crayons cost ₹17.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "40.00", "valueType": "decimal", "alternatives": ["₹40.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 42.50 + 17.50 = 60.00. Change: 100 - 60 = 40."]
+    },
+    {
+      "questionId": "money-scen-116",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Lunch costs ₹34.50 and milk costs ₹9.50. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "6.00", "valueType": "decimal", "alternatives": ["₹6.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 34.50 + 9.50 = 44.00. Change: 50 - 44 = 6."]
+    },
+    {
+      "questionId": "money-scen-117",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A toy train costs ₹123.00. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "77.00", "valueType": "decimal", "alternatives": ["₹77.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 200 - 123 = 77."]
+    },
+    {
+      "questionId": "money-scen-118",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "An art set costs ₹157.50. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "42.50", "valueType": "decimal", "alternatives": ["₹42.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 200 - 157.50 = 42.50."]
+    },
+    {
+      "questionId": "money-scen-119",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A board game costs ₹112.00. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "88.00", "valueType": "decimal", "alternatives": ["₹88.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 200 - 112 = 88."]
+    },
+    {
+      "questionId": "money-scen-120",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "Bubbles cost ₹21.50 and chalk costs ₹16.50. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "12.00", "valueType": "decimal", "alternatives": ["₹12.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 21.50 + 16.50 = 38.00. Change: 50 - 38 = 12."]
+    },
+    {
+      "questionId": "money-scen-121",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["addition", "subtraction"],
+      "question": "A yo-yo costs ₹30.50 and marbles cost ₹24.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "45.00", "valueType": "decimal", "alternatives": ["₹45.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 30.50 + 24.50 = 55.00. Change: 100 - 55 = 45."]
+    },
+    {
+      "questionId": "money-scen-122",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A sticker book costs ₹65.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "34.50", "valueType": "decimal", "alternatives": ["₹34.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 100 - 65.50 = 34.50."]
+    },
+    {
+      "questionId": "money-scen-123",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A jump rope costs ₹48.00. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "2.00", "valueType": "decimal", "alternatives": ["₹2.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 50 - 48 = 2."]
+    },
+    {
+      "questionId": "money-scen-124",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A paint set costs ₹93.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "6.50", "valueType": "decimal", "alternatives": ["₹6.50"], "unit": "rupees"},
+      "solutionSteps": ["Change: 100 - 93.50 = 6.50."]
+    },
+    {
+      "questionId": "money-scen-125",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [2, 3],
+      "operations": ["subtraction"],
+      "question": "A teddy bear costs ₹136.00. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "64.00", "valueType": "decimal", "alternatives": ["₹64.00"], "unit": "rupees"},
+      "solutionSteps": ["Change: 200 - 136 = 64."]
+    },
+    {
+      "questionId": "money-scen-126",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a toy for ₹32.50 and a book for ₹21.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "46.00", "valueType": "decimal", "alternatives": ["₹46.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 32.50 + 21.50 = 54.00. Change: 100 - 54 = 46."]
+    },
+    {
+      "questionId": "money-scen-127",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three items for ₹25.00, ₹21.00, and ₹16.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "37.50", "valueType": "decimal", "alternatives": ["₹37.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 25 + 21 + 16.50 = 62.50. Change: 100 - 62.50 = 37.50."]
+    },
+    {
+      "questionId": "money-scen-128",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy snacks for ₹12.50, ₹7.50, and ₹23.50. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "6.50", "valueType": "decimal", "alternatives": ["₹6.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 12.50 + 7.50 + 23.50 = 43.50. Change: 50 - 43.50 = 6.50."]
+    },
+    {
+      "questionId": "money-scen-129",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy craft items for ₹45.00, ₹32.50, and ₹11.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "11.00", "valueType": "decimal", "alternatives": ["₹11.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 45 + 32.50 + 11.50 = 89.00. Change: 100 - 89 = 11."]
+    },
+    {
+      "questionId": "money-scen-130",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy toys for ₹78.00 and ₹54.50. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "67.50", "valueType": "decimal", "alternatives": ["₹67.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 78 + 54.50 = 132.50. Change: 200 - 132.50 = 67.50."]
+    },
+    {
+      "questionId": "money-scen-131",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy items for ₹29.50, ₹15.00, and ₹8.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "47.00", "valueType": "decimal", "alternatives": ["₹47.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 29.50 + 15 + 8.50 = 53.00. Change: 100 - 53 = 47."]
+    },
+    {
+      "questionId": "money-scen-132",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three stamps that cost ₹5.50 each. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "33.50", "valueType": "decimal", "alternatives": ["₹33.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 5.50 + 5.50 + 5.50 = 16.50. Change: 50 - 16.50 = 33.50."]
+    },
+    {
+      "questionId": "money-scen-133",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy four pencils that cost ₹3.50 each. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "36.00", "valueType": "decimal", "alternatives": ["₹36.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 3.50 + 3.50 + 3.50 + 3.50 = 14.00. Change: 50 - 14 = 36."]
+    },
+    {
+      "questionId": "money-scen-134",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy five stickers that cost ₹2.50 each. You pay with a ₹20 note. How much change do you get?",
+      "answer": {"value": "7.50", "valueType": "decimal", "alternatives": ["₹7.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 2.50 + 2.50 + 2.50 + 2.50 + 2.50 = 12.50. Change: 20 - 12.50 = 7.50."]
+    },
+    {
+      "questionId": "money-scen-135",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three juice boxes that cost ₹12.00 each. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "14.00", "valueType": "decimal", "alternatives": ["₹14.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 12 + 12 + 12 = 36.00. Change: 50 - 36 = 14."]
+    },
+    {
+      "questionId": "money-scen-136",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a toy for ₹89.50 and candy for ₹9.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "1.00", "valueType": "decimal", "alternatives": ["₹1.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 89.50 + 9.50 = 99.00. Change: 100 - 99 = 1."]
+    },
+    {
+      "questionId": "money-scen-137",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a book for ₹64.50 and a pencil for ₹5.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "30.00", "valueType": "decimal", "alternatives": ["₹30.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 64.50 + 5.50 = 70.00. Change: 100 - 70 = 30."]
+    },
+    {
+      "questionId": "money-scen-138",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a ball for ₹42.50, a bat for ₹55.00, and a glove for ₹67.50. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "35.00", "valueType": "decimal", "alternatives": ["₹35.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 42.50 + 55 + 67.50 = 165.00. Change: 200 - 165 = 35."]
+    },
+    {
+      "questionId": "money-scen-139",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy markers for ₹38.00, paper for ₹24.50, and glue for ₹12.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "25.00", "valueType": "decimal", "alternatives": ["₹25.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 38 + 24.50 + 12.50 = 75.00. Change: 100 - 75 = 25."]
+    },
+    {
+      "questionId": "money-scen-140",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a doll for ₹99.50 and ribbon for ₹15.00. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "85.50", "valueType": "decimal", "alternatives": ["₹85.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 99.50 + 15 = 114.50. Change: 200 - 114.50 = 85.50."]
+    },
+    {
+      "questionId": "money-scen-141",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy lunch for ₹36.50, milk for ₹8.50, and a cookie for ₹12.50. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "42.50", "valueType": "decimal", "alternatives": ["₹42.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 36.50 + 8.50 + 12.50 = 57.50. Change: 100 - 57.50 = 42.50."]
+    },
+    {
+      "questionId": "money-scen-142",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a game for ₹127.50 and dice for ₹22.50. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "50.00", "valueType": "decimal", "alternatives": ["₹50.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 127.50 + 22.50 = 150.00. Change: 200 - 150 = 50."]
+    },
+    {
+      "questionId": "money-scen-143",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy an art set for ₹73.50, a brush for ₹16.50, and paint for ₹32.00. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "78.00", "valueType": "decimal", "alternatives": ["₹78.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 73.50 + 16.50 + 32 = 122.00. Change: 200 - 122 = 78."]
+    },
+    {
+      "questionId": "money-scen-144",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a kite for ₹68.00 and string for ₹12.00. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "20.00", "valueType": "decimal", "alternatives": ["₹20.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 68 + 12 = 80.00. Change: 100 - 80 = 20."]
+    },
+    {
+      "questionId": "money-scen-145",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy a train for ₹134.50 and track for ₹45.50. You pay with two ₹100 notes. How much change do you get?",
+      "answer": {"value": "20.00", "valueType": "decimal", "alternatives": ["₹20.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 134.50 + 45.50 = 180.00. Change: 200 - 180 = 20."]
+    },
+    {
+      "questionId": "money-scen-146",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy four juices that cost ₹12.50 each. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "50.00", "valueType": "decimal", "alternatives": ["₹50.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 12.50 + 12.50 + 12.50 + 12.50 = 50.00. Change: 100 - 50 = 50."]
+    },
+    {
+      "questionId": "money-scen-147",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy six candies that cost ₹4.50 each. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "23.00", "valueType": "decimal", "alternatives": ["₹23.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 4.50 + 4.50 + 4.50 + 4.50 + 4.50 + 4.50 = 27.00. Change: 50 - 27 = 23."]
+    },
+    {
+      "questionId": "money-scen-148",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy three notebooks that cost ₹22.50 each. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "32.50", "valueType": "decimal", "alternatives": ["₹32.50"], "unit": "rupees"},
+      "solutionSteps": ["Total: 22.50 + 22.50 + 22.50 = 67.50. Change: 100 - 67.50 = 32.50."]
+    },
+    {
+      "questionId": "money-scen-149",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy two toy cars that cost ₹46.00 each. You pay with a ₹100 note. How much change do you get?",
+      "answer": {"value": "8.00", "valueType": "decimal", "alternatives": ["₹8.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 46 + 46 = 92.00. Change: 100 - 92 = 8."]
+    },
+    {
+      "questionId": "money-scen-150",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [3, 4],
+      "operations": ["addition", "subtraction"],
+      "question": "You buy five marbles that cost ₹3.00 each. You pay with a ₹50 note. How much change do you get?",
+      "answer": {"value": "35.00", "valueType": "decimal", "alternatives": ["₹35.00"], "unit": "rupees"},
+      "solutionSteps": ["Total: 3 + 3 + 3 + 3 + 3 = 15.00. Change: 50 - 15 = 35."]
+    }
+  ]
+}
