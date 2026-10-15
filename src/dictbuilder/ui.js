@@ -7,6 +7,7 @@ import { speakText, isSpeechSupported, cancelSpeech } from '../shared/speech.js'
 import { tokenizeManualInput } from './manual-entry-helpers.js';
 import { buildInvestigationBriefs } from '../shared/investigationBriefs.js';
 import { fetchWiktionaryDefinition } from '../shared/dictionaryLookup.js';
+import { GRID_FILTERS, emptyGridFilters, filterGridWords, gridFilterOptions, combineDictionaryWords } from './grid-filters.js';
 
 const state = {
   files: [],
@@ -20,6 +21,7 @@ const state = {
   phonicsByWord: Object.create(null), // word → Record from PhonicsEngine (no is_common)
   flagged: [],           // [{ word, record, note, flaggedAt }]
   selectedWord: null,
+  gridFilters: emptyGridFilters(),
 };
 
 // Assigned once at mount via wireInfoPaneTabs — used by selectWord()
@@ -210,7 +212,16 @@ export function buildDictBuilderUI(container) {
 
         <div class="db-right tool-preview">
           <div class="db-results-scroll">
-            <div class="db-summary" id="dbSummary"></div>
+            <div class="db-summary" id="dbSummary">
+              <div class="db-summary-stats" id="dbSummaryStats" aria-live="polite"></div>
+              <div class="db-grid-filters" id="dbGridFilters" aria-label="Word grid filters">
+                ${GRID_FILTERS.map(({ key, label }) => `<div class="db-grid-filter">
+                  <label for="dbGridFilter-${key}">${label}</label>
+                  <select class="tb-select" id="dbGridFilter-${key}" data-grid-filter="${key}"><option value="">All</option></select>
+                </div>`).join('')}
+                <button class="btn-icon db-filter-reset" id="dbResetGridFilters" title="Reset word grid filters" aria-label="Reset word grid filters" disabled><i class="fas fa-undo-alt" aria-hidden="true"></i></button>
+              </div>
+            </div>
             <div class="db-word-grid" id="dbWordGrid">
               <div class="db-empty-hint">
                 <i class="fas fa-book-open"></i>
@@ -237,6 +248,7 @@ export function buildDictBuilderUI(container) {
 
   resetState();
   wireEvents();
+  updateSummary();
   updateActionButtons();
   renderDetailPanel(); // initialize Detail tab with "no word selected" state
 }
@@ -253,6 +265,7 @@ function resetState() {
   state.phonicsByWord = Object.create(null);
   state.flagged = [];
   state.selectedWord = null;
+  state.gridFilters = emptyGridFilters();
 }
 
 // ── Options ──────────────────────────────────────────────────────────────────
@@ -309,7 +322,11 @@ function getSortedCuratableWords() {
 }
 
 function activeCuratedWords() {
-  return getSortedCuratableWords().filter(w => !state.excluded.has(w));
+  return getVisibleWords().filter(w => !state.excluded.has(w));
+}
+
+function getVisibleWords() {
+  return filterGridWords(getSortedCuratableWords(), state.phonicsByWord, state.gridFilters);
 }
 
 function uniqueWordsByKey(words) {
@@ -323,7 +340,10 @@ function uniqueWordsByKey(words) {
 }
 
 function refreshCurationView() {
-  if (state.selectedWord && !getCuratableWords().includes(state.selectedWord)) {
+  if (state.selectedWord && !getVisibleWords().includes(state.selectedWord)) {
+    cancelSpeech();
+    _lookupController?.abort();
+    _lookupController = null;
     state.selectedWord = null;
     renderDetailPanel();
   }
@@ -621,13 +641,14 @@ function toggleExclude(word) {
 // ── Results panel ─────────────────────────────────────────────────────────────
 
 function updateSummary() {
-  const el = document.getElementById('dbSummary');
+  renderGridFilters();
+  const el = document.getElementById('dbSummaryStats');
   if (!el) return;
   if (!state.extracted.length) { el.innerHTML = ''; return; }
 
   const uniqueExtracted = uniqueWordsByKey(state.extracted);
   const total    = uniqueExtracted.length;
-  const curatableWords = getCuratableWords();
+  const curatableWords = getVisibleWords();
   const curatableSet = new Set(curatableWords);
   const excl     = curatableWords.filter(w => state.excluded.has(w)).length;
   const pluralCt = Object.keys(state.pluralInfo).filter(w => curatableSet.has(w)).length;
@@ -635,7 +656,8 @@ function updateSummary() {
   const exCt     = total - newCt;
   const enrichedCt = curatableWords.filter(w => w in state.phonicsByWord).length;
 
-  let html = '';
+  let html = `<span class="db-sum-metric"><span>Displayed</span><strong>${curatableWords.length} / ${getCuratableWords().length}</strong></span>
+    <span class="db-sum-metric"><span>Included</span><strong>${curatableWords.length - excl}</strong></span>`;
   if (state.baseWordsList.length) {
     html += `<span class="db-sum-chip db-sum-existing">${exCt} in base${excludeExistingEnabled() ? ' hidden' : ''}</span>`;
     html += `<span class="db-sum-sep">·</span>`;
@@ -652,8 +674,31 @@ function updateSummary() {
   if (enrichedCt) {
     html += `<span class="db-sum-sep">·</span><span class="db-sum-chip db-sum-enriched">${enrichedCt} enriched</span>`;
   }
-  html += `<span class="db-sum-sep">·</span><span class="db-sum-hint">click × to exclude</span>`;
+  html += `<button type="button" class="btn-icon db-sum-hint" aria-label="Word grid information" aria-describedby="dbGridHint"><i class="fas fa-info-circle" aria-hidden="true"></i><span class="db-sum-tooltip" id="dbGridHint" role="tooltip">Click a word to view its details. Click its exclude icon to toggle inclusion in downloads. Filters use enriched phonics data; Unknown includes words not yet enriched.</span></button>`;
   el.innerHTML = html;
+}
+
+function renderGridFilters() {
+  const words = getCuratableWords();
+  for (const { key } of GRID_FILTERS) {
+    const control = document.getElementById(`dbGridFilter-${key}`);
+    if (!control) continue;
+    const available = gridFilterOptions(words, state.phonicsByWord, key);
+    const allowed = key === 'difficulty' ? ['1', '2', '3']
+      : key === 'level' ? ['1', '2', '3', '4', '5', '6', '7', '8'] : available;
+    const values = [...new Set([...allowed, ...(available.includes('unknown') ? ['unknown'] : []), ...state.gridFilters[key]])];
+    const signature = JSON.stringify(values);
+    if (control.dataset.values !== signature) {
+      control.innerHTML = '<option value="">All</option>'
+        + values.map(value => `<option value="${value}">${value === 'unknown' ? 'Unknown' : value}</option>`).join('');
+      control.dataset.values = signature;
+    }
+    const selected = state.gridFilters[key];
+    control.value = selected[0] || '';
+    control.classList.toggle('db-filter-active', selected.length > 0);
+  }
+  const reset = document.getElementById('dbResetGridFilters');
+  if (reset) reset.disabled = !Object.values(state.gridFilters).some(values => values.length);
 }
 
 function excludePluralsEnabled() {
@@ -690,12 +735,12 @@ function renderWordGrid() {
     return;
   }
 
-  const words = getSortedCuratableWords();
+  const words = getVisibleWords();
   if (!words.length) {
     grid.innerHTML = `
       <div class="db-empty-hint">
         <i class="fas fa-check-circle"></i>
-        <p>No net-new words found against the base dictionary.</p>
+        <p>${getCuratableWords().length ? 'No words match the selected filters.' : 'No net-new words found against the base dictionary.'}</p>
       </div>`;
     return;
   }
@@ -735,10 +780,12 @@ function renderWordGrid() {
 function updateActionButtons() {
   const hasBase     = state.baseWordsList.length > 0;
   const curatableWords = getCuratableWords();
-  const hasActive   = curatableWords.some(w => !state.excluded.has(w));
-  const hasNewDelta = curatableWords.some(w => !state.excluded.has(w) && !hasBaseWord(w));
-  const canUpdateBase = hasBase && updateBaseWordsEnabled() && state.extracted.length > 0;
-  const hasEnriched = curatableWords.some(w => w in state.phonicsByWord);
+  const visibleWords = getVisibleWords();
+  const activeWords = activeCuratedWords();
+  const hasActive   = activeWords.length > 0;
+  const hasNewDelta = activeWords.some(w => !hasBaseWord(w));
+  const canUpdateBase = hasBase && updateBaseWordsEnabled() && visibleWords.length > 0;
+  const hasEnriched = activeWords.some(w => w in state.phonicsByWord);
 
   const enrichBtn = document.getElementById('dbBtnEnrich');
   const dlBtn     = document.getElementById('dbBtnDownload');
@@ -816,35 +863,9 @@ function doDownloadStandalone() {
 }
 
 function wordsForBaseExport({ sortNewWords = false } = {}) {
-  const activeWords = activeExtracted();
-
-  if (!updateBaseWordsEnabled()) {
-    const newOnly = activeWords.filter(w => !hasBaseWord(w));
-    return [...state.baseWordsList, ...(sortNewWords ? [...newOnly].sort((a, b) => a.localeCompare(b)) : newOnly)];
-  }
-
-  const extractedKeys = new Set(state.extracted.map(wordKey));
-  const activeByKey = new Map(activeWords.map(w => [wordKey(w), w]));
-  const emitted = new Set();
-  const words = [];
-
-  for (const baseWord of state.baseWordsList) {
-    const key = wordKey(baseWord);
-    if (!extractedKeys.has(key)) {
-      words.push(baseWord);
-      emitted.add(key);
-      continue;
-    }
-    if (activeByKey.has(key)) {
-      words.push(activeByKey.get(key));
-      emitted.add(key);
-    }
-  }
-
-  const newWords = activeWords
-    .filter(w => !emitted.has(wordKey(w)))
-    .sort((a, b) => a.localeCompare(b));
-  return [...words, ...newWords];
+  return combineDictionaryWords(state.baseWordsList, getVisibleWords(), activeExtracted(), {
+    updateBase: updateBaseWordsEnabled(), sortNewWords,
+  });
 }
 
 function doDownloadFullMerge() {
@@ -908,10 +929,10 @@ function doClear() {
   state.phonicsByWord = Object.create(null);
   state.flagged = [];
   state.selectedWord = null;
+  state.gridFilters = emptyGridFilters();
   renderFileList();
   renderWordGrid();
-  const sum = document.getElementById('dbSummary');
-  if (sum) sum.innerHTML = '';
+  updateSummary();
   updateActionButtons();
   setStatus('info', '');
   renderDetailPanel();
@@ -956,7 +977,7 @@ function addManualWord(word) {
   updateSummary();
   renderWordGrid();
   updateActionButtons();
-  selectWord(word);
+  if (getVisibleWords().includes(word)) selectWord(word);
 }
 
 let _manualDebounce = null;
@@ -1002,6 +1023,17 @@ function renderManualPreview() {
 // ── Wire events ───────────────────────────────────────────────────────────────
 
 function wireEvents() {
+  document.getElementById('dbGridFilters')?.addEventListener('change', e => {
+    const input = e.target.closest('select[data-grid-filter]');
+    if (!input) return;
+    const key = input.dataset.gridFilter;
+    state.gridFilters[key] = input.value ? [input.value] : [];
+    refreshCurationView();
+  });
+  document.getElementById('dbResetGridFilters')?.addEventListener('click', () => {
+    state.gridFilters = emptyGridFilters();
+    refreshCurationView();
+  });
   document.getElementById('dbBtnExtract')?.addEventListener('click', runExtract);
   document.getElementById('dbBtnEnrich')?.addEventListener('click', runEnrich);
   document.getElementById('dbBtnDownload')?.addEventListener('click', doDownloadStandalone);
