@@ -428,7 +428,7 @@
 }
 
 .db-word-item:hover .db-word-exclude-btn { color: var(--text-muted); }
-.db-word-exclude-btn:hover { background: var(--danger) !important; color: #fff !important; }
+.db-word-exclude-btn:is(:hover, :focus-visible) { background: var(--danger); color: #fff; }
 
 .db-word-item.selected {
   outline: 2px solid var(--accent);

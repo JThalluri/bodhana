@@ -122,7 +122,7 @@
     border-width: 1px;
   }
 
-  html[data-theme="light"] .wp-btn-remove-word:is(:hover, :focus-visible) {
+  html[data-theme="light"] :is(.wp-btn-remove-word, .hw-btn-remove-word, .phx-btn-remove, .db-word-exclude-btn):is(:hover, :focus-visible):not(:disabled) {
     background: var(--danger);
     color: var(--accent-text);
   }
@@ -185,10 +185,6 @@
     color: var(--dark-danger-text);
   }
 
-  html[data-theme="dark"] .db-word-exclude-btn:hover {
-    color: var(--dark-danger-text) !important;
-  }
-
   html[data-theme="dark"] :is(.tool-settings, .tool-header, .tool-info-pane, .db-summary) :is(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"])) {
     border-color: var(--dark-control-border);
     border-width: 1px;
@@ -199,7 +195,7 @@
     border-width: 1px;
   }
 
-  html[data-theme="dark"] .wp-btn-remove-word:is(:hover, :focus-visible) {
+  html[data-theme="dark"] :is(.wp-btn-remove-word, .hw-btn-remove-word, .phx-btn-remove, .db-word-exclude-btn):is(:hover, :focus-visible):not(:disabled) {
     background: var(--danger);
     color: var(--dark-danger-text);
   }

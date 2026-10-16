@@ -66,7 +66,11 @@ describe('Portal theme boundaries', () => {
     themes.walkRules(rule => { if (rule.selector.includes('.wp-btn-remove-word')) rules.push(rule); });
     expect(rules).toHaveLength(2);
     for (const rule of rules) {
+      for (const control of ['.wp-btn-remove-word', '.hw-btn-remove-word', '.phx-btn-remove', '.db-word-exclude-btn']) {
+        expect(rule.selector).toContain(control);
+      }
       expect(rule.selector).toContain(':is(:hover, :focus-visible)');
+      expect(rule.selector).toContain(':not(:disabled)');
       expect(declarations(rule).background).toBe('var(--danger)');
       expect(declarations(rule).color).toBe(rule.selector.includes('"dark"') ? 'var(--dark-danger-text)' : 'var(--accent-text)');
     }
