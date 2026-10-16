@@ -33,9 +33,10 @@ export function buildEquationPool(config) {
   if (config.includeSub) {
     const [mMin, mMax] = norm(config.subMmin, config.subMmax);
     const [sMin, sMax] = norm(config.subSmin, config.subSmax);
+    const subMinDiff = Math.max(0, Number(config.subMinDiff ?? 0) || 0);
     for (let m = mMin; m <= mMax; m++)
       for (let s = sMin; s <= sMax; s++)
-        if (m >= s) dedup({ op: '−', a: m, b: s, c: m - s });
+        if (m >= s && m - s >= subMinDiff) dedup({ op: '−', a: m, b: s, c: m - s });
   }
 
   if (config.includeMul) {

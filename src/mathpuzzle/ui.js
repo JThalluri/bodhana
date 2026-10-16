@@ -129,6 +129,14 @@ export function buildMathPuzzleUI(container) {
           </div>
 
           <div class="mp-settings-section">
+            <div class="mp-section-title">Subtraction</div>
+            <div class="mp-field">
+              <label for="mpSubMinDiff">Minimum difference</label>
+              <input class="tb-num" type="number" id="mpSubMinDiff" value="${DEFAULTS.subMinDiff}" min="0" max="9999" step="1" />
+            </div>
+          </div>
+
+          <div class="mp-settings-section">
             <div class="mp-section-title">Puzzle Options</div>
 
             <div class="mp-field">
@@ -197,6 +205,7 @@ function readConfig() {
     addBmin: n('mpAddBmin', 0), addBmax: n('mpAddBmax', 9),
     subMmin: n('mpSubMmin', 0), subMmax: n('mpSubMmax', 20),
     subSmin: n('mpSubSmin', 0), subSmax: n('mpSubSmax', 9),
+    subMinDiff: Math.max(0, n('mpSubMinDiff', DEFAULTS.subMinDiff)),
     mulAmin: n('mpMulAmin', 0), mulAmax: n('mpMulAmax', 10),
     mulBmin: n('mpMulBmin', 0), mulBmax: n('mpMulBmax', 10),
     divQmin: n('mpDivQmin', 0), divQmax: n('mpDivQmax', 10),
@@ -209,6 +218,7 @@ function readConfig() {
 
 function runGenerate() {
   const config = readConfig();
+  document.getElementById('mpSubMinDiff').disabled = !config.includeSub;
   const status = document.getElementById('mpStatus');
   const count = parseInt(document.getElementById('mpPuzzleCount')?.value ?? '2', 10) || 2;
   const equations = parseInt(document.getElementById('mpEquations')?.value ?? '18', 10) || 18;
@@ -270,6 +280,7 @@ function runReset() {
   set('mpAddBmin', d.addBmin); set('mpAddBmax', d.addBmax);
   set('mpSubMmin', d.subMmin); set('mpSubMmax', d.subMmax);
   set('mpSubSmin', d.subSmin); set('mpSubSmax', d.subSmax);
+  set('mpSubMinDiff', d.subMinDiff);
   set('mpMulAmin', d.mulAmin); set('mpMulAmax', d.mulAmax);
   set('mpMulBmin', d.mulBmin); set('mpMulBmax', d.mulBmax);
   set('mpDivQmin', d.divQmin); set('mpDivQmax', d.divQmax);
