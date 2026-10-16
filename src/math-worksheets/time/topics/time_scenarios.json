@@ -1,0 +1,2012 @@
+{
+  "schemaVersion": "1.0",
+  "topicId": "time_problems",
+  "title": "Time and Elapsed Word Problems",
+  "description": "Calculating start times, end times, and intervals using real-world scenarios",
+  "board": "Custom",
+  "textbook": "Practical Life",
+  "grades": [1, 2],
+  "tags": ["time", "clocks", "elapsed-time", "logic"],
+  "questions": [
+    {
+      "questionId": "time-001",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Mia's soccer practice starts at 4:00 PM and lasts 30 minutes. What time does practice end?",
+      "answer": { "value": "4:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:00 PM.", "Add 30 minutes to reach 4:30 PM."]
+    },
+    {
+      "questionId": "time-002",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Noah's piano lesson starts at 9:30 AM and lasts 1 hour. What time does the lesson end?",
+      "answer": { "value": "10:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:30 AM.", "Add 1 hour to reach 10:30 AM."]
+    },
+    {
+      "questionId": "time-003",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ava's dance class starts at 2:00 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "2:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 2:00 PM.", "Add 30 minutes to reach 2:30 PM."]
+    },
+    {
+      "questionId": "time-004",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Liam's swim class starts at 11:00 AM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "12:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:00 AM.", "Add 1 hour to reach 12:00 PM."]
+    },
+    {
+      "questionId": "time-005",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Emma's art class starts at 1:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "2:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:30 PM.", "Add 30 minutes to reach 2:00 PM."]
+    },
+    {
+      "questionId": "time-006",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Oliver's music class starts at 8:00 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "8:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:00 AM.", "Add 30 minutes to reach 8:30 AM."]
+    },
+    {
+      "questionId": "time-007",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Sophia's reading time starts at 6:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "7:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:30 PM.", "Add 30 minutes to reach 7:00 PM."]
+    },
+    {
+      "questionId": "time-008",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Elijah's math practice starts at 10:00 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "10:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:00 AM.", "Add 30 minutes to reach 10:30 AM."]
+    },
+    {
+      "questionId": "time-009",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Isabella's ballet starts at 3:00 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "4:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:00 PM.", "Add 1 hour to reach 4:00 PM."]
+    },
+    {
+      "questionId": "time-010",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "James's karate starts at 5:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "6:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:30 PM.", "Add 30 minutes to reach 6:00 PM."]
+    },
+    {
+      "questionId": "time-011",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Amelia's cooking class starts at 12:00 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "1:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 12:00 PM.", "Add 1 hour to reach 1:00 PM."]
+    },
+    {
+      "questionId": "time-012",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Benjamin's coding club starts at 7:00 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "7:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:00 AM.", "Add 30 minutes to reach 7:30 AM."]
+    },
+    {
+      "questionId": "time-013",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Charlotte's gymnastics starts at 4:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "5:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:30 PM.", "Add 30 minutes to reach 5:00 PM."]
+    },
+    {
+      "questionId": "time-014",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Lucas's guitar lesson starts at 2:30 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "3:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 2:30 PM.", "Add 1 hour to reach 3:30 PM."]
+    },
+    {
+      "questionId": "time-015",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Harper's story time starts at 9:00 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "9:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:00 AM.", "Add 30 minutes to reach 9:30 AM."]
+    },
+    {
+      "questionId": "time-016",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Mason's basketball practice starts at 6:00 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "6:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:00 PM.", "Add 30 minutes to reach 6:30 PM."]
+    },
+    {
+      "questionId": "time-017",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Evelyn's choir starts at 11:30 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "12:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:30 AM.", "Add 30 minutes to reach 12:00 PM."]
+    },
+    {
+      "questionId": "time-018",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Logan's science club starts at 3:30 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "4:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:30 PM.", "Add 1 hour to reach 4:30 PM."]
+    },
+    {
+      "questionId": "time-019",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Abigail's yoga starts at 7:30 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "8:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:30 AM.", "Add 30 minutes to reach 8:00 AM."]
+    },
+    {
+      "questionId": "time-020",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ethan's chess club starts at 5:00 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "5:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:00 PM.", "Add 30 minutes to reach 5:30 PM."]
+    },
+    {
+      "questionId": "time-021",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A movie ends at 4:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "4:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 4:30 PM.", "Subtract 30 minutes to reach 4:00 PM."]
+    },
+    {
+      "questionId": "time-022",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A nap ends at 2:00 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "1:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 2:00 PM.", "Subtract 1 hour to reach 1:00 PM."]
+    },
+    {
+      "questionId": "time-023",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A bath ends at 7:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "7:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 7:30 PM.", "Subtract 30 minutes to reach 7:00 PM."]
+    },
+    {
+      "questionId": "time-024",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A story ends at 9:00 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "8:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 9:00 AM.", "Subtract 30 minutes to reach 8:30 AM."]
+    },
+    {
+      "questionId": "time-025",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A game ends at 3:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "3:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 3:30 PM.", "Subtract 30 minutes to reach 3:00 PM."]
+    },
+    {
+      "questionId": "time-026",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A lesson ends at 11:30 AM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "10:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 11:30 AM.", "Subtract 1 hour to reach 10:30 AM."]
+    },
+    {
+      "questionId": "time-027",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A play ends at 6:00 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "5:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 6:00 PM.", "Subtract 30 minutes to reach 5:30 PM."]
+    },
+    {
+      "questionId": "time-028",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A class ends at 12:00 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "11:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 12:00 PM.", "Subtract 30 minutes to reach 11:30 AM."]
+    },
+    {
+      "questionId": "time-029",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A timer rings at 10:30 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "10:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Ring time is 10:30 AM.", "Subtract 30 minutes to reach 10:00 AM."]
+    },
+    {
+      "questionId": "time-030",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A meeting ends at 1:00 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "12:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 1:00 PM.", "Subtract 1 hour to reach 12:00 PM."]
+    },
+    {
+      "questionId": "time-031",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A craft ends at 5:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "5:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 5:30 PM.", "Subtract 30 minutes to reach 5:00 PM."]
+    },
+    {
+      "questionId": "time-032",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A walk ends at 8:00 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "7:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 8:00 AM.", "Subtract 30 minutes to reach 7:30 AM."]
+    },
+    {
+      "questionId": "time-033",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A puzzle ends at 4:00 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "3:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 4:00 PM.", "Subtract 1 hour to reach 3:00 PM."]
+    },
+    {
+      "questionId": "time-034",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A snack ends at 3:00 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "2:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 3:00 PM.", "Subtract 30 minutes to reach 2:30 PM."]
+    },
+    {
+      "questionId": "time-035",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A video ends at 6:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "6:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 6:30 PM.", "Subtract 30 minutes to reach 6:00 PM."]
+    },
+    {
+      "questionId": "time-036",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bus ride starts at 8:00 AM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "9:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:00 AM.", "Add 1 hour to reach 9:00 AM."]
+    },
+    {
+      "questionId": "time-037",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train ride starts at 10:30 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "11:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:30 AM.", "Add 30 minutes to reach 11:00 AM."]
+    },
+    {
+      "questionId": "time-038",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A baking timer starts at 1:00 PM and lasts 30 minutes. What time does it ring?",
+      "answer": { "value": "1:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:00 PM.", "Add 30 minutes to reach 1:30 PM."]
+    },
+    {
+      "questionId": "time-039",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A library visit starts at 3:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "4:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:30 PM.", "Add 30 minutes to reach 4:00 PM."]
+    },
+    {
+      "questionId": "time-040",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A picnic starts at 12:30 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "1:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 12:30 PM.", "Add 1 hour to reach 1:30 PM."]
+    },
+    {
+      "questionId": "time-041",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A puppet show starts at 2:00 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "2:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 2:00 PM.", "Add 30 minutes to reach 2:30 PM."]
+    },
+    {
+      "questionId": "time-042",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A swim lesson starts at 9:00 AM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "10:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:00 AM.", "Add 1 hour to reach 10:00 AM."]
+    },
+    {
+      "questionId": "time-043",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A dentist visit starts at 11:00 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "11:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:00 AM.", "Add 30 minutes to reach 11:30 AM."]
+    },
+    {
+      "questionId": "time-044",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A birthday party starts at 4:00 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "5:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:00 PM.", "Add 1 hour to reach 5:00 PM."]
+    },
+    {
+      "questionId": "time-045",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A soccer game starts at 6:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "7:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:30 PM.", "Add 30 minutes to reach 7:00 PM."]
+    },
+    {
+      "questionId": "time-046",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking timer starts at 7:00 AM and lasts 30 minutes. What time does it ring?",
+      "answer": { "value": "7:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:00 AM.", "Add 30 minutes to reach 7:30 AM."]
+    },
+    {
+      "questionId": "time-047",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A reading group starts at 5:30 PM and lasts 1 hour. What time does it end?",
+      "answer": { "value": "6:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:30 PM.", "Add 1 hour to reach 6:30 PM."]
+    },
+    {
+      "questionId": "time-048",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A math quiz starts at 10:00 AM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "10:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:00 AM.", "Add 30 minutes to reach 10:30 AM."]
+    },
+    {
+      "questionId": "time-049",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A music practice starts at 3:00 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "3:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:00 PM.", "Add 30 minutes to reach 3:30 PM."]
+    },
+    {
+      "questionId": "time-050",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A science video starts at 1:30 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "2:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:30 PM.", "Add 30 minutes to reach 2:00 PM."]
+    },
+    {
+      "questionId": "time-051",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A bus ride ends at 9:00 AM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "8:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 9:00 AM.", "Subtract 1 hour to reach 8:00 AM."]
+    },
+    {
+      "questionId": "time-052",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train ride ends at 11:00 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "10:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 11:00 AM.", "Subtract 30 minutes to reach 10:30 AM."]
+    },
+    {
+      "questionId": "time-053",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A baking timer rings at 1:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "1:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Ring time is 1:30 PM.", "Subtract 30 minutes to reach 1:00 PM."]
+    },
+    {
+      "questionId": "time-054",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A library visit ends at 4:00 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "3:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 4:00 PM.", "Subtract 30 minutes to reach 3:30 PM."]
+    },
+    {
+      "questionId": "time-055",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A picnic ends at 1:30 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "12:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 1:30 PM.", "Subtract 1 hour to reach 12:30 PM."]
+    },
+    {
+      "questionId": "time-056",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A puppet show ends at 2:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "2:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 2:30 PM.", "Subtract 30 minutes to reach 2:00 PM."]
+    },
+    {
+      "questionId": "time-057",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A swim lesson ends at 10:00 AM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "9:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 10:00 AM.", "Subtract 1 hour to reach 9:00 AM."]
+    },
+    {
+      "questionId": "time-058",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A dentist visit ends at 11:30 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "11:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 11:30 AM.", "Subtract 30 minutes to reach 11:00 AM."]
+    },
+    {
+      "questionId": "time-059",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A birthday party ends at 5:00 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "4:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 5:00 PM.", "Subtract 1 hour to reach 4:00 PM."]
+    },
+    {
+      "questionId": "time-060",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A soccer game ends at 7:00 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "6:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 7:00 PM.", "Subtract 30 minutes to reach 6:30 PM."]
+    },
+    {
+      "questionId": "time-061",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A cooking timer rings at 7:30 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "7:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Ring time is 7:30 AM.", "Subtract 30 minutes to reach 7:00 AM."]
+    },
+    {
+      "questionId": "time-062",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A reading group ends at 6:30 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "5:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 6:30 PM.", "Subtract 1 hour to reach 5:30 PM."]
+    },
+    {
+      "questionId": "time-063",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A math quiz ends at 10:30 AM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "10:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 10:30 AM.", "Subtract 30 minutes to reach 10:00 AM."]
+    },
+    {
+      "questionId": "time-064",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A music practice ends at 3:30 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "3:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 3:30 PM.", "Subtract 30 minutes to reach 3:00 PM."]
+    },
+    {
+      "questionId": "time-065",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A science video ends at 2:00 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "1:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 2:00 PM.", "Subtract 30 minutes to reach 1:30 PM."]
+    },
+    {
+      "questionId": "time-066",
+      "type": "static",
+      "difficulty": "easy",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A craft class ends at 12:00 PM and lasted 1 hour. What time did it start?",
+      "answer": { "value": "11:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 12:00 PM.", "Subtract 1 hour to reach 11:00 AM."]
+    },
+    {
+      "questionId": "time-067",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 3:45 PM. Before it starts, Mia buys a ticket for 10 minutes and gets popcorn for 5 minutes. The movie itself lasts 30 minutes. What time does the movie end?",
+      "answer": { "value": "4:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["The ticket and popcorn times happen before the movie and do not change the end time.", "Start at 3:45 PM.", "Add 30 minutes to reach 4:15 PM."]
+    },
+    {
+      "questionId": "time-068",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cake recipe says to preheat the oven for 10 minutes, then bake the cake for 25 minutes. If the cake goes into the oven at 2:50 PM, what time is it done?",
+      "answer": { "value": "3:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["The preheating time happens before the cake goes in.", "Start at 2:50 PM.", "Add 25 minutes to reach 3:15 PM."]
+    },
+    {
+      "questionId": "time-069",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "The bus leaves the station at 8:40 AM. It stops for 5 minutes at one stop and 10 minutes at another. The total ride without stops is 20 minutes. What time does it arrive?",
+      "answer": { "value": "9:15 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:40 AM.", "Add 20 minutes of riding to reach 9:00 AM.", "Add 5 minutes and 10 minutes of stops to reach 9:15 AM."]
+    },
+    {
+      "questionId": "time-070",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A game starts at 10:50 AM. The players take a 5-minute break after 10 minutes of play, then play for another 5 minutes. What time does the game end?",
+      "answer": { "value": "11:10 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:50 AM.", "Add 10 minutes of play to reach 11:00 AM.", "Add 5 minutes of break to reach 11:05 AM.", "Add 5 minutes of play to reach 11:10 AM."]
+    },
+    {
+      "questionId": "time-071",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A lesson starts at 1:45 PM. The teacher spends 10 minutes on attendance and 20 minutes on the lesson. What time does the lesson end?",
+      "answer": { "value": "2:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:45 PM.", "Add 10 minutes for attendance to reach 1:55 PM.", "Add 20 minutes for the lesson to reach 2:15 PM."]
+    },
+    {
+      "questionId": "time-072",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A show starts at 6:40 PM. The opening act is 10 minutes, and the main act is 15 minutes. What time does the show end?",
+      "answer": { "value": "7:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:40 PM.", "Add 10 minutes for the opening act to reach 6:50 PM.", "Add 15 minutes for the main act to reach 7:05 PM."]
+    },
+    {
+      "questionId": "time-073",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Practice starts at 4:50 PM. The coach talks for 5 minutes, and the players practice for 10 minutes. What time does practice end?",
+      "answer": { "value": "5:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:50 PM.", "Add 5 minutes of talking to reach 4:55 PM.", "Add 10 minutes of practice to reach 5:05 PM."]
+    },
+    {
+      "questionId": "time-074",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 9:45 AM. The teacher reads for 15 minutes, then the class works for 30 minutes. What time does the class end?",
+      "answer": { "value": "10:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:45 AM.", "Add 15 minutes of reading to reach 10:00 AM.", "Add 30 minutes of work to reach 10:30 AM."]
+    },
+    {
+      "questionId": "time-075",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A timer is set at 11:40 AM. It runs for 10 minutes, then is reset for 20 more minutes. What time does it ring?",
+      "answer": { "value": "12:10 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:40 AM.", "Add 10 minutes to reach 11:50 AM.", "Add 20 minutes to reach 12:10 PM."]
+    },
+    {
+      "questionId": "time-076",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train departs at 7:45 AM. It travels for 15 minutes, stops for 5 minutes, then travels for 20 minutes. What time does it arrive?",
+      "answer": { "value": "8:25 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:45 AM.", "Add 15 minutes to reach 8:00 AM.", "Add 5 minutes to reach 8:05 AM.", "Add 20 minutes to reach 8:25 AM."]
+    },
+    {
+      "questionId": "time-077",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A meeting starts at 2:35 PM. The first topic takes 15 minutes, and the second takes 15 minutes. What time does the meeting end?",
+      "answer": { "value": "3:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 2:35 PM.", "Add 15 minutes to reach 2:50 PM.", "Add 15 minutes to reach 3:05 PM."]
+    },
+    {
+      "questionId": "time-078",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A story starts at 5:50 PM. The reader reads for 10 minutes, pauses for 5 minutes, and reads for 5 minutes. What time does the story end?",
+      "answer": { "value": "6:10 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:50 PM.", "Add 10 minutes to reach 6:00 PM.", "Add 5 minutes to reach 6:05 PM.", "Add 5 minutes to reach 6:10 PM."]
+    },
+    {
+      "questionId": "time-079",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A swim class starts at 3:45 PM. The warm-up is 5 minutes, and the lesson is 10 minutes. What time does it end?",
+      "answer": { "value": "4:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:45 PM.", "Add 5 minutes to reach 3:50 PM.", "Add 10 minutes to reach 4:00 PM."]
+    },
+    {
+      "questionId": "time-080",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking class starts at 10:45 AM. The teacher explains for 15 minutes, and the students cook for 15 minutes. What time does it end?",
+      "answer": { "value": "11:15 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:45 AM.", "Add 15 minutes to reach 11:00 AM.", "Add 15 minutes to reach 11:15 AM."]
+    },
+    {
+      "questionId": "time-081",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "The bread is done at 12:15 PM. It baked for 20 minutes, then rested for 10 minutes. What time did it go into the oven?",
+      "answer": { "value": "11:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 12:15 PM.", "Subtract 10 minutes of resting to reach 12:05 PM.", "Subtract 20 minutes of baking to reach 11:45 AM."]
+    },
+    {
+      "questionId": "time-082",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A movie ends at 4:10 PM. It lasted 15 minutes, then credits rolled for 10 minutes. What time did the movie start?",
+      "answer": { "value": "3:45 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 4:10 PM.", "Subtract 10 minutes of credits to reach 4:00 PM.", "Subtract 15 minutes of movie to reach 3:45 PM."]
+    },
+    {
+      "questionId": "time-083",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A bus arrives at 9:05 AM. The ride was 10 minutes, and loading took 10 minutes. What time did it leave?",
+      "answer": { "value": "8:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 9:05 AM.", "Subtract 10 minutes of riding to reach 8:55 AM.", "Subtract 10 minutes of loading to reach 8:45 AM."]
+    },
+    {
+      "questionId": "time-084",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A cake is ready at 3:15 PM. It baked for 30 minutes, then cooled for 15 minutes. What time did it start baking?",
+      "answer": { "value": "2:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 3:15 PM.", "Subtract 15 minutes of cooling to reach 3:00 PM.", "Subtract 30 minutes of baking to reach 2:30 PM."]
+    },
+    {
+      "questionId": "time-085",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A lesson ends at 10:30 AM. The lesson was 30 minutes, and the quiz was 15 minutes. What time did it start?",
+      "answer": { "value": "9:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 10:30 AM.", "Subtract 15 minutes of quiz to reach 10:15 AM.", "Subtract 30 minutes of lesson to reach 9:45 AM."]
+    },
+    {
+      "questionId": "time-086",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A show ends at 7:05 PM. The first part was 10 minutes, and the second part was 10 minutes. What time did it start?",
+      "answer": { "value": "6:45 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 7:05 PM.", "Subtract 10 minutes of second part to reach 6:55 PM.", "Subtract 10 minutes of first part to reach 6:45 PM."]
+    },
+    {
+      "questionId": "time-087",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A chess club meeting starts at 4:15 PM. The teacher talks for 15 minutes. Then the students play two games. Each game takes 15 minutes. What time does the meeting wrap up?",
+      "answer": { "value": "5:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:15 PM.", "Add 15 minutes of talking to reach 4:30 PM.", "Add 15 minutes for the first game to reach 4:45 PM.", "Add 15 minutes for the second game to reach 5:00 PM."]
+    },
+    {
+      "questionId": "time-088",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Sam read his book from 2:00 PM to 2:45 PM. Tina read her book from 5:30 PM to 6:05 PM. They both want to finish a 50-minute reading goal. Who read longer, and by how many minutes?",
+      "answer": { "value": "Sam by 10 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["Sam read from 2:00 PM to 2:45 PM, which is 45 minutes.", "Tina read from 5:30 PM to 6:05 PM, which is 35 minutes.", "Sam read longer by 10 minutes because 45 minus 35 equals 10."]
+    },
+    {
+      "questionId": "time-089",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Mia starts homework at 5:10 PM. She spends 20 minutes on math, takes a 5-minute break, and then spends 25 minutes on reading. What time does she finish?",
+      "answer": { "value": "6:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:10 PM.", "Add 20 minutes of math to reach 5:30 PM.", "Add 5 minutes of break to reach 5:35 PM.", "Add 25 minutes of reading to reach 6:00 PM."]
+    },
+    {
+      "questionId": "time-090",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 11:45 AM. It has a 10-minute preview, then the movie lasts 1 hour 20 minutes. What time does the movie end?",
+      "answer": { "value": "1:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:45 AM.", "Add 10 minutes of preview to reach 11:55 AM.", "Add 1 hour to reach 12:55 PM.", "Add 20 minutes to reach 1:15 PM."]
+    },
+    {
+      "questionId": "time-091",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Leo's soccer practice starts at 3:30 PM. He practices drills for 20 minutes, rests for 10 minutes, and scrimmages for 30 minutes. What time does practice end?",
+      "answer": { "value": "4:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:30 PM.", "Add 20 minutes of drills to reach 3:50 PM.", "Add 10 minutes of rest to reach 4:00 PM.", "Add 30 minutes of scrimmage to reach 4:30 PM."]
+    },
+    {
+      "questionId": "time-092",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:40 PM. It travels for 25 minutes, stops for 5 minutes, and travels for 15 minutes. What time does it arrive?",
+      "answer": { "value": "12:25 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:40 PM.", "Add 25 minutes to reach 12:05 AM.", "Add 5 minutes to reach 12:10 AM.", "Add 15 minutes to reach 12:25 AM."]
+    },
+    {
+      "questionId": "time-093",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ava starts a craft at 1:50 PM. She cuts paper for 15 minutes, glues for 20 minutes, and cleans up for 10 minutes. What time does she finish?",
+      "answer": { "value": "2:35 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:50 PM.", "Add 15 minutes of cutting to reach 2:05 PM.", "Add 20 minutes of gluing to reach 2:25 PM.", "Add 10 minutes of cleaning to reach 2:35 PM."]
+    },
+    {
+      "questionId": "time-094",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Noah's piano lesson is from 4:15 PM to 5:00 PM. Emma's violin lesson is from 3:30 PM to 4:00 PM. Who had the longer lesson, and by how many minutes?",
+      "answer": { "value": "Noah by 15 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["Noah's lesson is from 4:15 PM to 5:00 PM, which is 45 minutes.", "Emma's lesson is from 3:30 PM to 4:00 PM, which is 30 minutes.", "Noah had the longer lesson by 15 minutes because 45 minus 30 equals 15."]
+    },
+    {
+      "questionId": "time-095",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bakery opens at 7:30 AM. It sells muffins for 1 hour 15 minutes. Then it closes for 30 minutes. Then it sells bread for 45 minutes. What time does it close after selling bread?",
+      "answer": { "value": "10:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:30 AM.", "Add 1 hour 15 minutes to reach 8:45 AM.", "Add 30 minutes to reach 9:15 AM.", "Add 45 minutes to reach 10:00 AM."]
+    },
+    {
+      "questionId": "time-096",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 10:45 AM. The teacher reads for 15 minutes. Then the class writes for 30 minutes. Then they share for 20 minutes. What time does the class end?",
+      "answer": { "value": "11:50 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:45 AM.", "Add 15 minutes of reading to reach 11:00 AM.", "Add 30 minutes of writing to reach 11:30 AM.", "Add 20 minutes of sharing to reach 11:50 AM."]
+    },
+    {
+      "questionId": "time-097",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bus leaves at 11:50 AM. It takes 25 minutes to reach the first stop. It waits 5 minutes. Then it takes 15 minutes to the next stop. What time does it arrive at the next stop?",
+      "answer": { "value": "12:35 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:50 AM.", "Add 25 minutes to reach 12:15 PM.", "Add 5 minutes to reach 12:20 PM.", "Add 15 minutes to reach 12:35 PM."]
+    },
+    {
+      "questionId": "time-098",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Liam begins a puzzle at 6:40 PM. He works for 20 minutes. He takes a 10-minute break. He works for 15 minutes. He takes another 5-minute break. He works for 10 minutes. What time does he finish?",
+      "answer": { "value": "7:40 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:40 PM.", "Add 20 minutes to reach 7:00 PM.", "Add 10 minutes of break to reach 7:10 PM.", "Add 15 minutes to reach 7:25 PM.", "Add 5 minutes of break to reach 7:30 PM.", "Add 10 minutes to reach 7:40 PM."]
+    },
+    {
+      "questionId": "time-099",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A swim meet starts at 9:00 AM. The first race takes 20 minutes. The second race takes 25 minutes. There is a 10-minute break. The third race takes 15 minutes. What time do the races end?",
+      "answer": { "value": "10:10 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:00 AM.", "Add 20 minutes to reach 9:20 AM.", "Add 25 minutes to reach 9:45 AM.", "Add 10 minutes of break to reach 9:55 AM.", "Add 15 minutes to reach 10:10 AM."]
+    },
+    {
+      "questionId": "time-100",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A party starts at 11:30 AM. It lasts 1 hour 30 minutes. Then cleanup takes 20 minutes. What time is cleanup done?",
+      "answer": { "value": "1:20 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:30 AM.", "Add 1 hour to reach 12:30 PM.", "Add 30 minutes to reach 1:00 PM.", "Add 20 minutes of cleanup to reach 1:20 PM."]
+    },
+    {
+      "questionId": "time-101",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Sophia reads from 7:10 PM to 7:45 PM. Olivia reads from 6:30 PM to 7:00 PM. Who read longer, and by how many minutes?",
+      "answer": { "value": "Sophia by 5 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["Sophia read from 7:10 PM to 7:45 PM, which is 35 minutes.", "Olivia read from 6:30 PM to 7:00 PM, which is 30 minutes.", "Sophia read longer by 5 minutes because 35 minus 30 equals 5."]
+    },
+    {
+      "questionId": "time-102",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking class starts at 5:45 PM. The class chops for 15 minutes. Then they cook for 25 minutes. Then they eat for 20 minutes. Then they clean for 10 minutes. What time does it end?",
+      "answer": { "value": "6:55 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:45 PM.", "Add 15 minutes to reach 6:00 PM.", "Add 25 minutes to reach 6:25 PM.", "Add 20 minutes to reach 6:45 PM.", "Add 10 minutes to reach 6:55 PM."]
+    },
+    {
+      "questionId": "time-103",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 10:35 AM and arrives at 12:05 PM. It stops for 10 minutes at one station. How long was the trip including the stop?",
+      "answer": { "value": "1 hour 30 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 10:35 AM to 11:35 AM is 1 hour.", "From 11:35 AM to 12:05 PM is 30 minutes.", "The trip including the stop was 1 hour 30 minutes."]
+    },
+    {
+      "questionId": "time-104",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 8:40 PM. It has a 10-minute preview. The movie lasts 1 hour 15 minutes. What time does it end?",
+      "answer": { "value": "10:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:40 PM.", "Add 10 minutes of preview to reach 8:50 PM.", "Add 1 hour to reach 9:50 PM.", "Add 15 minutes to reach 10:05 PM."]
+    },
+    {
+      "questionId": "time-105",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A library event starts at 3:15 PM. A storyteller talks for 20 minutes. Then kids read for 30 minutes. Then they do a craft for 15 minutes. What time does the event end?",
+      "answer": { "value": "4:20 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:15 PM.", "Add 20 minutes of storytelling to reach 3:35 PM.", "Add 30 minutes of reading to reach 4:05 PM.", "Add 15 minutes of craft to reach 4:20 PM."]
+    },
+    {
+      "questionId": "time-106",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Jack plays from 4:00 PM to 4:45 PM. Jill plays from 5:15 PM to 5:50 PM. Who played longer, and by how many minutes?",
+      "answer": { "value": "Jack by 10 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["Jack played from 4:00 PM to 4:45 PM, which is 45 minutes.", "Jill played from 5:15 PM to 5:50 PM, which is 35 minutes.", "Jack played longer by 10 minutes because 45 minus 35 equals 10."]
+    },
+    {
+      "questionId": "time-107",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A parade starts at 10:45 AM and lasts 45 minutes. What time does it end?",
+      "answer": { "value": "11:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:45 AM.", "Add 15 minutes to reach 11:00 AM.", "Add 30 minutes to reach 11:30 AM."]
+    },
+    {
+      "questionId": "time-108",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A ferry leaves at 1:50 PM and takes 25 minutes. What time does it arrive?",
+      "answer": { "value": "2:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:50 PM.", "Add 10 minutes to reach 2:00 PM.", "Add 15 minutes to reach 2:15 PM."]
+    },
+    {
+      "questionId": "time-109",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A rehearsal starts at 5:35 PM and lasts 40 minutes. What time does it end?",
+      "answer": { "value": "6:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:35 PM.", "Add 25 minutes to reach 6:00 PM.", "Add 15 minutes to reach 6:15 PM."]
+    },
+    {
+      "questionId": "time-110",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A timer is set at 7:55 AM for 15 minutes. What time does it ring?",
+      "answer": { "value": "8:10 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:55 AM.", "Add 5 minutes to reach 8:00 AM.", "Add 10 minutes to reach 8:10 AM."]
+    },
+    {
+      "questionId": "time-111",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train departs at 3:45 PM and travels 30 minutes. What time does it arrive?",
+      "answer": { "value": "4:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:45 PM.", "Add 15 minutes to reach 4:00 PM.", "Add 15 minutes to reach 4:15 PM."]
+    },
+    {
+      "questionId": "time-112",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 12:40 PM and lasts 35 minutes. What time does it end?",
+      "answer": { "value": "1:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 12:40 PM.", "Add 20 minutes to reach 1:00 PM.", "Add 15 minutes to reach 1:15 PM."]
+    },
+    {
+      "questionId": "time-113",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A party starts at 8:50 PM and lasts 30 minutes. What time does it end?",
+      "answer": { "value": "9:20 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:50 PM.", "Add 10 minutes to reach 9:00 PM.", "Add 20 minutes to reach 9:20 PM."]
+    },
+    {
+      "questionId": "time-114",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A parade ends at 12:15 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "11:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 12:15 PM.", "Subtract 15 minutes to reach 12:00 PM.", "Subtract 15 minutes to reach 11:45 AM."]
+    },
+    {
+      "questionId": "time-115",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A ferry arrives at 4:15 PM after 25 minutes. What time did it leave?",
+      "answer": { "value": "3:50 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 4:15 PM.", "Subtract 15 minutes to reach 4:00 PM.", "Subtract 10 minutes to reach 3:50 PM."]
+    },
+    {
+      "questionId": "time-116",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A rehearsal ends at 7:15 PM and lasted 40 minutes. What time did it start?",
+      "answer": { "value": "6:35 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 7:15 PM.", "Subtract 15 minutes to reach 7:00 PM.", "Subtract 25 minutes to reach 6:35 PM."]
+    },
+    {
+      "questionId": "time-117",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A timer rings at 3:10 PM after 15 minutes. What time was it set?",
+      "answer": { "value": "2:55 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Ring time is 3:10 PM.", "Subtract 10 minutes to reach 3:00 PM.", "Subtract 5 minutes to reach 2:55 PM."]
+    },
+    {
+      "questionId": "time-118",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train arrives at 11:15 AM after 30 minutes. What time did it depart?",
+      "answer": { "value": "10:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 11:15 AM.", "Subtract 15 minutes to reach 11:00 AM.", "Subtract 15 minutes to reach 10:45 AM."]
+    },
+    {
+      "questionId": "time-119",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A class ends at 9:15 AM and lasted 35 minutes. What time did it start?",
+      "answer": { "value": "8:40 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 9:15 AM.", "Subtract 15 minutes to reach 9:00 AM.", "Subtract 20 minutes to reach 8:40 AM."]
+    },
+    {
+      "questionId": "time-120",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A party ends at 6:20 PM and lasted 30 minutes. What time did it start?",
+      "answer": { "value": "5:50 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 6:20 PM.", "Subtract 20 minutes to reach 6:00 PM.", "Subtract 10 minutes to reach 5:50 PM."]
+    },
+    {
+      "questionId": "time-121",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A bus arrives at 1:10 PM after 25 minutes. What time did it leave?",
+      "answer": { "value": "12:45 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 1:10 PM.", "Subtract 10 minutes to reach 1:00 PM.", "Subtract 15 minutes to reach 12:45 PM."]
+    },
+    {
+      "questionId": "time-122",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A quiz ends at 2:20 PM and lasted 45 minutes. What time did it start?",
+      "answer": { "value": "1:35 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 2:20 PM.", "Subtract 20 minutes to reach 2:00 PM.", "Subtract 25 minutes to reach 1:35 PM."]
+    },
+    {
+      "questionId": "time-123",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A video ends at 5:10 PM and lasted 15 minutes. What time did it start?",
+      "answer": { "value": "4:55 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 5:10 PM.", "Subtract 10 minutes to reach 5:00 PM.", "Subtract 5 minutes to reach 4:55 PM."]
+    },
+    {
+      "questionId": "time-124",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A cake is done at 10:05 AM after baking for 50 minutes. What time did it start?",
+      "answer": { "value": "9:15 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 10:05 AM.", "Subtract 5 minutes to reach 10:00 AM.", "Subtract 45 minutes to reach 9:15 AM."]
+    },
+    {
+      "questionId": "time-125",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A movie ends at 8:40 PM and lasted 55 minutes. What time did it start?",
+      "answer": { "value": "7:45 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 8:40 PM.", "Subtract 40 minutes to reach 8:00 PM.", "Subtract 15 minutes to reach 7:45 PM."]
+    },
+    {
+      "questionId": "time-126",
+      "type": "static",
+      "difficulty": "medium",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A game ends at 12:10 PM and lasted 25 minutes. What time did it start?",
+      "answer": { "value": "11:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["End time is 12:10 PM.", "Subtract 10 minutes to reach 12:00 PM.", "Subtract 15 minutes to reach 11:45 AM."]
+    },
+    {
+      "questionId": "time-127",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A chess club meeting starts at 4:15 PM. The teacher talks for 15 minutes, and then the students play games for 30 minutes. What time does the meeting wrap up?",
+      "answer": { "value": "5:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:15 PM.", "Add 15 minutes of talking to reach 4:30 PM.", "Add 30 minutes of games to reach 5:00 PM."]
+    },
+    {
+      "questionId": "time-128",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Sam read his book from 2:00 PM to 2:45 PM. Tina read her book from 5:30 PM to 6:05 PM. Who read their book for a longer amount of time?",
+      "answer": { "value": "Sam", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Sam read from 2:00 PM to 2:45 PM, which is 45 minutes.", "Tina read from 5:30 PM to 6:05 PM, which is 35 minutes.", "Sam read longer because 45 minutes is more than 35 minutes."]
+    },
+    {
+      "questionId": "time-129",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Mia starts homework at 5:10 PM. She spends 20 minutes on math and 25 minutes on reading. What time does she finish?",
+      "answer": { "value": "5:55 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:10 PM.", "Add 20 minutes of math to reach 5:30 PM.", "Add 25 minutes of reading to reach 5:55 PM."]
+    },
+    {
+      "questionId": "time-130",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 11:45 AM and lasts 1 hour 30 minutes. What time does it end?",
+      "answer": { "value": "1:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:45 AM.", "Add 1 hour to reach 12:45 PM.", "Add 30 minutes to reach 1:15 PM."]
+    },
+    {
+      "questionId": "time-131",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Leo's soccer practice starts at 3:30 PM. He practices drills for 20 minutes and scrimmages for 30 minutes. What time does practice end?",
+      "answer": { "value": "4:20 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:30 PM.", "Add 20 minutes of drills to reach 3:50 PM.", "Add 30 minutes of scrimmage to reach 4:20 PM."]
+    },
+    {
+      "questionId": "time-132",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:40 PM and travels for 45 minutes. What time does it arrive?",
+      "answer": { "value": "12:25 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:40 PM.", "Add 20 minutes to reach 12:00 AM.", "Add 25 minutes to reach 12:25 AM."]
+    },
+    {
+      "questionId": "time-133",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Ava starts a craft at 1:50 PM. She cuts paper for 15 minutes and glues for 20 minutes. What time does she finish?",
+      "answer": { "value": "2:25 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:50 PM.", "Add 15 minutes of cutting to reach 2:05 PM.", "Add 20 minutes of gluing to reach 2:25 PM."]
+    },
+    {
+      "questionId": "time-134",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Noah's piano lesson is from 4:15 PM to 5:00 PM. Emma's violin lesson is from 3:30 PM to 4:00 PM. Who had the longer lesson?",
+      "answer": { "value": "Noah", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Noah's lesson is from 4:15 PM to 5:00 PM, which is 45 minutes.", "Emma's lesson is from 3:30 PM to 4:00 PM, which is 30 minutes.", "Noah had the longer lesson because 45 minutes is more than 30 minutes."]
+    },
+    {
+      "questionId": "time-135",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bakery opens at 7:30 AM. It sells muffins for 1 hour 15 minutes, then closes for 30 minutes. What time does it reopen?",
+      "answer": { "value": "9:15 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:30 AM.", "Add 1 hour 15 minutes to reach 8:45 AM.", "Add 30 minutes to reach 9:15 AM."]
+    },
+    {
+      "questionId": "time-136",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 10:45 AM. The teacher reads for 15 minutes and the class writes for 30 minutes. What time does the class end?",
+      "answer": { "value": "11:30 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:45 AM.", "Add 15 minutes of reading to reach 11:00 AM.", "Add 30 minutes of writing to reach 11:30 AM."]
+    },
+    {
+      "questionId": "time-137",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bus leaves at 11:50 AM and takes 25 minutes. What time does it arrive?",
+      "answer": { "value": "12:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:50 AM.", "Add 10 minutes to reach 12:00 PM.", "Add 15 minutes to reach 12:15 PM."]
+    },
+    {
+      "questionId": "time-138",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "Liam begins a puzzle at 6:40 PM. He works for 20 minutes, takes a 10-minute break, and works for 15 minutes. What time does he finish?",
+      "answer": { "value": "7:25 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:40 PM.", "Add 20 minutes to reach 7:00 PM.", "Add 10 minutes of break to reach 7:10 PM.", "Add 15 minutes to reach 7:25 PM."]
+    },
+    {
+      "questionId": "time-139",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A swim meet starts at 9:00 AM. The first race takes 20 minutes, the second takes 25 minutes, and the third takes 15 minutes. What time do the races end?",
+      "answer": { "value": "10:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:00 AM.", "Add 20 minutes to reach 9:20 AM.", "Add 25 minutes to reach 9:45 AM.", "Add 15 minutes to reach 10:00 AM."]
+    },
+    {
+      "questionId": "time-140",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A party starts at 11:30 AM and lasts 2 hours. What time does it end?",
+      "answer": { "value": "1:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:30 AM.", "Add 1 hour to reach 12:30 PM.", "Add 1 hour to reach 1:30 PM."]
+    },
+    {
+      "questionId": "time-141",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Sophia reads from 7:10 PM to 7:45 PM. Olivia reads from 6:30 PM to 7:00 PM. Who read longer?",
+      "answer": { "value": "Sophia", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Sophia read from 7:10 PM to 7:45 PM, which is 35 minutes.", "Olivia read from 6:30 PM to 7:00 PM, which is 30 minutes.", "Sophia read longer because 35 minutes is more than 30 minutes."]
+    },
+    {
+      "questionId": "time-142",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking class starts at 5:45 PM. The class chops for 15 minutes, cooks for 25 minutes, and eats for 20 minutes. What time does it end?",
+      "answer": { "value": "6:45 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:45 PM.", "Add 15 minutes to reach 6:00 PM.", "Add 25 minutes to reach 6:25 PM.", "Add 20 minutes to reach 6:45 PM."]
+    },
+    {
+      "questionId": "time-143",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 10:35 AM and arrives at 12:05 PM. How long was the trip?",
+      "answer": { "value": "1 hour 30 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 10:35 AM to 11:35 AM is 1 hour.", "From 11:35 AM to 12:05 PM is 30 minutes.", "The trip was 1 hour 30 minutes."]
+    },
+    {
+      "questionId": "time-144",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 8:40 PM and lasts 1 hour 25 minutes. What time does it end?",
+      "answer": { "value": "10:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:40 PM.", "Add 1 hour to reach 9:40 PM.", "Add 25 minutes to reach 10:05 PM."]
+    },
+    {
+      "questionId": "time-145",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A library event starts at 3:15 PM. A storyteller talks for 20 minutes, then kids read for 30 minutes. What time does the event end?",
+      "answer": { "value": "4:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:15 PM.", "Add 20 minutes to reach 3:35 PM.", "Add 30 minutes to reach 4:05 PM."]
+    },
+    {
+      "questionId": "time-146",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Jack plays from 4:00 PM to 4:45 PM. Jill plays from 5:15 PM to 5:50 PM. Who played longer?",
+      "answer": { "value": "Jack", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Jack played from 4:00 PM to 4:45 PM, which is 45 minutes.", "Jill played from 5:15 PM to 5:50 PM, which is 35 minutes.", "Jack played longer because 45 minutes is more than 35 minutes."]
+    },
+    {
+      "questionId": "time-147",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:45 PM and arrives at 12:30 AM. How long was the trip?",
+      "answer": { "value": "45 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:45 PM to 12:00 AM is 15 minutes.", "From 12:00 AM to 12:30 AM is 30 minutes.", "The trip was 45 minutes."]
+    },
+    {
+      "questionId": "time-148",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A morning schedule: breakfast at 7:30 AM for 20 minutes, then chores for 30 minutes. What time are chores done?",
+      "answer": { "value": "8:20 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:30 AM.", "Add 20 minutes of breakfast to reach 7:50 AM.", "Add 30 minutes of chores to reach 8:20 AM."]
+    },
+    {
+      "questionId": "time-149",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A rehearsal starts at 6:50 PM. They sing for 25 minutes and dance for 30 minutes. What time do they finish?",
+      "answer": { "value": "7:45 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:50 PM.", "Add 25 minutes to reach 7:15 PM.", "Add 30 minutes to reach 7:45 PM."]
+    },
+    {
+      "questionId": "time-150",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A ferry leaves at 11:35 AM and takes 40 minutes. What time does it arrive?",
+      "answer": { "value": "12:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:35 AM.", "Add 25 minutes to reach 12:00 PM.", "Add 15 minutes to reach 12:15 PM."]
+    },
+    {
+      "questionId": "time-151",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Mia studies from 4:10 PM to 4:55 PM. Ella studies from 5:00 PM to 5:35 PM. Who studied longer?",
+      "answer": { "value": "Mia", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Mia studied from 4:10 PM to 4:55 PM, which is 45 minutes.", "Ella studied from 5:00 PM to 5:35 PM, which is 35 minutes.", "Mia studied longer because 45 minutes is more than 35 minutes."]
+    },
+    {
+      "questionId": "time-152",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A science fair starts at 1:15 PM. Judging takes 30 minutes, and awards take 20 minutes. What time does it end?",
+      "answer": { "value": "2:05 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:15 PM.", "Add 30 minutes of judging to reach 1:45 PM.", "Add 20 minutes of awards to reach 2:05 PM."]
+    },
+    {
+      "questionId": "time-153",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:50 PM and travels for 30 minutes. What time does it arrive?",
+      "answer": { "value": "12:20 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:50 PM.", "Add 10 minutes to reach 12:00 AM.", "Add 20 minutes to reach 12:20 AM."]
+    },
+    {
+      "questionId": "time-154",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking schedule: mix for 10 minutes starting at 3:20 PM, bake for 25 minutes, then cool for 15 minutes. What time is it ready?",
+      "answer": { "value": "4:10 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 3:20 PM.", "Add 10 minutes of mixing to reach 3:30 PM.", "Add 25 minutes of baking to reach 3:55 PM.", "Add 15 minutes of cooling to reach 4:10 PM."]
+    },
+    {
+      "questionId": "time-155",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A soccer game starts at 9:40 AM. The first half is 30 minutes, break is 10 minutes, second half is 30 minutes. What time does it end?",
+      "answer": { "value": "10:50 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:40 AM.", "Add 30 minutes to reach 10:10 AM.", "Add 10 minutes of break to reach 10:20 AM.", "Add 30 minutes to reach 10:50 AM."]
+    },
+    {
+      "questionId": "time-156",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bus leaves at 11:25 AM and takes 50 minutes. What time does it arrive?",
+      "answer": { "value": "12:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:25 AM.", "Add 35 minutes to reach 12:00 PM.", "Add 15 minutes to reach 12:15 PM."]
+    },
+    {
+      "questionId": "time-157",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Noah practices piano from 5:00 PM to 5:30 PM. Ava practices from 4:45 PM to 5:20 PM. Who practiced longer?",
+      "answer": { "value": "Ava", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Noah practiced from 5:00 PM to 5:30 PM, which is 30 minutes.", "Ava practiced from 4:45 PM to 5:20 PM, which is 35 minutes.", "Ava practiced longer because 35 minutes is more than 30 minutes."]
+    },
+    {
+      "questionId": "time-158",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A birthday party starts at 2:45 PM. Games last 30 minutes, cake lasts 20 minutes, gifts last 15 minutes. What time does the party end?",
+      "answer": { "value": "3:50 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 2:45 PM.", "Add 30 minutes of games to reach 3:15 PM.", "Add 20 minutes of cake to reach 3:35 PM.", "Add 15 minutes of gifts to reach 3:50 PM."]
+    },
+    {
+      "questionId": "time-159",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:40 PM and arrives at 12:25 AM. How long was the trip?",
+      "answer": { "value": "45 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:40 PM to 12:00 AM is 20 minutes.", "From 12:00 AM to 12:25 AM is 25 minutes.", "The trip was 45 minutes."]
+    },
+    {
+      "questionId": "time-160",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 8:50 AM. Spelling lasts 20 minutes, math lasts 30 minutes. What time is math done?",
+      "answer": { "value": "9:40 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:50 AM.", "Add 20 minutes of spelling to reach 9:10 AM.", "Add 30 minutes of math to reach 9:40 AM."]
+    },
+    {
+      "questionId": "time-161",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 11:15 AM and lasts 1 hour 45 minutes. What time does it end?",
+      "answer": { "value": "1:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:15 AM.", "Add 1 hour to reach 12:15 PM.", "Add 45 minutes to reach 1:00 PM."]
+    },
+    {
+      "questionId": "time-162",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A dog walk starts at 4:35 PM and lasts 25 minutes. Then the dog eats for 10 minutes. What time is the dog done eating?",
+      "answer": { "value": "5:10 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:35 PM.", "Add 25 minutes of walking to reach 5:00 PM.", "Add 10 minutes of eating to reach 5:10 PM."]
+    },
+    {
+      "questionId": "time-163",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:55 PM and travels for 20 minutes. What time does it arrive?",
+      "answer": { "value": "12:15 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:55 PM.", "Add 5 minutes to reach 12:00 AM.", "Add 15 minutes to reach 12:15 AM."]
+    },
+    {
+      "questionId": "time-164",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "A reading marathon: Sam reads from 3:00 PM to 3:40 PM, then Tina reads from 4:00 PM to 4:50 PM. Who read longer?",
+      "answer": { "value": "Tina", "valueType": "string", "unit": "name" },
+      "solutionSteps": ["Sam read from 3:00 PM to 3:40 PM, which is 40 minutes.", "Tina read from 4:00 PM to 4:50 PM, which is 50 minutes.", "Tina read longer because 50 minutes is more than 40 minutes."]
+    },
+    {
+      "questionId": "time-165",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A schedule starts at 7:45 AM. Morning meeting is 15 minutes, reading is 30 minutes, and writing is 25 minutes. What time is writing done?",
+      "answer": { "value": "8:55 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:45 AM.", "Add 15 minutes to reach 8:00 AM.", "Add 30 minutes to reach 8:30 AM.", "Add 25 minutes to reach 8:55 AM."]
+    },
+    {
+      "questionId": "time-166",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bus leaves at 11:35 AM and takes 45 minutes. What time does it arrive?",
+      "answer": { "value": "12:20 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:35 AM.", "Add 25 minutes to reach 12:00 PM.", "Add 20 minutes to reach 12:20 PM."]
+    },
+    {
+      "questionId": "time-167",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A play starts at 6:30 PM. Act 1 is 25 minutes, intermission is 10 minutes, Act 2 is 30 minutes. What time does it end?",
+      "answer": { "value": "7:35 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:30 PM.", "Add 25 minutes to reach 6:55 PM.", "Add 10 minutes of intermission to reach 7:05 PM.", "Add 30 minutes to reach 7:35 PM."]
+    },
+    {
+      "questionId": "time-168",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:50 PM and arrives at 12:40 AM. How long was the trip?",
+      "answer": { "value": "50 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:50 PM to 12:00 AM is 10 minutes.", "From 12:00 AM to 12:40 AM is 40 minutes.", "The trip was 50 minutes."]
+    },
+    {
+      "questionId": "time-169",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking class starts at 10:40 AM. It mixes for 15 minutes, bakes for 30 minutes, and decorates for 20 minutes. What time does it end?",
+      "answer": { "value": "11:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 10:40 AM.", "Add 15 minutes to reach 10:55 AM.", "Add 30 minutes to reach 11:25 AM.", "Add 20 minutes to reach 11:45 AM."]
+    },
+    {
+      "questionId": "time-170",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A game starts at 2:15 PM. Team A scores for 20 minutes, Team B scores for 25 minutes, and they rest for 15 minutes. What time does the game end?",
+      "answer": { "value": "3:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 2:15 PM.", "Add 20 minutes to reach 2:35 PM.", "Add 25 minutes to reach 3:00 PM.", "Add 15 minutes to reach 3:15 PM."]
+    },
+    {
+      "questionId": "time-171",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:45 AM and arrives at 1:15 PM. How long was the trip?",
+      "answer": { "value": "1 hour 30 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:45 AM to 12:45 PM is 1 hour.", "From 12:45 PM to 1:15 PM is 30 minutes.", "The trip was 1 hour 30 minutes."]
+    },
+    {
+      "questionId": "time-172",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A party starts at 11:50 PM and lasts 35 minutes. What time does it end?",
+      "answer": { "value": "12:25 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:50 PM.", "Add 10 minutes to reach 12:00 AM.", "Add 25 minutes to reach 12:25 AM."]
+    },
+    {
+      "questionId": "time-173",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A morning routine starts at 7:10 AM. Wash up takes 15 minutes, breakfast takes 20 minutes, and pack takes 15 minutes. What time is packing done?",
+      "answer": { "value": "8:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:10 AM.", "Add 15 minutes to reach 7:25 AM.", "Add 20 minutes to reach 7:45 AM.", "Add 15 minutes to reach 8:00 AM."]
+    },
+    {
+      "questionId": "time-174",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 9:35 PM and lasts 1 hour 40 minutes. What time does it end?",
+      "answer": { "value": "11:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:35 PM.", "Add 1 hour to reach 10:35 PM.", "Add 40 minutes to reach 11:15 PM."]
+    },
+    {
+      "questionId": "time-175",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 11:30 AM. Reading takes 25 minutes, math takes 30 minutes. What time does math end?",
+      "answer": { "value": "12:25 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:30 AM.", "Add 25 minutes of reading to reach 11:55 AM.", "Add 30 minutes of math to reach 12:25 PM."]
+    },
+    {
+      "questionId": "time-176",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:55 PM and travels for 25 minutes. What time does it arrive?",
+      "answer": { "value": "12:20 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:55 PM.", "Add 5 minutes to reach 12:00 AM.", "Add 20 minutes to reach 12:20 AM."]
+    },
+    {
+      "questionId": "time-177",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A chess match starts at 4:20 PM. Round 1 is 20 minutes, break is 10 minutes, Round 2 is 25 minutes. What time does it end?",
+      "answer": { "value": "5:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 4:20 PM.", "Add 20 minutes to reach 4:40 PM.", "Add 10 minutes of break to reach 4:50 PM.", "Add 25 minutes to reach 5:15 PM."]
+    },
+    {
+      "questionId": "time-178",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bake sale starts at 11:40 AM. Setup takes 20 minutes, selling takes 1 hour. What time does selling end?",
+      "answer": { "value": "1:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:40 AM.", "Add 20 minutes of setup to reach 12:00 PM.", "Add 1 hour of selling to reach 1:00 PM."]
+    },
+    {
+      "questionId": "time-179",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A bus leaves at 11:50 AM and takes 35 minutes. What time does it arrive?",
+      "answer": { "value": "12:25 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:50 AM.", "Add 10 minutes to reach 12:00 PM.", "Add 25 minutes to reach 12:25 PM."]
+    },
+    {
+      "questionId": "time-180",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A swim practice starts at 6:15 PM. Warm-up is 15 minutes, laps are 30 minutes, cool-down is 10 minutes. What time does it end?",
+      "answer": { "value": "7:10 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:15 PM.", "Add 15 minutes to reach 6:30 PM.", "Add 30 minutes to reach 7:00 PM.", "Add 10 minutes to reach 7:10 PM."]
+    },
+    {
+      "questionId": "time-181",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:35 PM and arrives at 12:20 AM. How long was the trip?",
+      "answer": { "value": "45 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:35 PM to 12:00 AM is 25 minutes.", "From 12:00 AM to 12:20 AM is 20 minutes.", "The trip was 45 minutes."]
+    },
+    {
+      "questionId": "time-182",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A school day starts at 8:45 AM. Assembly is 20 minutes, math is 40 minutes, recess is 15 minutes. What time is recess over?",
+      "answer": { "value": "10:00 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:45 AM.", "Add 20 minutes to reach 9:05 AM.", "Add 40 minutes to reach 9:45 AM.", "Add 15 minutes to reach 10:00 AM."]
+    },
+    {
+      "questionId": "time-183",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 11:20 AM and lasts 1 hour 55 minutes. What time does it end?",
+      "answer": { "value": "1:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:20 AM.", "Add 1 hour to reach 12:20 PM.", "Add 55 minutes to reach 1:15 PM."]
+    },
+    {
+      "questionId": "time-184",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:45 PM and travels for 50 minutes. What time does it arrive?",
+      "answer": { "value": "12:35 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:45 PM.", "Add 15 minutes to reach 12:00 AM.", "Add 35 minutes to reach 12:35 AM."]
+    },
+    {
+      "questionId": "time-185",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A cooking schedule: prep at 5:10 PM for 15 minutes, bake for 35 minutes, cool for 10 minutes. What time is it ready?",
+      "answer": { "value": "6:10 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:10 PM.", "Add 15 minutes to reach 5:25 PM.", "Add 35 minutes to reach 6:00 PM.", "Add 10 minutes to reach 6:10 PM."]
+    },
+    {
+      "questionId": "time-186",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A soccer match starts at 11:30 AM. First half is 30 minutes, break is 10 minutes, second half is 30 minutes. What time does it end?",
+      "answer": { "value": "12:40 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:30 AM.", "Add 30 minutes to reach 12:00 PM.", "Add 10 minutes of break to reach 12:10 PM.", "Add 30 minutes to reach 12:40 PM."]
+    },
+    {
+      "questionId": "time-187",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:50 PM and arrives at 12:35 AM. How long was the trip?",
+      "answer": { "value": "45 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:50 PM to 12:00 AM is 10 minutes.", "From 12:00 AM to 12:35 AM is 35 minutes.", "The trip was 45 minutes."]
+    },
+    {
+      "questionId": "time-188",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A party starts at 6:40 PM. Games last 25 minutes, dinner lasts 30 minutes, gifts last 15 minutes. What time does it end?",
+      "answer": { "value": "7:50 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 6:40 PM.", "Add 25 minutes to reach 7:05 PM.", "Add 30 minutes to reach 7:35 PM.", "Add 15 minutes to reach 7:50 PM."]
+    },
+    {
+      "questionId": "time-189",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A class starts at 11:45 AM. Spelling lasts 20 minutes, reading lasts 25 minutes, math lasts 30 minutes. What time is math done?",
+      "answer": { "value": "1:00 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:45 AM.", "Add 20 minutes to reach 12:05 PM.", "Add 25 minutes to reach 12:30 PM.", "Add 30 minutes to reach 1:00 PM."]
+    },
+    {
+      "questionId": "time-190",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:40 PM and travels for 55 minutes. What time does it arrive?",
+      "answer": { "value": "12:35 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:40 PM.", "Add 20 minutes to reach 12:00 AM.", "Add 35 minutes to reach 12:35 AM."]
+    },
+    {
+      "questionId": "time-191",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A morning schedule starts at 7:20 AM. Breakfast is 25 minutes, chores are 30 minutes, reading is 20 minutes. What time is reading done?",
+      "answer": { "value": "8:35 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 7:20 AM.", "Add 25 minutes to reach 7:45 AM.", "Add 30 minutes to reach 8:15 AM.", "Add 20 minutes to reach 8:35 AM."]
+    },
+    {
+      "questionId": "time-192",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A movie starts at 11:10 AM and lasts 2 hours 5 minutes. What time does it end?",
+      "answer": { "value": "1:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:10 AM.", "Add 2 hours to reach 1:10 PM.", "Add 5 minutes to reach 1:15 PM."]
+    },
+    {
+      "questionId": "time-193",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:30 PM and arrives at 12:45 AM. How long was the trip?",
+      "answer": { "value": "1 hour 15 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:30 PM to 12:30 AM is 1 hour.", "From 12:30 AM to 12:45 AM is 15 minutes.", "The trip was 1 hour 15 minutes."]
+    },
+    {
+      "questionId": "time-194",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A chess tournament starts at 1:15 PM. Round 1 is 30 minutes, break is 15 minutes, Round 2 is 30 minutes. What time does it end?",
+      "answer": { "value": "2:30 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 1:15 PM.", "Add 30 minutes to reach 1:45 PM.", "Add 15 minutes of break to reach 2:00 PM.", "Add 30 minutes to reach 2:30 PM."]
+    },
+    {
+      "questionId": "time-195",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A baking schedule starts at 9:30 AM. Mixing takes 15 minutes, baking takes 40 minutes, cooling takes 20 minutes. What time is it ready?",
+      "answer": { "value": "10:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 9:30 AM.", "Add 15 minutes of mixing to reach 9:45 AM.", "Add 40 minutes of baking to reach 10:25 AM.", "Add 20 minutes of cooling to reach 10:45 AM."]
+    },
+    {
+      "questionId": "time-196",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["comparison"],
+      "question": "Liam swims from 3:20 PM to 4:00 PM. Noah swims from 4:10 PM to 4:55 PM. Who swam longer, and by how many minutes?",
+      "answer": { "value": "Noah by 5 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["Liam swam from 3:20 PM to 4:00 PM, which is 40 minutes.", "Noah swam from 4:10 PM to 4:55 PM, which is 45 minutes.", "Noah swam longer by 5 minutes because 45 minus 40 equals 5."]
+    },
+    {
+      "questionId": "time-197",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A train leaves at 11:35 PM and travels for 1 hour 10 minutes. What time does it arrive?",
+      "answer": { "value": "12:45 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 11:35 PM.", "Add 25 minutes to reach 12:00 AM.", "Add 45 minutes to reach 12:45 AM."]
+    },
+    {
+      "questionId": "time-198",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A school schedule starts at 8:30 AM. Assembly is 15 minutes, math is 45 minutes, break is 20 minutes. What time does break end?",
+      "answer": { "value": "9:50 AM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 8:30 AM.", "Add 15 minutes to reach 8:45 AM.", "Add 45 minutes to reach 9:30 AM.", "Add 20 minutes to reach 9:50 AM."]
+    },
+    {
+      "questionId": "time-199",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["addition"],
+      "question": "A party starts at 5:15 PM. Pizza takes 20 minutes, cake takes 15 minutes, games take 25 minutes. What time does the party end?",
+      "answer": { "value": "6:15 PM", "valueType": "string", "unit": "time" },
+      "solutionSteps": ["Start at 5:15 PM.", "Add 20 minutes to reach 5:35 PM.", "Add 15 minutes to reach 5:50 PM.", "Add 25 minutes to reach 6:15 PM."]
+    },
+    {
+      "questionId": "time-200",
+      "type": "static",
+      "difficulty": "hard",
+      "grades": [1, 2],
+      "operations": ["subtraction"],
+      "question": "A train leaves at 11:20 PM and arrives at 12:35 AM. How long was the trip?",
+      "answer": { "value": "1 hour 15 minutes", "valueType": "string", "unit": "duration" },
+      "solutionSteps": ["From 11:20 PM to 12:20 AM is 1 hour.", "From 12:20 AM to 12:35 AM is 15 minutes.", "The trip was 1 hour 15 minutes."]
+    }
+  ]
+}
