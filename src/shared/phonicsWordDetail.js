@@ -38,7 +38,7 @@ const CATEGORY_CSS = {
  *
  * @param {string|null} word
  * @param {object|null} record   — parseWord() output or null
- * @param {{ freq?: number, isCommon?: boolean|null, alreadyFlagged?: boolean, flagCount?: number }} opts
+ * @param {{ freq?: number, isCommon?: boolean|null, alreadyFlagged?: boolean, flagCount?: number, speechRate?: number|null }} opts
  * @returns {string} HTML markup string
  */
 export function renderWordDetail(word, record, {
@@ -46,6 +46,7 @@ export function renderWordDetail(word, record, {
   isCommon      = null,
   alreadyFlagged = false,
   flagCount     = 0,
+  speechRate    = null,
 } = {}) {
 
   // ── State 1: no word selected ─────────────────────────────────────────────
@@ -78,6 +79,7 @@ export function renderWordDetail(word, record, {
 
   // ── State 3: word selected and enriched ───────────────────────────────────
   const syllables = splitSyllablesForWord(word);
+  const rate = Number.isFinite(speechRate) ? Math.min(1.25, Math.max(0.75, speechRate)) : 1;
   const tokens    = record.tokens || record.graphemes.split('|');
 
   // Parse pattern fields from record (avoids a second findAllPatterns call)
@@ -138,6 +140,12 @@ export function renderWordDetail(word, record, {
           <button class="btn btn-sm btn-ghost" data-action="lookup" title="Look up in Wiktionary">
             <i class="fas fa-book"></i> Look up
           </button>
+          ${speechRate !== null ? `<label class="wd-speech-rate" title="Reading speed">
+            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+            <input type="range" data-speech-rate min="0.75" max="1.25" step="0.05" value="${rate}"
+              aria-label="Reading speed" aria-valuetext="${rate.toFixed(2)} times normal speed">
+            <output data-speech-rate-value>${rate.toFixed(2)}x</output>
+          </label>` : ''}
         </div>
         <span class="wd-syllables">${syllables.join(' · ')}</span>
       </div>

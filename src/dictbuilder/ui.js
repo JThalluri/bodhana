@@ -21,6 +21,7 @@ const state = {
   phonicsByWord: Object.create(null), // word → Record from PhonicsEngine (no is_common)
   flagged: [],           // [{ word, record, note, flaggedAt }]
   selectedWord: null,
+  speechRate: 1,
   gridFilters: emptyGridFilters(),
 };
 
@@ -265,6 +266,7 @@ function resetState() {
   state.phonicsByWord = Object.create(null);
   state.flagged = [];
   state.selectedWord = null;
+  state.speechRate = 1;
   state.gridFilters = emptyGridFilters();
 }
 
@@ -542,6 +544,7 @@ function renderDetailPanel() {
   const record = word ? state.phonicsByWord[word] : null;
 
   panel.innerHTML = renderWordDetail(word, record, {
+    speechRate:    state.speechRate,
     freq:           word ? (state.freq[word] || 1) : 0,
     isCommon:       word ? isCommon(word) : null,
     alreadyFlagged: word ? state.flagged.some(f => f.word === word) : false,
@@ -579,13 +582,21 @@ function renderDetailPanel() {
 
   // Wire TTS button (only present in enriched state)
   const speakWordBtn = panel.querySelector('[data-action="speak-word"]');
+  const speechRate = panel.querySelector('[data-speech-rate]');
+  speechRate?.addEventListener('input', () => {
+    state.speechRate = speechRate.valueAsNumber || 1;
+    const value = state.speechRate.toFixed(2);
+    panel.querySelector('[data-speech-rate-value]').textContent = `${value}x`;
+    speechRate.setAttribute('aria-valuetext', `${value} times normal speed`);
+  });
   if (!isSpeechSupported()) {
+    if (speechRate) speechRate.disabled = true;
     if (speakWordBtn) {
       speakWordBtn.disabled = true;
       speakWordBtn.title = 'Text-to-speech not supported in this browser';
     }
   } else {
-    speakWordBtn?.addEventListener('click', () => speakText(word));
+    speakWordBtn?.addEventListener('click', () => speakText(word, { rate: state.speechRate }));
   }
 
   // Wire lookup button (only present in enriched state)

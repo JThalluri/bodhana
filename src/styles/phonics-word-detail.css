@@ -34,6 +34,37 @@
   gap: var(--space-2);
 }
 
+.wd-speech-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 28px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.wd-speech-rate input[type="range"] {
+  width: 88px;
+  min-width: 0;
+  flex: 0 1 88px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.wd-speech-rate output {
+  width: 3.7em;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.wd-speech-rate:has(input:disabled) { opacity: 0.5; }
+
 /* ── Lookup result area ──────────────────────────────────────────────────── */
 
 .wd-lookup-result {
