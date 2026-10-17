@@ -51,3 +51,9 @@ Prepare a destination-repository workflow template and allowlisted package only.
 The desktop threshold is tuned to 1480px: 240px navigation + 300px settings + 660px preview + 280px minimum guide. The proposed 1440px boundary left only 240px for guidance; smaller windows use compact settings/navigation instead. This is a measured budget adjustment, with the 1920px layout preserved.
 
 Current header action labels are Print and Export. The earlier Print PDF/Export PDF label decision is superseded; the shared native print and hidden-frame direct export contracts remain.
+
+## 2026-10-16 — Retain settings and loaded dictionaries on the device
+
+User validation confirmed PWA installation, navigation, PDF export, page/Seyes rendering and print working during continued testing. Committed the reviewed tablet/content/PWA implementation as 680518e before starting persistence.
+
+Persist small settings in namespaced localStorage and larger tool workspaces/files in IndexedDB. Keep the namespace stable across releases and separate it from service-worker caches. Use explicit state adapters for dictionaries and Handwriting presets; retain existing Clear/base-removal behavior. Shared settings restoration follows actual Math/Writing subtype lifecycles. Fail visibly and continue working when storage is unavailable; do not overwrite a previous complete workspace after a failed save. Clear saved data is deliberate, scoped, and prevents older open tabs from writing back cleared records. Ordinary simultaneous edits use the last completed save, without cross-tab state merging. Retention is local to the browser/profile/origin, and separate copies remain necessary. Details: docs/LOCAL_DATA.md.

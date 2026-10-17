@@ -1,3 +1,6 @@
+import { initWorkspacePersistence, prepareFiles, packFiles, unpackFiles } from '../shared/device-storage.js';
+let workspace;
+let mountGeneration = 0, baseGeneration = 0;
 import { renderToolInfo } from '../shared/tool-info.js';
 import { extractWords, findPossiblePlurals, readFileAsText } from './extractor.js';
 import { themeToggleMarkup, infoPaneTabsMarkup, wireInfoPaneTabs } from '../shared/shell-ui.js';
@@ -38,6 +41,7 @@ let _lookupController = null;
 
 
 export function buildDictBuilderUI(container) {
+  ++mountGeneration;
   notesCleanup?.();
   container.innerHTML = `
     <div class="db-tool tool-shell">
@@ -224,6 +228,18 @@ export function buildDictBuilderUI(container) {
   updateSummary();
   updateActionButtons();
   renderDetailPanel(); // initialize Detail tab with "no word selected" state
+  workspace = initWorkspacePersistence(container.querySelector('.tool-shell'), 'dictionary-builder', {
+    snapshot: () => ({...state, files: packFiles(state.files), baseWordsSet: undefined}),
+    restore: saved => {
+      if (!Array.isArray(saved.extracted) || !Array.isArray(saved.baseWordsList)) return;
+      Object.assign(state, saved, {files: unpackFiles(saved.files),
+        baseWordsSet: new Set(saved.baseWordsList.map(wordKey)),
+        excluded: new Set(saved.excluded), phonicsByWord: Object.assign(Object.create(null),saved.phonicsByWord),
+        gridFilters: {...emptyGridFilters(), ...saved.gridFilters}});
+      renderFileList(); renderBaseInfo(); refreshCurationView(); renderDetailPanel();
+      setStatus('info','Saved dictionary workspace restored.');
+    },
+  });
 }
 
 function resetState() {
@@ -328,7 +344,11 @@ function refreshCurationView() {
 
 // ── Source documents ─────────────────────────────────────────────────────────
 
-function addFiles(newFiles) {
+async function addFiles(newFiles) {
+  const mount = mountGeneration;
+  try { await prepareFiles(newFiles); }
+  catch { if (mount === mountGeneration) setStatus('error','Could not read the source documents. Try loading them again.'); return; }
+  if (mount !== mountGeneration) return;
   const existing = new Set(state.files.map(f => f.name + f.size));
   for (const f of newFiles) {
     if (!existing.has(f.name + f.size)) {
@@ -337,6 +357,7 @@ function addFiles(newFiles) {
     }
   }
   renderFileList();
+  workspace?.save();
 }
 
 function removeFile(idx) {
@@ -350,8 +371,8 @@ function renderFileList() {
   if (!state.files.length) { list.innerHTML = ''; return; }
   list.innerHTML = state.files.map((f, i) => `
     <div class="db-file-item">
-      <span class="db-file-name" title="${f.name}">
-        <i class="fas ${fileIcon(f.name)}"></i> ${f.name}
+      <span class="db-file-name" title="${escapeHtml(f.name)}">
+        <i class="fas ${fileIcon(f.name)}"></i> ${escapeHtml(f.name)}
       </span>
       <button class="db-file-remove btn-icon" data-idx="${i}" title="Remove">
         <i class="fas fa-times"></i>
@@ -372,8 +393,10 @@ function fileIcon(name) {
 // ── Base dictionary ──────────────────────────────────────────────────────────
 
 async function loadBaseDictionary(file) {
+  const mount = mountGeneration, load = ++baseGeneration;
   try {
     const text = await readFileAsText(file);
+    if (mount !== mountGeneration || load !== baseGeneration) return;
     const lines = normalizeDownloadWords(text.split(/\r?\n/).map(l => l.trim()));
     state.baseWordsList = lines;
     state.baseWordsSet = new Set(lines.map(wordKey));
@@ -384,12 +407,15 @@ async function loadBaseDictionary(file) {
       applyPluralExclusions();
     }
     refreshCurationView();
+    workspace?.save();
   } catch (err) {
+    if (mount !== mountGeneration || load !== baseGeneration) return;
     setStatus('error', `❌ ${err.message}`);
   }
 }
 
 function clearBaseDictionary() {
+  ++baseGeneration;
   state.baseWordsList = [];
   state.baseWordsSet = new Set();
   state.baseFileName = '';
@@ -414,7 +440,7 @@ function renderBaseInfo() {
   info.innerHTML = `
     <div class="db-file-item db-base-loaded">
       <span class="db-file-name">
-        <i class="fas fa-list"></i> ${state.baseFileName}
+        <i class="fas fa-list"></i> ${escapeHtml(state.baseFileName)}
         <span class="db-base-count">${state.baseWordsList.length} words</span>
       </span>
       <button class="db-file-remove btn-icon" id="dbBaseClearBtn" title="Remove base dictionary">
@@ -427,6 +453,7 @@ function renderBaseInfo() {
 // ── Extract ──────────────────────────────────────────────────────────────────
 
 async function runExtract() {
+  const mount = mountGeneration;
   if (!state.files.length) {
     setStatus('error', 'Add at least one source document first.');
     return;
@@ -446,9 +473,10 @@ async function runExtract() {
     const { words, freq, pluralInfo, errors } = await extractWords(
       state.files,
       readOpts(),
-      (i, total, name) => { if (name) setStatus('info', `Reading ${name} (${i + 1}/${total})…`); }
+      (i, total, name) => { if (mount === mountGeneration && name) setStatus('info', `Reading ${name} (${i + 1}/${total})…`); }
     );
 
+    if (mount !== mountGeneration) return;
     state.extracted = words;
     state.freq = freq;
     state.pluralInfo = pluralInfo;
@@ -468,7 +496,9 @@ async function runExtract() {
 
     refreshCurationView();
     renderDetailPanel(); // reset detail (selection was cleared)
+    workspace?.save();
   } catch (err) {
+    if (mount !== mountGeneration) return;
     setStatus('error', `❌ ${err.message}`);
   } finally {
     if (extractBtn) extractBtn.disabled = false;
@@ -905,6 +935,7 @@ function doExportInvestigationBriefs() {
 // ── Clear ─────────────────────────────────────────────────────────────────────
 
 function doClear() {
+  ++mountGeneration;
   state.files = [];
   state.extracted = [];
   state.freq = {};
@@ -1112,6 +1143,7 @@ function wireEvents() {
 }
 
 export function unmount() {
+  workspace?.dispose(); workspace = null; ++mountGeneration; ++baseGeneration;
   notesCleanup?.(); notesCleanup = null;
   clearTimeout(_manualDebounce);
   _lookupController?.abort();

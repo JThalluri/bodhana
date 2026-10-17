@@ -1,0 +1,20 @@
+﻿# Data retained on this device
+
+The portal automatically retains settings in this browser. This is local browser storage, not an account or a sync service. Files are not uploaded by the persistence feature. Keep separate copies of important documents and exports.
+
+- All tools retain settings fields, worksheet text and the Preview fitting choice. Math and Writing also remember their selected category/type. The explicit Fractions route still opens Fractions.
+- Dictionary Builder retains source documents, the parsed base dictionary and its filename, extracted words, frequencies, exclusions, phonics analysis, flags and filter selections. Its Clear action removes the source/extraction/curation workspace but keeps the base dictionary, matching its existing behavior. Remove base dictionary removes that saved input too.
+- Word Puzzles retains the loaded word list, selected words, search and generated puzzles. Clearing its dictionary persists the empty list.
+- Phonics retains parsed TXT/CSV records, selection/order, pattern/sound filters and ordinary settings. It rebuilds the preview from these records.
+- Handwriting retains its settings state, seed, loaded dictionary, selections and appended content. It restores the state directly so replaying a tier/preset cannot overwrite later customisations.
+- Other generated worksheets and downloaded/exported files are not archived by this feature. Settings are restored; generation and export continue through the existing controls. Wiktionary responses and speech state are not retained.
+
+Small settings use localStorage; files and larger workspaces use IndexedDB with structured-cloned binary ArrayBuffers. Records have a schema version. The namespace follows the hosted base path, independently of release IDs, so PWA updates keep this data and other Pages apps have separate data. The portable file uses its absolute file pathname as its namespace. Moving the HTML or switching browser/profile/origin does not carry data across. File-URL storage support depends on the browser; production tests verify the supported desktop engines separately.
+
+Pending changes flush on module teardown, pagehide and visibility changes. Loaded-file saves start after parsing/loading succeeds. Restoration temporarily makes only the tool busy, is bounded when IndexedDB cannot open, and ignores stale asynchronous mounts/readers. Storage denial, corruption and quota failures fall back to usable tools with a message in Settings. A failed transaction preserves the last complete saved workspace. Browser eviction, private browsing or an abrupt process/device shutdown can still lose local data; this is not a backup system.
+
+Settings contains **Clear saved data**. After confirmation, it removes settings and loaded workspaces for all tools in this app scope and reloads. It keeps the installed/offline PWA assets and other apps' storage. Other open tabs keep their visible work but stop saving until reloaded, so an older tab cannot repopulate cleared data. For ordinary concurrent edits to the same tool, the last completed save wins; this feature does not merge tabs or synchronise their in-memory work.
+
+Implementation: `src/shared/device-storage.js` handles namespacing, versioned preferences, IndexedDB, save ordering and clearing. `src/shared/settings-persistence.js` restores standard controls using their existing event handlers. Module dispatchers own their type selection; complex workspace modules provide explicit snapshot/restore functions. New settings controls need stable IDs (or `data-persist-key`); file inputs are never restored by assigning their value. A module with coupled presets should use an explicit state adapter and `data-settings-managed="true"` instead of replaying controls.
+
+Verification: `npm test` and `npm run test:portal` after building portable and hosted artifacts. `tests/portal/persistence.e2e.spec.js` covers reloads, offline source-file extraction, type selection, curation, quota/blocked storage, removal, cross-tab clearing and stale readers. Physical Android persistence through PWA upgrades and OS storage eviction remains a device check.

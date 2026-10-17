@@ -1,3 +1,5 @@
+import { initWorkspacePersistence } from '../shared/device-storage.js';
+let workspace;
 import {
   parseWords, isPreParsedCSV,
   PHONICS_PATTERNS, SOUND_LABELS,
@@ -453,9 +455,36 @@ export function buildPhonicsWorksheetsUI(container) {
     </div>`;
 
   wireEvents(container);
+  workspace = initWorkspacePersistence(container.querySelector('.tool-shell'), 'phonics-worksheets', {
+    snapshot: () => ({allWords: state.allWords, selectedWords: state.worksheetWords.map(r=>r.word),
+      patterns: [...state.filters.activePatterns], sounds: [...state.filters.activeSounds], wordSearch: state.wordSearch}),
+    restore: saved => {
+      if (!Array.isArray(saved.allWords)) return;
+      state.allWords = saved.allWords;
+      state.worksheetWords = (saved.selectedWords || []).map(word=>state.allWords.find(r=>r.word===word)).filter(Boolean);
+      state.filters.activePatterns = new Set(saved.patterns); state.filters.activeSounds = new Set(saved.sounds);
+      state.wordSearch = saved.wordSearch || '';
+      container.querySelector('#phxWordSearch').value = state.wordSearch;
+      container.querySelectorAll('[data-pattern]').forEach(el=>el.classList.toggle('phx-chip-active',state.filters.activePatterns.has(el.dataset.pattern)));
+      container.querySelectorAll('[data-sound]').forEach(el=>el.classList.toggle('phx-chip-active',state.filters.activeSounds.has(el.dataset.sound)));
+      renderWordSelList(); renderPreview(); setStatus(state.allWords.length+' words restored.','success');
+    },
+  });
 }
 
 function wireEvents(container) {
+  const mountedRoot = container.querySelector('.tool-shell');
+  let fileGeneration = 0;
+  const readWords = file => {
+    const load = ++fileGeneration;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      if (!mountedRoot.isConnected || load !== fileGeneration) return;
+      loadWordsFromText(ev.target.result); workspace?.save();
+    };
+    reader.onerror = () => { if (mountedRoot.isConnected) setStatus('Could not read this file.','error'); };
+    reader.readAsText(file);
+  };
   wireTabs(container.querySelector('.phx-settings'), {
     tabClass: 'phx-stab',
     panelClass: 'phx-stab-panel',
@@ -475,9 +504,7 @@ function wireEvents(container) {
   fileInput?.addEventListener('change', e => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => loadWordsFromText(ev.target.result);
-    reader.readAsText(file);
+    readWords(file);
     fileInput.value = '';
   });
 
@@ -489,9 +516,7 @@ function wireEvents(container) {
     dropzone.classList.remove('phx-drag-over');
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => loadWordsFromText(ev.target.result);
-    reader.readAsText(file);
+    readWords(file);
   });
 
   container.querySelector('#phxActivityType')?.addEventListener('change', e => {
@@ -639,5 +664,6 @@ function wireEvents(container) {
 }
 
 export function unmountPhonicsWorksheets() {
+  workspace?.dispose(); workspace = null;
   state = makeState();
 }

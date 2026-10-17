@@ -53,3 +53,6 @@
 @media screen { .portal-main {padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom);} .portal-sidebar {padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);} }
 
 @media screen { .portal-shell,.portal-sidebar {min-height:100dvh;} }
+
+.device-storage { padding: 16px; border-top: 1px solid var(--border-color, #bcc9d0); font-size: 12px; line-height: 1.5; }
+.device-storage p { margin: 0 0 10px; }

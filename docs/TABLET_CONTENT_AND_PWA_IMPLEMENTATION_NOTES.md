@@ -85,3 +85,21 @@ Physical Android installation/standalone behavior, touch/keyboard/toolbars, down
 ## User validation — 2026-10-16
 
 The user reports PWA installation, navigation, PDF export, Pages rendering, Seyes rendering and printing working during continued testing. This is user-reported device validation; automated evidence and remaining calibration/hardware limits above remain distinct.
+
+## Device persistence checkpoint — 2026-10-16
+
+After committing the verified tablet/content/PWA work as 680518e, implemented local persistence for all module settings, fitting choices, Math/Writing subtype selection and the four dictionary-loading flows. Dictionary Builder retains source bytes, base words, extraction, exclusions, phonics records and flags; Word Puzzles retains its list/selection/output; Phonics retains parsed records, filters and word order; Handwriting retains state, dictionary and seed without replaying presets. Full retention and failure behavior is documented in docs/LOCAL_DATA.md.
+
+Settings use namespaced versioned localStorage. Larger workspaces use IndexedDB. Source File bytes are prepared once as binary ArrayBuffers, with metadata used to reconstruct Files on restore. WebKit rejected IndexedDB Blob/File preparation in this environment; binary buffers resolved that compatibility failure. Clearing is deliberate and scoped, invalidates older-tab writes, and preserves PWA asset caches. Atomic failed saves leave the previous complete record intact. Late reads and mounts cannot overwrite re-entered modules.
+
+Verification actually run:
+
+- npm test: 1,044 tests, 24 files passed (including five storage preference/binary-byte cases).
+- npm run test:portal: 26 Chromium production tests passed, including ten new persistence scenarios plus existing layout/geometry, Letter/Seyes/landscape print and PDF export, file readers and PWA update/offline checks.
+- WebKit: all ten persistence scenarios and two route smoke tests passed. The Dictionary Builder case verifies reload/re-extraction online in WebKit. Its attempted offline page reload returned “WebKit encountered an internal error” here; it is not reported as a passed WebKit offline check. Chromium covers offline relaunch/extraction.
+- Closed and relaunched an actual Chromium browser process with the same test profile, launched offline, restored a source File and re-extracted three words. Evidence: artifacts/persistence-restart-verification.json; screenshot artifacts/persistence-after-browser-restart.png.
+- Reviewed the added Settings storage controls in artifacts/local-data-settings.png and the existing screenshot/geometry matrix. Print/export checks remain green.
+- Both production builds, npm run audit:build and npm run package:pages passed. Final guide wording was rebuilt and checked by the 12 WebKit persistence/route tests and the browser restart check.
+- Final portable HTML: 5,787,548 bytes; gzip 2,649,309. Hosted HTML: 5,791,298 bytes; gzip 2,650,255. Local staged release a98cba4cb81d2f7c at /gurukool/. Exact metrics: artifacts/build-metrics.json.
+
+Artifacts: dist/index.html, dist-hosted/, artifacts/pages-release/. This persistence update is local and staged, not published; the previously verified live release remains fac9aa2e7dccf650. No source changes have been pushed. The pre-existing untracked plan and handoff documents remain untouched. Device validation of persistence through Android PWA restarts/updates and storage eviction remains outstanding; the user's earlier installation/render/print success is recorded separately above.

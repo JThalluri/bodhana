@@ -117,3 +117,5 @@ Guidance lives in src/content/tool-info/<key>/content.html with optional scoped 
 ## See Also
 - `docs/BACKLOG.md` — prioritized feature queue
 - `docs/DECISIONS.md` — architecture decision log
+
+Device persistence: read docs/LOCAL_DATA.md before changing settings/file lifecycles. Small preferences use scoped localStorage; dictionary workspaces/files use IndexedDB. Do not store loaded files in service-worker caches. Preserve clear/removal semantics and flush adapters before resetting state.

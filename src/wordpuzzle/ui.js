@@ -1,3 +1,6 @@
+import { initWorkspacePersistence } from '../shared/device-storage.js';
+let workspace;
+let mountGeneration = 0, fileGeneration = 0;
 import { loadDictionaryFromFile, DEMO_WORDS } from './dictionary.js';
 import { generateWordSearch } from './wordsearch.js';
 import { generateCrissCross } from './crisscross.js';
@@ -25,6 +28,7 @@ const minLens = [3,4,5,6,7,8,9,10,11,12,13,14,15];
 const maxLens = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 
 export function buildWordPuzzleUI(container) {
+  ++mountGeneration;
   container.innerHTML = `
     <div class="wp-tool tool-shell">
 
@@ -205,6 +209,19 @@ export function buildWordPuzzleUI(container) {
   onModeChange();
   wireEvents();
   runGenerate();
+  workspace = initWorkspacePersistence(container.querySelector('.tool-shell'), 'word-puzzles', {
+    snapshot: () => state,
+    restore: saved => {
+      if (!Array.isArray(saved.allWords) || !Array.isArray(saved.dictionary)) return;
+      state.allWords = saved.allWords; state.dictionary = saved.dictionary;
+      state.puzzles = saved.puzzles || []; state.wordSearch = saved.wordSearch || '';
+      // Settings were restored synchronously by the tool shell.
+      state.showSolutions = document.getElementById('wpShowSolutions').checked;
+      document.getElementById('wpWordSearch').value = state.wordSearch;
+      updateDictionaryStatus(state.allWords.length ? state.dictionary.length + ' selected (saved)' : 'No dictionary', 'info');
+      renderWordSelection(); doRender();
+    },
+  });
 }
 
 function readOpts() {
@@ -390,22 +407,27 @@ function wireEvents() {
   document.getElementById('wpFileInput')?.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    const mount = mountGeneration, load = ++fileGeneration;
     try {
       const words = await loadDictionaryFromFile(file);
+      if (mount !== mountGeneration || load !== fileGeneration) return;
       setDictionaryWords(words, {
         statusText: words.length ? `${words.length} words` : 'No valid words',
         statusType: words.length ? 'success' : 'error',
       });
     } catch (err) {
+      if (mount !== mountGeneration || load !== fileGeneration) return;
       state.allWords = [];
       state.dictionary = [];
       updateDictionaryStatus(`Error: ${err.message}`, 'error');
       renderWordSelection();
     }
     e.target.value = '';
+    workspace?.save();
   });
 
   document.getElementById('wpBtnClearDict')?.addEventListener('click', () => {
+    ++fileGeneration;
     state.allWords = [];
     state.dictionary = [];
     state.puzzles = [];
@@ -468,6 +490,7 @@ function handleKeydown(e) {
 }
 
 export function unmount() {
+  workspace?.dispose(); workspace = null; ++mountGeneration; ++fileGeneration;
   document.removeEventListener('keydown', handleKeydown);
   state.allWords = [];
   state.dictionary = [];

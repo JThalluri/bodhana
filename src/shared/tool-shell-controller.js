@@ -1,3 +1,4 @@
+import { initSettingsPersistence } from './settings-persistence.js';
 import { openOverlay, closeOverlay } from './modal.js';
 import { initPreviewFit } from './preview-fit.js';
 import { renderToolInfo } from './tool-info.js';
@@ -32,5 +33,6 @@ export function initToolShell(container, key) {
   const resize = () => { closeOverlay(); root.dispatchEvent(new Event('preview-activated')); };
   compact.addEventListener('change', resize);
   const fitCleanup = initPreviewFit(root, controls);
-  return () => { closeOverlay(); compact.removeEventListener('change', resize); fitCleanup(); contentCleanup(); controls.remove(); close.remove(); root.removeEventListener('show-guide', showGuide); };
+  const settingsCleanup = initSettingsPersistence(root, key);
+  return () => { settingsCleanup(); closeOverlay(); compact.removeEventListener('change', resize); fitCleanup(); contentCleanup(); controls.remove(); close.remove(); root.removeEventListener('show-guide', showGuide); };
 }

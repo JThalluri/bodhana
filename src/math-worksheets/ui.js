@@ -1,3 +1,4 @@
+import { readSelection, writePreference } from '../shared/device-storage.js';
 import { initToolShell } from '../shared/tool-shell-controller.js';
 import { buildPlaceValueUI, unmountPlaceValue } from './pv-ui.js';
 import { buildFractionsUI, unmountFractions } from './fractions-ui.js';
@@ -62,7 +63,7 @@ function injectWorksheetTypeSelector(container, currentType, onChange) {
   if (!pane) return;
   pane.insertAdjacentHTML('afterbegin', worksheetTypeSelectorMarkup(currentType));
   const select = pane.querySelector('#mwTypeSelect');
-  on(select, 'change', () => onChange(select.value));
+  on(select, 'change', () => { writePreference('selection:math',select.value); onChange(select.value); });
 }
 
 async function mountSubType(type, container, ticket) {
@@ -103,5 +104,5 @@ export function buildMathWorksheetsUI(container, initialType = 'math-test') {
     disposeShell = initToolShell(subContainer, keys[nextType]);
   };
 
-  switchType(initialType);
+  switchType(window.location.hash === '#/fractions' ? 'fractions-drill' : readSelection('math',['math-test','place-value','fractions-drill','money-counting','time-problems'],initialType));
 }

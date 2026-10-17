@@ -1,3 +1,4 @@
+import { readSelection, writePreference } from '../shared/device-storage.js';
 import { initToolShell } from '../shared/tool-shell-controller.js';
 // /worksheets — Writing Worksheets.
 // Dispatches between two worksheet types via the "Type" select in the
@@ -25,6 +26,7 @@ export function mount(container) {
   }
 
   function switchType(type) {
+    writePreference('selection:writing',type);
     teardown();
     if (type === 'handwriting') {
       buildHandwritingUI(container, switchType);
@@ -43,6 +45,6 @@ export function mount(container) {
     }
   }
 
-  switchType('seyes');
+  switchType(readSelection('writing',['seyes','handwriting'],'seyes'));
   return teardown;
 }

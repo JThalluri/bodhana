@@ -41,3 +41,5 @@ Portal tests use actual file and hosted artifacts under the built release's conf
 Android Chrome is asked to resize the layout viewport with its keyboard using interactive-widget=resizes-content; safe-area insets are respected. This follows the [Chrome viewport behavior documentation](https://developer.chrome.com/blog/viewport-resize-behavior). Hardware validation is still required.
 
 Optional WebKit route smoke: set PORTAL_BROWSER=webkit, clear PORTAL_CHROME, and run npm run test:portal -- --grep "all routes". Its report uses artifacts/webkit-report. The baseline comparison runs when artifacts/baseline/index.html is available; otherwise output checks still validate the current production artifact.
+
+Settings and loaded files are now retained separately from the offline asset cache; see [Local device data](LOCAL_DATA.md). Normal PWA updates and offline-file repair preserve this data. The earlier verified live release is unchanged until the new persistence artifact is explicitly published.

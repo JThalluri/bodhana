@@ -1,6 +1,8 @@
+import { initWorkspacePersistence } from '../shared/device-storage.js';
+let workspace;
 // Handwriting Lines — settings UI + live preview.
 // Mounted by src/worksheets/index.js when the type switcher selects
-// "handwriting". No settings are persisted (session-only state).
+// "handwriting". Settings and dictionary selections are retained on this device.
 
 import { themeToggleMarkup, wireTabs } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
@@ -22,6 +24,7 @@ function on(el, evt, fn) {
 }
 
 export function unmountHandwriting() {
+  workspace?.dispose(); workspace = null;
   _alive = false;
   cancelAnimationFrame(_rafId);
   _listeners.forEach(({ el, evt, fn }) => el.removeEventListener(evt, fn));
@@ -260,6 +263,9 @@ export function buildHandwritingUI(container, onTypeChange) {
     search: '',
   };
 
+  const mountedRoot = container.querySelector('.tool-shell');
+  mountedRoot.dataset.settingsManaged = 'true';
+  let fileGeneration = 0;
   const $ = sel => container.querySelector(sel);
   const pagesEl = $('#hwPagesContainer');
   const pageCountEl = $('#hwPageCount');
@@ -518,14 +524,17 @@ export function buildHandwritingUI(container, onTypeChange) {
   on($('#hwDictFileInput'), 'change', async e => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const load = ++fileGeneration;
     try {
       const words = await loadDictionaryFromFile(file);
+      if (!mountedRoot.isConnected || load !== fileGeneration) return;
       dictionary.allWords = words;
       dictionary.selectedWords = [];
       dictionary.appendedWords.clear();
       updateDictionaryStatus(words.length ? `${words.length} words loaded` : 'No valid words', words.length ? 'success' : 'error');
       renderWordSelection();
     } catch (err) {
+      if (!mountedRoot.isConnected || load !== fileGeneration) return;
       dictionary.allWords = [];
       dictionary.selectedWords = [];
       dictionary.appendedWords.clear();
@@ -533,6 +542,7 @@ export function buildHandwritingUI(container, onTypeChange) {
       renderWordSelection();
     }
     e.target.value = '';
+    workspace?.save();
   });
 
   on($('#hwWordSearch'), 'input', e => {
@@ -578,4 +588,15 @@ export function buildHandwritingUI(container, onTypeChange) {
 
   syncControls();
   render();
+  workspace = initWorkspacePersistence(mountedRoot, 'handwriting', {
+    snapshot: () => ({state, seed, dictionary: {...dictionary, appendedWords: [...dictionary.appendedWords]}}),
+    restore: saved => {
+      if (!saved.state?.geometry || !Array.isArray(saved.dictionary?.allWords)) return;
+      state = saved.state; seed = saved.seed;
+      Object.assign(dictionary,saved.dictionary,{appendedWords:new Set(saved.dictionary.appendedWords)});
+      $('#hwWordSearch').value = dictionary.search;
+      updateDictionaryStatus(dictionary.allWords.length+' words loaded (saved)','info');
+      syncControls(); renderWordSelection(); render();
+    },
+  });
 }

@@ -5,6 +5,7 @@ export function initPreviewFit(root, controls) {
   if (!viewport || !pages) return () => {};
   const select = document.createElement('select');
   select.className = 'tb-select preview-fit-mode';
+  select.dataset.persistKey = 'preview-fit';
   select.setAttribute('aria-label', 'Preview fitting');
   select.innerHTML = '<option value="page">Fit page</option><option value="width">Fit width</option>';
   controls.append(select);
