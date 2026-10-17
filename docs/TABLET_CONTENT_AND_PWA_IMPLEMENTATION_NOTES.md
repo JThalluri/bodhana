@@ -103,3 +103,13 @@ Verification actually run:
 - Final portable HTML: 5,787,548 bytes; gzip 2,649,309. Hosted HTML: 5,791,298 bytes; gzip 2,650,255. Local staged release a98cba4cb81d2f7c at /gurukool/. Exact metrics: artifacts/build-metrics.json.
 
 Artifacts: dist/index.html, dist-hosted/, artifacts/pages-release/. This persistence update is local and staged, not published; the previously verified live release remains fac9aa2e7dccf650. No source changes have been pushed. The pre-existing untracked plan and handoff documents remain untouched. Device validation of persistence through Android PWA restarts/updates and storage eviction remains outstanding; the user's earlier installation/render/print success is recorded separately above.
+
+## Persistence publication — 2026-10-16 (America/Phoenix)
+
+The user explicitly authorized publication. Published source checkpoint 7479e9a's staged release a98cba4cb81d2f7c to JThalluri/gurukool, destination commit 2faf2a4d55fc352fa155a0912d4c216125ed9dd2. Only index.html, release.json and sw.js changed; the existing LICENSE, workflow, icons and other repository files were retained. Authenticated Git Data API publication preserved the prior commit as parent and used a non-forced ref update. Pages workflow 38999121150 succeeded: https://github.com/JThalluri/gurukool/actions/runs/38999121150.
+
+Verified the actual live HTTPS URL https://jthalluri.github.io/gurukool/. All seven runtime/metadata files returned 200 and matched the tested local artifact bytes. All nine routes loaded; four representative modules relaunched offline. The worker registration and versioned cache were scoped to /gurukool/. Evidence: artifacts/live-persistence-artifacts.json.
+
+An app tab opened on the previous live release retained unfinished worksheet text when the new worker arrived and when the update was declined. Explicit acceptance activated the new release. In the published app, worksheet text survived reload; a loaded source file survived offline relaunch and successfully re-extracted three words. Evidence: artifacts/live-persistence-behavior.json and artifacts/live-persistence-offline.png. These are desktop Chromium checks; Android persistence and OS storage eviction still require real-device validation.
+
+This publication supersedes the preceding local-only release status. Source repository changes have not been pushed; the destination repository contains the reviewed runtime release.
