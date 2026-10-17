@@ -56,3 +56,10 @@
 
 .device-storage { padding: 16px; border-top: 1px solid var(--border-color, #bcc9d0); font-size: 12px; line-height: 1.5; }
 .device-storage p { margin: 0 0 10px; }
+
+@media screen {
+ .pwa-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+ .pwa-actions > [role="status"] { flex-basis:100%; }
+ .pwa-actions > [role="status"][hidden] { display:none; }
+ .pwa-actions .pwa-status-toggle { font-size:11px; padding:3px 7px; }
+}

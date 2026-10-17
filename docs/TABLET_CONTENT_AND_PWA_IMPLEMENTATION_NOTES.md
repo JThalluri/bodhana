@@ -113,3 +113,11 @@ Verified the actual live HTTPS URL https://jthalluri.github.io/gurukool/. All se
 An app tab opened on the previous live release retained unfinished worksheet text when the new worker arrived and when the update was declined. Explicit acceptance activated the new release. In the published app, worksheet text survived reload; a loaded source file survived offline relaunch and successfully re-extracted three words. Evidence: artifacts/live-persistence-behavior.json and artifacts/live-persistence-offline.png. These are desktop Chromium checks; Android persistence and OS storage eviction still require real-device validation.
 
 This publication supersedes the preceding local-only release status. Source repository changes have not been pushed; the destination repository contains the reviewed runtime release.
+
+## Minimize offline status notice — 2026-10-16
+
+Added an accessible Minimize control to the hosted PWA status notice. The compact Offline status control restores the explanation; its choice is retained in the existing scoped device preferences across reloads. Install, update and repair buttons remain visible when minimized. Repair/failure/deferred-update explanations expand the message without changing the saved normal-display preference. Portable builds still do not create a PWA status panel.
+
+Verified both builds, artifact audit and Pages packaging. Five production Chromium tests passed: portable/no-registration versus hosted offline relaunch, failed install/update and multi-tab consent, waiting-cache survival, eviction/repair, and the new minimized/expanded/reload/action-visibility scenario. Reviewed screenshots artifacts/pwa-status-minimized.png and artifacts/pwa-status-expanded.png. The existing failed-install fixture had a race that could pass its absence check before registration began; it now waits for actual failure in both fixture tabs before permitting a successful install. No worker/update policy changed.
+
+Staged release: 3bdb1a6d9ffb0a49. Source changes: src/pwa/register.js, src/styles/responsive.css and focused PWA tests; retention/deployment documentation updated.

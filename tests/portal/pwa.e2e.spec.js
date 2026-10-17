@@ -27,10 +27,12 @@ test('failed initial install, complete offline relaunch, failed update and multi
  test.setTimeout(90000);
  version='failed-first';fail=true;
  await page.goto(origin+'#/worksheets');
+ // Wait for the failed install, rather than passing before registration starts.
+ await expect(page.locator('.pwa-actions')).toContainText('Offline update failed');
  await expect.poll(()=>page.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();return !r?.installing && !r?.active;}),{timeout:20000}).toBeTruthy();
  expect(await page.evaluate(()=>caches.keys())).not.toContain(cachePrefix+'failed-first');
  // Keep one existing app tab uncontrolled to verify includeUncontrolled enumeration.
- const second=await context.newPage();await second.goto(origin+'#/worksheets');await expect(second.locator('.seyes-page')).toBeVisible();
+ const second=await context.newPage();await second.goto(origin+'#/worksheets');await expect(second.locator('.seyes-page')).toBeVisible();await expect(second.locator('.pwa-actions')).toContainText('Offline update failed');
  fail=false;version='initial';await page.reload();await ready(page);
  await page.evaluate(()=>caches.open('unrelated-project'));
  await context.setOffline(true);await page.reload();await expect(page.locator('.seyes-page')).toBeVisible();
@@ -77,4 +79,16 @@ test('cache eviction is reported and explicit online repair restores offline lau
  page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'Repair offline files'}).click();
  await expect(page.locator('.pwa-actions')).toContainText('Offline files ready.',{timeout:20000});
  await context.setOffline(true);await page.reload();await expect(page.locator('.seyes-page')).toBeVisible();await context.setOffline(false);
+});
+
+test('offline status can be minimized across reloads while install, update and repair actions remain available',async({page})=>{
+ version='status-initial';fail=false;await page.goto(origin+'#/worksheets');await ready(page);
+ const message=page.locator('#pwa-status-message');
+ await expect(message).toContainText('Offline files ready.');await page.getByRole('button',{name:'Minimize offline status',exact:true}).click();await expect(message).toBeHidden();await expect(page.getByRole('button',{name:'Show offline status',exact:true})).toHaveAttribute('aria-expanded','false');
+ await page.evaluate(()=>{const event=new Event('beforeinstallprompt',{cancelable:true});event.prompt=async()=>{};window.dispatchEvent(event);});await expect(page.getByRole('button',{name:'Install Bodhana',exact:true})).toBeVisible();
+ await page.screenshot({path:'artifacts/pwa-status-minimized.png'});await page.reload();await expect(page.getByRole('button',{name:'Show offline status',exact:true})).toBeVisible();await expect(message).toBeHidden();
+ version='status-update';await page.evaluate(async()=>{await (await navigator.serviceWorker.getRegistration()).update();});await expect(page.getByRole('button',{name:'Update available',exact:true})).toBeVisible();await expect(message).toBeHidden();
+ await page.getByRole('button',{name:'Show offline status',exact:true}).click();await expect(message).toBeVisible();await expect(page.getByRole('button',{name:'Minimize offline status',exact:true})).toHaveAttribute('aria-expanded','true');await page.screenshot({path:'artifacts/pwa-status-expanded.png'});
+ await page.getByRole('button',{name:'Minimize offline status',exact:true}).click();
+ await page.evaluate(async base=>{for(const name of await caches.keys())if(name.startsWith('bodhana:'+base+':'))await caches.delete(name);},base);await page.reload();await expect(page.getByRole('button',{name:'Repair offline files',exact:true})).toBeVisible();await expect(message).toBeVisible();await expect(message).toContainText('missing');
 });

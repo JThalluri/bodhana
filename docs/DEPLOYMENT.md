@@ -43,3 +43,5 @@ Android Chrome is asked to resize the layout viewport with its keyboard using in
 Optional WebKit route smoke: set PORTAL_BROWSER=webkit, clear PORTAL_CHROME, and run npm run test:portal -- --grep "all routes". Its report uses artifacts/webkit-report. The baseline comparison runs when artifacts/baseline/index.html is available; otherwise output checks still validate the current production artifact.
 
 Settings and loaded files are now retained separately from the offline asset cache; see [Local device data](LOCAL_DATA.md). Normal PWA updates and offline-file repair preserve this data. The persistence update is published as release `a98cba4cb81d2f7c`. Live checks verified settings retention after reload, source-file restoration and offline extraction, plus a deliberate upgrade from the previous live release that preserved unfinished work until accepted.
+
+The app status notice has a remembered Minimize/Offline status control. Minimizing hides explanatory text, while install/update/repair actions remain visible. Important repair/failure messages expand the notice.
