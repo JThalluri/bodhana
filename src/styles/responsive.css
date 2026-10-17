@@ -1,0 +1,55 @@
+/* Loaded after module styles. Screen-only: physical pages and print frames are unchanged. */
+@media screen {
+  .portal-main { height: 100vh; height: 100dvh; }
+  .tool-shell { min-width: 0; }
+  .tool-view-controls { display:flex; gap:4px; flex-wrap:wrap; }
+  .tool-view-controls .btn, .tool-view-controls select { min-height: 36px; }
+  .settings-open, .settings-close, .workspace-switch { display:none; }
+  .tool-backdrop { position:fixed; inset:0; background:#0008; z-index:1000; }
+  .overlay-open { z-index:1001 !important; }
+  .tool-info-pane { display:flex !important; min-width:0; }
+  .tool-info-pane > .tool-info-content { overflow:auto; flex:1; }
+  .tool-pages { min-width:0; width:100%; }
+  .tool-header-main { min-width:0; }
+  @media (max-width:1479px) {
+    .portal-sidebar { left:0; width:56px !important; }
+    .portal-sidebar.overlay-open { width:240px !important; }
+    .portal-shell .portal-main { margin-left:56px !important; }
+    .portal-sidebar:not(.overlay-open) .nav-label, .portal-sidebar:not(.overlay-open) .sidebar-brand-banner { display:none; }
+    .portal-sidebar.overlay-open .nav-label { opacity:1; width:auto; }
+    .tool-shell .tool-header.tool-worksheet-header { display:flex; flex-wrap:wrap; padding:8px; gap:6px; height:auto; }
+    .tool-shell .tool-header.tool-worksheet-header .tool-header-main { padding:0; flex:1 1 230px; }
+    .tool-shell .tool-header.tool-worksheet-header .tool-header-actions { display:flex; flex:1 1 auto; flex-wrap:wrap; gap:6px; justify-content:flex-end; }
+    .tool-primary-actions, .tool-secondary-actions { flex-wrap:wrap; padding:0; }
+    .tool-body { flex-direction:row !important; }
+    .tool-shell .tool-body > .tool-settings { display:none; }
+    .tool-shell .tool-body > .tool-settings.overlay-open { display:block; position:fixed; inset:0 auto 0 0; height:100vh; height:100dvh; width:min(360px,90vw) !important; padding-bottom:env(safe-area-inset-bottom); overflow:auto; }
+    .settings-open, .settings-close { display:inline-flex; }
+    .settings-close { position:sticky; top:0; z-index:1; margin:8px; }
+    .tool-shell .tool-body > .tool-preview { width:660px !important; flex:0 0 660px !important; min-height:0; }
+    .tool-info-pane { flex:1; }
+    .btn, .tb-select { min-height:36px; }
+  }
+  /* 56px rail + 660px preview + 280px readable guide = 996px. */
+  @media (max-width:995px) {
+    .workspace-switch { display:inline-flex; }
+    .tool-shell .tool-body > .tool-preview { flex:1 1 100% !important; width:100% !important; }
+    .tool-shell .tool-info-pane { display:none !important; }
+    .tool-shell[data-workspace="guide"] .tool-info-pane { display:flex !important; flex:1; width:100%; }
+    .tool-shell[data-workspace="guide"] .tool-preview { display:none !important; }
+  }
+  @media (max-width:768px) {
+    .portal-sidebar { left:0; width:44px !important; }
+    .portal-shell .portal-main { margin-left:44px !important; }
+    .portal-sidebar:not(.overlay-open) .sidebar-nav { visibility:hidden; }
+    .sidebar-toggle { padding:0; justify-content:center; min-height:44px; }
+  }
+}
+@media print { .tool-view-controls,.settings-close,.tool-backdrop,.pwa-actions { display:none !important; } }
+
+@media screen and (max-width:1479px) { .tool-shell .tool-header-main {flex-wrap:wrap;} .tool-shell .tool-header-actions {max-width:100%;} .tool-shell .tool-primary-actions {max-width:100%;} }
+@media screen { .pwa-actions {position:fixed;bottom:0;right:0;z-index:250;max-width:min(460px,90vw);padding:4px 8px;background:var(--bg-surface);font-size:11px;border:1px solid var(--border);} .pwa-actions:empty {display:none;} }
+
+@media screen { .portal-main {padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom);} .portal-sidebar {padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);} }
+
+@media screen { .portal-shell,.portal-sidebar {min-height:100dvh;} }

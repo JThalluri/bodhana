@@ -262,12 +262,7 @@ function wireEvents(container) {
     render(container);
   });
 
-  const wrapper = container.querySelector('#awardPreviewWrapper');
-  if ('ResizeObserver' in window) {
-    resizeObserver = new ResizeObserver(() => fitScale(container));
-    resizeObserver.observe(wrapper);
-  }
-  on(window, 'resize', () => fitScale(container));
+
 }
 
 export function unmountCertificates() {
@@ -284,5 +279,4 @@ export function buildCertificatesUI(container) {
   updateForm(container);
   wireEvents(container);
   render(container);
-  fitScale(container);
 }

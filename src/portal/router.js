@@ -1,3 +1,4 @@
+import { initToolShell } from '../shared/tool-shell-controller.js';
 const routes = {
   '/':                 () => import('./home.js'),
   '/math':             () => import('../math-worksheets/index.js'),
@@ -28,6 +29,7 @@ const printableRoutes = new Set([
 ]);
 
 let currentUnmount = null;
+let routeGeneration = 0;
 
 export function initRouter() {
   window.addEventListener('hashchange', handleRoute);
@@ -35,6 +37,7 @@ export function initRouter() {
 }
 
 async function handleRoute() {
+  const generation = ++routeGeneration;
   const hash = window.location.hash.replace(/^#/, '') || '/';
   const content = document.getElementById('portalContent');
 
@@ -52,8 +55,13 @@ async function handleRoute() {
   const loader = routes[hash] ?? routes['/'];
   try {
     const mod = await loader();
-    currentUnmount = mod.mount(content) ?? null;
+    if (generation !== routeGeneration) return;
+    const dispose = mod.mount(content);
+    const keys = { '/math-games':'math-games','/word-puzzles':'word-puzzles','/math-puzzles':'math-puzzles','/sudoku':'sudoku','/dict-builder':'dictionary-builder','/certificates':'certificates','/phonics-worksheets':'phonics-worksheets' };
+    const shellDispose = keys[hash] ? initToolShell(content, keys[hash]) : () => {};
+    currentUnmount = () => { shellDispose(); dispose?.(); };
   } catch (e) {
+    if (generation !== routeGeneration) return;
     content.innerHTML = `<div class="empty-state">
       <i class="fas fa-exclamation-triangle"></i>
       <p>Failed to load this page.</p>

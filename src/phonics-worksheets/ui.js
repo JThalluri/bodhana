@@ -439,7 +439,7 @@ export function buildPhonicsWorksheetsUI(container) {
         </div>
 
         <div class="phx-preview tool-preview">
-          <div class="phx-preview-scroll">
+          <div class="phx-preview-scroll tool-preview-scroll">
             <div class="tool-pages" id="phxPagesContainer">
               <div class="empty-state">
                 <i class="fas fa-file-alt"></i>

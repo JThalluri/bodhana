@@ -1,0 +1,11 @@
+import { chromium } from 'playwright';
+import { pathToFileURL } from 'node:url';
+const browser = await chromium.launch(process.env.PORTAL_CHROME ? {executablePath:process.env.PORTAL_CHROME} : {});
+const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+await page.goto(pathToFileURL(process.cwd() + '/artifacts/baseline/index.html').href + '#/worksheets');
+await page.waitForTimeout(1500);
+await page.screenshot({ path: 'artifacts/baseline/desktop-light.png' });
+await page.evaluate(() => document.documentElement.dataset.theme = 'dark');
+await page.screenshot({ path: 'artifacts/baseline/desktop-dark.png' });
+await page.pdf({ path: 'artifacts/baseline/seyes-screen-print.pdf', preferCSSPageSize: true });
+await browser.close();

@@ -1,3 +1,4 @@
+import { openOverlay, closeOverlay } from '../shared/modal.js';
 import { toggleTheme } from '../shared/theme.js';
 import { BANNER_URL } from './banner.js';
 
@@ -6,17 +7,23 @@ export function initShell() {
   const toggle   = document.getElementById('sidebarToggle');
   const overlay  = document.getElementById('sidebarOverlay');
 
+  document.querySelectorAll('.nav-item').forEach(link=>link.setAttribute('aria-label',link.querySelector('.nav-label')?.textContent || 'Home'));
+  toggle.setAttribute('aria-controls','portalSidebar');
   const brandImg = document.getElementById('brandBanner');
   if (brandImg) brandImg.src = BANNER_URL;
 
-  const isMobile = () => window.innerWidth <= 768;
+  const isMobile = () => window.innerWidth < 1480;
+  let desktopCollapsed = false;
+  const sync = () => { closeOverlay(); sidebar.classList.toggle('collapsed', isMobile() || desktopCollapsed); };
+  window.matchMedia('(max-width:1479px)').addEventListener('change', sync);
+  sync();
 
   toggle.addEventListener('click', () => {
     if (isMobile()) {
-      sidebar.classList.toggle('mobile-open');
-      overlay.classList.toggle('visible');
+      if (sidebar.classList.contains('overlay-open')) closeOverlay();
+      else openOverlay(sidebar, toggle);
     } else {
-      sidebar.classList.toggle('collapsed');
+      desktopCollapsed = !desktopCollapsed; sync();
     }
   });
 
@@ -29,8 +36,7 @@ export function initShell() {
   document.querySelectorAll('.nav-item').forEach(a => {
     a.addEventListener('click', () => {
       if (isMobile()) {
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('visible');
+        closeOverlay();
       }
     });
   });

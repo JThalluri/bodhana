@@ -1,9 +1,12 @@
+import { initToolShell } from '../shared/tool-shell-controller.js';
 import { buildPlaceValueUI, unmountPlaceValue } from './pv-ui.js';
 import { buildFractionsUI, unmountFractions } from './fractions-ui.js';
 import { buildMoneyUI, unmountMoney } from './money-ui.js';
 import { buildTimeUI, unmountTime } from './time-ui.js';
 
 let _listeners = [];
+let generation = 0;
+let disposeShell;
 let _currentType = null;
 
 function on(el, evt, fn) {
@@ -12,6 +15,7 @@ function on(el, evt, fn) {
 }
 
 export function unmount() {
+  generation++;
   _listeners.forEach(({ el, evt, fn }) => el.removeEventListener(evt, fn));
   _listeners = [];
   unmountSubType();
@@ -19,6 +23,9 @@ export function unmount() {
 }
 
 function unmountSubType() {
+  _listeners.forEach(({el,evt,fn})=>el.removeEventListener(evt,fn));
+  _listeners=[];
+  disposeShell?.(); disposeShell = null;
   if (_currentType === 'math-test') {
     // math/ui.js has no unmount; clearing innerHTML is sufficient
   } else if (_currentType === 'place-value') {
@@ -58,12 +65,13 @@ function injectWorksheetTypeSelector(container, currentType, onChange) {
   on(select, 'change', () => onChange(select.value));
 }
 
-async function mountSubType(type, container) {
+async function mountSubType(type, container, ticket) {
   container.innerHTML = '';
   _currentType = type;
 
   if (type === 'math-test') {
     const { buildUI } = await import('../math/ui.js');
+    if (ticket !== generation || !container.isConnected) return false;
     buildUI(container);
   } else if (type === 'place-value') {
     buildPlaceValueUI(container);
@@ -87,8 +95,12 @@ export function buildMathWorksheetsUI(container, initialType = 'math-test') {
 
   const switchType = async (nextType) => {
     unmountSubType();
-    await mountSubType(nextType, subContainer);
+    const ticket = ++generation;
+    await mountSubType(nextType, subContainer, ticket);
+    if (ticket !== generation || !subContainer.isConnected) return;
     injectWorksheetTypeSelector(subContainer, nextType, switchType);
+    const keys = { 'math-test':'math-tests', 'place-value':'place-value', 'fractions-drill':'fractions', 'money-counting':'money-counting', 'time-problems':'time-problems' };
+    disposeShell = initToolShell(subContainer, keys[nextType]);
   };
 
   switchType(initialType);

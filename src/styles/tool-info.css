@@ -1,0 +1,14 @@
+﻿.tool-info-content { container-type:inline-size; padding:20px; line-height:1.6; color:var(--text-primary); overflow-wrap:anywhere; }
+.tool-info-content h2 { font-size:1.2rem; margin:0 0 12px; }
+.tool-info-content h3 { font-size:1rem; margin:18px 0 8px; }
+.tool-info-content ul,.tool-info-content ol { padding-left:22px; }
+.tool-info-content img { max-width:100%; height:auto; }
+.tool-info-content a { color:var(--accent); text-decoration:underline; }
+.tool-info-table { overflow:auto; max-width:100%; }
+.tool-info-content table { border-collapse:collapse; }
+.tool-info-content th,.tool-info-content td { padding:8px; border:1px solid var(--border); text-align:left; }
+.tool-info-enlarge { border:0; background:transparent; cursor:zoom-in; }
+.tool-info-image-view { max-width:95vw; max-height:95dvh; padding:16px; background:var(--bg-surface); color:var(--text-primary); }
+.tool-info-image-view img { display:block; max-width:85vw; max-height:80dvh; object-fit:contain; }
+.tool-info-image-view::backdrop { background:#000a; }
+@container (max-width:320px) { .tool-info-content figure { margin-inline:0; } }

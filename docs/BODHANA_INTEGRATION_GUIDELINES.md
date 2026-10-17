@@ -51,7 +51,7 @@ The visual structure is:
 
 ```text
 sidebar | one module header
-        | settings pane | page preview pane | empty/right content pane
+        | settings pane | page preview pane | editable guide pane
 ```
 
 Do not add a second module toolbar or a duplicate top header.
@@ -114,6 +114,8 @@ The shared print/export engines currently recognize these page selectors:
 - `.mp-puzzle-page`
 - `.sdk-puzzle-page`
 - `.wp-puzzle-block`
+- `.hw-worksheet`
+- `.award-cert-page` (landscape adapter; Print only)
 
 If a new printable page class is required, update both:
 
@@ -250,7 +252,7 @@ Run after each integration phase:
 - Confirm only one module header row is visible.
 - Confirm action buttons align with the preview pane.
 - Confirm theme toggle is the final far-right header item.
-- Confirm settings pane and preview pane stay fixed when the sidebar collapses.
+- At desktop width, confirm settings and preview retain their widths; at compact widths verify the original settings overlay and Preview/Guide switch.
 - Confirm one full page is visible in the middle pane.
 - Confirm `Print` preview shows US Letter pages with no right-edge truncation.
 - Confirm `Export` output visually matches the rendered worksheet and print geometry.
@@ -284,3 +286,10 @@ Avoid these:
 - Adding per-module `@page` CSS for normal worksheets.
 - Changing shared page geometry to fix a single worksheet without checking other modules.
 - Allowing prototypes to introduce one-off palettes, oversized controls, or custom layout systems.
+
+
+## Tablet and guidance integration (2026-10-16)
+
+Initialize initToolShell(container, stableContentKey) only after actual tool DOM is present; compose its cleanup with the module cleanup. Dispatchers must dispose/reinitialize per subtype and guard stale asynchronous completion. Add content under src/content/tool-info and register its key with the build validator; do not embed guide HTML in module JS. Read that directory's README for the image/CSS contract. Never clone settings or apply screen fitting to printable content geometry. Dictionary results have no scale; Certificates owns one landscape stage through the shared adapter.
+
+Run npm test, both builds, npm run audit:build and npm run test:portal using built artifacts. The portable target is one HTML file; hosted builds use BODHANA_BASE. See DEPLOYMENT.md for commands and explicit offline boundaries. Physical Seyes validation and Android print/install checks remain mandatory device gates.

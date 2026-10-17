@@ -6,7 +6,7 @@ Included tool modules should follow this screen structure:
 
 ```text
 sidebar | module header
-        | settings pane | main work/preview pane | empty right pane
+        | settings pane | main work/preview pane | editable guide pane
 ```
 
 The module header is the only visible header row. It contains the module title/status on the left, actions on the right, and the theme toggle as the final item.
@@ -46,10 +46,31 @@ Seyes uses deterministic millimeter geometry. Its pagination, grid SVG, text pla
 
 ## PDF Direction
 
-Native `Print PDF` is the quality baseline. Direct `Export PDF` for generated non-Seyes worksheets uses a shared hidden print-layout frame, renders each Letter-sized page at high resolution, and embeds those page images into a PDF. This avoids screen-preview zoom drift while matching the validated print geometry.
+Native `Print` is the quality baseline. Direct `Export` for generated non-Seyes worksheets uses a shared hidden print-layout frame, renders each Letter-sized page at high resolution, and embeds those page images into a PDF. This avoids screen-preview zoom drift while matching the validated print geometry.
 
-The exporter must not rasterize the visible preview pane directly. It should render from the same print-layout contract used by `Print PDF`: Letter page, zero browser page margin, module print overrides, all rendered pages included, and portal chrome excluded.
+The exporter must not rasterize the visible preview pane directly. It should render from the same print-layout contract used by `Print`: Letter page, zero browser page margin, module print overrides, all rendered pages included, and portal chrome excluded.
 
 Seyes remains outside direct Export PDF for now. Its trusted output path is still the dedicated print window because its 8mm grid and text placement require physical validation.
 
 Printed and exported worksheet pages include a small top-right `Bodhana` watermark implemented as real page markup rather than a pseudo-element, so the same mark survives print windows and PDF serialization.
+
+
+## Responsive screen shell (2026-10-16)
+
+Desktop at 1480px and wider retains inline settings, the existing 660px preview column, a flexible guide and one header. Below 1480px navigation defaults to a rail and Settings opens the original form as a modal overlay. Navigation and settings share one overlay owner, focus trapping/restoration, Escape/backdrop handling and restored inert state. No cloned form trees are created. The desktop navigation preference is independent of responsive defaults. At 995px and below the 56 + 660 + 280px pane budget cannot hold both panes; Preview/Guide switches the existing pane instances. A 44px menu rail remains available below 769px, including on tool routes whose topbar is hidden. Viewport height uses dvh with vh fallback.
+
+src/shared/tool-shell-controller.js owns per-tool controls and disposal. Ordinary synchronous routes integrate at router mount; Math and Writing integrate after each actual subtype render. Both router imports and asynchronous arithmetic mounts have generation guards. Subtype replacement closes overlays and removes observers/listeners before replacing DOM.
+
+src/shared/preview-fit.js observes the unscaled viewport, uses page offset geometry and applies one screen scale. Fit page considers width and height; Fit width permits vertical scrolling. The minimum scale is 20%, maximum 100%. Hidden previews remeasure when activated. Certificates uses the landscape stage adapter with its old automatic scale observer removed. Dictionary results never use worksheet scaling. Seyes physical geometry and its dedicated print document remain protected; its font dependency is now bundled rather than fetched from Google.
+
+## Guidance and assets
+
+src/content/tool-info/<stable-key>/content.html is trusted repository guidance. Optional scoped styles.css is eagerly discovered. src/shared/tool-info.js renders the fragment, wraps tables and provides a native dialog image viewer. Dictionary Notes uses this loader while Detail stays dynamic. Selecting a word reveals Guide on narrow layouts. Phonics now has a guide region separate from settings tabs.
+
+scripts/vite-tool-info-plugin.mjs validates registered keys and markup with parse5, resolves real contained raster paths, checks MIME signatures, inlines images, watches dependencies and reports image sizes/deduplication. Initial support is ordinary img[src]; srcset, SVG, remote images and inline styles are rejected. External links open HTTPS pages in new tabs; videos are watch links only. See src/content/tool-info/README.md for the authoring contract.
+
+## Distributions and offline boundary
+
+npm run build still emits portable dist/index.html. npm run build:hosted emits dist-hosted with configurable BODHANA_BASE, a stable scoped manifest, icons, release metadata and a real service-worker file. Both entry points generate constructs first. All fonts/icons actually used and the existing PDF/DOCX/ODT readers are bundled locally, with license notices. Hosted registration is production-only; portable and Vite dev never register. Every app-shell asset is precached in a complete versioned scope cache. Updates wait for a deliberate action and consent from all responsive tabs; no automatic reload over unfinished work. Old caches are retained while multiple clients can use them. Wiktionary, external sites/videos and device speech remain online/platform dependent.
+
+A dedicated playwright.portal.config.js exercises file URLs and a non-root production server; Workbench discovery is unchanged. Deployment packaging is allowlisted and the workflow template lives under deployment/pages-repository/.github/workflows, outside active source workflows. No destination or publication is assumed. See docs/DEPLOYMENT.md.

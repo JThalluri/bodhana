@@ -1,3 +1,4 @@
+import { renderToolInfo } from '../shared/tool-info.js';
 import { extractWords, findPossiblePlurals, readFileAsText } from './extractor.js';
 import { themeToggleMarkup, infoPaneTabsMarkup, wireInfoPaneTabs } from '../shared/shell-ui.js';
 import PhonicsEngine from '../phonics/PhonicsEngine.mjs';
@@ -27,46 +28,17 @@ const state = {
 
 // Assigned once at mount via wireInfoPaneTabs — used by selectWord()
 let infoPaneTabs = null;
+let notesCleanup = null;
 
 // AbortController for any in-flight Wiktionary lookup
 let _lookupController = null;
 
 // ── Notes tab static content ──────────────────────────────────────────────────
 
-const NOTES_HTML = `
-  <div class="wd-notes">
-    <div>
-      <h3>Extract</h3>
-      <p>Scans your source documents and builds a unique, sorted word list. Words are
-      filtered by length and lowercase setting. Likely plurals are flagged automatically.</p>
-    </div>
-    <div>
-      <h3>Enrich</h3>
-      <p>Runs phonics analysis on every extracted word using the Phase 3 engine. This is
-      an opt-in step — not automatic — because analysis is computed per-word and you may
-      want to review the word list first.</p>
-      <p>Enrichment is cached for the session: re-running Enrich or re-extracting the same
-      words never recomputes words already analyzed.</p>
-    </div>
-    <div>
-      <h3>Word grid</h3>
-      <ul>
-        <li><strong>Click a word's text</strong> to select it and view its phonics detail.</li>
-        <li><strong>Click the × button</strong> to exclude a word from export.</li>
-        <li>Superscript numbers are frequency counts across all source documents.</li>
-        <li>Blue words are possible plurals. Grey words already exist in the base dictionary.</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Flagging</h3>
-      <p>In the Detail tab, use the Flag control to mark a word for follow-up. Add an optional
-      note explaining the issue, then click <em>Flag</em>. Use <em>Export flags</em> to download
-      the collected flags as JSON — this file is the input for the Phase 2 Constructs Workbench
-      when a teacher finds something that needs a correction.</p>
-    </div>
-  </div>`;
+
 
 export function buildDictBuilderUI(container) {
+  notesCleanup?.();
   container.innerHTML = `
     <div class="db-tool tool-shell">
 
@@ -244,7 +216,7 @@ export function buildDictBuilderUI(container) {
     { id: 'notes',  label: 'Notes',  icon: 'fa-sticky-note' },
     { id: 'detail', label: 'Detail', icon: 'fa-microscope'  },
   ]);
-  infoPane.querySelector('[data-panel="notes"]').innerHTML = NOTES_HTML;
+  notesCleanup = renderToolInfo(infoPane.querySelector('[data-panel="notes"]'), 'dictionary-builder');
   infoPaneTabs = wireInfoPaneTabs(infoPane);
 
   resetState();
@@ -528,6 +500,7 @@ function selectWord(word) {
   state.selectedWord = word;
   renderWordGrid();
   renderDetailPanel();
+  document.querySelector('.db-tool')?.dispatchEvent(new Event('show-guide'));
   infoPaneTabs?.activate('detail'); // auto-switch — unconditional per spec §4
 }
 
@@ -1139,6 +1112,8 @@ function wireEvents() {
 }
 
 export function unmount() {
+  notesCleanup?.(); notesCleanup = null;
+  clearTimeout(_manualDebounce);
   _lookupController?.abort();
   _lookupController = null;
   resetState();

@@ -1,19 +1,21 @@
-const CDN = {
-  pdfjs:     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-  pdfWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
-  mammoth:   'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
-  jszip:     'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
-};
+import pdfjs from 'pdfjs-dist/build/pdf.min.js?url';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.js?url';
+import mammoth from 'mammoth/mammoth.browser.min.js?url';
+import jszip from 'jszip/dist/jszip.min.js?url';
+const LIBRARIES = { pdfjs, pdfWorker, mammoth, jszip };
 
+const loadedScripts = new Map();
 function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = () => reject(new Error(`Failed to load library from CDN: ${src}`));
-    document.head.appendChild(s);
+  if (loadedScripts.has(src)) return loadedScripts.get(src);
+  const pending = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => { loadedScripts.delete(src); script.remove(); reject(new Error('A bundled document reader could not load. Please reload Bodhana.')); };
+    document.head.appendChild(script);
   });
+  loadedScripts.set(src, pending);
+  return pending;
 }
 
 export function readFileAsText(file) {
@@ -35,9 +37,9 @@ function readArrayBuffer(file) {
 }
 
 async function parsePdf(file) {
-  await loadScript(CDN.pdfjs);
+  await loadScript(LIBRARIES.pdfjs);
   const lib = window.pdfjsLib;
-  lib.GlobalWorkerOptions.workerSrc = CDN.pdfWorker;
+  lib.GlobalWorkerOptions.workerSrc = LIBRARIES.pdfWorker;
   const buf = await readArrayBuffer(file);
   const doc = await lib.getDocument({ data: buf }).promise;
   const parts = [];
@@ -50,14 +52,14 @@ async function parsePdf(file) {
 }
 
 async function parseDocx(file) {
-  await loadScript(CDN.mammoth);
+  await loadScript(LIBRARIES.mammoth);
   const buf = await readArrayBuffer(file);
   const result = await window.mammoth.extractRawText({ arrayBuffer: buf });
   return result.value;
 }
 
 async function parseOdt(file) {
-  await loadScript(CDN.jszip);
+  await loadScript(LIBRARIES.jszip);
   const buf = await readArrayBuffer(file);
   const zip = await window.JSZip.loadAsync(buf);
   const xmlFile = zip.file('content.xml');

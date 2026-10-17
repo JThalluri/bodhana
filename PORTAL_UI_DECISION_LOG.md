@@ -12,7 +12,7 @@
 - Put worksheet and puzzle type selection in the settings pane, not the header.
 - Add a separator after the type selector to distinguish worksheet identity from worksheet options.
 
-## Print and PDF
+## Historical print action labels (superseded below)
 
 - Keep Generate as the primary action for generated worksheets.
 - Rename print actions to Print PDF because the expected workflow is generate, inspect, then print or save through the browser print dialog.
@@ -28,9 +28,26 @@
 - Treat Seyes as the most sensitive module because physical paper geometry affects student handwriting practice.
 - Keep Seyes on its dedicated Print PDF path for this export phase; do not add direct Export PDF until its millimeter grid can be matched exactly.
 
-## Layout
+## Historical layout (superseded below)
 
 - Use a fixed settings pane and fixed rendered-page pane.
 - Add an empty right-side pane that absorbs extra width, including when the sidebar collapses.
 - Normalize printable module backgrounds across light and dark modes.
 - Dictionary Builder uses the same header/settings/main/right-pane structure, with its word results as the main pane instead of a rendered worksheet page.
+
+
+## 2026-10-16: Tablet shell, editable guidance and distribution targets
+
+Supersedes the historical fixed-pane/empty-right-pane decision. Desktop settings/preview widths remain; compact mode uses original settings DOM in an accessible overlay and gives remaining width to guidance. Below the measured minimum pane budget, switch Preview/Guide. Use CSS viewport sizes and dynamic height, with no device detection or orientation lock. Preserve one header and existing action labels.
+
+Use explicit per-mount/subtype cleanup and generation guards rather than a global DOM mutation observer for lifecycle. Fit the preview viewport in width and height; retain separate Certificate stage and Dictionary results adapters. Physical Letter dimensions and Seyes print geometry are unchanged.
+
+Guidance is independently editable HTML plus optional scoped CSS and local raster images. Build-time parser validation/inlining solves nested raw-HTML image references. Initially reject srcset/SVG/remote images and inline style rather than silently shipping unresolved resources. Preserve Dictionary Notes/Detail and add the missing Phonics guide. Videos remain external watch links.
+
+Preserve the portable single file and add a separately configured hosted artifact. Locally package fonts/icons and the already-used document parser versions for offline fidelity. License notices accompany both targets. App identity equals the stable hosting directory. Precache required files completely before activation, scope cache cleanup to this app, and offer a deliberate update requiring consent across tabs. Offline does not include Wiktionary, external videos/sites or guarantees about device speech and print services.
+
+Prepare a destination-repository workflow template and allowlisted package only. Owner/name and release authorization remain external inputs; no repository creation, push or Pages deployment is implied. Physical Android/printing/install checks require a real device.
+
+The desktop threshold is tuned to 1480px: 240px navigation + 300px settings + 660px preview + 280px minimum guide. The proposed 1440px boundary left only 240px for guidance; smaller windows use compact settings/navigation instead. This is a measured budget adjustment, with the 1920px layout preserved.
+
+Current header action labels are Print and Export. The earlier Print PDF/Export PDF label decision is superseded; the shared native print and hidden-frame direct export contracts remain.

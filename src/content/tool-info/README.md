@@ -1,0 +1,11 @@
+﻿# Editing module guidance
+
+Each stable key has `src/content/tool-info/<key>/content.html`. Edit that fragment, ordinary local images, or optional `styles.css`; no module JavaScript changes are needed. Keys and their owning modules are listed in `scripts/vite-tool-info-plugin.mjs`. A missing registered fragment fails the build. Dictionary Builder owns Notes only; Detail stays dynamic.
+
+Use semantic headings, paragraphs, lists, native details/summary, tables with captions/headers, and figures. The renderer adds a scroll wrapper for tables and an accessible in-app image enlargement dialog. Shared styles provide typography and container queries. Scope every companion CSS selector under `[data-tool-info="<key>"]`. Vite handles companion CSS `url()` assets normally; prefer images in the fragment for illustrations.
+
+Supported images: ordinary `img src="images/example.png" alt="Description"` with PNG, JPEG, WebP or GIF files inside the content tree. Empty alt explicitly marks a decorative image. Use width/height to reserve space. Paths resolve relative to the fragment and are checked with realpath containment and MIME signatures, then inlined as data URLs. Do not check in base64 copies. Build output reports referenced/unique asset bytes. Images add roughly a third in base64 overhead; compress them before adding. `srcset`, picture sources, SVG, remote images, inline style/style blocks, scripts, event handlers, embedded players and document wrappers are deliberately rejected in this first contract.
+
+Use HTTPS anchors for external resources. All external links are normalized to `target="_blank" rel="noopener noreferrer"`. Videos are external watch links with a clear label; never embed a player. Do not add invented videos, claims, attribution or illustrations. This is validation of trusted repository content, not an upload sanitizer.
+
+`npm run dev` reloads content/image changes. `npm test -- tests/content` checks the transform. `npm run build` verifies all keys and produces the one-file portable artifact. A local PNG/table fixture lives under `tests/content/fixtures`; production content currently has no illustrations. To add a new module, add its stable key to the build validator and initialize the shell at its real mount boundary.

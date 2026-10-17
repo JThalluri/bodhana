@@ -1,0 +1,13 @@
+/* Local WOFF2 faces; licenses ship with the release. */
+@font-face {font-family:'Andika';font-style:normal;font-weight:400;font-display:swap;src:url('../../node_modules/@fontsource/andika/files/andika-latin-400-normal.woff2') format('woff2');}
+@font-face {font-family:'Andika';font-style:normal;font-weight:700;font-display:swap;src:url('../../node_modules/@fontsource/andika/files/andika-latin-700-normal.woff2') format('woff2');}
+@font-face {font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url('../../node_modules/@fontsource/nunito/files/nunito-latin-400-normal.woff2') format('woff2');}
+@font-face {font-family:'Nunito';font-style:normal;font-weight:600;font-display:swap;src:url('../../node_modules/@fontsource/nunito/files/nunito-latin-600-normal.woff2') format('woff2');}
+@font-face {font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url('../../node_modules/@fontsource/nunito/files/nunito-latin-700-normal.woff2') format('woff2');}
+@font-face {font-family:'Patrick Hand';font-style:normal;font-weight:400;font-display:swap;src:url('../../node_modules/@fontsource/patrick-hand/files/patrick-hand-latin-400-normal.woff2') format('woff2');}
+@font-face {font-family:'Quicksand';font-style:normal;font-weight:400;font-display:swap;src:url('../../node_modules/@fontsource/quicksand/files/quicksand-latin-400-normal.woff2') format('woff2');}
+@font-face {font-family:'Quicksand';font-style:normal;font-weight:600;font-display:swap;src:url('../../node_modules/@fontsource/quicksand/files/quicksand-latin-600-normal.woff2') format('woff2');}
+@font-face {font-family:'Open Sans';font-style:normal;font-weight:400;font-display:swap;src:url('../../node_modules/@fontsource/open-sans/files/open-sans-latin-400-normal.woff2') format('woff2');}
+@font-face {font-family:'Open Sans';font-style:normal;font-weight:600;font-display:swap;src:url('../../node_modules/@fontsource/open-sans/files/open-sans-latin-600-normal.woff2') format('woff2');}
+@font-face {font-family:'Font Awesome 6 Free';font-style:normal;font-weight:900;font-display:block;src:url('../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2') format('woff2');}
+.fas,.fa-solid {font-family:'Font Awesome 6 Free';font-weight:900;}

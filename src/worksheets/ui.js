@@ -1,3 +1,4 @@
+import { printFontFaces } from '../shared/print-fonts.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { seyesGridSVG } from './seyes-grid.js';
 import { brandWatermarkElementHTML, brandWatermarkStyles } from '../shared/worksheet-brand.js';
@@ -310,7 +311,7 @@ function buildPrintHTML(pages, vars) {
 <head>
 <meta charset="UTF-8">
 <title>Seyes Worksheet</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+${printFontFaces('Andika')}
 <style>
   :root {
     --s-baseline:  ${vars.baseline}mm;

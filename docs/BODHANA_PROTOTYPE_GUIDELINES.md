@@ -8,7 +8,7 @@ Bodhana is a worksheet-building portal for teachers and students. Prototype the 
 
 Primary target for this phase:
 
-- Desktop viewport: 1920 x 1080.
+- Preserve desktop viewport: 1920 x 1080; also validate compact/narrow screens and reduced viewport height.
 - Paper: US Letter portrait, 8.5 in x 11 in.
 - Workflow: apply settings, generate worksheet, inspect, print or export.
 - Screen preview should match printed/exported output as closely as possible.
@@ -19,7 +19,7 @@ Prototype worksheet modules with this mental model:
 
 ```text
 sidebar | single module header
-        | settings pane | worksheet preview pane | empty content pane
+        | settings pane | worksheet preview pane | guide pane
 ```
 
 Keep these rules:
@@ -29,7 +29,7 @@ Keep these rules:
 - Put worksheet settings below the type selector, grouped into short sections.
 - Keep worksheet actions visually aligned to the worksheet preview pane, not the far right static pane.
 - Keep the theme switch as the final header item, separated from worksheet actions.
-- The right-side content pane is reserved for later static help content; leave it empty in prototypes unless explicitly requested.
+- The right pane contains module guidance authored independently as HTML; show its workflow and settings only when verified.
 
 Recommended header action layout:
 
@@ -188,3 +188,8 @@ Before handing a prototype to Bodhana integration agents:
 - Dense examples still fit or paginate intentionally.
 - The top-right watermark area is reserved.
 - The spec calls out any behavior that differs from the shared Bodhana shell.
+
+
+## Responsive prototypes (2026-10-16)
+
+At widths below 1480px, navigation begins collapsed and Settings opens the existing form as an accessible overlay. Below a 996px pane budget boundary, switch Preview/Guide. Fit page uses available width and height; Fit width scrolls vertically. Keep actual Letter page dimensions untouched. Certificates is landscape Letter; Dictionary Builder is a responsive results view. Test the viewport matrix in TABLET_CONTENT_AND_PWA_IMPLEMENTATION_PLAN.md in both themes, and do not equate desktop emulation with physical Android print/install validation.

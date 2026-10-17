@@ -24,7 +24,7 @@ export function mount(container) {
 Router calls `mount(content)` on navigation and stores the returned `unmount`. On next navigation it calls `unmount()` before mounting the new module.
 
 ### Router
-`src/portal/router.js` — hash-based (`#/route`). Dynamic imports (lazy-loaded, split into chunks by Vite):
+`src/portal/router.js` — hash-based (`#/route`). Dynamic imports (lazy-loaded in development; inlined into the single production bundle):
 ```js
 const routes = {
   '/':             () => import('./home.js'),
@@ -37,6 +37,8 @@ const routes = {
   '/sudoku':       () => import('../sudoku/index.js'),
   '/dict-builder': () => import('../dictbuilder/index.js'),
   '/worksheets':   () => import('../worksheets/index.js'),
+  '/certificates': () => import('../appreciation-certificates/index.js'),
+  '/phonics-worksheets': () => import('../phonics-worksheets/index.js'),
 };
 ```
 
@@ -76,15 +78,11 @@ Shared across all modules — no need to re-define in module CSS:
 - `.status-msg`, `.status-msg.success/.error/.info`
 - `.empty-state` — centered icon + message placeholder
 
-## Two-Pane Layout Pattern
-**All tool modules use this.** Sticky toolbar (actions right-aligned via `.tb-actions { margin-left:auto }`) + full-height split body. Settings live in the left pane; the right pane renders white printable pages.
-```css
-.tool { display:flex; flex-direction:column; height:100%; min-height:0 }
-.toolbar { position:sticky; top:0; flex-shrink:0; background:var(--bg-surface); border-bottom:1px solid var(--border) }
-.body { display:flex; flex:1; overflow:hidden; min-height:0 }
-.left-pane { width:280-300px; flex-shrink:0; overflow-y:auto; border-right:1px solid var(--border) }
-.right-pane { flex:1; overflow-y:auto; overflow-x:auto; background:var(--bg-body) }
-```
+## Tool shell and guidance
+
+Tools use one module header, settings, preview/results and guidance. Desktop at 1480px+ retains existing pane widths. Compact layouts use a navigation rail and Settings overlay over the original form DOM; below 996px Preview/Guide switches the existing panes. initToolShell owns controls, fitting and cleanup. Math and Writing dispatchers initialize after actual subtype rendering and dispose before replacement; stale asynchronous imports are guarded. Read PORTAL_UI_ARCHITECTURE.md before changing lifecycle or geometry.
+
+Guidance lives in src/content/tool-info/<key>/content.html with optional scoped CSS and normal local images. The parse5 Vite transform validates/inlines raster assets. Dictionary Notes is separate from live Detail. Phonics has its own Guide. Videos are external watch links, never embeds.
 
 ## Home Page
 - `src/portal/home.js` — tool card HTML (`.tool-card` links)
@@ -102,14 +100,19 @@ Shared across all modules — no need to re-define in module CSS:
 | `/math-puzzles` | Math Puzzle Grid | `src/mathpuzzle/` |
 | `/sudoku` | Sudoku | `src/sudoku/` |
 | `/dict-builder` | Dictionary Builder | `src/dictbuilder/` |
+| `/certificates` | Certificates | src/appreciation-certificates/ |
+| `/phonics-worksheets` | Phonics Worksheets | src/phonics-worksheets/ |
 | `/worksheets` | Writing Worksheets (type switcher: Seyès default, Handwriting Lines) | `src/worksheets/` (Seyès + dispatcher), `src/writing-worksheets/` (Handwriting Lines) |
 
-## Known Constraints
-- **vite-plugin-singlefile**: all imports inlined → watch bundle size. Google Fonts loaded via CDN link tag (not inlined).
-- **Andika font**: loaded globally via the Google Fonts link in `index.html`, so every module can offer it (Seyès worksheets, Place Value, Word Puzzles, Sudoku). Adds ~400KB to PDF when printing — accepted tradeoff for handwriting-practice quality.
-- **html2pdf.js**: loaded from CDN dynamically on demand for Place Value worksheet PDF export.
-- **No backend**: all logic runs client-side. No persistence beyond `localStorage`.
-- **Minimum width**: 1024px (desktop/tablet teacher tool).
+## Distribution and constraints
+
+- npm run build produces the portable single dist/index.html, usable with file URLs and no worker registration.
+- npm run build:hosted generates constructs and dist-hosted with configurable BODHANA_BASE, scoped manifest/worker/icons and versioned complete precaching. See docs/DEPLOYMENT.md.
+- Fonts, solid icons and existing PDF/DOCX/ODT readers are local bundled resources; licenses accompany both outputs. Monitor bundle size.
+- The custom shared Export engine uses a hidden Letter frame and raster PDF pages; no CDN html2pdf implementation is used. Seyes keeps its dedicated Print path; Certificates is landscape Print only.
+- No backend. Wiktionary and external links need internet. Speech and physical printing depend on platform services. Offline availability requires a successful initial install/cache cycle.
+- Updates wait for a deliberate action and consent across tabs; no silent reload over unfinished work.
+- npm run test:portal uses a separate production-artifact Playwright config. Existing Workbench tests remain independently configured. Real Android checks are pending until executed on hardware.
 
 ## See Also
 - `docs/BACKLOG.md` — prioritized feature queue

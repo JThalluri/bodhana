@@ -11,7 +11,7 @@
  *   scripts/constructs-validate.mjs      (pure validation)
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
@@ -38,12 +38,17 @@ const fixtures = yamlLoad(fixtureText);
 // ---- Compute source hash ----
 const sourceHash = 'sha256:' + createHash('sha256').update(yamlText).digest('hex');
 
+// Preserve build metadata for unchanged constructs across the two distribution targets.
+let generatedAt = new Date().toISOString();
+if (existsSync(outPath)) {
+  try { const previous = JSON.parse(readFileSync(outPath, 'utf8')); if (previous.sourceHash === sourceHash) generatedAt = previous.generatedAt; } catch { /* Regenerate invalid output. */ }
+}
 // ---- Compile ----
 let compiled;
 try {
   compiled = compileConstructs(raw, {
     sourceHash,
-    generatedAt: new Date().toISOString(),
+    generatedAt,
   });
 } catch (err) {
   console.error('[build-constructs] Compile failed:', err.message);
