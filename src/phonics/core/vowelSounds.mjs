@@ -105,7 +105,13 @@ export function lookupExceptionWithTier(word, pattern, exceptionMap) {
  * @param {Object} defaultVowelSound - { [pattern]: soundKey }
  * @returns {string|null}
  */
-export function soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound) {
+export function soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound, pronunciationOverridesMap) {
+  const pronunciation = pronunciationOverridesMap?.get(word);
+  if (pronunciation) {
+    const segment = pronunciation.segments.find(segment => segment.spelling === pattern);
+    if (!segment) return null;
+    return lookupException(word, pattern, exceptionMap) ?? segment.vowelSound ?? defaultVowelSound[pattern] ?? null;
+  }
   const ex = lookupException(word, pattern, exceptionMap);
   return ex ?? defaultVowelSound[pattern] ?? null;
 }
@@ -121,12 +127,15 @@ export function soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound
  * @param {Object}   soundLabels       - { [soundKey]: displayLabel }
  * @returns {Array<{ pattern: string, sound: string, label: string, is_default: boolean }>}
  */
-export function vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels) {
+export function vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels, pronunciationOverridesMap) {
+  const pronunciation = pronunciationOverridesMap?.get(word);
   const out = [];
   for (const t of tokens) {
-    if (defaultVowelSound[t] === undefined) continue; // not a vowel team token
+    const segment = pronunciation?.segments.find(segment => segment.spelling === t);
+    if (pronunciation && !segment) continue;
+    if (defaultVowelSound[t] === undefined && !segment?.vowelSound) continue;
     const ex = lookupException(word, t, exceptionMap);
-    const sound = ex ?? defaultVowelSound[t];
+    const sound = ex ?? segment?.vowelSound ?? defaultVowelSound[t];
     if (!sound) continue;
     out.push({
       pattern:    t,

@@ -1,3 +1,4 @@
+import { buildPronunciationMap } from '../../src/phonics/core/pronunciation.mjs';
 /**
  * workbench-core.mjs — pure logic for the Constructs Workbench.
  *
@@ -192,15 +193,16 @@ export function computeBlastRadius(pattern, compiledObj, fixturesObj) {
   // 'ear' (r-controlled) wins at that position and 'ea' is never produced.
   const sortedPats = buildSortedPatterns(compiledObj.patternCategories || {});
   const compoundPartsSet = buildCompoundPartsSet(compiledObj.compoundParts || []);
+  const pronunciationOverridesMap = buildPronunciationMap(compiledObj.wordPronunciations);
 
   return [...wordSet]
     .filter(w => w.includes(pattern))
-    .filter(w => tokenize(w, sortedPats, {compoundPartsSet}).includes(pattern))
+    .filter(w => tokenize(w, sortedPats, {compoundPartsSet, pronunciationOverridesMap}).includes(pattern))
     .sort()
     .map(word => {
       const result = lookupExceptionWithTier(word, pattern, exMap);
-      const sound  = result?.sound ?? defaultSound;
-      const tier   = result?.tier  ?? (sound ? 'default' : null);
+      const sound  = soundForVowelTeam(word, pattern, exMap, compiledObj.defaultVowelSound || {}, pronunciationOverridesMap);
+      const tier   = result?.tier ?? (pronunciationOverridesMap.has(word) ? 'pronunciation' : (sound ? 'default' : null));
       return { word, sound, tier };
     });
 }
@@ -222,10 +224,12 @@ export function runRegressionDiff(oldCompiled, newCompiled, fixturesObj) {
   const oldDefault = oldCompiled.defaultVowelSound || {};
   const newDefault = newCompiled.defaultVowelSound || {};
 
+  const oldPronunciations = buildPronunciationMap(oldCompiled.wordPronunciations);
+  const newPronunciations = buildPronunciationMap(newCompiled.wordPronunciations);
   const diffs = [];
   for (const f of fixturesObj.vowelTeamSounds || []) {
-    const oldSound = soundForVowelTeam(f.word, f.pattern, oldExMap, oldDefault);
-    const newSound = soundForVowelTeam(f.word, f.pattern, newExMap, newDefault);
+    const oldSound = soundForVowelTeam(f.word, f.pattern, oldExMap, oldDefault, oldPronunciations);
+    const newSound = soundForVowelTeam(f.word, f.pattern, newExMap, newDefault, newPronunciations);
     if (oldSound !== newSound) {
       // A known-failure fixture (expectedFailure: true) that now resolves to its documented
       // correct target is good news — surface it distinctly, do not block merge.

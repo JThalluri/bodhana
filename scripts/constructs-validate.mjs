@@ -266,6 +266,45 @@ export function checkStructure(constructs) {
     }
   }
 
+  const pronunciationWords = new Set();
+  const pronunciationEntries = constructs.wordPronunciations || [];
+  if (!Array.isArray(pronunciationEntries)) violations.push('wordPronunciations must be an array');
+  for (const entry of Array.isArray(pronunciationEntries) ? pronunciationEntries : []) {
+    if (!entry || typeof entry !== 'object') { violations.push('wordPronunciations entries must be objects'); continue; }
+    const name = entry?.word;
+    if (typeof name !== 'string' || !/^[a-z]+$/.test(name) || pronunciationWords.has(name)) {
+      violations.push('wordPronunciations must have unique lowercase words: ' + name);
+    }
+    pronunciationWords.add(name);
+    if (entry.locale !== 'en-US') violations.push('wordPronunciations currently supports only en-US: ' + name);
+    for (const key of ['ipa', 'respelling']) {
+      if (typeof entry[key] !== 'string' || !entry[key].trim() || entry[key].length > 120 || /[<>\r\n]/.test(entry[key])) {
+        violations.push('wordPronunciations invalid ' + key + ': ' + name);
+      }
+    }
+    if (!Number.isInteger(entry.level) || entry.level < 1 || entry.level > 8) {
+      violations.push('wordPronunciations invalid level: ' + name);
+    }
+    if (typeof entry.source !== 'string' || !/^https:\/\//.test(entry.source)) {
+      violations.push('wordPronunciations requires an HTTPS pronunciation source: ' + name);
+    }
+    if (!Array.isArray(entry.segments) || !entry.segments.length ||
+        entry.segments.some(segment => !segment || typeof segment.spelling !== 'string' || !/^[a-z]+$/.test(segment.spelling) ||
+          typeof segment.ipa !== 'string' || !segment.ipa.trim() || /[<>\s]/.test(segment.ipa) || segment.ipa.length > 30 ||
+          (segment.vowelSound !== undefined && !Object.hasOwn(constructs.soundLabels, segment.vowelSound)))) {
+      violations.push('wordPronunciations invalid sound segments: ' + name);
+    } else if (entry.segments.map(segment => segment.spelling).join('') !== name) {
+      violations.push('wordPronunciations segments must concatenate to word: ' + name);
+    } else {
+      for (const segment of entry.segments) {
+        const exception = constructs.vowelTeamExceptions.find(row => row.word === name && row.pattern === segment.spelling);
+        if (segment.vowelSound && exception && exception.sound !== segment.vowelSound) {
+          violations.push('wordPronunciations conflicts with vowel exception: ' + name + ':' + segment.spelling);
+        }
+      }
+    }
+  }
+
   if (violations.length) fail('structural-checks', violations);
 }
 

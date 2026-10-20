@@ -15,7 +15,7 @@ describe('vowelTeamSounds fixtures', () => {
   for (const [word, expectations] of byWord) {
     it(`vowelTeamSounds("${word}")`, () => {
       const tokens = tokenize(word, sortedPatterns, tokenizerOptions);
-      const results = vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels);
+      const results = vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels, tokenizerOptions.pronunciationOverridesMap);
       const resultMap = new Map(results.map(r => [r.pattern, r.sound]));
       for (const f of expectations) {
         expect(resultMap.get(f.pattern), `word="${word}" pattern="${f.pattern}"`).toBe(f.sound);

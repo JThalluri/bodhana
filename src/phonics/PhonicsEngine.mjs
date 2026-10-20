@@ -38,6 +38,7 @@ const c = loadConstructs();
 const sortedPatterns    = buildSortedPatterns(c.patternCategories);
 const vowelNucleiList   = buildVowelNucleiList(c.patternCategories);
 const compoundPartsSet  = buildCompoundPartsSet(c.compoundParts);
+const pronunciationOverridesMap = c.pronunciationOverridesMap;
 const rootWordsSet      = buildRootWordsSet(c.rootWords);
 const patternCategoryMap = buildPatternCategoryMap(c.patternCategories);
 const syllableSplitOverridesMap = buildSyllableSplitOverridesMap(c.syllableSplitOverrides || []);
@@ -55,7 +56,7 @@ const syllableCtx = {
 // Exported constants
 // ---------------------------------------------------------------------------
 
-export const ENGINE_VERSION    = '3.1.0';
+export const ENGINE_VERSION    = '3.2.0';
 export const ANALYSIS_REVISION = ENGINE_VERSION + ':' + c.meta.sourceHash;
 export const PHONICS_PATTERNS  = c.patternCategories;
 export const PATTERN_CATEGORY  = c.patternCategory;
@@ -83,8 +84,8 @@ export function parseWord(rawWord) {
   const word = cleanWord(rawWord);
   if (!word) return null;
 
-  const tokens  = coreTokenize(word, sortedPatterns, {compoundPartsSet});
-  const buckets = findAllPatterns(word, sortedPatterns, {compoundPartsSet});
+  const tokens  = coreTokenize(word, sortedPatterns, {compoundPartsSet, pronunciationOverridesMap});
+  const buckets = findAllPatterns(word, sortedPatterns, {compoundPartsSet, pronunciationOverridesMap});
 
   const r_controlled = [
     ...(buckets.rControlled  || []),
@@ -92,13 +93,14 @@ export function parseWord(rawWord) {
   ].join(',');
 
   const sounds = coreVowelTeamSounds(
-    word, tokens, c.vowelTeamExceptionsByWord, c.defaultVowelSound, c.soundLabels
+    word, tokens, c.vowelTeamExceptionsByWord, c.defaultVowelSound, c.soundLabels, pronunciationOverridesMap
   );
 
+  const pronunciation = pronunciationOverridesMap.get(word);
   const difficulty     = computeDifficulty(buckets, tokens);
   const syllables      = splitSyllables(word, syllableCtx);
   const { onset, rime } = onsetRime(word);
-  const level          = decodabilityLevel(tokens, c.patternLevels);
+  const level          = pronunciation?.level ?? decodabilityLevel(tokens, c.patternLevels);
 
   return {
     word,
@@ -120,6 +122,10 @@ export function parseWord(rawWord) {
     secondary_patterns: findSecondaryPatterns(tokens, buckets).join(','),
     vowel_team_sounds:  sounds.map(s => `${s.pattern}:${s.sound}`).join(','),
     tokens,
+    pronunciation_locale: pronunciation?.locale || '',
+    pronunciation_ipa: pronunciation?.ipa || '',
+    pronunciation_respelling: pronunciation?.respelling || '',
+    pronunciation_segments: pronunciation ? JSON.stringify(pronunciation.segments) : '',
   };
 }
 
@@ -157,11 +163,11 @@ export function parseText(text) {
  * @returns {string[]}
  */
 export function tokenize(word, opts) {
-  return coreTokenize(cleanWord(word), sortedPatterns, {...opts, compoundPartsSet});
+  return coreTokenize(cleanWord(word), sortedPatterns, {...opts, compoundPartsSet, pronunciationOverridesMap});
 }
 
 export function findAllPatternsForWord(word) {
-  return findAllPatterns(cleanWord(word), sortedPatterns, {compoundPartsSet});
+  return findAllPatterns(cleanWord(word), sortedPatterns, {compoundPartsSet, pronunciationOverridesMap});
 }
 
 /**
@@ -196,14 +202,14 @@ export function decodabilityLevelForRecord(record) {
 
 export function soundForVowelTeam(word, pattern) {
   return coreSoundForVowelTeam(
-    cleanWord(word), pattern, c.vowelTeamExceptionsByWord, c.defaultVowelSound
+    cleanWord(word), pattern, c.vowelTeamExceptionsByWord, c.defaultVowelSound, pronunciationOverridesMap
   );
 }
 
 export function vowelTeamSounds(word, tokens) {
   const w = cleanWord(word);
-  const toks = tokens ?? coreTokenize(w, sortedPatterns, {compoundPartsSet});
-  return coreVowelTeamSounds(w, toks, c.vowelTeamExceptionsByWord, c.defaultVowelSound, c.soundLabels);
+  const toks = tokens ?? coreTokenize(w, sortedPatterns, {compoundPartsSet, pronunciationOverridesMap});
+  return coreVowelTeamSounds(w, toks, c.vowelTeamExceptionsByWord, c.defaultVowelSound, c.soundLabels, pronunciationOverridesMap);
 }
 
 export function lookupExceptionForWord(word, pattern) {
@@ -221,6 +227,7 @@ const BASE_COLUMNS = [
 const EXTENDED_COLUMNS = [
   'clusters3', 'vowel_teams', 'r_controlled', 'floss', 'letter_count',
   'syllable_count', 'onset', 'rime', 'level',
+  'pronunciation_locale', 'pronunciation_ipa', 'pronunciation_respelling', 'pronunciation_segments',
   'secondary_patterns', 'vowel_team_sounds',
 ];
 

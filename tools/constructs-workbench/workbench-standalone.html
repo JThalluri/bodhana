@@ -411,6 +411,7 @@ function compileConstructs(raw, meta = {}) {
     defaultVowelSound:            deepCopy(raw.defaultVowelSound),
 
     vowelTeamExceptions,
+    wordPronunciations: deepCopy(raw.wordPronunciations || []),
 
     compoundParts:    [...(raw.compoundParts || [])].map(String),
     rootWords:        [...(raw.rootWords     || [])].map(String),
@@ -698,6 +699,45 @@ function checkStructure(constructs) {
     }
   }
 
+  const pronunciationWords = new Set();
+  const pronunciationEntries = constructs.wordPronunciations || [];
+  if (!Array.isArray(pronunciationEntries)) violations.push('wordPronunciations must be an array');
+  for (const entry of Array.isArray(pronunciationEntries) ? pronunciationEntries : []) {
+    if (!entry || typeof entry !== 'object') { violations.push('wordPronunciations entries must be objects'); continue; }
+    const name = entry?.word;
+    if (typeof name !== 'string' || !/^[a-z]+$/.test(name) || pronunciationWords.has(name)) {
+      violations.push('wordPronunciations must have unique lowercase words: ' + name);
+    }
+    pronunciationWords.add(name);
+    if (entry.locale !== 'en-US') violations.push('wordPronunciations currently supports only en-US: ' + name);
+    for (const key of ['ipa', 'respelling']) {
+      if (typeof entry[key] !== 'string' || !entry[key].trim() || entry[key].length > 120 || /[<>\r\n]/.test(entry[key])) {
+        violations.push('wordPronunciations invalid ' + key + ': ' + name);
+      }
+    }
+    if (!Number.isInteger(entry.level) || entry.level < 1 || entry.level > 8) {
+      violations.push('wordPronunciations invalid level: ' + name);
+    }
+    if (typeof entry.source !== 'string' || !/^https:\/\//.test(entry.source)) {
+      violations.push('wordPronunciations requires an HTTPS pronunciation source: ' + name);
+    }
+    if (!Array.isArray(entry.segments) || !entry.segments.length ||
+        entry.segments.some(segment => !segment || typeof segment.spelling !== 'string' || !/^[a-z]+$/.test(segment.spelling) ||
+          typeof segment.ipa !== 'string' || !segment.ipa.trim() || /[<>\s]/.test(segment.ipa) || segment.ipa.length > 30 ||
+          (segment.vowelSound !== undefined && !Object.hasOwn(constructs.soundLabels, segment.vowelSound)))) {
+      violations.push('wordPronunciations invalid sound segments: ' + name);
+    } else if (entry.segments.map(segment => segment.spelling).join('') !== name) {
+      violations.push('wordPronunciations segments must concatenate to word: ' + name);
+    } else {
+      for (const segment of entry.segments) {
+        const exception = constructs.vowelTeamExceptions.find(row => row.word === name && row.pattern === segment.spelling);
+        if (segment.vowelSound && exception && exception.sound !== segment.vowelSound) {
+          violations.push('wordPronunciations conflicts with vowel exception: ' + name + ':' + segment.spelling);
+        }
+      }
+    }
+  }
+
   if (violations.length) fail('structural-checks', violations);
 }
 
@@ -716,6 +756,12 @@ function validateAll(constructs, fixtures) {
 
 
 // ── src/phonics/core/vowelSounds.mjs ─────────────────────────────────────
+
+/** Exact-word American pronunciation entries; never infer suffix/compound matches. */
+function buildPronunciationMap(entries = []) {
+  return new Map(entries.map(entry => [entry.word, entry]));
+}
+
 
 /**
  * vowelSounds.mjs — vowel-team sound resolution
@@ -824,7 +870,13 @@ function lookupExceptionWithTier(word, pattern, exceptionMap) {
  * @param {Object} defaultVowelSound - { [pattern]: soundKey }
  * @returns {string|null}
  */
-function soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound) {
+function soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound, pronunciationOverridesMap) {
+  const pronunciation = pronunciationOverridesMap?.get(word);
+  if (pronunciation) {
+    const segment = pronunciation.segments.find(segment => segment.spelling === pattern);
+    if (!segment) return null;
+    return lookupException(word, pattern, exceptionMap) ?? segment.vowelSound ?? defaultVowelSound[pattern] ?? null;
+  }
   const ex = lookupException(word, pattern, exceptionMap);
   return ex ?? defaultVowelSound[pattern] ?? null;
 }
@@ -840,12 +892,15 @@ function soundForVowelTeam(word, pattern, exceptionMap, defaultVowelSound) {
  * @param {Object}   soundLabels       - { [soundKey]: displayLabel }
  * @returns {Array<{ pattern: string, sound: string, label: string, is_default: boolean }>}
  */
-function vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels) {
+function vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels, pronunciationOverridesMap) {
+  const pronunciation = pronunciationOverridesMap?.get(word);
   const out = [];
   for (const t of tokens) {
-    if (defaultVowelSound[t] === undefined) continue; // not a vowel team token
+    const segment = pronunciation?.segments.find(segment => segment.spelling === t);
+    if (pronunciation && !segment) continue;
+    if (defaultVowelSound[t] === undefined && !segment?.vowelSound) continue;
     const ex = lookupException(word, t, exceptionMap);
-    const sound = ex ?? defaultVowelSound[t];
+    const sound = ex ?? segment?.vowelSound ?? defaultVowelSound[t];
     if (!sound) continue;
     out.push({
       pattern:    t,
@@ -919,14 +974,16 @@ function buildSortedPatterns(patternCategories) {
  *
  * @param {string} word
  * @param {{ pattern: string, category: string }[]} sortedPatterns
- * @param {{ mergeDoubleConsonants?: boolean, compoundPartsSet?: Set<string> }} [opts]
+ * @param {{ mergeDoubleConsonants?: boolean, compoundPartsSet?: Set<string>, pronunciationOverridesMap?: Map<string, object> }} [opts]
  * @returns {string[]}
  */
 function tokenize(word, sortedPatterns, opts = {}) {
   const mergeDoubles = opts.mergeDoubleConsonants !== false;
   const w = clean(word);
+  const pronunciation = opts.pronunciationOverridesMap?.get(w);
+  if (pronunciation) return pronunciation.segments.map(segment => segment.spelling);
   const parts = splitKnownCompoundParts(w, opts.compoundPartsSet);
-  if (parts.length > 1) return parts.flatMap(part => tokenize(part, sortedPatterns, {...opts, compoundPartsSet: null}));
+  if (parts.length > 1) return parts.flatMap(part => tokenize(part, sortedPatterns, {...opts, compoundPartsSet: null, pronunciationOverridesMap: null}));
   const tokens = [];
   let i = 0;
 
@@ -1598,15 +1655,16 @@ function computeBlastRadius(pattern, compiledObj, fixturesObj) {
   // 'ear' (r-controlled) wins at that position and 'ea' is never produced.
   const sortedPats = buildSortedPatterns(compiledObj.patternCategories || {});
   const compoundPartsSet = buildCompoundPartsSet(compiledObj.compoundParts || []);
+  const pronunciationOverridesMap = buildPronunciationMap(compiledObj.wordPronunciations);
 
   return [...wordSet]
     .filter(w => w.includes(pattern))
-    .filter(w => tokenize(w, sortedPats, {compoundPartsSet}).includes(pattern))
+    .filter(w => tokenize(w, sortedPats, {compoundPartsSet, pronunciationOverridesMap}).includes(pattern))
     .sort()
     .map(word => {
       const result = lookupExceptionWithTier(word, pattern, exMap);
-      const sound  = result?.sound ?? defaultSound;
-      const tier   = result?.tier  ?? (sound ? 'default' : null);
+      const sound  = soundForVowelTeam(word, pattern, exMap, compiledObj.defaultVowelSound || {}, pronunciationOverridesMap);
+      const tier   = result?.tier ?? (pronunciationOverridesMap.has(word) ? 'pronunciation' : (sound ? 'default' : null));
       return { word, sound, tier };
     });
 }
@@ -1628,10 +1686,12 @@ function runRegressionDiff(oldCompiled, newCompiled, fixturesObj) {
   const oldDefault = oldCompiled.defaultVowelSound || {};
   const newDefault = newCompiled.defaultVowelSound || {};
 
+  const oldPronunciations = buildPronunciationMap(oldCompiled.wordPronunciations);
+  const newPronunciations = buildPronunciationMap(newCompiled.wordPronunciations);
   const diffs = [];
   for (const f of fixturesObj.vowelTeamSounds || []) {
-    const oldSound = soundForVowelTeam(f.word, f.pattern, oldExMap, oldDefault);
-    const newSound = soundForVowelTeam(f.word, f.pattern, newExMap, newDefault);
+    const oldSound = soundForVowelTeam(f.word, f.pattern, oldExMap, oldDefault, oldPronunciations);
+    const newSound = soundForVowelTeam(f.word, f.pattern, newExMap, newDefault, newPronunciations);
     if (oldSound !== newSound) {
       // A known-failure fixture (expectedFailure: true) that now resolves to its documented
       // correct target is good news — surface it distinctly, do not block merge.
@@ -2385,8 +2445,14 @@ function renderStep2VowelSound() {
   const isPattern   = !!defaults[q];
   let resultHtml    = '';
 
+  const pronunciation = buildPronunciationMap(S.compiledObj?.wordPronunciations).get(q);
   if (q.length > 0) {
-    if (isPattern) {
+    if (pronunciation) {
+      resultHtml = '<div class="result-box"><strong>American pronunciation:</strong> ' + pronunciation.respelling +
+        ' /' + pronunciation.ipa + '/<table><thead><tr><th>spelling</th><th>sound</th></tr></thead><tbody>' +
+        pronunciation.segments.map(segment => '<tr><td>' + segment.spelling + '</td><td>/' + segment.ipa + '/</td></tr>').join('') +
+        '</tbody></table><p class="hint">Curated whole-word pronunciation. Edit its validated wordPronunciations entry for changes; vowel-team patches do not replace this breakdown.</p></div>';
+    } else if (isPattern) {
       const rows = (S.compiledObj.vowelTeamExceptions || []).filter(r => r.pattern === q);
       resultHtml = `
         <div class="result-box">

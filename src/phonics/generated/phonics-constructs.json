@@ -200,7 +200,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-20T03:41:09.670Z",
+  "generatedAt": "2026-10-20T14:27:43.381Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -526,7 +526,7 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:7d71bd3f0d66147c94e2b010eb6856649f4237055536c5e92b68ee43d4152ddd",
+  "sourceHash": "sha256:52773edf92b86ae67d329cbd992e89d5348eacfe4378a4d822a8c1be275b1f2d",
   "suffixStripRules": [
     {
       "always": true,
@@ -1921,12 +1921,6 @@
       "note": "The active token is ough; ou was shadowed.",
       "pattern": "ough",
       "sound": "short_u",
-      "word": "enough"
-    },
-    {
-      "note": "The active token is ough; ou was shadowed.",
-      "pattern": "ough",
-      "sound": "short_u",
       "word": "rough"
     },
     {
@@ -2024,6 +2018,107 @@
       "pattern": "ie",
       "sound": "long_i",
       "word": "beautifies"
+    },
+    {
+      "note": "Reachable ou token in the explicit US e/n/ou/gh pronunciation; gh supplies /f/.",
+      "pattern": "ou",
+      "sound": "short_u",
+      "word": "enough"
+    }
+  ],
+  "wordPronunciations": [
+    {
+      "ipa": "əˈnʌf",
+      "level": 8,
+      "locale": "en-US",
+      "respelling": "uh-NUF",
+      "segments": [
+        {
+          "ipa": "ə",
+          "spelling": "e"
+        },
+        {
+          "ipa": "n",
+          "spelling": "n"
+        },
+        {
+          "ipa": "ʌ",
+          "spelling": "ou",
+          "vowelSound": "short_u"
+        },
+        {
+          "ipa": "f",
+          "spelling": "gh"
+        }
+      ],
+      "source": "https://dictionary.cambridge.org/pronunciation/english/enough",
+      "word": "enough"
+    },
+    {
+      "ipa": "ˈɡleɪʃɚ",
+      "level": 8,
+      "locale": "en-US",
+      "respelling": "GLAY-sher",
+      "segments": [
+        {
+          "ipa": "ɡ",
+          "spelling": "g"
+        },
+        {
+          "ipa": "l",
+          "spelling": "l"
+        },
+        {
+          "ipa": "eɪ",
+          "spelling": "a",
+          "vowelSound": "long_a"
+        },
+        {
+          "ipa": "ʃ",
+          "spelling": "ci"
+        },
+        {
+          "ipa": "ɚ",
+          "spelling": "er"
+        }
+      ],
+      "source": "https://dictionary.cambridge.org/pronunciation/english/glacier",
+      "word": "glacier"
+    },
+    {
+      "ipa": "ˈɡleɪʃɚz",
+      "level": 8,
+      "locale": "en-US",
+      "respelling": "GLAY-sherz",
+      "segments": [
+        {
+          "ipa": "ɡ",
+          "spelling": "g"
+        },
+        {
+          "ipa": "l",
+          "spelling": "l"
+        },
+        {
+          "ipa": "eɪ",
+          "spelling": "a",
+          "vowelSound": "long_a"
+        },
+        {
+          "ipa": "ʃ",
+          "spelling": "ci"
+        },
+        {
+          "ipa": "ɚ",
+          "spelling": "er"
+        },
+        {
+          "ipa": "z",
+          "spelling": "s"
+        }
+      ],
+      "source": "https://dictionary.cambridge.org/pronunciation/english/glacier",
+      "word": "glaciers"
     }
   ]
 }

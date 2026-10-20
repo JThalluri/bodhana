@@ -956,7 +956,14 @@ wb.describe('Nine-flag review: reachable word-mode vowel teams',()=>{
  for(const word of ['somewhere','appear'])wb(`${word}: no false substring vowel team`,async({page})=>{
   await searchAndWait(page,word);await expect(page.locator('.hint')).toContainText('No vowel team patterns detected');
  });
- for(const [word,pattern,sound] of [['beautiful','eau','long_u'],['bureau','eau','long_o'],['enough','ough','short_u'],['thought','ough','aw']])wb(`${word}: one reachable ${pattern} token`,async({page})=>{
+ for(const [word,pattern,sound] of [['beautiful','eau','long_u'],['bureau','eau','long_o'],['thought','ough','aw']])wb(`${word}: one reachable ${pattern} token`,async({page})=>{
   await searchAndWait(page,word);await expect(page.locator('tbody tr')).toHaveCount(1);await expect(page.locator('tbody')).toContainText(pattern);await expect(page.locator('tbody')).toContainText(sound);
+ });
+});
+
+wb.describe('American whole-word pronunciation entries',()=>{
+ wb.beforeEach(async({page})=>{await loadFiles(page);await proceedToStep2(page);});
+ for(const [word,count,respelling] of [['enough',4,'uh-NUF'],['glacier',5,'GLAY-sher'],['glaciers',6,'GLAY-sherz']])wb(word+' shows full sound correspondences',async({page})=>{
+  await searchAndWait(page,word);await expect(page.locator('.result-box')).toContainText('American pronunciation:');await expect(page.locator('.result-box')).toContainText(respelling);await expect(page.locator('tbody tr')).toHaveCount(count);await expect(page.locator('.result-box')).not.toContainText('long_i');await expect(page.locator('[data-pat]')).toHaveCount(0);
  });
 });

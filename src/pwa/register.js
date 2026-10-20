@@ -16,6 +16,11 @@ export async function initPwa() {
  const setStatus=(message,attention=false)=>{status.textContent=message;if(attention)minimized=false;renderStatus();};
  toggle.onclick=()=>{minimized=!minimized;writePreference('pwa-status-minimized',minimized);renderStatus();};
  ui.append(status,toggle); document.body.append(ui); renderStatus();
+ // Detail can scroll its actions clear of this fixed status region at any size.
+ const statusSize = new ResizeObserver(() => {
+  document.documentElement.style.setProperty('--pwa-status-clearance', Math.ceil(ui.getBoundingClientRect().height + 12) + 'px');
+ });
+ statusSize.observe(ui);
  let registration;
  const channel='BroadcastChannel' in window ? new BroadcastChannel('bodhana-update:'+__APP_BASE__) : null;
  const clientId=crypto.randomUUID();

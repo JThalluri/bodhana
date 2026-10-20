@@ -9,6 +9,7 @@
  */
 
 import rawConstructs from './generated/phonics-constructs.json';
+import { buildPronunciationMap } from './core/pronunciation.mjs';
 import { buildExceptionMap } from './core/vowelSounds.mjs';
 
 const EXPECTED_SCHEMA_VERSION = '1.0.0';
@@ -57,6 +58,7 @@ export function loadConstructs(raw = rawConstructs) {
     soundLabels:               raw.soundLabels,
     defaultVowelSound:         raw.defaultVowelSound,
     vowelTeamExceptionsByWord,
+    pronunciationOverridesMap: buildPronunciationMap(raw.wordPronunciations),
     compoundParts:             raw.compoundParts,
     rootWords:                 raw.rootWords,
     suffixStripRules:          raw.suffixStripRules,

@@ -34,3 +34,6 @@ Format: `word | old sound | new sound | pattern | date | reason`
 | beauteous | long_o | long_u | eau | 2026-10-19 | Nine-flag blast-radius guards |
 | beautified | long_i | long_i | ie | 2026-10-19 | Nine-flag blast-radius guards |
 | beautifies | long_i | long_i | ie | 2026-10-19 | Nine-flag blast-radius guards |
+
+| enough | ow | short_u | ou | 2026-10-20 | American enough pronunciation exposes ou + gh; validated Workbench patch |
+| enough | short_u | (removed) | ough | 2026-10-20 | American enough pronunciation exposes ou + gh; validated Workbench patch |

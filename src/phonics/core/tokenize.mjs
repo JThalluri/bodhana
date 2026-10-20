@@ -48,14 +48,16 @@ export function buildSortedPatterns(patternCategories) {
  *
  * @param {string} word
  * @param {{ pattern: string, category: string }[]} sortedPatterns
- * @param {{ mergeDoubleConsonants?: boolean, compoundPartsSet?: Set<string> }} [opts]
+ * @param {{ mergeDoubleConsonants?: boolean, compoundPartsSet?: Set<string>, pronunciationOverridesMap?: Map<string, object> }} [opts]
  * @returns {string[]}
  */
 export function tokenize(word, sortedPatterns, opts = {}) {
   const mergeDoubles = opts.mergeDoubleConsonants !== false;
   const w = clean(word);
+  const pronunciation = opts.pronunciationOverridesMap?.get(w);
+  if (pronunciation) return pronunciation.segments.map(segment => segment.spelling);
   const parts = splitKnownCompoundParts(w, opts.compoundPartsSet);
-  if (parts.length > 1) return parts.flatMap(part => tokenize(part, sortedPatterns, {...opts, compoundPartsSet: null}));
+  if (parts.length > 1) return parts.flatMap(part => tokenize(part, sortedPatterns, {...opts, compoundPartsSet: null, pronunciationOverridesMap: null}));
   const tokens = [];
   let i = 0;
 

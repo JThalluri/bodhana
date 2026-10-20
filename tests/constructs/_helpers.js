@@ -1,3 +1,4 @@
+import { buildPronunciationMap } from '../../src/phonics/core/pronunciation.mjs';
 /**
  * Shared helpers for the constructs regression harness.
  * Loads the compiled JSON and fixtures once; exports the fully-initialised
@@ -48,5 +49,5 @@ const syllableCtx = {
   syllableSplitOverridesMap,
 };
 
-const tokenizerOptions = {compoundPartsSet};
+const tokenizerOptions = {compoundPartsSet, pronunciationOverridesMap: buildPronunciationMap(constructs.wordPronunciations)};
 export { tokenizerOptions, constructs, fixtures, sortedPatterns, vowelNucleiList, exceptionMap, syllableCtx };

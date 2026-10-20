@@ -1,3 +1,4 @@
+import { buildPronunciationMap } from '../../src/phonics/core/pronunciation.mjs';
 /**
  * Constructs Workbench — UI layer (app.js)
  *
@@ -320,8 +321,14 @@ function renderStep2VowelSound() {
   const isPattern   = !!defaults[q];
   let resultHtml    = '';
 
+  const pronunciation = buildPronunciationMap(S.compiledObj?.wordPronunciations).get(q);
   if (q.length > 0) {
-    if (isPattern) {
+    if (pronunciation) {
+      resultHtml = '<div class="result-box"><strong>American pronunciation:</strong> ' + pronunciation.respelling +
+        ' /' + pronunciation.ipa + '/<table><thead><tr><th>spelling</th><th>sound</th></tr></thead><tbody>' +
+        pronunciation.segments.map(segment => '<tr><td>' + segment.spelling + '</td><td>/' + segment.ipa + '/</td></tr>').join('') +
+        '</tbody></table><p class="hint">Curated whole-word pronunciation. Edit its validated wordPronunciations entry for changes; vowel-team patches do not replace this breakdown.</p></div>';
+    } else if (isPattern) {
       const rows = (S.compiledObj.vowelTeamExceptions || []).filter(r => r.pattern === q);
       resultHtml = `
         <div class="result-box">

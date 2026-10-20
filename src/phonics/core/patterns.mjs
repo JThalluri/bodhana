@@ -16,8 +16,11 @@ import { splitKnownCompoundParts } from './wordParts.mjs';
  */
 export function findAllPatterns(word, sortedPatterns, opts = {}) {
   const parts = splitKnownCompoundParts(word, opts.compoundPartsSet);
+  const pronunciation = opts.pronunciationOverridesMap?.get(word);
   const found = {};
   for (const { pattern, category } of sortedPatterns) {
+    // A curated sound breakdown supersedes misleading overlapping vowel teams.
+    if (pronunciation && category === 'vowelTeams' && !pronunciation.segments.some(segment => segment.spelling === pattern)) continue;
     if (parts.some(part => part.includes(pattern))) {
       if (!found[category]) found[category] = [];
       if (!found[category].includes(pattern)) found[category].push(pattern);

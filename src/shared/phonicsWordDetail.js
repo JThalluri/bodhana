@@ -102,6 +102,16 @@ export function renderWordDetail(word, record, {
         ${g.items.map(p => `<span class="badge ${CATEGORY_CSS[g.key] || 'badge-accent'}">${p}</span>`).join('')}
       </div>`).join('');
 
+  // Exact pronunciation entries show complete correspondences, including consonants.
+  const escapePronunciation = text => String(text).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  let pronunciationSegments = [];
+  try { pronunciationSegments = JSON.parse(record.pronunciation_segments || '[]'); } catch { /* Older records have no pronunciation data. */ }
+  const pronunciationHtml = Array.isArray(pronunciationSegments) && pronunciationSegments.length && pronunciationSegments.every(segment => segment && typeof segment.spelling === 'string' && typeof segment.ipa === 'string') ?
+    '<div class="wd-section"><div class="wd-section-label">American pronunciation</div><p class="wd-pronunciation">' +
+    escapePronunciation(record.pronunciation_respelling) + ' /' + escapePronunciation(record.pronunciation_ipa) + '/</p>' +
+    pronunciationSegments.map(segment => '<div class="wd-sound-row"><span class="wd-sound-pattern">' + escapePronunciation(segment.spelling) +
+      '</span><span class="wd-sound-arrow">&rarr;</span><span class="wd-sound-label">/' + escapePronunciation(segment.ipa) + '/</span></div>').join('') + '</div>' : '';
+
   // Vowel team sounds
   const soundEntries = (record.vowel_team_sounds || '')
     .split(',').filter(Boolean)
@@ -156,7 +166,7 @@ export function renderWordDetail(word, record, {
 
       ${patternGroups ? `<div class="wd-section wd-patterns">${patternGroups}</div>` : ''}
 
-      ${soundsHtml}
+      ${pronunciationHtml || soundsHtml}
 
       <div class="wd-stats-row">
         ${stats.map(s => `

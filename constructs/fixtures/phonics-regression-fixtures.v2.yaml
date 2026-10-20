@@ -157,6 +157,11 @@ tokenizer:
   - {"word":"beauty","graphemes":"b|eau|t|y"}
   - {"word":"appear","graphemes":"a|pp|ear"}
 
+  # Exact-word American sound correspondences (2026-10-20).
+  - {"word":"enough","graphemes":"e|n|ou|gh"}
+  - {"word":"glacier","graphemes":"g|l|a|ci|er"}
+  - {"word":"glaciers","graphemes":"g|l|a|ci|er|s"}
+
 syllableSplit:
   # format: { word, split }  split is an array of syllable strings, in order
   - { word: something,   split: [some, thing] }
@@ -435,7 +440,7 @@ vowelTeamSounds:
   - {"word":"worried","pattern":"ie","sound":"long_e"}
   - {"word":"buries","pattern":"ie","sound":"long_e"}
   - {"word":"worries","pattern":"ie","sound":"long_e"}
-  - {"word":"enough","pattern":"ough","sound":"short_u"}
+  - {"word":"enough","pattern":"ou","sound":"short_u"}
   - {"word":"rough","pattern":"ough","sound":"short_u"}
   - {"word":"tough","pattern":"ough","sound":"short_u"}
   - {"word":"laugh","pattern":"augh","sound":"short_a"}
@@ -457,3 +462,6 @@ vowelTeamSounds:
   - {"word":"beauteous","pattern":"eau","sound":"long_u"}
   - {"word":"beautified","pattern":"ie","sound":"long_i"}
   - {"word":"beautifies","pattern":"ie","sound":"long_i"}
+
+  - { word: glacier, pattern: a, sound: long_a }
+  - { word: glaciers, pattern: a, sound: long_a }

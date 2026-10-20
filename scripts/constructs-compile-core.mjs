@@ -58,6 +58,7 @@ export function compileConstructs(raw, meta = {}) {
     defaultVowelSound:            deepCopy(raw.defaultVowelSound),
 
     vowelTeamExceptions,
+    wordPronunciations: deepCopy(raw.wordPronunciations || []),
 
     compoundParts:    [...(raw.compoundParts || [])].map(String),
     rootWords:        [...(raw.rootWords     || [])].map(String),

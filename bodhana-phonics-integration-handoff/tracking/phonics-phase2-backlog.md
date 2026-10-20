@@ -8,6 +8,26 @@ Update this file — don't let findings like these live only in chat history.
 
 ---
 
+## OPEN - Country / pronunciation selector
+
+**Requested:** 2026-10-20, following the enough/glacier pronunciation discussion.
+
+**Current decision:** Use American English for pronunciation analysis and guidance. A locale selector is future work; this decision does not imply that all existing engine classifications are already correct. In particular, glacier must not default to the bike sound for ie; its current American target is the common GLAY-sher pronunciation rather than imposing the British hiatus analysis.
+
+**Future enhancement:** Add a country/pronunciation dropdown, defaulting to American English. Back each supported choice with explicitly curated pronunciation conventions; a country can have multiple accepted pronunciations. Changing the choice should update sound correspondences, syllable analysis and related worksheet/detail output consistently, rather than only changing the speech voice.
+
+**Acceptance criteria:**
+- Keep American English as the default and retain the selected pronunciation variety on the device.
+- Include the selected variety in derived-analysis cache identity so switching varieties cannot reuse stale records. Preserve loaded files, word selection/order, user metadata and historical flags.
+- Preserve the explicit-refresh contract for imported CSV analyses; do not silently reinterpret them when the dropdown changes.
+- Use glacier and laugh as dialect-sensitive regression examples. Enough must retain its final /f/ in complete sound guidance regardless of the selected variety.
+- Align speech with the selected variety when a suitable platform voice is available, and make unavailable voice support clear. Voice availability must not determine the linguistic analysis.
+- Verify sound filters, syllable output, print/export and saved-state restoration for each supported variety using sourced pronunciation fixtures.
+
+**Status:** Backlog only. No selector or new pronunciation variety implemented by this entry.
+
+---
+
 ## RESOLVED — `-able` / `-ible` suffix-split undercounts true syllables by one
 
 **Found during:** v2 corpus, Pass 3 (suffix-rule coverage).
@@ -169,3 +189,5 @@ as no-ops: the nucleus fallback already produces the pedagogically correct split
 removed from `phonics-regression-fixtures.v2.yaml` during Phase 1 when they started passing.
 Adding ginger/rein/deer to `compoundParts` via the workbench is safe (the tool will flag it as
 a no-op) but produces no split change.
+
+The current American enough/glacier representation fixes were implemented on 2026-10-20; see [the implementation report](../../docs/PHONICS_AMERICAN_PRONUNCIATION_FIXES.md). The country/pronunciation selector remains OPEN and is not included in that fix.

@@ -42,6 +42,10 @@ Added Word Jumble puzzle type to the Word Puzzles module.
 
 ## Backlog
 
+### Phonics country / pronunciation selector
+
+Requested 2026-10-20. Use American English as the current pronunciation convention. Defer a country/pronunciation dropdown that changes the phonics analysis and pronunciation guidance to the selected variety. Detailed scope and acceptance criteria: [Phonics deferred-items backlog](../bodhana-phonics-integration-handoff/tracking/phonics-phase2-backlog.md#open---country--pronunciation-selector).
+
 ### Fractions Later Work
 Prototype-only fraction worksheet/game ideas deferred from v1: number-line mark, fraction of a set, estimation/benchmarking, equivalent fractions, ordering, and Connect 4. Fractions War is dropped.
 
@@ -53,4 +57,4 @@ Standardize all modules to the two-pane print-preview layout pattern used by Wor
 
 ---
 
-*Last updated: 2026-09-12 (Math Worksheets module shipped)*
+*Last updated: 2026-10-20 (phonics pronunciation selector deferred; American English retained)*

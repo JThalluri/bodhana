@@ -638,3 +638,11 @@
     background: #fff !important;
   }
 }
+
+/* Complete pronunciation detail must scroll above the fixed offline status. */
+@media screen {
+  #dbInfoPane [data-panel="detail"] {
+    padding-bottom: calc(var(--space-4) + var(--pwa-status-clearance, 0px));
+    scroll-padding-bottom: var(--pwa-status-clearance, 0px);
+  }
+}

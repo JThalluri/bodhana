@@ -321,7 +321,6 @@ vowelTeamExceptions:
   - { word: worried, pattern: ie, sound: long_e, note: "Unstressed final /i/ in worry + ed; not /aɪ/." }
   - { word: buries, pattern: ie, sound: long_e, note: "Bury + s retains unstressed /i/." }
   - { word: worries, pattern: ie, sound: long_e, note: "Worry + s retains unstressed /i/." }
-  - { word: enough, pattern: ough, sound: short_u, note: "The active token is ough; ou was shadowed." }
   - { word: rough, pattern: ough, sound: short_u, note: "The active token is ough; ou was shadowed." }
   - { word: tough, pattern: ough, sound: short_u, note: "The active token is ough; ou was shadowed." }
   - { word: laugh, pattern: augh, sound: short_a, note: "US /æ/; UK broad /ɑː/. Inherited by laughed/laughter; not caught." }
@@ -341,6 +340,8 @@ vowelTeamExceptions:
   - {"word":"beauteous","pattern":"eau","sound":"long_u","note":"Beauty/beautify family retains long-u; y-changing forms need a direct exception."}
   - {"word":"beautified","pattern":"ie","sound":"long_i","note":"Beautify + ed/s retains long-i, unlike buried/worried."}
   - {"word":"beautifies","pattern":"ie","sound":"long_i","note":"Beautify + ed/s retains long-i, unlike buried/worried."}
+
+  - {"word":"enough","pattern":"ou","sound":"short_u","note":"Reachable ou token in the explicit US e/n/ou/gh pronunciation; gh supplies /f/."}
 
 compoundParts:
   # Standalone words commonly appearing as one half of a compound.
@@ -681,3 +682,60 @@ syllableSplitOverrides:
   - { word: smothers,   split: [smoth, ers]      }
 
   - { word: recreation, split: [rec, re, a, tion] }
+
+# Exact-word US pronunciations; no suffix or compound inheritance.
+wordPronunciations:
+  - word: enough
+    locale: en-US
+    ipa: əˈnʌf
+    respelling: uh-NUF
+    level: 8
+    source: https://dictionary.cambridge.org/pronunciation/english/enough
+    segments:
+      - spelling: e
+        ipa: ə
+      - spelling: 'n'
+        ipa: 'n'
+      - spelling: ou
+        ipa: ʌ
+        vowelSound: short_u
+      - spelling: gh
+        ipa: f
+  - word: glacier
+    locale: en-US
+    ipa: ˈɡleɪʃɚ
+    respelling: GLAY-sher
+    level: 8
+    source: https://dictionary.cambridge.org/pronunciation/english/glacier
+    segments:
+      - spelling: g
+        ipa: ɡ
+      - spelling: l
+        ipa: l
+      - spelling: a
+        ipa: eɪ
+        vowelSound: long_a
+      - spelling: ci
+        ipa: ʃ
+      - spelling: er
+        ipa: ɚ
+  - word: glaciers
+    locale: en-US
+    ipa: ˈɡleɪʃɚz
+    respelling: GLAY-sherz
+    level: 8
+    source: https://dictionary.cambridge.org/pronunciation/english/glacier
+    segments:
+      - spelling: g
+        ipa: ɡ
+      - spelling: l
+        ipa: l
+      - spelling: a
+        ipa: eɪ
+        vowelSound: long_a
+      - spelling: ci
+        ipa: ʃ
+      - spelling: er
+        ipa: ɚ
+      - spelling: s
+        ipa: z

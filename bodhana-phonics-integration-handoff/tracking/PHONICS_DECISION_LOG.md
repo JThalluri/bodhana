@@ -1011,3 +1011,13 @@ Classify recreation, buried, worried, enough, laughed and thought as data gaps; 
 Use curated compound boundaries consistently in production tokens/buckets and Workbench blast radius. Add a specific bureau ure/eau overlap guard. Retain US short-a for laugh and the THOUGHT family for thought, documenting dialect differences. Guard thorough against rough inheritance and distinguish beauty-family long-u from beau/bureau/plateau long-o. Keep died long-i versus buried/worried final /i/.
 
 Version derived caches by engine version and constructs hash. Preserve captured flags as historical evidence. Keep imported CSV analyses unchanged unless the user explicitly chooses Source > Refresh analysis. Legacy Phonics workspaces have unknown origin; retain them conservatively and offer that same explicit refresh.
+
+## 2026-10-20 - American English now; pronunciation selector deferred
+
+The user selected American English as the current convention. Do not add a country selector now or apply a British hiatus analysis to glacier as the default. Track the future country/pronunciation dropdown in [the deferred-items backlog](phonics-phase2-backlog.md#open---country--pronunciation-selector), with consistent analysis/output updates and locale-aware caches. This is a scope decision and backlog update, not a claim that the outstanding enough/glacier representation issues have been implemented.
+
+## 2026-10-20 - Complete American enough/glacier correspondences
+
+Implemented the current American convention for enough, glacier and glaciers using optional compiler-validated exact-word `wordPronunciations` data. Enough now separates ou /ʌ/ and gh /f/ and has four sound units. Glacier uses GLAY-sher, with a /eɪ/, ci /ʃ/ and er /ɚ/; no ie long-i or British hiatus label. Its plural adds /z/. The reviewed words have explicit level 8 and remain two syllables.
+
+Keep exact pronunciation entries separate from the generic spelling heuristics and the future country selector. Do not infer suffix/compound inheritance. Use the same entries in engine tokens, vowel filtering, complete Detail guidance, worksheet boxes, CSV and Workbench reachability. Engine version 3.2.0 invalidates old derived caches without rewriting historical flags or silently reinterpreting imported CSVs. See [implementation and evidence](../../docs/PHONICS_AMERICAN_PRONUNCIATION_FIXES.md).

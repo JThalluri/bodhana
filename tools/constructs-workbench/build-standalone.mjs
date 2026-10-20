@@ -63,6 +63,7 @@ function stripModuleSyntax(code) {
 const jsyaml      = read('tools/constructs-workbench/vendor/js-yaml.min.js');
 const compileCore = stripModuleSyntax(read('scripts/constructs-compile-core.mjs'));
 const validate    = stripModuleSyntax(read('scripts/constructs-validate.mjs'));
+const pronunciation = stripModuleSyntax(read('src/phonics/core/pronunciation.mjs'));
 const vowelSounds = stripModuleSyntax(read('src/phonics/core/vowelSounds.mjs'));
 const tokenizeJs  = stripModuleSyntax(read('src/phonics/core/tokenize.mjs'));
 const vowelNuclei = stripModuleSyntax(read('src/phonics/core/vowelNuclei.mjs'));
@@ -79,6 +80,7 @@ const inlineScript = [
   '// ── constructs-validate.mjs ──────────────────────────────────────────────',
   validate,
   '// ── src/phonics/core/vowelSounds.mjs ─────────────────────────────────────',
+  pronunciation,
   vowelSounds,
   '// ── src/phonics/core/tokenize.mjs ───────────────────────────────────────',
   wordParts,

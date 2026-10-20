@@ -355,3 +355,7 @@ The authoritative machine fixtures are `constructs/fixtures/phonics-regression-f
 | beautified / beautifies | ie:long_i |
 
 Additional production tests protect beau/bureau/plateau/tableau, though/dough, caught/taught/slaughter, died/tied/cried/fried/tried, genuine ew, ure, compound buckets and cache refresh behavior. Syllable splits and spelling-token counts remain the existing engine's approximations beyond the explicit reviewed cases.
+
+## 2026-10-20 - Enough/glacier superseding fixtures
+
+Enough now tokenizes as e|n|ou|gh, with ou:short_u and a separate gh /f/ sound. Glacier is g|l|a|ci|er with a:long_a; glaciers adds s /z/. All three are two syllables under the selected American pronunciation. Enough has four sound units, glacier five, glaciers six. The earlier nine-flag enough fixture using ough:short_u is superseded. See docs/PHONICS_AMERICAN_PRONUNCIATION_FIXES.md for the exact-word data contract and source evidence.

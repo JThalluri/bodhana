@@ -1,0 +1,9 @@
+patch:
+  add:
+    - word: enough
+      pattern: ou
+      sound: short_u
+      note: Reachable ou token in the explicit US e/n/ou/gh pronunciation; gh supplies /f/.
+  remove:
+    - word: enough
+      pattern: ough

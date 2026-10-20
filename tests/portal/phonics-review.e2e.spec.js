@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url';
 const hosted='http://127.0.0.1:4178'+JSON.parse(fs.readFileSync('dist-hosted/release.json')).base;
 const portable=pathToFileURL(process.cwd()+'/dist/index.html').href;
 const words=['recreation','somewhere','beautiful','buried','appear','enough','laughed','thought','worried'];
-const expected=['ea:hiatus','','eau:long_u','ie:long_e','','ough:short_u','augh:short_a','ough:aw','ie:long_e'];
+const expected=['ea:hiatus','','eau:long_u','ie:long_e','','ou:short_u','augh:short_a','ough:aw','ie:long_e'];
 const file=(name,text)=>({name,mimeType:'text/plain',buffer:Buffer.from(text)});
 async function ready(page){await expect(page.locator('[data-persistence-ready]')).toHaveAttribute('data-persistence-ready','true');}
 async function settings(page){await page.getByRole('button',{name:'Settings',exact:true}).click();}
