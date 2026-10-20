@@ -2,7 +2,7 @@ export const GRID_FILTERS = [
   { key: 'difficulty', label: 'Difficulty' },
   { key: 'level', label: 'Level' },
   { key: 'syllable_count', label: 'Syllables' },
-  { key: 'phoneme_count', label: 'Phonemes' },
+  { key: 'phoneme_count', label: 'Groups' },
 ];
 
 export function emptyGridFilters() {

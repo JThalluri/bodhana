@@ -343,3 +343,9 @@
   padding-left: var(--space-5);
   line-height: 1.6;
 }
+
+/* One sound-guide presentation for reviewed and rule-based words. */
+.wd-guide-status, .wd-guide-note { font-size: var(--text-xs); color: var(--text-muted); margin: 6px 0; }
+.wd-sound-guide .wd-sound-row { flex-wrap: wrap; }
+.wd-sound-row[data-sound-status="needs_review"] .wd-sound-label { font-weight: 700; color: var(--text-primary); }
+.wd-online-label { font-size: var(--text-xs); color: var(--text-muted); }

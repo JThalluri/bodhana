@@ -6,7 +6,8 @@
  * or any module-specific identifiers. Importable by Phase 5 unchanged.
  */
 
-import { SOUND_LABELS, splitSyllablesForWord } from '../phonics/PhonicsEngine.mjs';
+import { buildSoundGuide } from '../phonics/core/soundGuide.mjs';
+import { lookupExceptionForWord, splitSyllablesForWord } from '../phonics/PhonicsEngine.mjs';
 
 const CATEGORY_LABELS = {
   digraphs:    'Digraphs',
@@ -102,31 +103,17 @@ export function renderWordDetail(word, record, {
         ${g.items.map(p => `<span class="badge ${CATEGORY_CSS[g.key] || 'badge-accent'}">${p}</span>`).join('')}
       </div>`).join('');
 
-  // Exact pronunciation entries show complete correspondences, including consonants.
-  const escapePronunciation = text => String(text).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  let pronunciationSegments = [];
-  try { pronunciationSegments = JSON.parse(record.pronunciation_segments || '[]'); } catch { /* Older records have no pronunciation data. */ }
-  const pronunciationHtml = Array.isArray(pronunciationSegments) && pronunciationSegments.length && pronunciationSegments.every(segment => segment && typeof segment.spelling === 'string' && typeof segment.ipa === 'string') ?
-    '<div class="wd-section"><div class="wd-section-label">American pronunciation</div><p class="wd-pronunciation">' +
-    escapePronunciation(record.pronunciation_respelling) + ' /' + escapePronunciation(record.pronunciation_ipa) + '/</p>' +
-    pronunciationSegments.map(segment => '<div class="wd-sound-row"><span class="wd-sound-pattern">' + escapePronunciation(segment.spelling) +
-      '</span><span class="wd-sound-arrow">&rarr;</span><span class="wd-sound-label">/' + escapePronunciation(segment.ipa) + '/</span></div>').join('') + '</div>' : '';
-
-  // Vowel team sounds
-  const soundEntries = (record.vowel_team_sounds || '')
-    .split(',').filter(Boolean)
-    .map(s => s.split(':'));
-
-  const soundsHtml = soundEntries.length ? `
-    <div class="wd-section">
-      <div class="wd-section-label">Vowel Sounds</div>
-      ${soundEntries.map(([pat, snd]) => `
-        <div class="wd-sound-row">
-          <span class="wd-sound-pattern">${pat}</span>
-          <span class="wd-sound-arrow">&rarr;</span>
-          <span class="wd-sound-label">${SOUND_LABELS[snd] || snd}</span>
-        </div>`).join('')}
-    </div>` : '';
+  const escapeSound = text => String(text ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const guide=buildSoundGuide(record,lookupExceptionForWord);
+  const guideHtml = '<div class="wd-section wd-sound-guide" data-guide-mode="' + guide.mode + '">' +
+    '<div class="wd-section-label">American pronunciation</div>' +
+    '<p class="wd-guide-status">' + (guide.mode==='reviewed'?'Provided sound guide':guide.needsReview?'Rule-based sound guide &middot; Needs review':'Rule-based sound guide') + '</p>' +
+    (guide.mode==='reviewed'?'<p class="wd-pronunciation">' + escapeSound(record.pronunciation_respelling) + ' /' + escapeSound(record.pronunciation_ipa) + '/</p>':'') +
+    guide.parts.map(part => '<div class="wd-sound-row" data-sound-status="' + part.status + '" title="' + escapeSound(part.reason) + '">' +
+      '<span class="wd-sound-pattern">' + escapeSound(part.spelling) + '</span><span class="wd-sound-arrow">&rarr;</span>' +
+      '<span class="wd-sound-label">' + (part.status==='needs_review'?'Needs review':part.sounds.map(sound=>'/'+escapeSound(sound)+'/').join(' + ')) +
+      '</span></div>').join('') +
+    '<p class="wd-guide-note">Spelling groups can contain more than one sound. Review marked parts before using them as a sound-by-sound teaching guide.</p></div>';
 
   // Stats
   const stats = [
@@ -134,7 +121,7 @@ export function renderWordDetail(word, record, {
     { label: 'Level',      value: record.level },
     { label: 'Syllables',  value: record.syllable_count },
     { label: 'Letters',    value: record.letter_count },
-    { label: 'Phonemes',   value: record.phoneme_count },
+    { label: 'Groups',     value: tokens.length },
     { label: 'Common',     value: isCommon === null ? '—' : (isCommon ? 'yes' : 'no') },
   ];
 
@@ -150,6 +137,10 @@ export function renderWordDetail(word, record, {
           <button class="btn btn-sm btn-ghost" data-action="lookup" title="Look up in Wiktionary">
             <i class="fas fa-book"></i> Look up
           </button>
+          <a class="btn btn-sm btn-ghost wd-explore-pronunciation" href="https://dictionary.cambridge.org/us/pronunciation/english/${encodeURIComponent(word)}"
+             target="_blank" rel="noopener noreferrer" title="Cambridge sound-by-sound pronunciation and audio. Internet required; choose US audio. Opens a new tab.">
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Explore pronunciation <span class="wd-online-label">(online)</span>
+          </a>
           ${speechRate !== null ? `<label class="wd-speech-rate" title="Reading speed">
             <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
             <input type="range" data-speech-rate min="0.75" max="1.25" step="0.05" value="${rate}"
@@ -166,7 +157,7 @@ export function renderWordDetail(word, record, {
 
       ${patternGroups ? `<div class="wd-section wd-patterns">${patternGroups}</div>` : ''}
 
-      ${pronunciationHtml || soundsHtml}
+      ${guideHtml}
 
       <div class="wd-stats-row">
         ${stats.map(s => `

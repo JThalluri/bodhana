@@ -563,3 +563,5 @@
   .phx-preview-scroll { padding: 0 !important; background: white !important; }
   .tool-pages { display: block !important; }
 }
+
+.phx-review-marker { font-size: 10px; color: var(--text-muted); white-space: nowrap; }

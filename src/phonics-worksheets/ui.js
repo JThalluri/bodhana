@@ -1,3 +1,5 @@
+import { buildSoundGuide } from '../phonics/core/soundGuide.mjs';
+import { lookupExceptionForWord } from '../phonics/PhonicsEngine.mjs';
 import { ANALYSIS_REVISION } from '../phonics/PhonicsEngine.mjs';
 import { refreshAnalysis } from '../phonics/analysis-cache.mjs';
 import { initWorkspacePersistence } from '../shared/device-storage.js';
@@ -186,9 +188,11 @@ function renderWordSelList() {
   list.innerHTML = shown.map(r => {
     const selIdx = selIdxMap.get(r.word);
     const isSel = selIdx !== undefined;
+    const soundGuide = buildSoundGuide(r,lookupExceptionForWord);
     return `
-      <div class="phx-word-sel-item${isSel ? ' phx-word-selected' : ''}" data-word="${r.word}">
+      <div data-sound-review="${soundGuide.needsReview?'required':soundGuide.mode}" class="phx-word-sel-item${isSel ? ' phx-word-selected' : ''}" data-word="${r.word}">
         <span class="phx-word-sel-word">${r.word}</span>
+        ${soundGuide.needsReview?'<span class="phx-review-marker" title="Some sound groups need review in Dictionary Builder Detail.">Needs review</span>':''}
         <div class="phx-reorder-btns">
           ${isSel ? `
             <button class="btn btn-ghost btn-sm phx-btn-up" data-idx="${selIdx}"
@@ -394,7 +398,7 @@ export function buildPhonicsWorksheetsUI(container) {
                   </div>
                 </div>
                 <div class="phx-field-row">
-                  <label>Phonemes</label>
+                  <label title="Spelling groups may contain more than one sound.">Groups</label>
                   <div class="phx-range-pair">
                     <input class="tb-num" type="number" id="phxPhonemeMin" min="1" max="20" value="1">
                     <span class="phx-range-sep">–</span>
