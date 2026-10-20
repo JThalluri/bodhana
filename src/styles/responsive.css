@@ -63,3 +63,15 @@
  .pwa-actions > [role="status"][hidden] { display:none; }
  .pwa-actions .pwa-status-toggle { font-size:11px; padding:3px 7px; }
 }
+
+/* Shared notices must not compete with horizontal settings tabs for width. */
+@media screen {
+ .tool-settings[data-tabbed-settings] { display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+ .tool-settings-tabs { display:flex; flex:1 1 auto; min-height:0; min-width:0; overflow:hidden; }
+ .tool-settings-tabs > [role="tablist"] { min-height:0; overflow-y:auto; }
+ .tool-settings[data-tabbed-settings] > .settings-close { flex-shrink:0; align-self:flex-start; }
+ .tool-settings[data-tabbed-settings] > .device-storage { flex:0 0 auto; max-height:35%; overflow:auto; }
+ @media (max-width:1479px) {
+  .tool-shell .tool-body > .tool-settings[data-tabbed-settings].overlay-open { display:flex; }
+ }
+}

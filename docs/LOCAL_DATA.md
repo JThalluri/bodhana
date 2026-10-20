@@ -20,3 +20,5 @@ Implementation: `src/shared/device-storage.js` handles namespacing, versioned pr
 Verification: `npm test` and `npm run test:portal` after building portable and hosted artifacts. `tests/portal/persistence.e2e.spec.js` covers reloads, offline source-file extraction, type selection, curation, quota/blocked storage, removal, cross-tab clearing and stale readers. Physical Android persistence through PWA upgrades and OS storage eviction remains a device check.
 
 The offline availability message can be minimized to an Offline status button. This preference survives reloads and installation in the same browser/profile. Install, update and repair actions remain available while minimized; repair/failure notices expand the explanation. Show offline status restores the full message. Clear saved data resets this preference with other scoped settings.
+
+The device-storage notice sits below tabbed settings content, rather than sharing the horizontal tab row. Handwriting and Phonics retain their own independent scrollable form area; the notice must never consume the controls' width.

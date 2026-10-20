@@ -10,6 +10,16 @@ export function initToolShell(container, key) {
   const header = root.querySelector('.tool-header-main');
   const settings = root.querySelector('.tool-settings');
   const body = root.querySelector('.tool-body');
+  // Keep a tab strip and its panels in their own row. Shared controls/notices
+  // belong outside that row, otherwise they can squeeze the panels to zero.
+  const tabs = settings.querySelector(':scope > [role="tablist"]');
+  let tabsRow;
+  if (tabs?.nextElementSibling) {
+    tabsRow = document.createElement('div'); tabsRow.className = 'tool-settings-tabs';
+    const panels = tabs.nextElementSibling;
+    tabs.before(tabsRow); tabsRow.append(tabs, panels);
+    settings.dataset.tabbedSettings = 'true';
+  }
   let guide = root.querySelector('.tool-info-pane');
   if (!guide) { guide = document.createElement('aside'); guide.className = 'tool-info-pane'; body.append(guide); }
   guide.removeAttribute('aria-hidden'); guide.setAttribute('role', 'region'); guide.setAttribute('aria-label', 'Guide');
@@ -34,5 +44,5 @@ export function initToolShell(container, key) {
   compact.addEventListener('change', resize);
   const fitCleanup = initPreviewFit(root, controls);
   const settingsCleanup = initSettingsPersistence(root, key);
-  return () => { settingsCleanup(); closeOverlay(); compact.removeEventListener('change', resize); fitCleanup(); contentCleanup(); controls.remove(); close.remove(); root.removeEventListener('show-guide', showGuide); };
+  return () => { settingsCleanup(); closeOverlay(); if (tabsRow) { tabsRow.replaceWith(...tabsRow.childNodes); delete settings.dataset.tabbedSettings; } compact.removeEventListener('change', resize); fitCleanup(); contentCleanup(); controls.remove(); close.remove(); root.removeEventListener('show-guide', showGuide); };
 }

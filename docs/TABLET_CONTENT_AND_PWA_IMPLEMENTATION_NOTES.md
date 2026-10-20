@@ -123,3 +123,15 @@ Verified both builds, artifact audit and Pages packaging. Five production Chromi
 Staged release: 3bdb1a6d9ffb0a49. Source changes: src/pwa/register.js, src/styles/responsive.css and focused PWA tests; retention/deployment documentation updated.
 
 Status-notice fix published on 2026-10-16 (America/Phoenix): source commit 659b2a9, destination commit f6cf265b3c37dff6e059a781a16772c0073a685e, release 3bdb1a6d9ffb0a49. Pages workflow succeeded: https://github.com/JThalluri/gurukool/actions/runs/38999799486. Verified https://jthalluri.github.io/gurukool/: all seven runtime/metadata files matched local bytes, minimized state survived reload and offline relaunch, and keyboard activation restored the explanation. Evidence: artifacts/live-status-verification.json and artifacts/live-status-minimized.png. Only index.html, release.json and sw.js changed in the destination. Existing files and LICENSE were preserved.
+
+## Settings access correction — 2026-10-19
+
+Reproduced the reported Writing settings failure on the live release and local hosted production artifact at 1920x1080. The persisted Writing subtype was Handwriting: its tab panels measured 0px wide, as did Phonics. Appending the shared persistence notice to each horizontal settings row consumed the form's width. Seyes uses a vertical settings pane and did not have this zero-width fault.
+
+The shared shell now groups original tab-strip/panel nodes into tool-settings-tabs and puts the shared close control and storage footer outside that row. Screen CSS retains readable content, independently scrollable tabs/panels and a bounded footer. The original form DOM and state remain intact; teardown unwraps the group. Print geometry and output paths are unchanged.
+
+Verification: both production builds, audit and Pages package passed; 30 Chromium portal production tests passed, including persistence, actual Letter/landscape/Seyes print and PDF export, PWA updates/offline and the new settings coverage. Three settings-access tests also passed in WebKit. Actual field width, focus and pane bounds were checked in Handwriting and Phonics at 1920x1080, 1480x900, 1366x768, 1280x800, 1024x600 and 800x1280 for hosted and portable artifacts. Other modules and all Math categories were checked at desktop and short tablet sizes. Tests wait for the actual requested route/subtype guide before checking controls. Reviewed before/after screenshots under artifacts/settings-before-*.png and artifacts/{hosted,portable}-{handwriting,phonics}-settings-*.png.
+
+The same failure is reproducible outside installed mode; browser tests above validate the shared production layout. Physical Android installed-mode validation is not reported as passed. A pre-publication live browser session has retained the old zero-width failure and saved Handwriting content to verify upgrading preserves state and restores settings access.
+
+Staged release 0eabbf22e0222a6e, /gurukool/. Portable HTML: 5,788,650 bytes (gzip 2,649,545); hosted HTML: 5,792,934 bytes (gzip 2,651,001). Existing untracked plan/handoff documents are preserved.
