@@ -1,4 +1,4 @@
-﻿# American pronunciation corrections: enough and glacier
+# American pronunciation corrections: enough and glacier
 
 Implemented 2026-10-20. American English remains the current convention; the future country/pronunciation selector stays on the backlog.
 
@@ -29,3 +29,11 @@ Baseline: 1,169 unit tests passed before edits. The real-engine before/after aud
 Focused production checks use actual portable file URLs and the hosted /gurukool/ artifact. They exercise full Detail, downloaded CSV round trips, long-a/long-i/ough filtering, reload, stale Dictionary analysis with retained historical flag data, explicit legacy-CSV refresh, sound/syllable boxes, Letter print frames and an actual PDF download. The longer Detail exposed a real status-overlay overlap. A measured status-height CSS variable now reserves scroll clearance in Dictionary Detail. The migration check clicks Flag with the full status notice, then exports flags with it minimized. This is a narrow screen-only accessibility correction; print geometry is unchanged. Physical Android, speech-provider pronunciation and printer calibration remain device checks.
 
 Evidence is local under `artifacts/glacier-enough-*`, plus `artifacts/*american*` screenshots, CSVs and output PDFs. Final run counts, bundle sizes and deployment verification are recorded below after completion.
+
+
+Final local results: 1,211 unit tests in 26 files, 103 standalone Workbench Playwright checks, and 41 full production portal checks passed. The served Workbench also bundled successfully with esbuild. Inspected tablet/desktop Detail and worksheet screenshots, print output, and the actual PDF export page image. Letter geometry remains 816x1056 CSS pixels / 612x792 PDF points. Existing broader output checks, including Seyes geometry and certificate landscape, passed.
+
+Portable artifact: dist/index.html (5,796,403 bytes; approximately 2.652 MB gzip). Hosted artifact: dist-hosted/index.html (5,800,845 bytes; approximately 2.654 MB gzip). Complete hosted package: artifacts/pages-release/, base /gurukool/, release f21f4269af7e3b18. No physical Android, printer or speech-provider check is reported as passed.
+
+
+Live verification: [Gurukool](https://jthalluri.github.io/gurukool/) serves release f21f4269af7e3b18 after [Pages workflow 39442303922](https://github.com/JThalluri/gurukool/actions/runs/39442303922) succeeded. Destination commit: 24ed1bc295a2a5b39c6396b5fa8c691ef1567f7f. All seven runtime/metadata assets matched the tested hosted bytes over normal browser HTTPS. All nine routes and four offline routes passed. The actual old-to-new PWA upgrade waited for consent, corrected enough/glacier/glaciers with tried/though controls, preserved the source file/selection/original flag, then passed offline worksheet reload and retained-file re-extraction. Local live evidence: artifacts/live-american-phonics-reviewed-artifacts.json and artifacts/live-american-phonics-upgrade.json.
