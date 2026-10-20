@@ -1,3 +1,4 @@
+import { splitKnownCompoundParts } from './wordParts.mjs';
 /**
  * patterns.mjs — pattern detection and secondary-pattern analysis
  *
@@ -13,10 +14,11 @@
  * @param {{ pattern: string, category: string }[]} sortedPatterns - longest-first
  * @returns {Object} - { [category]: string[] }
  */
-export function findAllPatterns(word, sortedPatterns) {
+export function findAllPatterns(word, sortedPatterns, opts = {}) {
+  const parts = splitKnownCompoundParts(word, opts.compoundPartsSet);
   const found = {};
   for (const { pattern, category } of sortedPatterns) {
-    if (word.includes(pattern)) {
+    if (parts.some(part => part.includes(pattern))) {
       if (!found[category]) found[category] = [];
       if (!found[category].includes(pattern)) found[category].push(pattern);
     }

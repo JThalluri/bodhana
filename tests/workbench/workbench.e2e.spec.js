@@ -950,3 +950,13 @@ wb.describe('Step 5 — List Mode: cross-list patch rejection', () => {
     await expect(page.locator('#btnRunSandbox')).toBeDisabled();
   });
 });
+
+wb.describe('Nine-flag review: reachable word-mode vowel teams',()=>{
+ wb.beforeEach(async({page})=>{await loadFiles(page);await proceedToStep2(page);});
+ for(const word of ['somewhere','appear'])wb(`${word}: no false substring vowel team`,async({page})=>{
+  await searchAndWait(page,word);await expect(page.locator('.hint')).toContainText('No vowel team patterns detected');
+ });
+ for(const [word,pattern,sound] of [['beautiful','eau','long_u'],['bureau','eau','long_o'],['enough','ough','short_u'],['thought','ough','aw']])wb(`${word}: one reachable ${pattern} token`,async({page})=>{
+  await searchAndWait(page,word);await expect(page.locator('tbody tr')).toHaveCount(1);await expect(page.locator('tbody')).toContainText(pattern);await expect(page.locator('tbody')).toContainText(sound);
+ });
+});

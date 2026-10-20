@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { tokenize, vowelTeamSounds } from '../../src/phonics/core/index.mjs';
-import { constructs, fixtures, sortedPatterns, exceptionMap } from './_helpers.js';
+import { tokenizerOptions, constructs, fixtures, sortedPatterns, exceptionMap } from './_helpers.js';
 
 const { defaultVowelSound, soundLabels } = constructs;
 
@@ -14,7 +14,7 @@ describe('vowelTeamSounds fixtures', () => {
 
   for (const [word, expectations] of byWord) {
     it(`vowelTeamSounds("${word}")`, () => {
-      const tokens = tokenize(word, sortedPatterns);
+      const tokens = tokenize(word, sortedPatterns, tokenizerOptions);
       const results = vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLabels);
       const resultMap = new Map(results.map(r => [r.pattern, r.sound]));
       for (const f of expectations) {

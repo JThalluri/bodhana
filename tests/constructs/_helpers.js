@@ -48,4 +48,5 @@ const syllableCtx = {
   syllableSplitOverridesMap,
 };
 
-export { constructs, fixtures, sortedPatterns, vowelNucleiList, exceptionMap, syllableCtx };
+const tokenizerOptions = {compoundPartsSet};
+export { tokenizerOptions, constructs, fixtures, sortedPatterns, vowelNucleiList, exceptionMap, syllableCtx };

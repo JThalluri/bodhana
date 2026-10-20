@@ -55,7 +55,8 @@ const syllableCtx = {
 // Exported constants
 // ---------------------------------------------------------------------------
 
-export const ENGINE_VERSION    = '3.0.0';
+export const ENGINE_VERSION    = '3.1.0';
+export const ANALYSIS_REVISION = ENGINE_VERSION + ':' + c.meta.sourceHash;
 export const PHONICS_PATTERNS  = c.patternCategories;
 export const PATTERN_CATEGORY  = c.patternCategory;
 export const PATTERN_LEVELS    = c.patternLevels;
@@ -82,8 +83,8 @@ export function parseWord(rawWord) {
   const word = cleanWord(rawWord);
   if (!word) return null;
 
-  const tokens  = coreTokenize(word, sortedPatterns);
-  const buckets = findAllPatterns(word, sortedPatterns);
+  const tokens  = coreTokenize(word, sortedPatterns, {compoundPartsSet});
+  const buckets = findAllPatterns(word, sortedPatterns, {compoundPartsSet});
 
   const r_controlled = [
     ...(buckets.rControlled  || []),
@@ -156,11 +157,11 @@ export function parseText(text) {
  * @returns {string[]}
  */
 export function tokenize(word, opts) {
-  return coreTokenize(cleanWord(word), sortedPatterns, opts);
+  return coreTokenize(cleanWord(word), sortedPatterns, {...opts, compoundPartsSet});
 }
 
 export function findAllPatternsForWord(word) {
-  return findAllPatterns(word, sortedPatterns);
+  return findAllPatterns(cleanWord(word), sortedPatterns, {compoundPartsSet});
 }
 
 /**
@@ -201,7 +202,7 @@ export function soundForVowelTeam(word, pattern) {
 
 export function vowelTeamSounds(word, tokens) {
   const w = cleanWord(word);
-  const toks = tokens ?? coreTokenize(w, sortedPatterns);
+  const toks = tokens ?? coreTokenize(w, sortedPatterns, {compoundPartsSet});
   return coreVowelTeamSounds(w, toks, c.vowelTeamExceptionsByWord, c.defaultVowelSound, c.soundLabels);
 }
 

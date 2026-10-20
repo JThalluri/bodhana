@@ -1,3 +1,5 @@
+import { ANALYSIS_REVISION } from '../phonics/PhonicsEngine.mjs';
+import { refreshAnalysis } from '../phonics/analysis-cache.mjs';
 import { initWorkspacePersistence } from '../shared/device-storage.js';
 let workspace;
 import {
@@ -29,6 +31,8 @@ let state = makeState();
 function makeState() {
   return {
     allWords: [],
+    analysisOrigin: 'engine',
+    analysisRevision: ANALYSIS_REVISION,
     worksheetWords: [],
     activityType: 'dissect',
     showSolutions: false,
@@ -216,12 +220,14 @@ function loadWordsFromText(text) {
     const records = parseCSV(text);
     if (!records.length) { setStatus('CSV contains no rows.', 'error'); return; }
     state.allWords = records;
+    state.analysisOrigin = 'csv'; state.analysisRevision = null;
     setStatus(`${records.length} words loaded from CSV.`, 'success');
   } else {
     const words = [...new Set(
       text.split(/[\s,;\n]+/).map(w => w.trim().toLowerCase()).filter(w => /^[a-z]+$/.test(w))
     )];
     if (!words.length) { setStatus('No valid words found.', 'error'); return; }
+    state.analysisOrigin = 'engine'; state.analysisRevision = ANALYSIS_REVISION;
     const raw = parseWords(words);
     state.allWords = raw.map(r => ({
       ...r,
@@ -456,23 +462,38 @@ export function buildPhonicsWorksheetsUI(container) {
 
   wireEvents(container);
   workspace = initWorkspacePersistence(container.querySelector('.tool-shell'), 'phonics-worksheets', {
-    snapshot: () => ({allWords: state.allWords, selectedWords: state.worksheetWords.map(r=>r.word),
+    snapshot: () => ({analysisOrigin: state.analysisOrigin, analysisRevision: state.analysisRevision, allWords: state.allWords, selectedWords: state.worksheetWords.map(r=>r.word),
       patterns: [...state.filters.activePatterns], sounds: [...state.filters.activeSounds], wordSearch: state.wordSearch}),
     restore: saved => {
       if (!Array.isArray(saved.allWords)) return;
-      state.allWords = saved.allWords;
+      state.analysisOrigin = saved.analysisOrigin || 'csv';
+      state.analysisRevision = saved.analysisRevision || null;
+      state.allWords = state.analysisOrigin === 'engine' ? saved.allWords.map(record=>refreshAnalysis(record,state.analysisRevision)) : saved.allWords;
+      if (state.analysisOrigin === 'engine') state.analysisRevision = ANALYSIS_REVISION;
       state.worksheetWords = (saved.selectedWords || []).map(word=>state.allWords.find(r=>r.word===word)).filter(Boolean);
       state.filters.activePatterns = new Set(saved.patterns); state.filters.activeSounds = new Set(saved.sounds);
       state.wordSearch = saved.wordSearch || '';
       container.querySelector('#phxWordSearch').value = state.wordSearch;
       container.querySelectorAll('[data-pattern]').forEach(el=>el.classList.toggle('phx-chip-active',state.filters.activePatterns.has(el.dataset.pattern)));
       container.querySelectorAll('[data-sound]').forEach(el=>el.classList.toggle('phx-chip-active',state.filters.activeSounds.has(el.dataset.sound)));
-      renderWordSelList(); renderPreview(); setStatus(state.allWords.length+' words restored.','success');
+      renderWordSelList(); renderPreview(); setStatus(state.allWords.length+' words restored.'+(state.analysisOrigin==='csv'?' Imported analyses retained; use Refresh analysis for current rules.':''),'success');
     },
   });
 }
 
 function wireEvents(container) {
+  const refresh=document.createElement('button'); refresh.className='btn btn-ghost btn-sm'; refresh.textContent='Refresh analysis';
+  refresh.title='Re-analyze loaded words using current phonics rules; keep word selection, order and common-word flags.';
+  container.querySelector('[data-panel="source"]').append(refresh);
+  refresh.addEventListener('click',()=>{
+    if(!state.allWords.length) {setStatus('Load words before refreshing analysis.','error');return;}
+    const selected=state.worksheetWords.map(record=>record.word);
+    state.allWords=state.allWords.map(record=>refreshAnalysis(record,null));
+    const byWord=new Map(state.allWords.map(record=>[record.word,record]));
+    state.worksheetWords=selected.map(word=>byWord.get(word)).filter(Boolean);
+    state.analysisOrigin='engine'; state.analysisRevision=ANALYSIS_REVISION;
+    renderWordSelList();renderPreview();setStatus('Phonics analysis refreshed. Word selection and order retained.','success');
+  });
   const mountedRoot = container.querySelector('.tool-shell');
   let fileGeneration = 0;
   const readWords = file => {

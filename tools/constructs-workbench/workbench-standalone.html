@@ -861,6 +861,15 @@ function vowelTeamSounds(word, tokens, exceptionMap, defaultVowelSound, soundLab
 
 // ── src/phonics/core/tokenize.mjs ───────────────────────────────────────
 
+
+/** Respect only compound boundaries supported by the curated constructs. */
+function splitKnownCompoundParts(word, compoundPartsSet) {
+  if (!compoundPartsSet) return [word];
+  const split = tryCompoundSplit(word, compoundPartsSet);
+  return split ? split.flatMap(part => splitKnownCompoundParts(part, compoundPartsSet)) : [word];
+}
+
+
 /**
  * tokenize.mjs — grapheme tokenizer
  *
@@ -910,12 +919,14 @@ function buildSortedPatterns(patternCategories) {
  *
  * @param {string} word
  * @param {{ pattern: string, category: string }[]} sortedPatterns
- * @param {{ mergeDoubleConsonants?: boolean }} [opts]
+ * @param {{ mergeDoubleConsonants?: boolean, compoundPartsSet?: Set<string> }} [opts]
  * @returns {string[]}
  */
 function tokenize(word, sortedPatterns, opts = {}) {
   const mergeDoubles = opts.mergeDoubleConsonants !== false;
   const w = clean(word);
+  const parts = splitKnownCompoundParts(w, opts.compoundPartsSet);
+  if (parts.length > 1) return parts.flatMap(part => tokenize(part, sortedPatterns, {...opts, compoundPartsSet: null}));
   const tokens = [];
   let i = 0;
 
@@ -925,6 +936,9 @@ function tokenize(word, sortedPatterns, opts = {}) {
     for (const { pattern } of sortedPatterns) {
       if (pattern.length > w.length - i) continue;
       if (w.substr(i, pattern.length) !== pattern) continue;
+
+      // In bureau, ure must not take the e that starts the eau spelling.
+      if (pattern === 'ure' && w.startsWith('eau', i + 2) && sortedPatterns.some(p => p.pattern === 'eau')) continue;
 
       // 'ng' guard: skip when immediately followed by 'e' (gin·ger, fin·ger)
       if (pattern === 'ng' && i + 2 < w.length && w[i + 2] === 'e') continue;
@@ -1036,6 +1050,7 @@ function identifyVowelNuclei(word, vowelNucleiList) {
 
     let matched = null;
     for (const p of vowelNucleiList) {
+      if (p === 'ure' && w.startsWith('eau', i + 2) && vowelNucleiList.includes('eau')) continue;
       if (w.substr(i, p.length) === p) {
         matched = p;
         break;
@@ -1582,10 +1597,11 @@ function computeBlastRadius(pattern, compiledObj, fixturesObj) {
   // e.g. bear/beard contain 'ea' as a substring but tokenize as b|ear/b|ear|d;
   // 'ear' (r-controlled) wins at that position and 'ea' is never produced.
   const sortedPats = buildSortedPatterns(compiledObj.patternCategories || {});
+  const compoundPartsSet = buildCompoundPartsSet(compiledObj.compoundParts || []);
 
   return [...wordSet]
     .filter(w => w.includes(pattern))
-    .filter(w => tokenize(w, sortedPats).includes(pattern))
+    .filter(w => tokenize(w, sortedPats, {compoundPartsSet}).includes(pattern))
     .sort()
     .map(word => {
       const result = lookupExceptionWithTier(word, pattern, exMap);
@@ -2388,7 +2404,10 @@ function renderStep2VowelSound() {
       `;
     } else if (q.length >= 2) {
       const patternsSorted = Object.keys(defaults).sort((a, b) => b.length - a.length);
-      const found = patternsSorted.filter(p => q.includes(p));
+      const tokens = tokenize(q, buildSortedPatterns(S.compiledObj.patternCategories), {
+        compoundPartsSet: buildCompoundPartsSet(S.compiledObj.compoundParts || []),
+      });
+      const found = patternsSorted.filter(p => tokens.includes(p));
       if (found.length === 0) {
         resultHtml = `<p class="hint">No vowel team patterns detected in "${q}".</p>`;
       } else {

@@ -151,6 +151,12 @@ tokenizer:
   - { word: act,   graphemes: "a|ct" }
   - { word: next,  graphemes: "n|e|xt" }
 
+  # Nine-flag review: compound boundary / eau / r-controlled guard.
+  - {"word":"somewhere","graphemes":"s|o|m|e|wh|ere"}
+  - {"word":"beautiful","graphemes":"b|eau|t|i|f|u|l"}
+  - {"word":"beauty","graphemes":"b|eau|t|y"}
+  - {"word":"appear","graphemes":"a|pp|ear"}
+
 syllableSplit:
   # format: { word, split }  split is an array of syllable strings, in order
   - { word: something,   split: [some, thing] }
@@ -312,6 +318,12 @@ syllableSplit:
   - { word: daydream, split: [day, dream], expectedFailure: true, reason: "'dream' missing from compoundParts; fallback VCCV gives ['dayd','ream']. Adding 'dream' enables compound path → ['day','dream']." }
   - { word: logging,  split: [log, ging],  expectedFailure: true, reason: "'log' missing from rootWords; -ing always:true fires without undoubling → ['logg','ing']. Adding 'log' enables undoubling → ['log','ging']." }
 
+  # Nine-flag review syllable counts.
+  - {"word":"recreation","split":["rec","re","a","tion"]}
+  - {"word":"beautiful","split":["beau","ti","ful"]}
+  - {"word":"somewhere","split":["some","where"]}
+  - {"word":"appear","split":["ap","pear"]}
+
 vowelTeamSounds:
   # format: { word, pattern, sound }  — pattern:sound pairs matching vowel_team_sounds output
   - { word: easy,          pattern: ea,    sound: long_e }
@@ -416,3 +428,32 @@ vowelTeamSounds:
   - { word: recreate,   pattern: ea, sound: hiatus }
   - { word: idea,       pattern: ea, sound: hiatus }
   - { word: theater,    pattern: ea, sound: hiatus }
+
+  # Nine-flag sound exceptions and neighboring forms.
+  - {"word":"recreation","pattern":"ea","sound":"hiatus"}
+  - {"word":"buried","pattern":"ie","sound":"long_e"}
+  - {"word":"worried","pattern":"ie","sound":"long_e"}
+  - {"word":"buries","pattern":"ie","sound":"long_e"}
+  - {"word":"worries","pattern":"ie","sound":"long_e"}
+  - {"word":"enough","pattern":"ough","sound":"short_u"}
+  - {"word":"rough","pattern":"ough","sound":"short_u"}
+  - {"word":"tough","pattern":"ough","sound":"short_u"}
+  - {"word":"laugh","pattern":"augh","sound":"short_a"}
+  - {"word":"thought","pattern":"ough","sound":"aw"}
+  - {"word":"beauty","pattern":"eau","sound":"long_u"}
+  - {"word":"beautiful","pattern":"eau","sound":"long_u"}
+  - {"word":"beautify","pattern":"eau","sound":"long_u"}
+  - {"word":"beautician","pattern":"eau","sound":"long_u"}
+  - {"word":"beautification","pattern":"eau","sound":"long_u"}
+  - {"word":"beauties","pattern":"eau","sound":"long_u"}
+
+  # Guards found during the 506-word audit.
+  - {"word":"thorough","pattern":"ough","sound":"long_o"}
+  - {"word":"beauties","pattern":"ie","sound":"long_e"}
+
+  # Guards found during the 506-word audit.
+  - {"word":"beautified","pattern":"eau","sound":"long_u"}
+  - {"word":"beautifies","pattern":"eau","sound":"long_u"}
+  - {"word":"beauteous","pattern":"eau","sound":"long_u"}
+  - {"word":"beautified","pattern":"ie","sound":"long_i"}
+  - {"word":"beautifies","pattern":"ie","sound":"long_i"}

@@ -1,3 +1,5 @@
+import { ANALYSIS_REVISION } from '../phonics/PhonicsEngine.mjs';
+import { refreshAnalysis } from '../phonics/analysis-cache.mjs';
 import { initWorkspacePersistence, prepareFiles, packFiles, unpackFiles } from '../shared/device-storage.js';
 let workspace;
 let mountGeneration = 0, baseGeneration = 0;
@@ -229,12 +231,12 @@ export function buildDictBuilderUI(container) {
   updateActionButtons();
   renderDetailPanel(); // initialize Detail tab with "no word selected" state
   workspace = initWorkspacePersistence(container.querySelector('.tool-shell'), 'dictionary-builder', {
-    snapshot: () => ({...state, files: packFiles(state.files), baseWordsSet: undefined}),
+    snapshot: () => ({...state, analysisRevision: ANALYSIS_REVISION, files: packFiles(state.files), baseWordsSet: undefined}),
     restore: saved => {
       if (!Array.isArray(saved.extracted) || !Array.isArray(saved.baseWordsList)) return;
       Object.assign(state, saved, {files: unpackFiles(saved.files),
         baseWordsSet: new Set(saved.baseWordsList.map(wordKey)),
-        excluded: new Set(saved.excluded), phonicsByWord: Object.assign(Object.create(null),saved.phonicsByWord),
+        excluded: new Set(saved.excluded), phonicsByWord: Object.assign(Object.create(null), Object.fromEntries(Object.entries(saved.phonicsByWord || {}).map(([word,record])=>[word,refreshAnalysis(record,saved.analysisRevision)]))),
         gridFilters: {...emptyGridFilters(), ...saved.gridFilters}});
       renderFileList(); renderBaseInfo(); refreshCurationView(); renderDetailPanel();
       setStatus('info','Saved dictionary workspace restored.');

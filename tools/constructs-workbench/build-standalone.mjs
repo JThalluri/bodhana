@@ -17,7 +17,7 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const root  = join(__dir, '../..');
 
 function read(relToRoot) {
-  return readFileSync(join(root, relToRoot), 'utf8');
+  return readFileSync(join(root, relToRoot), 'utf8').replace(/\r\n/g, '\n');
 }
 
 /**
@@ -67,6 +67,7 @@ const vowelSounds = stripModuleSyntax(read('src/phonics/core/vowelSounds.mjs'));
 const tokenizeJs  = stripModuleSyntax(read('src/phonics/core/tokenize.mjs'));
 const vowelNuclei = stripModuleSyntax(read('src/phonics/core/vowelNuclei.mjs'));
 const syllables   = stripModuleSyntax(read('src/phonics/core/syllables.mjs'));
+const wordParts   = stripModuleSyntax(read('src/phonics/core/wordParts.mjs'));
 const coreJs      = stripModuleSyntax(read('tools/constructs-workbench/workbench-core.mjs'));
 const appJs       = stripModuleSyntax(read('tools/constructs-workbench/app.js'));
 
@@ -80,6 +81,7 @@ const inlineScript = [
   '// ── src/phonics/core/vowelSounds.mjs ─────────────────────────────────────',
   vowelSounds,
   '// ── src/phonics/core/tokenize.mjs ───────────────────────────────────────',
+  wordParts,
   tokenizeJs,
   '// ── src/phonics/core/vowelNuclei.mjs ────────────────────────────────────',
   vowelNuclei,

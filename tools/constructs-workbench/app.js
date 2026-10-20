@@ -6,6 +6,8 @@
  * OR launch Chrome with --allow-file-access-from-files.
  */
 
+import { buildSortedPatterns, tokenize } from '../../src/phonics/core/tokenize.mjs';
+import { buildCompoundPartsSet } from '../../src/phonics/core/syllables.mjs';
 import { compileConstructs }         from '../../scripts/constructs-compile-core.mjs';
 import { validateAll, ValidationError } from '../../scripts/constructs-validate.mjs';
 import { buildExceptionMap, lookupExceptionWithTier, soundForVowelTeam }
@@ -337,7 +339,10 @@ function renderStep2VowelSound() {
       `;
     } else if (q.length >= 2) {
       const patternsSorted = Object.keys(defaults).sort((a, b) => b.length - a.length);
-      const found = patternsSorted.filter(p => q.includes(p));
+      const tokens = tokenize(q, buildSortedPatterns(S.compiledObj.patternCategories), {
+        compoundPartsSet: buildCompoundPartsSet(S.compiledObj.compoundParts || []),
+      });
+      const found = patternsSorted.filter(p => tokens.includes(p));
       if (found.length === 0) {
         resultHtml = `<p class="hint">No vowel team patterns detected in "${q}".</p>`;
       } else {

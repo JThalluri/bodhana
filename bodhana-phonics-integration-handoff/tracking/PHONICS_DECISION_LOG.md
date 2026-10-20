@@ -1001,3 +1001,13 @@ Added `syllableSplitOverrides` section to `phonics-constructs.yaml`. This is che
 Decision: chose option (c) from the backlog (curated list) over algorithmic approaches (a) and (b). Algorithmic approaches risk regressions across the full 900+ test corpus and require deep understanding of the VCV nucleus-detection system to audit safely. The curated list is transparent, zero-risk, and extensible with a one-line YAML entry.
 
 No `checkReachability`-style coverage rule added for overrides — these are safety-valve entries and don't need fixture enforcement beyond the existing syllableSplit fixtures.
+
+## 2026-10-19 - Review nine exported flags
+
+See [the nine-word review](../../docs/PHONICS_NINE_FLAG_REVIEW.md) for the exact before/after table, pronunciation evidence, dialect limits and verification. Eight issues corrected; appear was already correct (ear, not an ia hiatus).
+
+Classify recreation, buried, worried, enough, laughed and thought as data gaps; somewhere as a structural boundary fault; beautiful as missing eau vocabulary plus related data. Apply supported exception changes with the existing Workbench programmatic gates, not unvalidated YAML hand edits. The eau vocabulary and recreation split use the compiler-validated structural data path. Save the exception patch in constructs/patches/2026-10-19-nine-flags.yaml.
+
+Use curated compound boundaries consistently in production tokens/buckets and Workbench blast radius. Add a specific bureau ure/eau overlap guard. Retain US short-a for laugh and the THOUGHT family for thought, documenting dialect differences. Guard thorough against rough inheritance and distinguish beauty-family long-u from beau/bureau/plateau long-o. Keep died long-i versus buried/worried final /i/.
+
+Version derived caches by engine version and constructs hash. Preserve captured flags as historical evidence. Keep imported CSV analyses unchanged unless the user explicitly chooses Source > Refresh analysis. Legacy Phonics workspaces have unknown origin; retain them conservatively and offer that same explicit refresh.

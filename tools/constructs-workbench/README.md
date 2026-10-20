@@ -213,3 +213,9 @@ Covers:
 Note on AC 7 formatting: `jsyaml.dump()` reformats the YAML (removes comments, normalises spacing).
 The structural content is preserved; the `git diff` will show formatting changes throughout the file,
 which is expected and acceptable. Verify that only the targeted `vowelTeamExceptions` rows changed value.
+
+### Shared tokenizer dependencies (2026-10-19)
+
+The standalone bundle includes `core/wordParts.mjs` before `core/tokenize.mjs`; this helper uses the existing curated compound splitter. Blast-radius reachability must pass the compiled compound-parts set to the shared tokenizer, matching production. Build source reads normalize CRLF so inline replacement anchors work on Windows. Rebuild with `node tools/constructs-workbench/build-standalone.mjs` after any core change; run `npx playwright test` separately from portal production tests.
+
+`eau` is an explicit level-8 vowel-team spelling with long-o default and curated beauty-family long-u exceptions. Vocabulary extensions and syllable overrides remain compiler-validated structural edits; ordinary sound exceptions use the existing Workbench patch/sandbox path. See `docs/PHONICS_NINE_FLAG_REVIEW.md` and the recorded patch for the reviewed example. Nested secondary spelling matches remain visible in pattern buckets; actual vowel sound resolution only uses reachable tokens.

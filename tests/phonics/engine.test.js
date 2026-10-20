@@ -31,8 +31,8 @@ const fixtures = yamlLoad(
 // AC 1 — ENGINE_VERSION
 // ---------------------------------------------------------------------------
 describe('AC 1 — ENGINE_VERSION', () => {
-  it("ENGINE_VERSION === '3.0.0'", () => {
-    expect(ENGINE_VERSION).toBe('3.0.0');
+  it("ENGINE_VERSION === '3.1.0'", () => {
+    expect(ENGINE_VERSION).toBe('3.1.0');
   });
 });
 

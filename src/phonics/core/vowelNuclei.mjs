@@ -76,6 +76,7 @@ export function identifyVowelNuclei(word, vowelNucleiList) {
 
     let matched = null;
     for (const p of vowelNucleiList) {
+      if (p === 'ure' && w.startsWith('eau', i + 2) && vowelNucleiList.includes('eau')) continue;
       if (w.substr(i, p.length) === p) {
         matched = p;
         break;

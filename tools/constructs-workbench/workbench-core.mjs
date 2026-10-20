@@ -191,10 +191,11 @@ export function computeBlastRadius(pattern, compiledObj, fixturesObj) {
   // e.g. bear/beard contain 'ea' as a substring but tokenize as b|ear/b|ear|d;
   // 'ear' (r-controlled) wins at that position and 'ea' is never produced.
   const sortedPats = buildSortedPatterns(compiledObj.patternCategories || {});
+  const compoundPartsSet = buildCompoundPartsSet(compiledObj.compoundParts || []);
 
   return [...wordSet]
     .filter(w => w.includes(pattern))
-    .filter(w => tokenize(w, sortedPats).includes(pattern))
+    .filter(w => tokenize(w, sortedPats, {compoundPartsSet}).includes(pattern))
     .sort()
     .map(word => {
       const result = lookupExceptionWithTier(word, pattern, exMap);

@@ -334,3 +334,24 @@ These four replace one-off manual audits going forward:
 Full `ROOT_WORDS`/`COMPOUND_PARTS` dictionary audit (only incidentally exercised above) — reasonable
 Phase 1/2 follow-up given `gingerbread`/`reindeer` both expose gaps there. `is_common` is out of
 scope entirely per the agreed plan (moved to Base Dictionary).
+
+## 2026-10-19 review additions
+
+The authoritative machine fixtures are `constructs/fixtures/phonics-regression-fixtures.v2.yaml`. See `docs/PHONICS_NINE_FLAG_REVIEW.md` for the source evidence and classifications.
+
+| Fixture | Expected |
+|---|---|
+| recreation | rec-re-a-tion; ea:hiatus |
+| somewhere | s + o + m + e + wh + ere; some-where; no ew |
+| beautiful | b + eau + t + i + f + u + l; beau-ti-ful; eau:long_u |
+| appear | a + pp + ear; ap-pear; no vowel-team sound |
+| buried / worried / buries / worries | ie:long_e |
+| enough / rough / tough | ough:short_u |
+| laugh (including laughed/laughter) | augh:short_a (US) |
+| thought | ough:aw |
+| thorough | ough:long_o (US guard) |
+| beauty / beautiful / beautify / beautician / beautification / beauties / beautified / beautifies / beauteous | eau:long_u |
+| beauties | ie:long_e |
+| beautified / beautifies | ie:long_i |
+
+Additional production tests protect beau/bureau/plateau/tableau, though/dough, caught/taught/slaughter, died/tied/cried/fried/tried, genuine ew, ure, compound buckets and cache refresh behavior. Syllable splits and spelling-token counts remain the existing engine's approximations beyond the explicit reviewed cases.

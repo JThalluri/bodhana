@@ -1,3 +1,4 @@
+import { splitKnownCompoundParts } from './wordParts.mjs';
 /**
  * tokenize.mjs — grapheme tokenizer
  *
@@ -47,12 +48,14 @@ export function buildSortedPatterns(patternCategories) {
  *
  * @param {string} word
  * @param {{ pattern: string, category: string }[]} sortedPatterns
- * @param {{ mergeDoubleConsonants?: boolean }} [opts]
+ * @param {{ mergeDoubleConsonants?: boolean, compoundPartsSet?: Set<string> }} [opts]
  * @returns {string[]}
  */
 export function tokenize(word, sortedPatterns, opts = {}) {
   const mergeDoubles = opts.mergeDoubleConsonants !== false;
   const w = clean(word);
+  const parts = splitKnownCompoundParts(w, opts.compoundPartsSet);
+  if (parts.length > 1) return parts.flatMap(part => tokenize(part, sortedPatterns, {...opts, compoundPartsSet: null}));
   const tokens = [];
   let i = 0;
 
@@ -62,6 +65,9 @@ export function tokenize(word, sortedPatterns, opts = {}) {
     for (const { pattern } of sortedPatterns) {
       if (pattern.length > w.length - i) continue;
       if (w.substr(i, pattern.length) !== pattern) continue;
+
+      // In bureau, ure must not take the e that starts the eau spelling.
+      if (pattern === 'ure' && w.startsWith('eau', i + 2) && sortedPatterns.some(p => p.pattern === 'eau')) continue;
 
       // 'ng' guard: skip when immediately followed by 'e' (gin·ger, fin·ger)
       if (pattern === 'ng' && i + 2 < w.length && w[i + 2] === 'e') continue;

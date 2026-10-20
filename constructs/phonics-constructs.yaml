@@ -13,7 +13,7 @@ patternCategories:
   trigraphs:   [tch, dge, igh]
   vowelTeams:  [ai, ay, ea, ee, ie, oa, oe, ue, ui,
                 au, aw, ei, eu, ew, ey, oi, oo, ou, ow, oy,
-                eigh, ough, augh]
+                eigh, ough, augh, eau]
   rControlled:  [ar, er, ir, or, ur]
   rControlled3: [air, ear, eer, oor, our, are, ere, ire, ore, ure, oar]
 
@@ -48,6 +48,7 @@ patternLevelOverrides:
   eigh: 8
   ough: 8
   augh: 8
+  eau: 8
 
 scopeLevels:
   - { level: 1, name: "CVC & single letters",      desc: "cat, dog, sun" }
@@ -102,6 +103,7 @@ defaultVowelSound:
   eigh: long_a
   augh: aw
   ough: long_o
+  eau: long_o
 
 # Flat array of exception rows. Each row: { word, pattern, sound, note? }
 # Two rows for the same word is NORMAL (dual-override words like cookie).
@@ -205,9 +207,6 @@ vowelTeamExceptions:
   - { word: boulders,  pattern: ou, sound: long_o }
   # ---- ou = short_u ----
   - { word: touch,    pattern: ou, sound: short_u }
-  - { word: rough,    pattern: ou, sound: short_u }
-  - { word: tough,    pattern: ou, sound: short_u }
-  - { word: enough,   pattern: ou, sound: short_u }
   - { word: cousin,   pattern: ou, sound: short_u }
   - { word: double,   pattern: ou, sound: short_u }
   - { word: trouble,  pattern: ou, sound: short_u }
@@ -315,6 +314,33 @@ vowelTeamExceptions:
   - { word: their,    pattern: ei, sound: air }
   - { word: heir,     pattern: ei, sound: air }
   - { word: theirs,   pattern: ei, sound: air }
+
+  # Reviewed 2026-10-19 via Workbench sandbox; see docs/PHONICS_NINE_FLAG_REVIEW.md.
+  - { word: recreation, pattern: ea, sound: hiatus, note: "Separate /i/ and /eɪ/ nuclei." }
+  - { word: buried, pattern: ie, sound: long_e, note: "Unstressed final /i/ in bury + ed; not /aɪ/." }
+  - { word: worried, pattern: ie, sound: long_e, note: "Unstressed final /i/ in worry + ed; not /aɪ/." }
+  - { word: buries, pattern: ie, sound: long_e, note: "Bury + s retains unstressed /i/." }
+  - { word: worries, pattern: ie, sound: long_e, note: "Worry + s retains unstressed /i/." }
+  - { word: enough, pattern: ough, sound: short_u, note: "The active token is ough; ou was shadowed." }
+  - { word: rough, pattern: ough, sound: short_u, note: "The active token is ough; ou was shadowed." }
+  - { word: tough, pattern: ough, sound: short_u, note: "The active token is ough; ou was shadowed." }
+  - { word: laugh, pattern: augh, sound: short_a, note: "US /æ/; UK broad /ɑː/. Inherited by laughed/laughter; not caught." }
+  - { word: thought, pattern: ough, sound: aw, note: "Saw/THOUGHT vowel family, not the long-o of though." }
+  - { word: beauty, pattern: eau, sound: long_u, note: "/juː/ in the beauty family, unlike beau/bureau/plateau." }
+  - { word: beautiful, pattern: eau, sound: long_u, note: "/juː/ in the beauty family, unlike beau/bureau/plateau." }
+  - { word: beautify, pattern: eau, sound: long_u, note: "/juː/ in the beauty family, unlike beau/bureau/plateau." }
+  - { word: beautician, pattern: eau, sound: long_u, note: "/juː/ in the beauty family, unlike beau/bureau/plateau." }
+  - { word: beautification, pattern: eau, sound: long_u, note: "/juː/ in the beauty family, unlike beau/bureau/plateau." }
+  - { word: beauties, pattern: eau, sound: long_u, note: "/juː/ in the beauty family, unlike beau/bureau/plateau." }
+
+  - {"word":"thorough","pattern":"ough","sound":"long_o","note":"US /oʊ/ final syllable; direct guard prevents false compound-scan inheritance from rough."}
+  - {"word":"beauties","pattern":"ie","sound":"long_e","note":"Beauty + s retains unstressed /i/; not the /aɪ/ in ties."}
+
+  - {"word":"beautified","pattern":"eau","sound":"long_u","note":"Beauty/beautify family retains long-u; y-changing forms need a direct exception."}
+  - {"word":"beautifies","pattern":"eau","sound":"long_u","note":"Beauty/beautify family retains long-u; y-changing forms need a direct exception."}
+  - {"word":"beauteous","pattern":"eau","sound":"long_u","note":"Beauty/beautify family retains long-u; y-changing forms need a direct exception."}
+  - {"word":"beautified","pattern":"ie","sound":"long_i","note":"Beautify + ed/s retains long-i, unlike buried/worried."}
+  - {"word":"beautifies","pattern":"ie","sound":"long_i","note":"Beautify + ed/s retains long-i, unlike buried/worried."}
 
 compoundParts:
   # Standalone words commonly appearing as one half of a compound.
@@ -653,3 +679,5 @@ syllableSplitOverrides:
   - { word: smother,    split: [smoth, er]       }
   - { word: smothered,  split: [smoth, ered]     }
   - { word: smothers,   split: [smoth, ers]      }
+
+  - { word: recreation, split: [rec, re, a, tion] }

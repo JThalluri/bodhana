@@ -181,6 +181,7 @@
     "aw": "aw",
     "ay": "long_a",
     "ea": "long_e",
+    "eau": "long_o",
     "ee": "long_e",
     "ei": "long_a",
     "eigh": "long_a",
@@ -199,7 +200,7 @@
     "ue": "long_u",
     "ui": "long_u"
   },
-  "generatedAt": "2026-10-13T12:46:18.759Z",
+  "generatedAt": "2026-10-20T03:41:09.670Z",
   "patternCategories": {
     "blends": [
       "bl",
@@ -318,7 +319,8 @@
       "oy",
       "eigh",
       "ough",
-      "augh"
+      "augh",
+      "eau"
     ]
   },
   "patternCategoryDefaultLevels": {
@@ -335,6 +337,7 @@
     "au": 6,
     "augh": 8,
     "aw": 6,
+    "eau": 8,
     "ei": 6,
     "eigh": 8,
     "eu": 6,
@@ -523,7 +526,7 @@
     "short_o": "/ŏ/ (dog)",
     "short_u": "/ŭ/ (cup)"
   },
-  "sourceHash": "sha256:15ff34abc299f1e3f8618b3a5d281f60152f45964dff12a8cd5c9d7e7d376264",
+  "sourceHash": "sha256:7d71bd3f0d66147c94e2b010eb6856649f4237055536c5e92b68ee43d4152ddd",
   "suffixStripRules": [
     {
       "always": true,
@@ -798,6 +801,15 @@
         "ers"
       ],
       "word": "smothers"
+    },
+    {
+      "split": [
+        "rec",
+        "re",
+        "a",
+        "tion"
+      ],
+      "word": "recreation"
     }
   ],
   "vowelTeamExceptions": [
@@ -1310,24 +1322,6 @@
       "pattern": "ou",
       "sound": "short_u",
       "word": "touch"
-    },
-    {
-      "note": null,
-      "pattern": "ou",
-      "sound": "short_u",
-      "word": "rough"
-    },
-    {
-      "note": null,
-      "pattern": "ou",
-      "sound": "short_u",
-      "word": "tough"
-    },
-    {
-      "note": null,
-      "pattern": "ou",
-      "sound": "short_u",
-      "word": "enough"
     },
     {
       "note": null,
@@ -1892,6 +1886,144 @@
       "pattern": "ei",
       "sound": "air",
       "word": "theirs"
+    },
+    {
+      "note": "Separate /i/ and /eɪ/ nuclei.",
+      "pattern": "ea",
+      "sound": "hiatus",
+      "word": "recreation"
+    },
+    {
+      "note": "Unstressed final /i/ in bury + ed; not /aɪ/.",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "buried"
+    },
+    {
+      "note": "Unstressed final /i/ in worry + ed; not /aɪ/.",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "worried"
+    },
+    {
+      "note": "Bury + s retains unstressed /i/.",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "buries"
+    },
+    {
+      "note": "Worry + s retains unstressed /i/.",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "worries"
+    },
+    {
+      "note": "The active token is ough; ou was shadowed.",
+      "pattern": "ough",
+      "sound": "short_u",
+      "word": "enough"
+    },
+    {
+      "note": "The active token is ough; ou was shadowed.",
+      "pattern": "ough",
+      "sound": "short_u",
+      "word": "rough"
+    },
+    {
+      "note": "The active token is ough; ou was shadowed.",
+      "pattern": "ough",
+      "sound": "short_u",
+      "word": "tough"
+    },
+    {
+      "note": "US /æ/; UK broad /ɑː/. Inherited by laughed/laughter; not caught.",
+      "pattern": "augh",
+      "sound": "short_a",
+      "word": "laugh"
+    },
+    {
+      "note": "Saw/THOUGHT vowel family, not the long-o of though.",
+      "pattern": "ough",
+      "sound": "aw",
+      "word": "thought"
+    },
+    {
+      "note": "/juː/ in the beauty family, unlike beau/bureau/plateau.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beauty"
+    },
+    {
+      "note": "/juː/ in the beauty family, unlike beau/bureau/plateau.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beautiful"
+    },
+    {
+      "note": "/juː/ in the beauty family, unlike beau/bureau/plateau.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beautify"
+    },
+    {
+      "note": "/juː/ in the beauty family, unlike beau/bureau/plateau.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beautician"
+    },
+    {
+      "note": "/juː/ in the beauty family, unlike beau/bureau/plateau.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beautification"
+    },
+    {
+      "note": "/juː/ in the beauty family, unlike beau/bureau/plateau.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beauties"
+    },
+    {
+      "note": "US /oʊ/ final syllable; direct guard prevents false compound-scan inheritance from rough.",
+      "pattern": "ough",
+      "sound": "long_o",
+      "word": "thorough"
+    },
+    {
+      "note": "Beauty + s retains unstressed /i/; not the /aɪ/ in ties.",
+      "pattern": "ie",
+      "sound": "long_e",
+      "word": "beauties"
+    },
+    {
+      "note": "Beauty/beautify family retains long-u; y-changing forms need a direct exception.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beautified"
+    },
+    {
+      "note": "Beauty/beautify family retains long-u; y-changing forms need a direct exception.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beautifies"
+    },
+    {
+      "note": "Beauty/beautify family retains long-u; y-changing forms need a direct exception.",
+      "pattern": "eau",
+      "sound": "long_u",
+      "word": "beauteous"
+    },
+    {
+      "note": "Beautify + ed/s retains long-i, unlike buried/worried.",
+      "pattern": "ie",
+      "sound": "long_i",
+      "word": "beautified"
+    },
+    {
+      "note": "Beautify + ed/s retains long-i, unlike buried/worried.",
+      "pattern": "ie",
+      "sound": "long_i",
+      "word": "beautifies"
     }
   ]
 }
