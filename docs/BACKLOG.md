@@ -10,7 +10,7 @@ Items are ordered by priority. Update this file when work begins or finishes.
 Moving Tic-Tac-Toe into `/math-games`, adding fraction Bingo/Match/Snake, and adding Fractions as a Math Worksheets family with shared Print / Export.
 
 ### Writing Worksheets — Handwriting Lines type (awaiting user testing)
-New worksheet type under `/worksheets`, selected from the Type dropdown (Seyès remains the default). Code in `src/writing-worksheets/`. Five grade-tier presets (Pre-K → adult), three formats (alternating model + practice, copy-from-box, jumbled sentences), inline-SVG ruling, word wrapping, auto pagination up to 20 pages, seeded shuffle, shared Print / Export PDF. Pending: physical print check of Tier 4 Seyès-style 8 mm / 2 mm spacing.
+New worksheet type under `/worksheets`, selected from the Type dropdown (Seyès remains the default). Code in `src/writing-worksheets/`. Five grade-tier presets (Pre-K → adult), four formats (alternating model + practice, copy-from-box, jumbled sentences, Word Practice), inline-SVG ruling, word wrapping, auto pagination up to 20 pages, seeded shuffle, shared Print / Export PDF. Pending: physical print check of Tier 4 Seyès-style 8 mm / 2 mm spacing.
 
 ---
 
@@ -58,3 +58,7 @@ Standardize all modules to the two-pane print-preview layout pattern used by Wor
 ---
 
 *Last updated: 2026-10-20 (phonics pronunciation selector deferred; American English retained)*
+
+## Statement paper rollout - phase 2 (2026-10-26)
+
+Shared registry, physical print/PDF support and all Handwriting Lines formats are implemented with Word Practice. Remaining scope: all Math Worksheets subtypes, Math Games, Math Puzzles, Sudoku tile layouts, Word Puzzles, Phonics, Certificates and dedicated Seyes. Migrate each generator/renderer to shared paper geometry and explicit smaller-page pagination; expose the shared options only after its layouts fit. Preserve existing Letter defaults and output. Certificates needs landscape Statement; Seyes must keep exact 8 mm geometry and its dedicated print path. Dictionary Builder is a results view and has no worksheet stock. Acceptance: portable/hosted offline, persistence, desktop/tablet fitting, all types/dense cases, actual print frames/PDF MediaBoxes and physical device/print review.

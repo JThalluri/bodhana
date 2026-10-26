@@ -1,3 +1,4 @@
+import { paperForPages } from './paper-size.js';
 import { addBrandWatermarks, brandWatermarkStyles } from './worksheet-brand.js';
 
 const PRINT_PAGE_SELECTOR = [
@@ -32,9 +33,10 @@ export function printWorksheet() {
     return;
   }
   const isLandscape = [...pages].some(page => page.matches(LANDSCAPE_PAGE_SELECTOR));
-  const pageWidth = isLandscape ? '11in' : '8.5in';
-  const pageHeight = isLandscape ? '8.5in' : '11in';
-  const pageSize = isLandscape ? 'Letter landscape' : 'Letter';
+  const paper = paperForPages([...pages]);
+  const pageWidth = `${paper.widthIn}in`;
+  const pageHeight = `${paper.heightIn}in`;
+  const pageSize = paper.cssSize;
 
   const printFrame = document.createElement('iframe');
   printFrame.setAttribute('aria-hidden', 'true');

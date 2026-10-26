@@ -67,3 +67,11 @@ Group the original tab strip and panel nodes into a dedicated flex row, with the
 ## 2026-10-19 - Version derived phonics analysis independently of local content
 
 Use engine version plus compiled constructs hash to invalidate derived Dictionary Builder/TXT phonics records after pronunciation corrections. Preserve files, user metadata and original flag evidence. Imported CSV and legacy unknown-origin Phonics analyses retain their existing pass-through behavior; an explicit Source > Refresh analysis action opts into current rules without resetting selection/order. The nine-flag review and dialect choices are documented in docs/PHONICS_NINE_FLAG_REVIEW.md and the phonics decision log.
+
+## 2026-10-26: Word Practice and shared Statement stock
+
+Implement Word Practice as a format in the Handwriting Lines family, retaining the existing shell, dictionary picker, fonts, ruling, margins, workspace and shared print/export. The prototype is a visual/feature reference only; its duplicate per-cell full-width lines and CDN export code are not imported. Emit ruling once per row and paginate deterministic word/ruling blocks. Full-page blank ruling retains the entered words. Primary and single ruling are supported; the unrelated Seyes-style option is unavailable in this format.
+
+Physical paper stock is a shared registry and printable-node contract, not a Word Practice flag. Statement is 5.5 x 8.5 inches / 396 x 612 PDF points. Keep Letter defaults and existing desktop geometry. All Handwriting Lines formats adopt paper-aware pagination now. Broader worksheet adoption is an explicit second phase: reflow and validate each generator; do not shrink existing Letter worksheets. Dedicated Seyes geometry and Certificate landscape require separate output checks. See docs/WORD_PRACTICE.md for the phase boundary and validation.
+
+Actual exported-page inspection exposed a pre-existing font fallback in SVG raster export: computed font-family names did not carry bundled fonts into the separate SVG image context. Shared export now embeds only the matching local @font-face rules in each serialized page. Print geometry, PDF image encoding and offline independence are retained; no remote font fetch or new dependency was introduced.

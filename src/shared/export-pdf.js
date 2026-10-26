@@ -1,3 +1,4 @@
+import { paperForPages } from './paper-size.js';
 import { addBrandWatermarks, brandWatermarkStyles } from './worksheet-brand.js';
 
 const EXPORT_PAGE_SELECTOR = [
@@ -21,8 +22,6 @@ const EXPORT_PAGE_LAST_CHILD_SELECTOR = EXPORT_PAGE_CHILD_SELECTOR
   .map(selector => `${selector}:last-child`)
   .join(',');
 
-const PDF_WIDTH = 612;
-const PDF_HEIGHT = 792;
 const EXPORT_SCALE = 3;
 
 export async function exportWorksheetPdf(options = {}) {
@@ -32,7 +31,8 @@ export async function exportWorksheetPdf(options = {}) {
 
   await document.fonts?.ready;
 
-  const frame = createExportFrame(source);
+  const paper = paperForPages(pages);
+  const frame = createExportFrame(source, paper);
   try {
     const exportDocument = frame.contentDocument;
     const exportWindow = frame.contentWindow;
@@ -41,7 +41,7 @@ export async function exportWorksheetPdf(options = {}) {
     await waitForExportLayout(exportDocument, exportWindow);
 
     const exportPages = [...exportDocument.querySelectorAll(EXPORT_PAGE_CHILD_SELECTOR)];
-    const doc = new ImagePdf();
+    const doc = new ImagePdf(paper);
     for (const pageEl of exportPages) {
       const image = await renderPageImage(pageEl, exportWindow);
       doc.addPage(image);
@@ -54,14 +54,14 @@ export async function exportWorksheetPdf(options = {}) {
   }
 }
 
-function createExportFrame(source) {
+function createExportFrame(source, paper) {
   const frame = document.createElement('iframe');
   frame.setAttribute('aria-hidden', 'true');
   frame.style.position = 'fixed';
   frame.style.left = '-10000px';
   frame.style.top = '0';
-  frame.style.width = '8.5in';
-  frame.style.height = '11in';
+  frame.style.width = `${paper.widthIn}in`;
+  frame.style.height = `${paper.heightIn}in`;
   frame.style.border = '0';
   frame.style.visibility = 'hidden';
   frame.style.pointerEvents = 'none';
@@ -79,7 +79,7 @@ function createExportFrame(source) {
   <meta charset="UTF-8">
   <title>Bodhana Worksheet Export</title>
   ${headAssets}
-  <style>${exportPrintStyles()}</style>
+  <style>${exportPrintStyles(paper)}</style>
 </head>
 <body>
   <main class="print-document">${source.innerHTML}</main>
@@ -90,16 +90,16 @@ function createExportFrame(source) {
   return frame;
 }
 
-function exportPrintStyles() {
+function exportPrintStyles(paper) {
   return `
-    @page { size: Letter; margin: 0; }
+    @page { size: ${paper.cssSize}; margin: 0; }
 
     html,
     body {
       margin: 0 !important;
       padding: 0 !important;
-      width: 8.5in !important;
-      min-width: 8.5in !important;
+      width: ${paper.widthIn}in !important;
+      min-width: ${paper.widthIn}in !important;
       background: white !important;
       color: black !important;
       overflow: visible !important;
@@ -107,8 +107,8 @@ function exportPrintStyles() {
 
     .print-document {
       display: block !important;
-      width: 8.5in !important;
-      min-width: 8.5in !important;
+      width: ${paper.widthIn}in !important;
+      min-width: ${paper.widthIn}in !important;
       max-width: none !important;
       margin: 0 !important;
       padding: 0 !important;
@@ -118,11 +118,11 @@ function exportPrintStyles() {
 
     ${EXPORT_PAGE_CHILD_SELECTOR} {
       zoom: 1 !important;
-      width: 8.5in !important;
-      min-width: 8.5in !important;
+      width: ${paper.widthIn}in !important;
+      min-width: ${paper.widthIn}in !important;
       max-width: none !important;
-      height: 11in !important;
-      max-height: 11in !important;
+      height: ${paper.heightIn}in !important;
+      max-height: ${paper.heightIn}in !important;
       margin: 0 !important;
       position: relative !important;
       box-sizing: border-box !important;
@@ -162,9 +162,9 @@ function exportPrintStyles() {
       margin: 0 !important;
       background: white !important;
       box-sizing: border-box !important;
-      width: 8.5in !important;
-      height: 11in !important;
-      max-height: 11in !important;
+      width: ${paper.widthIn}in !important;
+      height: ${paper.heightIn}in !important;
+      max-height: ${paper.heightIn}in !important;
       max-width: none !important;
       overflow: hidden !important;
     }
@@ -237,9 +237,9 @@ function exportPrintStyles() {
       margin: 0 !important;
       box-shadow: none !important;
       box-sizing: border-box !important;
-      width: 8.5in !important;
-      height: 11in !important;
-      max-height: 11in !important;
+      width: ${paper.widthIn}in !important;
+      height: ${paper.heightIn}in !important;
+      max-height: ${paper.heightIn}in !important;
       overflow: hidden !important;
     }
 
@@ -278,6 +278,14 @@ async function renderPageImage(pageEl, view = window) {
   const clone = pageEl.cloneNode(true);
 
   inlineComputedStyles(pageEl, clone, view);
+  // SVG foreignObject is a separate font context: computed family names alone
+  // cannot carry the app's bundled fonts into the raster image.
+  const faces = embeddedFontStyles(pageEl, view);
+  if (faces) {
+    const style = pageEl.ownerDocument.createElement('style');
+    style.textContent = faces;
+    clone.prepend(style);
+  }
   clone.style.width = `${width}px`;
   clone.style.height = `${height}px`;
   clone.style.margin = '0';
@@ -307,6 +315,22 @@ async function renderPageImage(pageEl, view = window) {
 
   const bytes = await canvasToJpegBytes(canvas);
   return { bytes, width: canvas.width, height: canvas.height };
+}
+
+function embeddedFontStyles(page, view) {
+  const families = new Set([page, ...page.querySelectorAll('*')].flatMap(el =>
+    view.getComputedStyle(el).fontFamily.split(',').map(f => f.trim().replace(/['"]/g, '').toLowerCase())));
+  const faces = [];
+  for (const sheet of page.ownerDocument.styleSheets) {
+    let rules;
+    try { rules = sheet.cssRules; } catch { continue; }
+    for (const rule of rules) {
+      if (rule.type !== 5) continue; // CSSRule.FONT_FACE_RULE
+      const family = rule.style.getPropertyValue('font-family').replace(/['"]/g, '').trim().toLowerCase();
+      if (families.has(family)) faces.push(rule.cssText);
+    }
+  }
+  return faces.join('\n');
 }
 
 function inlineComputedStyles(source, clone, view = window) {
@@ -371,7 +395,8 @@ function downloadBlob(blob, filename) {
 }
 
 class ImagePdf {
-  constructor() {
+  constructor(paper) {
+    this.width = paper.widthPt; this.height = paper.heightPt;
     this.pages = [];
   }
 
@@ -402,9 +427,9 @@ class ImagePdf {
         image.bytes,
         '\nendstream\n',
       ]);
-      const content = `q\n${PDF_WIDTH} 0 0 ${PDF_HEIGHT} 0 0 cm\n/${imageName} Do\nQ\n`;
+      const content = `q\n${this.width} 0 0 ${this.height} 0 0 cm\n/${imageName} Do\nQ\n`;
       const contentId = add(`<< /Length ${asciiLength(content)} >>\nstream\n${content}endstream\n`);
-      const pageId = add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${PDF_WIDTH} ${PDF_HEIGHT}] /Resources << /XObject << /${imageName} ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>\n`);
+      const pageId = add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${this.width} ${this.height}] /Resources << /XObject << /${imageName} ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>\n`);
       pageIds.push(pageId);
     }
 

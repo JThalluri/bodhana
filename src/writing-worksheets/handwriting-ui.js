@@ -1,3 +1,4 @@
+import { paperSizeOptions } from '../shared/paper-size.js';
 import { initWorkspacePersistence } from '../shared/device-storage.js';
 let workspace;
 // Handwriting Lines — settings UI + live preview.
@@ -115,7 +116,15 @@ function markup() {
               ['alternating', 'Alternating (model + practice)'],
               ['top_box', 'Copy from box'],
               ['jumbled', 'Jumbled sentences'],
+              ['word_practice', 'Word Practice'],
             ])}
+            ${sel('paperSize', 'Paper size', paperSizeOptions())}
+            <div id="hwWordPracticeSection" hidden>
+              ${sel('wordPractice.mode', 'Content', [['practice','Practice lines'],['words','Words only']])}
+              ${sel('wordPractice.lines', 'Practice lines', [['1','1 per word'],['2','2 per word'],['3','3 per word'],['4','4 per word'],['5','5 per word'],['all','Full page (no words)']])}
+              ${num('wordPractice.rowPaddingPx', 'Row padding px', {min:0,max:30,step:1})}
+              ${num('wordPractice.lineGapPx', 'Gap to lines px', {min:0,max:30,step:1})}
+            </div>
             <div class="ws-field">
               <label for="hwTier">Grade tier</label>
               <select class="tb-select" id="hwTier">
@@ -148,7 +157,7 @@ function markup() {
               <label for="hw-refTitle">Box title</label>
               <textarea class="hw-text hw-ref-title-input" id="hw-refTitle" data-path="refTitle" maxlength="120" rows="3"></textarea>
             </div>
-            <textarea id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
+            <textarea aria-label="Worksheet content" id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
               placeholder="One item or sentence per line."></textarea>
             <div class="hw-dict-panel">
               <div class="hw-dict-actions">
@@ -393,7 +402,18 @@ export function buildHandwritingUI(container, onTypeChange) {
   function syncEnabled() {
     const g = state.geometry;
     const fmt = state.exerciseFormat;
+    const wp = fmt === 'word_practice';
     const seyes = g.gridType === 'seyes_french';
+    $('#hwWordPracticeSection').hidden = !wp;
+    setDisabled('wordPractice.lines', state.wordPractice.mode !== 'practice');
+    setDisabled('wordPractice.lineGapPx', state.wordPractice.mode !== 'practice' || state.wordPractice.lines === 'all');
+    const seyesOption = $('[data-path="geometry.gridType"] option[value="seyes_french"]');
+    seyesOption.disabled = wp; seyesOption.hidden = wp;
+    setDisabled('typography.baselineShiftPx', wp);
+    setDisabled('layout.pictureBlockHeightPct', wp);
+    setDisabled('layout.showLeftMarginVerticalLine', wp);
+    const fontInput = $('[data-path="typography.fontSizePx"]');
+    fontInput.max = wp ? '44' : '200';
     const zb = g.gridType === 'zaner_bloser';
     // Seyès-style geometry is locked so the 8 mm / 2 mm rhythm stays exact.
     setDisabled('geometry.lineHeightInch', seyes);
@@ -405,16 +425,18 @@ export function buildHandwritingUI(container, onTypeChange) {
     setDisabled('typography.fontSizeFill', state.typography.fontSizeMode !== 'auto');
     setDisabled('typography.fontSizePx', state.typography.fontSizeMode !== 'manual');
     setDisabled('layout.totalPages', fmt !== 'top_box');
-    setDisabled('layout.leftMarginLineColor', !state.layout.showLeftMarginVerticalLine);
+    setDisabled('layout.leftMarginLineColor', wp || !state.layout.showLeftMarginVerticalLine);
     setDisabled('scaffolding.fadingMethod', fmt !== 'alternating');
     setDisabled('scaffolding.tracingOpacity', fmt !== 'alternating' || state.scaffolding.fadingMethod !== 'faded_tracing');
     setDisabled('scaffolding.blankRowsBetween', fmt !== 'alternating');
     $('#hwSeyesNote').hidden = !seyes;
     $('#hwSeedRow').hidden = fmt !== 'jumbled';
-    $('#hwRefTitleRow').hidden = fmt === 'alternating';
+    $('#hwRefTitleRow').hidden = fmt === 'alternating' || wp;
+    contentEl.disabled = wp && state.wordPractice.mode === 'practice' && state.wordPractice.lines === 'all';
     $('#hwScaffoldingSection').hidden = fmt !== 'alternating';
     $('#hwTracingOpacityRow').hidden = fmt !== 'alternating' || state.scaffolding.fadingMethod !== 'faded_tracing';
     $('#hwContentHint').title = {
+      word_practice: 'Space, newline, comma or semicolon separated words, arranged left to right in three columns. Full page ignores the retained word list.',
       alternating: 'One word or sentence per line (or a single space-separated word line). Long lines wrap; each wrapped line gets its own model and practice rows.',
       top_box: 'Shown in a box on page 1 with light pipe separators; students copy it onto the lines below.',
       jumbled: 'One sentence per line, in the correct order. They are shuffled in the box.',
@@ -431,7 +453,7 @@ export function buildHandwritingUI(container, onTypeChange) {
     const family = state.typography.fontFamily;
     if (!isFontReady(family)) {
       // Measure only with the real font; re-render once it arrives.
-      ensureFont(family).then(() => { if (_alive) scheduleRender(); });
+      ensureFont(family).then(() => { if (_alive && mountedRoot.isConnected) scheduleRender(); });
     }
     const model = buildModel(state, seed);
     pagesEl.innerHTML = renderPages(state, model);
@@ -466,6 +488,11 @@ export function buildHandwritingUI(container, onTypeChange) {
       el.value = value;
     }
 
+    if (path === 'exerciseFormat' && value === 'word_practice') {
+      if (state.geometry.gridType === 'seyes_french') state.geometry.gridType = 'zaner_bloser';
+      if (state.typography.fontSizeMode === 'auto') {state.typography.fontSizeMode = 'manual';state.typography.fontSizePx = 20;}
+      state.typography.fontSizePx = Math.min(44,state.typography.fontSizePx);
+    }
     if (path === 'exerciseFormat') {
       const prevDefault = REF_TITLE_DEFAULTS[state.exerciseFormat];
       if (state.refTitle === prevDefault) state.refTitle = REF_TITLE_DEFAULTS[value];
@@ -592,7 +619,8 @@ export function buildHandwritingUI(container, onTypeChange) {
     snapshot: () => ({state, seed, dictionary: {...dictionary, appendedWords: [...dictionary.appendedWords]}}),
     restore: saved => {
       if (!saved.state?.geometry || !Array.isArray(saved.dictionary?.allWords)) return;
-      state = saved.state; seed = saved.seed;
+      const defaults = freshState();
+      state = {...defaults,...saved.state,wordPractice:{...defaults.wordPractice,...saved.state.wordPractice}}; seed = saved.seed;
       Object.assign(dictionary,saved.dictionary,{appendedWords:new Set(saved.dictionary.appendedWords)});
       $('#hwWordSearch').value = dictionary.search;
       updateDictionaryStatus(dictionary.allWords.length+' words loaded (saved)','info');

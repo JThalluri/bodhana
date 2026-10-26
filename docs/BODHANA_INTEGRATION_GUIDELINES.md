@@ -122,7 +122,7 @@ If a new printable page class is required, update both:
 - `src/shared/print.js`
 - `src/shared/export-pdf.js`
 
-Keep page elements as exact US Letter pages:
+Keep page elements at their exact selected physical size. The default Letter example is:
 
 ```css
 width: 8.5in;
@@ -156,8 +156,8 @@ The shared print engine:
 
 - Copies rendered pages from `.tool-pages`.
 - Prints in a hidden iframe.
-- Uses `@page { size: Letter; margin: 0; }`.
-- Forces each page to `8.5in x 11in`.
+- Uses the selected physical paper dimensions in `@page`, with zero browser margins.
+- Forces each page to the selected dimensions (default `8.5in x 11in`).
 - Adds the shared `Bodhana` watermark.
 - Excludes portal chrome.
 
@@ -177,7 +177,7 @@ exportWorksheetPdf({ filenameBase: 'worksheet_type_name' });
 
 Use a lowercase, underscore-friendly filename base. The shared exporter appends a timestamp.
 
-Do not implement raster screenshot export from the visible preview pane. The shared exporter renders from the same hidden Letter-sized print-layout contract used by print.
+Do not implement raster screenshot export from the visible preview pane. The shared exporter renders from the same hidden paper-sized print-layout contract used by print.
 
 ## Branding
 
@@ -295,3 +295,7 @@ Initialize initToolShell(container, stableContentKey) only after actual tool DOM
 Run npm test, both builds, npm run audit:build and npm run test:portal using built artifacts. The portable target is one HTML file; hosted builds use BODHANA_BASE. See DEPLOYMENT.md for commands and explicit offline boundaries. Physical Seyes validation and Android print/install checks remain mandatory device gates.
 
 Settings persistence: shared tool-shell initialization restores standard controls with stable IDs. Exclude dispatch selectors from generic replay and restore them in their dispatcher. Complex state/presets and uploaded files need an explicit workspace adapter; see [Local device data](LOCAL_DATA.md). Dispose the adapter before resetting module state and guard late readers.
+
+## Paper stock update (2026-10-26)
+
+The earlier Letter-only contract is superseded for migrated modules. Use src/shared/paper-size.js, declare data-paper-size on each printable page, and generate/render at the actual chosen size. Shared print/export consumes that declaration, including PDF MediaBox dimensions. Letter remains the default for unmigrated modules. Statement is not preview scaling. Handwriting Lines supports both stocks; other families migrate in the documented separate phase. Preserve the dedicated Seyes print path.

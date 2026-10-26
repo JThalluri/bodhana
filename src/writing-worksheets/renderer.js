@@ -1,8 +1,9 @@
+import { renderWordPractice } from './word-practice-renderer.js';
 // Renderer — converts the page model into `.hw-worksheet` page HTML.
 // Ruling is inline SVG (no gradients) so preview, print and PDF export are
 // pixel-identical. Text is HTML so web fonts survive the export path.
 
-import { PAGE_H, PX_PER_IN, baselineInRow } from './generator.js';
+import { PX_PER_IN, baselineInRow } from './generator.js';
 import { baselineOffsetInLineBox, fontStack } from './typography.js';
 
 const esc = s => String(s)
@@ -105,7 +106,7 @@ function pageHTML(state, geo, page) {
   const ref = page.ref ? refBlockHTML(page.ref) : '';
 
   const marginLine = s.layout.showLeftMarginVerticalLine
-    ? `<svg class="hw-margin-line" width="2" height="${PAGE_H}" style="left:${r2(geo.L - 8)}px" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="${PAGE_H}" stroke="${s.layout.leftMarginLineColor}" stroke-width="1.5"/></svg>`
+    ? `<svg class="hw-margin-line" width="2" height="${geo.paper.heightPx}" style="left:${r2(geo.L - 8)}px" aria-hidden="true"><line x1="1" y1="0" x2="1" y2="${geo.paper.heightPx}" stroke="${s.layout.leftMarginLineColor}" stroke-width="1.5"/></svg>`
     : '';
 
   const fontStyle = [
@@ -114,7 +115,7 @@ function pageHTML(state, geo, page) {
     `letter-spacing:${r2(geo.letterSpacingPx)}px`,
   ].join(';');
 
-  return `<div class="hw-worksheet">
+  return `<div class="hw-worksheet" data-paper-size="${geo.paper.id}" style="width:${geo.paper.widthIn}in;height:${geo.paper.heightIn}in">
   ${marginLine}
   <div class="hw-content" style="left:${r2(geo.L)}px;top:${r2(geo.T)}px;width:${r2(geo.availW)}px;height:${r2(geo.availHN)}px">
     ${picture}${ref}
@@ -127,5 +128,6 @@ function pageHTML(state, geo, page) {
 }
 
 export function renderPages(state, model) {
+  if (state.exerciseFormat === 'word_practice') return renderWordPractice(state, model);
   return model.pages.map(page => pageHTML(state, model.geo, page)).join('');
 }

@@ -109,7 +109,7 @@ Guidance lives in src/content/tool-info/<key>/content.html with optional scoped 
 - npm run build produces the portable single dist/index.html, usable with file URLs and no worker registration.
 - npm run build:hosted generates constructs and dist-hosted with configurable BODHANA_BASE, scoped manifest/worker/icons and versioned complete precaching. See docs/DEPLOYMENT.md.
 - Fonts, solid icons and existing PDF/DOCX/ODT readers are local bundled resources; licenses accompany both outputs. Monitor bundle size.
-- The custom shared Export engine uses a hidden Letter frame and raster PDF pages; no CDN html2pdf implementation is used. Seyes keeps its dedicated Print path; Certificates is landscape Print only.
+- The custom shared Export engine uses a hidden frame at the selected physical paper size and raster PDF pages; no CDN html2pdf implementation is used. Seyes keeps its dedicated Print path; Certificates is landscape Print only.
 - No backend. Wiktionary and external links need internet. Speech and physical printing depend on platform services. Offline availability requires a successful initial install/cache cycle.
 - Updates wait for a deliberate action and consent across tabs; no silent reload over unfinished work.
 - npm run test:portal uses a separate production-artifact Playwright config. Existing Workbench tests remain independently configured. Real Android checks are pending until executed on hardware.
@@ -119,3 +119,5 @@ Guidance lives in src/content/tool-info/<key>/content.html with optional scoped 
 - `docs/DECISIONS.md` — architecture decision log
 
 Device persistence: read docs/LOCAL_DATA.md before changing settings/file lifecycles. Small preferences use scoped localStorage; dictionary workspaces/files use IndexedDB. Do not store loaded files in service-worker caches. Preserve clear/removal semantics and flush adapters before resetting state.
+
+Paper stock: src/shared/paper-size.js is the Letter/Statement registry. Printable nodes declare data-paper-size and shared Print/Export consumes physical dimensions; no declaration retains Letter. Handwriting Lines supports both stocks in all formats, including Word Practice. Read docs/WORD_PRACTICE.md for controls, validation and the separate remaining-family rollout. Never add a smaller-paper selector to an unchanged Letter layout.

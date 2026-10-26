@@ -4,8 +4,10 @@
 // tracing opacity (see docs/DECISIONS.md).
 
 export const DEFAULT_STATE = {
+  paperSize: 'letter',
+  wordPractice: {mode:'practice', lines:'1', rowPaddingPx:4, lineGapPx:3},
   activeTier: 'tier3',            // 'tier1' | 'tier2' | 'tier3' | 'tier4' | 'tier5'
-  exerciseFormat: 'top_box',      // 'alternating' | 'top_box' | 'jumbled'
+  exerciseFormat: 'top_box',      // 'alternating' | 'top_box' | 'jumbled' | 'word_practice'
   userContentText: 'apple banana carrot dates elderberry fig',
   refTitle: 'Write your own sentences using these words',
 
@@ -52,6 +54,7 @@ export const DEFAULT_STATE = {
 };
 
 export const REF_TITLE_DEFAULTS = {
+  word_practice: '',
   alternating: '',
   top_box: 'Read, then copy below',
   jumbled: 'Unjumble — rewrite in the correct order below',

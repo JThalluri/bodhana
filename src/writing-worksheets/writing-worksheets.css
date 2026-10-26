@@ -457,3 +457,5 @@
   line-height: 26px;
   text-align: center;
 }
+.hw-practice-content, .hw-practice-word { position:absolute; box-sizing:border-box; }
+.hw-practice-word { white-space:pre; color:#111; }

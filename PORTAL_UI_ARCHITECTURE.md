@@ -35,7 +35,7 @@ Dictionary Builder uses the same shell primitives, but its main pane contains ex
 
 ## Page Preview Contract
 
-- Printable pages remain actual Letter-sized DOM nodes for print.
+- Printable pages remain actual physical-size DOM nodes for print; Letter is the default and migrated modules also offer Statement.
 - Screen preview scaling must not alter print geometry.
 - Print media rules reset preview scaling and hide portal chrome.
 - At 1920x1080, the middle pane should show one full page without relying on the right pane width.
@@ -46,9 +46,9 @@ Seyes uses deterministic millimeter geometry. Its pagination, grid SVG, text pla
 
 ## PDF Direction
 
-Native `Print` is the quality baseline. Direct `Export` for generated non-Seyes worksheets uses a shared hidden print-layout frame, renders each Letter-sized page at high resolution, and embeds those page images into a PDF. This avoids screen-preview zoom drift while matching the validated print geometry.
+Native `Print` is the quality baseline. Direct `Export` for generated non-Seyes worksheets uses a shared hidden print-layout frame, renders each selected-paper-sized page at high resolution, and embeds those page images into a PDF. This avoids screen-preview zoom drift while matching the validated print geometry.
 
-The exporter must not rasterize the visible preview pane directly. It should render from the same print-layout contract used by `Print`: Letter page, zero browser page margin, module print overrides, all rendered pages included, and portal chrome excluded.
+The exporter must not rasterize the visible preview pane directly. It should render from the same print-layout contract used by `Print`: selected physical page stock (Letter by default), zero browser page margin, module print overrides, all rendered pages included, and portal chrome excluded.
 
 Seyes remains outside direct Export PDF for now. Its trusted output path is still the dedicated print window because its 8mm grid and text placement require physical validation.
 
@@ -86,3 +86,9 @@ Phonics derived workspace records use `ANALYSIS_REVISION` (engine version + cons
 Reviewed American pronunciation entries are optional compiled constructs data. The shared tokenizer and sound resolver apply exact-word sound units before the generic spelling heuristic; curated entries suppress overlapping vowel-team bucket matches. Dictionary Detail renders full correspondence data, while the same records drive sound filters and worksheet boxes. Extended CSV carries string/JSON pronunciation metadata, retaining the base-column contract. Compiler validation and Workbench reachability/regression paths share these entries. See docs/PHONICS_AMERICAN_PRONUNCIATION_FIXES.md and tools/constructs-workbench/README.md for the authoring contract.
 
 `core/soundGuide.mjs` is a conservative display interpreter over existing analysis records. Shared Detail and Phonics word-list badges use it; unresolved groups are explicit and supplied pronunciation metadata is preserved. It adds no lexicon or derived-record schema. The optional pronunciation reference is a native external link, never an eager fetch or embedded asset. Portable/offline functionality must be verified with external network access blocked. See docs/PHONICS_AMERICAN_PRONUNCIATION_FIXES.md for confidence/grouping limits.
+
+## Shared physical paper sizes (2026-10-26)
+
+`src/shared/paper-size.js` defines Letter and Statement in inches, CSS pixels and PDF points. Printable page nodes declare `data-paper-size`; omitted/unknown values retain Letter. Shared Print and Export consume the same declaration and reject mixed stocks in one job. Certificate landscape remains an orientation adapter. PDF MediaBox and image placement use physical page points rather than a fixed Letter constant. Screen fitting still reads actual page geometry.
+
+Handwriting Lines is the first complete consumer: all four formats paginate and render at the selected dimensions. Word Practice has its own pure row model and renderer, using existing typography and controls. Prior persisted workspaces merge newly introduced defaults. Other worksheet families remain Letter pending the separate, per-family reflow phase; never offer Statement merely by shrinking Letter content. Dedicated Seyes output remains protected.

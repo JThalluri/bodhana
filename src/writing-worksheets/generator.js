@@ -1,6 +1,8 @@
+import { paperSize } from '../shared/paper-size.js';
+import { buildWordPracticeModel } from './word-practice.js';
 // Layout engine — spec §4–§7.
 // Turns state into a pure page model (no DOM), which the renderer converts to
-// HTML. All geometry is in CSS px at 96 dpi; Letter portrait only.
+// HTML. All geometry is in CSS px at 96 dpi for the selected shared paper stock.
 
 import { clamp } from './state.js';
 import { fontMetrics, measureText, wrapText } from './typography.js';
@@ -86,6 +88,7 @@ export function computeGeometry(state) {
   const g = state.geometry;
   const t = state.typography;
   const l = state.layout;
+  const paper = paperSize(state.paperSize);
   const isSeyes = g.gridType === 'seyes_french';
 
   // Seyès keeps float spacing so the 8 mm / 2 mm rhythm is exact.
@@ -110,12 +113,12 @@ export function computeGeometry(state) {
   const R = l.rightMarginInch * PX_PER_IN;
   const T = l.topMarginInch * PX_PER_IN;
   const B = l.bottomMarginInch * PX_PER_IN;
-  const availW = Math.max(96, PAGE_W - L - R);
-  const availHN = Math.max(rowH, PAGE_H - T - B);
+  const availW = Math.max(96, paper.widthPx - L - R);
+  const availHN = Math.max(rowH, paper.heightPx - T - B);
   const letterSpacingPx = (Number(t.letterSpacingEm) || 0) * fontPx;
 
   return {
-    gridType: g.gridType, isSeyes, lineH, skipH, rowH,
+    paper, gridType: g.gridType, isSeyes, lineH, skipH, rowH,
     family, fontPx, autoPx, asc, desc, letterSpacingPx,
     L, R, T, B, availW, availHN,
   };
@@ -206,6 +209,7 @@ function buildRefBlock(state, geo, format, rng, sentences, maxHeight) {
  */
 export function buildModel(state, seed) {
   const geo = computeGeometry(state);
+  if (state.exerciseFormat === 'word_practice') return buildWordPracticeModel(state, geo);
   const format = state.exerciseFormat;
   const rng = mulberry32(seed);
   const warnings = [];
