@@ -13,7 +13,7 @@ export function renderWordPractice(state,{geo:g,pages}) {
     if(g.gridType==='zaner_bloser'){
      rules.push(line(y,state.geometry.lineColorPrimary));
      if(state.geometry.hasMidline && state.geometry.midlineDashPattern!=='none')rules.push(line(y+row.lineH/2,state.geometry.lineColorMidline,state.geometry.midlineDashPattern==='solid'?'':state.geometry.midlineDashPattern));
-     rules.push(line(y+row.lineH-1,state.geometry.lineColorBaseline));
+     rules.push(line(y+row.lineH,state.geometry.lineColorBaseline));
     } else rules.push(line(y+row.lineH-1,state.geometry.lineColorPrimary));
    }
   }

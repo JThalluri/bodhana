@@ -129,6 +129,7 @@ export function computeGeometry(state) {
 /** Baseline offset inside a row of height rowH, measured from the row top. */
 export function baselineInRow(geo) {
   if (geo.isSeyes) return geo.rowH;
+  if (geo.gridType === 'zaner_bloser') return geo.lineH;
   return geo.lineH - 1;
 }
 

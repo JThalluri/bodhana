@@ -33,8 +33,8 @@ function rulingSVG(state, geo, rowCount, rowH) {
     for (let i = 0; i < rowCount; i++) {
       const y0 = i * rowH;
       parts.push(hline(crisp(y0), w, g.lineColorPrimary));
-      if (showMid) parts.push(hline(crisp(y0 + Math.round(geo.lineH / 2)), w, g.lineColorMidline, midDash));
-      parts.push(hline(crisp(y0 + geo.lineH - 1), w, g.lineColorBaseline));
+      if (showMid) parts.push(hline(crisp(y0) + geo.lineH / 2, w, g.lineColorMidline, midDash));
+      parts.push(hline(crisp(y0) + geo.lineH, w, g.lineColorBaseline));
     }
   } else if (geo.isSeyes) {
     // Exact float spacing: major line every 8 mm, three 2 mm sub-lines between.
