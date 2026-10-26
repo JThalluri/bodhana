@@ -1,4 +1,4 @@
-﻿# Data retained on this device
+# Data retained on this device
 
 The portal automatically retains settings in this browser. This is local browser storage, not an account or a sync service. Files are not uploaded by the persistence feature. Keep separate copies of important documents and exports.
 
@@ -30,3 +30,5 @@ The 3.2.0 American pronunciation correction adds optional extended CSV fields fo
 Every enriched word now receives a local sound-guide view derived from its retained records. This does not rewrite imported CSV or reclassify saved words. Ambiguous parts display Needs review; supplied complete pronunciation metadata remains available. The optional Cambridge pronunciation link is never fetched or cached by persistence and is not required for loading, editing, generating, printing or exporting offline. Group-count labels preserve the legacy phoneme_count field and stored filter IDs.
 
 Handwriting workspaces now retain the shared paperSize and Word Practice options alongside the existing content, dictionary and selection. Older saved states merge new defaults (Letter stock) without resetting existing fields. Full-page blank practice temporarily hides the retained word list; switching modes restores it.
+
+All other worksheet families retain their native Paper size selector through the shared settings adapter and existing per-subtype keys. Letter remains the default for older preferences. Stock changes preserve loaded dictionaries and selected words. Word Puzzles regenerates grids to the smaller stock limits; other generated Math families regenerate through their normal Generate path. Sudoku retains its generated boards and adjusts tiling. Native paper choices are separate from screen fitting. See STATEMENT_PAPER_ROLLOUT.md.

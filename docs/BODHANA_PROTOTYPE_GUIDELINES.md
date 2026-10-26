@@ -193,3 +193,7 @@ Before handing a prototype to Bodhana integration agents:
 ## Responsive prototypes (2026-10-16)
 
 At widths below 1480px, navigation begins collapsed and Settings opens the existing form as an accessible overlay. Below a 996px pane budget boundary, switch Preview/Guide. Fit page uses available width and height; Fit width scrolls vertically. Keep actual Letter page dimensions untouched. Certificates is landscape Letter; Dictionary Builder is a responsive results view. Test the viewport matrix in TABLET_CONTENT_AND_PWA_IMPLEMENTATION_PLAN.md in both themes, and do not equate desktop emulation with physical Android print/install validation.
+
+## Paper stock rollout (2026-10-26)
+
+Letter remains the default; Statement is now supported across all printable families. Declare actual stock and orientation, reflow at its physical dimensions, and verify every rendered/printed/exported page. Never scale Letter content to claim Statement support. Reference STATEMENT_PAPER_ROLLOUT.md for family-specific tile/grid limits. Seyes retains exact 8 mm/2 mm geometry and dedicated printing; Certificates is landscape Print only. Dictionary Builder has no page stock. Smaller paper does not imply smaller handwriting ruling.

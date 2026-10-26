@@ -45,6 +45,8 @@ test('failed initial install, complete offline relaunch, failed update and multi
  await page.getByRole('button',{name:'Settings',exact:true}).click();await page.locator('#wsInput').fill('Keep this unfinished worksheet');await page.keyboard.press('Escape');
  version='failed-update';fail=true;
  await page.evaluate(async()=>{await (await navigator.serviceWorker.getRegistration()).update();});
+ // update() can resolve before the new install becomes visible; wait for its terminal failure.
+ await expect(page.locator('.pwa-actions')).toContainText('Offline update failed',{timeout:20000});
  await expect.poll(()=>page.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();return !r.installing && !r.waiting;}),{timeout:20000}).toBeTruthy();
  expect(await page.evaluate(()=>caches.keys())).toContain(cachePrefix+'initial');
  expect(await page.evaluate(()=>caches.keys())).not.toContain(cachePrefix+'failed-update');

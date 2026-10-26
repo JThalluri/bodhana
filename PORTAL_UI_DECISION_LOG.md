@@ -75,3 +75,11 @@ Implement Word Practice as a format in the Handwriting Lines family, retaining t
 Physical paper stock is a shared registry and printable-node contract, not a Word Practice flag. Statement is 5.5 x 8.5 inches / 396 x 612 PDF points. Keep Letter defaults and existing desktop geometry. All Handwriting Lines formats adopt paper-aware pagination now. Broader worksheet adoption is an explicit second phase: reflow and validate each generator; do not shrink existing Letter worksheets. Dedicated Seyes geometry and Certificate landscape require separate output checks. See docs/WORD_PRACTICE.md for the phase boundary and validation.
 
 Actual exported-page inspection exposed a pre-existing font fallback in SVG raster export: computed font-family names did not carry bundled fonts into the separate SVG image context. Shared export now embeds only the matching local @font-face rules in each serialized page. Print geometry, PDF image encoding and offline independence are retained; no remote font fetch or new dependency was introduced.
+
+## 2026-10-26: Extend Statement through native per-family layouts
+
+Use the shared Letter/Statement registry and stable native selectors throughout all remaining printable families. Retain Letter defaults and existing output. Arithmetic continues numbered questions; Math categories measure at actual stock; Phonics, word banks/jumbles and game keys/call sheets pack intact rows. Move the original measuring host outside hidden previews, with guaranteed restoration, so Guide mode cannot corrupt pagination.
+
+Expose usable smaller-stock limits: one/two Sudoku boards, one Math Game, new Word Puzzle grids up to 20 by 20 and Math Puzzle grids up to 18 by 18. Difficulty/blank rules remain intact. Large custom values/content can still exceed a cell or page; warn accessibly and block Print/Export until corrected rather than silently clipping or shrinking text without a readability floor. Check hidden Math Puzzle answers too.
+
+Seyes changes canvas bounds and pagination only, retaining the exact major/minor grid geometry and dedicated vector print path. Certificates reflows native landscape artwork/text and remains Print only. Dictionary Builder is excluded as a results view. See docs/STATEMENT_PAPER_ROLLOUT.md for production-artifact verification and physical-device gates.
