@@ -151,14 +151,16 @@ function markup() {
           <div class="ws-settings-section">
             <div class="ws-section-title hw-section-title-row">
               <span>Content</span>
+              <button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="hwClearContent" aria-label="Clear worksheet content">Clear</button>
               <span class="hw-info-icon" id="hwContentHint" role="img" aria-label="Content help" tabindex="0" title=""></span>
             </div>
             <div class="ws-field hw-wide hw-stack" id="hwRefTitleRow">
-              <label for="hw-refTitle">Box title</label>
+              <div class="ws-content-heading"><label for="hw-refTitle">Box title</label><button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="hwClearTitle" aria-label="Clear box title">Clear</button></div>
               <textarea class="hw-text hw-ref-title-input" id="hw-refTitle" data-path="refTitle" maxlength="120" rows="3"></textarea>
             </div>
             <textarea aria-label="Worksheet content" id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
               placeholder="One item or sentence per line."></textarea>
+            <p class="hw-hint" id="hwBlankPracticeHint" hidden>Full-page ruling does not show words. You can still edit or clear them here; choose 1–5 practice lines to show the words.</p>
             <div class="hw-dict-panel">
               <div class="hw-dict-actions">
                 <label class="btn btn-secondary btn-sm hw-file-btn" for="hwDictFileInput" title="Load word list (.txt) or Dictionary Builder export (.csv)">
@@ -438,7 +440,7 @@ export function buildHandwritingUI(container, onTypeChange) {
     $('#hwSeyesNote').hidden = !seyes;
     $('#hwSeedRow').hidden = fmt !== 'jumbled';
     $('#hwRefTitleRow').hidden = fmt === 'alternating' || wp;
-    contentEl.disabled = wp && state.wordPractice.mode === 'practice' && state.wordPractice.lines === 'all';
+    $('#hwBlankPracticeHint').hidden = !(wp && state.wordPractice.mode === 'practice' && state.wordPractice.lines === 'all');
     $('#hwScaffoldingSection').hidden = fmt !== 'alternating';
     $('#hwTracingOpacityRow').hidden = fmt !== 'alternating' || state.scaffolding.fadingMethod !== 'faded_tracing';
     $('#hwContentHint').title = {
@@ -599,6 +601,22 @@ export function buildHandwritingUI(container, onTypeChange) {
     if (add) appendDictionaryWords([word]);
     else removeDictionaryWords([word]);
   });
+
+  function clearField(field) {
+    field.value = '';
+    field.dispatchEvent(new Event('input', {bubbles:true}));
+    field.dispatchEvent(new Event('change', {bubbles:true}));
+    field.focus({preventScroll:true});
+  }
+
+  on($('#hwClearContent'), 'click', () => {
+    dictionary.selectedWords = [];
+    dictionary.appendedWords.clear();
+    renderWordSelection();
+    updateDictionaryStatus(dictionary.allWords.length ? dictionary.allWords.length + ' words loaded' : 'No dictionary', 'info');
+    clearField(contentEl);
+  });
+  on($('#hwClearTitle'), 'click', () => clearField($('#hw-refTitle')));
 
   on($('#hwResetBtn'), 'click', () => {
     state = freshState();

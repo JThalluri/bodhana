@@ -211,3 +211,7 @@
     display: none !important;
   }
 }
+
+.ws-content-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; margin-bottom:8px; }
+.ws-content-heading .ws-section-title { margin-bottom:0; }
+.ws-clear-content { min-width:44px; min-height:44px; flex-shrink:0; }

@@ -61,7 +61,7 @@ export function buildWorksheetsUI(container) {
           </div>
 
           <div class="ws-settings-section">
-            <div class="ws-section-title">Practice Text</div>
+            <div class="ws-content-heading"><label class="ws-section-title" for="wsInput">Practice Text</label><button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="wsClearContent" aria-label="Clear practice text">Clear</button></div>
             <textarea id="wsInput" class="ws-textarea"
               placeholder="Type or paste text here. Press Enter for a new paragraph."
             >I am doing my homework. My brother is reading a book. We enjoy doing our homework. We will play outside when we are done. If it is not hot in the evening, my dad will take us to a park.</textarea>
@@ -161,6 +161,12 @@ export function buildWorksheetsUI(container) {
   update();
 
   on(input, 'input', update);
+  on(container.querySelector('#wsClearContent'), 'click', () => {
+    input.value = '';
+    input.dispatchEvent(new Event('input', {bubbles:true}));
+    input.dispatchEvent(new Event('change', {bubbles:true}));
+    input.focus({preventScroll:true});
+  });
   on(fontSizeEl, 'input', update);
   on(fontSizeEl, 'change', update);
   on(baselineEl, 'input', update);
