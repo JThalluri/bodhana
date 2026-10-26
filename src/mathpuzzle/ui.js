@@ -1,3 +1,4 @@
+import {paperSizeControl} from '../shared/paper-size.js';
 import { DEFAULTS } from '../math/generator.js';
 import { DIFFICULTY_SETTINGS, generatePuzzle } from './generator.js';
 import { renderPuzzles } from './renderer.js';
@@ -50,7 +51,7 @@ export function buildMathPuzzleUI(container) {
       <div class="mp-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="mp-settings-pane tool-settings no-print">
+        <div class="mp-settings-pane tool-settings no-print">${paperSizeControl('mpPaperSize','Statement uses a maximum 18 × 18 grid; difficulty and solution rules are retained.')}
 
           <div class="mp-settings-section">
             <div class="mp-section-title">Operations</div>
@@ -201,6 +202,7 @@ function readConfig() {
   const chk = id => document.getElementById(id)?.checked ?? false;
   const sel = id => document.getElementById(id)?.value ?? '';
   return {
+    gridSizeCap: sel('mpPaperSize')==='statement'?18:26,
     addAmin: n('mpAddAmin', 0), addAmax: n('mpAddAmax', 9),
     addBmin: n('mpAddBmin', 0), addBmax: n('mpAddBmax', 9),
     subMmin: n('mpSubMmin', 0), subMmax: n('mpSubMmax', 20),
@@ -268,7 +270,7 @@ function doRender() {
   }
 
   if (empty) empty.style.display = 'none';
-  container.innerHTML = renderPuzzles(valid, { showSolutions: state.showSolutions });
+  container.innerHTML = renderPuzzles(valid, { showSolutions: state.showSolutions, paperSize:document.getElementById('mpPaperSize').value });
 }
 
 function runReset() {
@@ -297,6 +299,7 @@ function runReset() {
 }
 
 function wireEvents() {
+  document.getElementById('mpPaperSize').addEventListener('change',runGenerate);
   document.getElementById('mpBtnGenerate')?.addEventListener('click', runGenerate);
   document.getElementById('mpBtnPrint')?.addEventListener('click', printWorksheet);
   document.getElementById('mpBtnExport')?.addEventListener('click', () => exportWorksheetPdf({ filenameBase: 'math_puzzle_grid' }));

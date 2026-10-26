@@ -1,3 +1,5 @@
+import {paperSizeControl,applyPaperSize} from '../shared/paper-size.js';
+import {paginateRows} from '../shared/paper-pagination.js';
 import {
   DEFAULT_MATH_GAMES_STATE,
   applyGameRangePreset,
@@ -44,7 +46,7 @@ export function buildMathGamesUI(container) {
         </div>
       </div>
       <div class="mg-body tool-body">
-        <div class="mg-settings-pane tool-settings no-print">
+        <div class="mg-settings-pane tool-settings no-print">${paperSizeControl('mgPaperSize','Statement prints one game per page. Select Letter for multi-game sheets.')}
           <div class="mg-settings-section">
             <div class="mg-section-title">Game</div>
             <div class="mg-field"><label for="mgGame">Type</label><select class="tb-select" id="mgGame"><option value="tictactoe">Tic-Tac-Toe</option><option value="bingo">Bingo</option><option value="match">Match</option><option value="snake">Snake</option></select></div>
@@ -107,6 +109,9 @@ export function buildMathGamesUI(container) {
   };
 
   function readState() {
+    const small=container.querySelector('#mgPaperSize').value==='statement';
+    for(const option of els.gamesPerPage.options)option.disabled=small && option.value!=='1';
+    if(small)els.gamesPerPage.value='1';
     return normalizeGameState({
       gameCategory: els.game.value,
       mathDomain: els.domain.value,
@@ -183,6 +188,8 @@ export function buildMathGamesUI(container) {
     updateConditional();
     els.preview.innerHTML = '';
     result.pages.forEach((pageData, index) => els.preview.appendChild(renderPage(pageData, result.state, index + 1)));
+    paginateRows(els.preview,'.mg-answer-list');
+    paginateRows(els.preview,'.mg-call-grid');
     els.status.className = 'tb-status status-msg success';
     els.status.innerHTML = `<i class="fas fa-check-circle"></i> ${result.pages.length} page${result.pages.length === 1 ? '' : 's'}`;
   }
@@ -202,6 +209,7 @@ export function buildMathGamesUI(container) {
     updateConditional();
   }));
   [els.game, els.domain, els.mode, els.difficulty, els.add, els.sub, els.mul, els.div, els.denomMode, els.minDigits, els.maxDigits, els.operands, els.mixedOps, els.pages, els.gamesPerPage, els.fontSize, els.answers].forEach(el => on(el, 'change', updateConditional));
+  on(container.querySelector('#mgPaperSize'),'change',renderWorksheet);
   on(els.generate, 'click', renderWorksheet);
   on(els.print, 'click', printWorksheet);
   on(els.export, 'click', () => exportWorksheetPdf({ filenameBase: `math_games_${els.game.value}` }));
@@ -211,7 +219,7 @@ export function buildMathGamesUI(container) {
 }
 
 function renderPage(pageData, state, pageNumber) {
-  const page = document.createElement('div');
+  const page = applyPaperSize(document.createElement('div'),document.getElementById('mgPaperSize').value);
   page.className = `mg-worksheet mg-games-${state.gamesPerPage} mg-font-${state.fontSize}`;
   if (pageData.type === 'bingo-call') {
     page.classList.add('mg-call-page');

@@ -6,7 +6,15 @@
 export function renderPuzzles(puzzles, opts) {
   const { fontSize = 20, cellPadding = 6, fontFamily = "'Nunito', sans-serif", caseMode = 'lowercase', showSolutions = false } = opts;
 
-  return puzzles.map((puzzle, idx) => puzzleHTML(puzzle, idx, { fontSize, cellPadding, fontFamily, caseMode, showSolutions })).join('');
+  return puzzles.map((puzzle,idx)=>{
+    let size=fontSize,padding=cellPadding;
+    if(opts.paperSize==='statement'){
+      const dim=puzzle.mode==='jumble'?12:Math.max(puzzle.grid.length,puzzle.grid[0].length);
+      const cell=Math.min(fontSize+cellPadding*2,Math.floor(476/dim),puzzle.mode==='jumble'?32:Math.floor(440/dim));
+      size=Math.min(fontSize,cell-4);padding=Math.max(0,(cell-size)/2);
+    }
+    return puzzleHTML(puzzle,idx,{fontSize:size,cellPadding:padding,fontFamily,caseMode,showSolutions,paperSize:opts.paperSize});
+  }).join('');
 }
 
 function puzzleHeader() {

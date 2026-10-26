@@ -8,7 +8,7 @@ function puzzleHTML(puzzle, idx, opts) {
   const { showSolutions = false } = opts;
 
   return `
-    <section class="mp-puzzle-page">
+    <section class="mp-puzzle-page" ${opts.paperSize==='statement'?`data-paper-size="statement" style="width:5.5in;height:8.5in;--mp-statement-cell:${Math.min(32,Math.floor(476/cols),Math.floor(650/rows))}px"`: ''}>
       <div class="mp-header">
         <span class="mp-header-field">Name <span class="mp-underline mp-underline-lg"></span></span>
         <span class="mp-header-field">Date <span class="mp-underline mp-underline-md"></span></span>
@@ -49,7 +49,7 @@ function gridToHTML(grid, rows, cols, showSolutions) {
           const solSpan = showSolutions
             ? `<span class="mp-sol">${esc(cell.value)}</span>`
             : '';
-          html += `<td class="mp-cell mp-cell-blank ${bCls}">${solSpan}</td>`;
+          html += `<td class="mp-cell mp-cell-blank ${bCls}" data-fit-value="${esc(cell.value)}">${solSpan}</td>`;
         } else {
           const extra = cell.type === 'op' ? ` mp-cell-op` : cell.type === 'eq' ? ` mp-cell-eq` : '';
           html += `<td class="mp-cell mp-cell-value${extra} ${bCls}" data-v="${esc(cell.value)}">${esc(cell.value)}</td>`;

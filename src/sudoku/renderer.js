@@ -1,7 +1,7 @@
 import { DIFFICULTY_SETTINGS } from './generator.js';
 
 export function renderPuzzles(puzzles, opts = {}) {
-  const tileCount = normalizeTileCount(opts.tileCount);
+  const tileCount = opts.paperSize==='statement'?Math.min(2,normalizeTileCount(opts.tileCount)):normalizeTileCount(opts.tileCount);
   if (tileCount === 1) {
     return puzzles.map((p, i) => puzzleHTML(p, i, opts)).join('');
   }
@@ -33,7 +33,7 @@ function puzzleHTML(data, idx, opts) {
   ].join('; ');
 
   return `
-    <section class="sdk-puzzle-page">
+    <section class="sdk-puzzle-page" ${stockAttrs(opts)}>
       <div class="sdk-header">
         <span class="sdk-header-field">Name <span class="sdk-underline sdk-underline-lg"></span></span>
         <span class="sdk-header-field">Date <span class="sdk-underline sdk-underline-md"></span></span>
@@ -48,7 +48,7 @@ function puzzleHTML(data, idx, opts) {
 }
 
 function tiledPageHTML(pagePuzzles, startIndex, tileCount, opts) {
-  const gridStyle = tileGridStyle(tileCount);
+  const gridStyle = tileGridStyle(tileCount,opts.paperSize);
   const difficultyLabel = DIFFICULTY_SETTINGS[pagePuzzles[0]?.difficulty]?.label ?? pagePuzzles[0]?.difficulty ?? 'Sudoku';
   const tiles = pagePuzzles.map((puzzle, index) => {
     if (!puzzle) return '';
@@ -64,7 +64,7 @@ function tiledPageHTML(pagePuzzles, startIndex, tileCount, opts) {
   }).join('');
 
   return `
-    <section class="sdk-puzzle-page sdk-tile-page sdk-tile-page-${tileCount}">
+    <section class="sdk-puzzle-page sdk-tile-page sdk-tile-page-${tileCount}" ${stockAttrs(opts)}>
       <div class="sdk-header">
         <span class="sdk-header-field">Name <span class="sdk-underline sdk-underline-lg"></span></span>
         <span class="sdk-header-field">Date <span class="sdk-underline sdk-underline-md"></span></span>
@@ -78,7 +78,8 @@ function tiledPageHTML(pagePuzzles, startIndex, tileCount, opts) {
   `;
 }
 
-function tileGridStyle(tileCount) {
+function tileGridStyle(tileCount,stock) {
+  if(stock==='statement')return "--sdk-cell-size:32px;--sdk-font-size:18px;font-family:Andika,sans-serif";
   const preset = {
     2: { cell: 54, font: 25 },
     4: { cell: 42, font: 19 },
@@ -123,3 +124,5 @@ function gridToHTML(puzzle, solution, showSolutions) {
   html += '</tbody></table>';
   return html;
 }
+
+function stockAttrs(opts){return opts.paperSize==='statement'?'data-paper-size="statement" style="width:5.5in;height:8.5in"':'';}

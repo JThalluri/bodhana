@@ -1,3 +1,4 @@
+import {paperSizeControl} from '../shared/paper-size.js';
 import { DIFFICULTY_SETTINGS, generatePuzzle } from './generator.js';
 import { renderPuzzles } from './renderer.js';
 import { readInt } from '../shared/utils.js';
@@ -44,7 +45,7 @@ export function buildSudokuUI(container) {
       <div class="sdk-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="sdk-settings-pane tool-settings no-print">
+        <div class="sdk-settings-pane tool-settings no-print">${paperSizeControl('sdkPaperSize','Statement supports one or two puzzles per page to retain writing room.')}
 
           <div class="sdk-settings-section">
             <div class="sdk-section-title">Puzzle</div>
@@ -113,9 +114,16 @@ export function buildSudokuUI(container) {
   runGenerate();
 }
 
+function syncPaperLayout() {
+  const stock=document.getElementById('sdkPaperSize')?.value,tiles=document.getElementById('sdkTileCount');
+  for(const option of tiles.options)option.disabled=stock==='statement' && Number(option.value)>2;
+  if(stock==='statement' && Number(tiles.value)>2)tiles.value='2';
+}
 function readConfig() {
+  syncPaperLayout();
   const sel = id => document.getElementById(id)?.value ?? '';
   return {
+    paperSize: sel('sdkPaperSize'),
     difficulty:  sel('sdkDifficulty') || 'medium',
     count:       Math.min(24, Math.max(1, readInt('sdkPuzzleCount', 4))),
     tileCount:   normalizeTileCount(readInt('sdkTileCount', 4)),
@@ -158,8 +166,8 @@ function runGenerate() {
   }, 0);
 }
 
-function doRender(cfg) {
-  const config = cfg ?? readConfig();
+function doRender() {
+  const config = readConfig();
   const container = document.getElementById('sdkPuzzlesContainer');
   const empty = document.getElementById('sdkEmptyState');
   if (!container) return;
@@ -174,6 +182,7 @@ function doRender(cfg) {
   container.innerHTML = renderPuzzles(state.puzzles, {
     showSolutions: state.showSolutions,
     tileCount:     config.tileCount,
+    paperSize: config.paperSize,
   });
 }
 
@@ -186,6 +195,7 @@ function runReset() {
 }
 
 function wireEvents() {
+  document.getElementById('sdkPaperSize').addEventListener('change',()=>doRender());
   document.getElementById('sdkBtnGenerate')?.addEventListener('click', runGenerate);
   document.getElementById('sdkBtnPrint')?.addEventListener('click', printWorksheet);
   document.getElementById('sdkBtnExport')?.addEventListener('click', () => exportWorksheetPdf({ filenameBase: 'sudoku' }));

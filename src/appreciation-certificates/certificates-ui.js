@@ -1,3 +1,4 @@
+import {paperSizeControl,applyPaperSize} from '../shared/paper-size.js';
 import treeUrl from '../../bodhana_cert_tree.png';
 import flowerWatermarkUrl from '../../bodhana_cert_flower_watermark.png';
 import flowerOrangeUrl from '../../bodhana_cert_flower_orange.png';
@@ -57,7 +58,7 @@ function markup() {
       </div>
 
       <div class="tool-body">
-        <aside class="award-settings-pane tool-settings no-print">
+        <aside class="award-settings-pane tool-settings no-print">${paperSizeControl('awardPaperSize','Certificates use the selected stock in landscape orientation.')}
           <section class="award-settings-section tool-type-section">
             <div class="award-section-title">Template</div>
             <label class="award-field award-field-stack" for="awardTemplate">
@@ -107,7 +108,7 @@ function markup() {
           <div class="award-preview-toolbar no-print">
             <span>Certificate preview</span>
             <span class="award-toolbar-dot"></span>
-            <span>US Letter · Landscape · 11in x 8.5in</span>
+            <span id="awardPaperLabel">US Letter · Landscape · 11in x 8.5in</span>
             <span class="award-toolbar-spacer"></span>
             <span id="awardZoomLabel">65%</span>
           </div>
@@ -201,6 +202,10 @@ function render(container) {
   const issuer = state.issuerName.trim() || 'Bodhana Academy';
   const awardDate = state.awardDate.trim() || freshCertificateState().awardDate;
 
+  const paper=container.querySelector('#awardPaperSize');
+  applyPaperSize(container.querySelector('#awardCertPage'),paper.value,true);
+  container.querySelector('#awardPaperLabel').textContent=paper.value==='statement'?'Statement · Landscape · 8.5in x 5.5in':'US Letter · Landscape · 11in x 8.5in';
+  container.querySelector('.tool-shell').dispatchEvent(new Event('preview-activated'));
   container.querySelector('#awardCertPage').dataset.template = state.templateId;
   container.querySelector('#certTitle').textContent = title;
   container.querySelector('#certPresented').textContent = template.presentedLine;
@@ -242,6 +247,7 @@ function bindStateInput(container, selector, key) {
 }
 
 function wireEvents(container) {
+  on(container.querySelector('#awardPaperSize'),'change',()=>render(container));
   const templateSelect = container.querySelector('#awardTemplate');
   on(templateSelect, 'change', () => {
     state.templateId = templateSelect.value;

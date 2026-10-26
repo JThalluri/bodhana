@@ -63,7 +63,7 @@ export function buildEquationPool(config) {
 
 export function generatePuzzle(config, targetCount) {
   const diff = DIFFICULTY_SETTINGS[config.difficulty] ?? DIFFICULTY_SETTINGS.medium;
-  const gridSize = Math.min(26, diff.gridSize);
+  const gridSize = Math.min(config.gridSizeCap || 26, diff.gridSize);
   const pool = shuffle(buildEquationPool(config));
 
   if (pool.length === 0) return null;

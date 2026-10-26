@@ -1,3 +1,5 @@
+import {paperSizeControl,applyPaperSize} from '../shared/paper-size.js';
+import {paginateRows} from '../shared/paper-pagination.js';
 import { initWorkspacePersistence } from '../shared/device-storage.js';
 let workspace;
 let mountGeneration = 0, fileGeneration = 0;
@@ -58,7 +60,7 @@ export function buildWordPuzzleUI(container) {
       <div class="wp-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="wp-settings-pane tool-settings no-print">
+        <div class="wp-settings-pane tool-settings no-print">${paperSizeControl('wpPaperSize','Statement supports grids up to 20 × 20; word banks and jumbles continue onto extra pages as needed. Grid type fits the chosen stock.')}
 
           <div class="wp-settings-section">
             <div class="wp-section-title">Puzzle</div>
@@ -225,9 +227,12 @@ export function buildWordPuzzleUI(container) {
 }
 
 function readOpts() {
+  const small=document.getElementById('wpPaperSize')?.value==='statement';
+  for(const id of ['wpRows','wpCols']){const input=document.getElementById(id);input.max=small?'20':'26';if(small && Number(input.value)>20)input.value='20';}
   const n = (id, fb) => { const v = parseInt(document.getElementById(id)?.value ?? '', 10); return isNaN(v) ? fb : v; };
   const v = (id) => document.getElementById(id)?.value ?? '';
   return {
+    paperSize: v('wpPaperSize'),
     mode:           v('wpMode') || 'wordsearch',
     wordsPerPuzzle: n('wpWordsPerPuzzle', 30),
     rows:           n('wpRows', 22),
@@ -379,10 +384,15 @@ function doRender() {
     fontFamily:    opts.fontFamily,
     caseMode:      opts.caseMode,
     showSolutions: state.showSolutions,
+    paperSize: opts.paperSize,
   });
+  [...container.children].forEach(page=>applyPaperSize(page,opts.paperSize));
+  paginateRows(container,'.wp-jumble-list');
+  paginateRows(container,'.wp-word-grid',{continuationRemove:'.wp-grid-wrapper',continuationLabel:'Word bank (continued)'});
 }
 
 function wireEvents() {
+  document.getElementById('wpPaperSize').addEventListener('change',()=>{readOpts();if(state.puzzles.length)runGenerate();});
   document.getElementById('wpBtnGenerate')?.addEventListener('click', runGenerate);
 
   document.getElementById('wpMode')?.addEventListener('change', () => {

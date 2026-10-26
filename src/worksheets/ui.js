@@ -1,3 +1,4 @@
+import {paperSize, paperSizeControl, applyPaperSize} from '../shared/paper-size.js';
 import { printFontFaces } from '../shared/print-fonts.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { seyesGridSVG } from './seyes-grid.js';
@@ -48,7 +49,7 @@ export function buildWorksheetsUI(container) {
       </div>
 
       <div class="ws-body tool-body">
-        <div class="ws-settings-pane tool-settings no-print">
+        <div class="ws-settings-pane tool-settings no-print">${paperSizeControl('wsPaperSize')}
           <div class="ws-settings-section tool-type-section">
             <div class="ws-section-title">Worksheet</div>
             <div class="ws-field">
@@ -105,7 +106,7 @@ export function buildWorksheetsUI(container) {
             <div class="ws-section-title">Print</div>
             <p class="ws-print-warning">
               <i class="fas fa-info-circle"></i>
-              Print dialog: set <strong>Margins = None</strong>, Paper = Letter,
+              Print dialog: set <strong>Margins = None</strong>, Paper = <strong id="wsPrintStock">Letter</strong>,
               and check <strong>"Background graphics"</strong>.
             </p>
           </div>
@@ -134,6 +135,7 @@ export function buildWorksheetsUI(container) {
 
   function getVars() {
     return {
+      paper:paperSize(container.querySelector('#wsPaperSize').value),
       fontSize: parseFloat(fontSizeEl.value) || 40,
       baseline: parseFloat(baselineEl.value) || 0,
       leftPad: parseFloat(leftPadEl.value) || 8,
@@ -144,6 +146,7 @@ export function buildWorksheetsUI(container) {
 
   function update() {
     const vars = getVars();
+    container.querySelector('#wsPrintStock').textContent=vars.paper.id==='statement'?'Statement (5.5 × 8.5 in)':'Letter';
     const pages = paginateText(input.value, vars);
     if (pageCountEl) {
       pageCountEl.textContent = pages.length === 1 ? '1 page' : `${pages.length} pages`;
@@ -160,6 +163,7 @@ export function buildWorksheetsUI(container) {
 
   update();
 
+  on(container.querySelector('#wsPaperSize'),'change',update);
   on(input, 'input', update);
   on(container.querySelector('#wsClearContent'), 'click', () => {
     input.value = '';
@@ -183,14 +187,15 @@ function paginateText(text, vars) {
   const { leftPad, topPad, rowGap } = vars;
 
   const lineH = (rowGap + 1) * CELL_MM;
-  const linesPerPage = Math.max(1, Math.floor((PAGE_H_MM - topPad) / lineH));
-  const availMm = PAGE_W_MM - leftPad - RIGHT_PAD_MM;
+  const linesPerPage = Math.max(1, Math.floor((vars.paper.heightIn*25.4 - topPad) / lineH));
+  const availMm = vars.paper.widthIn*25.4 - leftPad - RIGHT_PAD_MM;
   const availUnits = Math.max(1, Math.floor(availMm / CELL_MM));
 
   const logicalLines = [];
 
   for (const para of text.split('\n')) {
-    const words = para.split(/\s+/).filter(w => w.length > 0);
+    const sourceWords=para.split(/\s+/).filter(w=>w.length>0);
+    const words=vars.paper.id==='statement'?sourceWords.flatMap(word=>{const parts=[];for(let i=0;i<word.length;i+=availUnits)parts.push(word.slice(i,i+availUnits));return parts;}):sourceWords;
     if (words.length === 0) {
       logicalLines.push([]);
       continue;
@@ -241,7 +246,7 @@ function applyPageVars(el, vars) {
 }
 
 function renderPagesDOM(container, pages, vars) {
-  const gridSVG = seyesGridSVG();
+  const gridSVG = seyesGridSVG(Number((vars.paper.widthIn*25.4).toFixed(1)),Number((vars.paper.heightIn*25.4).toFixed(1)));
   container.innerHTML = pages.map(() => `
     <div class="seyes-page">
       <div class="seyes-grid">${gridSVG}</div>
@@ -253,6 +258,7 @@ function renderPagesDOM(container, pages, vars) {
 
   const pageEls = container.querySelectorAll('.seyes-page');
   pageEls.forEach((el, i) => {
+    applyPaperSize(el,vars.paper.id);
     applyPageVars(el, vars);
     el.querySelector('.seyes-text-area').innerHTML = pageLinesToHTML(pages[i]);
   });
@@ -304,9 +310,9 @@ function printSeyesHTML(html) {
 }
 
 function buildPrintHTML(pages, vars) {
-  const gridSVG = seyesGridSVG();
+  const gridSVG = seyesGridSVG(Number((vars.paper.widthIn*25.4).toFixed(1)),Number((vars.paper.heightIn*25.4).toFixed(1)));
   const pagesHTML = pages.map(lines => `
-<div class="page">
+<div class="page" data-paper-size="${vars.paper.id}">
   <div class="grid">${gridSVG}</div>
   <div class="text-area">${pageLinesToHTML(lines)}</div>
   ${brandWatermarkElementHTML()}
@@ -331,8 +337,8 @@ ${printFontFaces('Andika')}
   html, body { margin: 0; padding: 0; background: #fff; }
 
   .page {
-    width: 8.5in;
-    height: 11in;
+    width: ${vars.paper.widthIn}in;
+    height: ${vars.paper.heightIn}in;
     position: relative;
     background: #fff;
     overflow: hidden;
@@ -395,7 +401,7 @@ ${printFontFaces('Andika')}
 
   @media print {
     html, body { margin: 0; background: #fff; }
-    @page { size: letter; margin: 0; }
+    @page { size: ${vars.paper.cssSize}; margin: 0; }
   }
 </style>
 </head>
