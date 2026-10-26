@@ -1,6 +1,6 @@
 # Statement paper rollout
 
-Implemented locally on 2026-10-26, continuing the separate phase after Word Practice. All printable worksheet families now offer US Letter and Statement. Dictionary Builder remains a results view. Letter is still the default, including when older preferences have no paper setting. No framework, dependency upgrade, backend or native wrapper was added. This rollout has not been published.
+Implemented locally on 2026-10-26, continuing the separate phase after Word Practice. All printable worksheet families now offer US Letter and Statement. Dictionary Builder remains a results view. Letter is still the default, including when older preferences have no paper setting. No framework, dependency upgrade, backend or native wrapper was added. The rollout was subsequently published as release e0e9b7eaba6c8b9d; see the publication record below.
 
 ## Investigation and implementation
 
@@ -71,3 +71,7 @@ Verification for this follow-up: npm test passed 1,256/1,256; npm run test:porta
 Inspected 22 compact-game PDFs / 58 pages, including an additional two-board fraction-equation print and downloaded export: every page is 396 by 612 points and paired print/export page counts match. All 11 raster exports contain 1584 by 2448 page images. Browser PDF.js rendering of hosted exported first/last pages and direct image inspection cover boards, equations, arithmetic, Snake START/FINISH and continued calls/keys. Quantitative pixel inspection confirms Snake grid lines in the actual exported image; apparent missing lines in a resized image preview were a viewing artifact. Node PDF.js warned about absent optional canvas polyfills; browser rendering supplied visual QA without adding dependencies. Physical Android use and Statement printer calibration remain pending.
 
 Both production builds, distribution audit and local Pages packaging passed. Local release c26f3dc080e02101 is staged in artifacts/pages-release/; this follow-up is not published. Portable HTML: 5,836,469 bytes (2,664,469 gzip); hosted: 5,840,909 bytes (2,666,055 gzip). Evidence: artifacts/game-density-{unit,focused,full-portal,hosted-build,audit,package}.txt; game-density-letter-comparison.json; game-density-matrix.json; game-density-pdf-geometry.json; game-density-bundle-sizes.json; *compact* screenshots and print/export PDFs. Earlier focused findings remain separate from the final passing suite.
+
+## Publication record (2026-10-26)
+
+The complete rollout and compact Math Games follow-up are live at https://jthalluri.github.io/gurukool/ as release e0e9b7eaba6c8b9d. Source merged main 52c25fb and hosting artifact 34044b0 remain in separate repositories. The single Pages workflow 40418132785 succeeded. The final merged/cleaned checkout passed all 1,256 unit and 79 production portal tests. Actual HTTPS asset equality, nine routes, native two/four-game layouts, live writing/game PDF output, offline relaunch and a consented upgrade from the previous live release passed. See DEPLOYMENT.md for detailed evidence and remaining physical-device checks. Earlier local-only release entries above are historical checkpoints.
