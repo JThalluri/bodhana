@@ -43,8 +43,35 @@ for(const [target,url] of targets){
   test.setTimeout(90000);await mount(page,url,'sudoku');await statement(page);await expect(page.locator('#sdkTileCount')).toHaveValue('2');expect(await page.locator('#sdkTileCount option:disabled').count()).toBe(2);await page.locator('#sdkPuzzleCount').fill('24');await page.locator('#sdkBtnGenerate').click();await expect(page.locator('.sdk-tile')).toHaveCount(24);await fits(page);await page.locator('#sdkTileCount').selectOption('1');await expect(page.locator('.sdk-puzzle-page')).toHaveCount(24);await fits(page);await page.locator('#sdkPuzzleCount').fill('1');await page.locator('#sdkBtnGenerate').click();if(!await page.locator('#sdkShowSolutions').isChecked())await page.locator('.toggle-switch').filter({has:page.locator('#sdkShowSolutions')}).locator('.toggle-track').click();await output(page,browser,{print:'#sdkBtnPrint',exportId:'#sdkBtnExport',label:target+'-sudoku'});
  });
  test(`${target}: Statement Math Games fit all board types and paginate complete Bingo call lists`,async({page,browser})=>{
-  test.setTimeout(120000);await mount(page,url,'math-games');await statement(page);await expect(page.locator('#mgGamesPerPage')).toHaveValue('1');await page.locator('#mgSeed').fill('statement-games');for(const game of ['tictactoe','bingo','match','snake'])for(const mode of ['numerals','visual','mixed']){await page.locator('#mgGame').selectOption(game);await page.locator('#mgMode').selectOption(mode);await page.locator('#mgGenerateBtn').click();await fits(page);if(game==='bingo'){const answers=await page.locator('.mg-call-row').first().getAttribute('data-answer');expect(answers).toBeTruthy();await expect(page.locator('.mg-call-row')).toHaveCount(60);await expect(page.locator('.mg-call-row > span:first-child')).toHaveText(Array.from({length:60},(_,i)=>String(i+1)));}}
+  test.setTimeout(120000);await mount(page,url,'math-games');await statement(page);await expect(page.locator('#mgGamesPerPage')).toHaveValue('4');await page.locator('#mgGamesPerPage').selectOption('1');await page.locator('#mgSeed').fill('statement-games');for(const game of ['tictactoe','bingo','match','snake'])for(const mode of ['numerals','visual','mixed']){await page.locator('#mgGame').selectOption(game);await page.locator('#mgMode').selectOption(mode);await page.locator('#mgGenerateBtn').click();await fits(page);if(game==='bingo'){const answers=await page.locator('.mg-call-row').first().getAttribute('data-answer');expect(answers).toBeTruthy();await expect(page.locator('.mg-call-row')).toHaveCount(60);await expect(page.locator('.mg-call-row > span:first-child')).toHaveText(Array.from({length:60},(_,i)=>String(i+1)));}}
   await expect(page.locator('.mg-snake-instructions')).toHaveCSS('writing-mode','horizontal-tb');await expect(page.locator('.mg-path-label')).toHaveText(['START','FINISH']);await page.screenshot({path:`artifacts/${target}-statement-snake.png`});await output(page,browser,{print:'#mgPrintBtn',exportId:'#mgExportBtn',label:target+'-games'});
+ });
+ test(`${target}: Statement compact Math Games retain boards, readable cells, complete keys and output`,async({page,browser,context})=>{
+  test.setTimeout(240000);await mount(page,url,'math-games');await statement(page);await page.locator('#mgSeed').fill('compact-games');
+  for(const count of ['2','4'])for(const game of ['tictactoe','bingo','match','snake'])for(const mode of ['numerals','visual','mixed'])for(const font of ['s','m','l','xl']){
+   await test.step([count,game,mode,font].join(' '),async()=>{
+    await page.locator('#mgGamesPerPage').selectOption(count);await page.locator('#mgGame').selectOption(game);await page.locator('#mgMode').selectOption(mode);await page.locator('#mgFontSize').selectOption(font);await page.locator('#mgGenerateBtn').click();await fits(page);
+    await expect(page.locator('.mg-game')).toHaveCount(Number(count));await expect(page.locator('.mg-game .mg-cell')).toHaveCount(Number(count)*({tictactoe:9,bingo:25,match:16,snake:36}[game]));
+    if(game==='bingo')await expect(page.locator('.mg-call-row')).toHaveCount(60);
+    if(font==='m'&&mode==='mixed')await page.locator('.mg-worksheet').first().screenshot({path:`artifacts/${target}-compact-${count}-${game}.png`});
+   });
+  }
+  await page.locator('#mgFontSize').selectOption('m');await page.locator('#mgPages').fill('2');
+  for(const game of ['tictactoe','bingo','match','snake']){
+   await page.locator('#mgGame').selectOption(game);await page.locator('#mgGenerateBtn').click();await fits(page);await expect(page.locator('.mg-game')).toHaveCount(8);
+   if(game==='match')for(const sheet of [1,2])for(const board of [1,2,3,4])await expect(page.locator('.mg-answer-list').getByText(new RegExp('^Page '+sheet+', Game '+board+':'))).toHaveCount(8);
+   if(game==='bingo')await expect(page.locator('.mg-call-row > span:first-child')).toHaveText(Array.from({length:60},(_,i)=>String(i+1)));
+   await expect(page.locator('#mgStatus')).toContainText(String(await page.locator('.mg-worksheet').count())+' pages');
+   await output(page,browser,{print:'#mgPrintBtn',exportId:'#mgExportBtn',label:target+'-compact-'+game});
+  }
+  await page.locator('#mgGame').selectOption('tictactoe');await page.locator('#mgDomain').selectOption('arithmetic');await page.locator('#mgDifficulty').selectOption('custom');await page.locator('#mgMinDigits').fill('2');await page.locator('#mgMaxDigits').fill('2');await page.locator('#mgOperands').fill('3');await page.locator('#mgGenerateBtn').click();await fits(page);await expect(page.locator('.mg-arithmetic-problem')).toHaveCount(72);
+  await output(page,browser,{print:'#mgPrintBtn',exportId:'#mgExportBtn',label:target+'-compact-arithmetic'});
+  await page.reload();await expect(page.locator('#mgGamesPerPage')).toHaveValue('4');await expect(page.locator('#mgPaperSize')).toHaveValue('statement');await fits(page);
+  if(target==='hosted'){await page.evaluate(()=>navigator.serviceWorker.ready);await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller)).toBe(true);}
+  await context.setOffline(true);await page.reload();await expect(page.locator('#mgGamesPerPage')).toHaveValue('4');await fits(page);await page.setViewportSize({width:800,height:1024});await page.screenshot({path:`artifacts/${target}-compact-tablet-offline.png`});await context.setOffline(false);await page.setViewportSize({width:1920,height:1080});
+  await page.locator('#mgMinDigits').fill('6');await page.locator('#mgMaxDigits').fill('6');await page.locator('#mgOperands').fill('6');await page.locator('#mgFontSize').selectOption('xl');await page.locator('#mgGenerateBtn').click();await expect(page.locator('.tool-shell')).toHaveAttribute('data-paper-fit','overflow');await expect(page.locator('#mgPrintBtn')).toBeDisabled();await expect(page.locator('#mgExportBtn')).toBeDisabled();
+  await page.locator('#mgGamesPerPage').selectOption('1');await page.locator('#mgGenerateBtn').click();await fits(page);await expect(page.locator('#mgExportBtn')).toBeEnabled();
+  await page.locator('#mgPaperSize').selectOption('letter');for(const n of ['6','8'])await expect(page.locator('#mgGamesPerPage option[value="'+n+'"]')).toBeEnabled();await page.locator('#mgGamesPerPage').selectOption('8');await page.locator('#mgPaperSize').selectOption('statement');await expect(page.locator('#mgGamesPerPage')).toHaveValue('4');
  });
  test(`${target}: Statement Math Puzzle keeps difficulty, solutions and native grid bounds`,async({page,browser})=>{
   await mount(page,url,'math-puzzles');await statement(page);for(const difficulty of ['easy','medium','hard']){await page.locator('#mpDifficulty').selectOption(difficulty);if(!await page.locator('#mpShowSolutions').isChecked())await page.locator('.toggle-switch').filter({has:page.locator('#mpShowSolutions')}).locator('.toggle-track').click();await fits(page);expect(await page.locator('.mp-grid-table').evaluateAll(ts=>ts.every(t=>t.rows.length<=18&&t.rows[0].cells.length<=18))).toBe(true);}
@@ -101,7 +128,7 @@ for(const [target,url] of targets)test(target+': Statement Math category print a
 });
 
 test('Statement Math Game font levels and arithmetic controls remain usable',async({page})=>{
- await mount(page,targets[0][1],'math-games');await statement(page);await page.locator('#mgSeed').fill('statement-fonts');
+ await mount(page,targets[0][1],'math-games');await statement(page);await page.locator('#mgGamesPerPage').selectOption('1');await page.locator('#mgSeed').fill('statement-fonts');
  for(const game of ['tictactoe','bingo','match','snake'])for(const font of ['s','m','l','xl']){await page.locator('#mgGame').selectOption(game);await page.locator('#mgFontSize').selectOption(font);await page.locator('#mgGenerateBtn').click();await fits(page);}
  await page.locator('#mgGame').selectOption('tictactoe');await page.locator('#mgDomain').selectOption('arithmetic');await page.locator('#mgMinDigits').fill('3');await page.locator('#mgMaxDigits').fill('3');await page.locator('#mgOperands').fill('3');await page.locator('#mgGenerateBtn').click();await fits(page);
 });

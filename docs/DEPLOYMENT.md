@@ -70,3 +70,7 @@ The initial actual-live upgrade harness raced page navigation after accepting th
 ## Local Statement rollout (not published, 2026-10-26)
 
 All remaining printable families now support Statement through native reflow/pagination; see [Statement paper rollout](STATEMENT_PAPER_ROLLOUT.md) for limits and evidence. The final local production suite passed 77/77, unit tests passed 1,256/1,256, both builds and distribution audit passed, and the allowlisted Pages package is staged in artifacts/pages-release/ as release e9736e86361ad454 for /gurukool/. Portable HTML is 5,834,918 bytes (2,664,198 gzip); hosted HTML is 5,839,358 bytes (2,665,795 gzip). No source or artifact push/publication was performed for this phase. Physical Android and Statement stock/printer calibration remain pending.
+
+## Local compact Math Games follow-up (not published, 2026-10-26)
+
+The staged Statement rollout now includes one/two/four Math Games per Statement sheet, density-specific board layouts and final continued-page counts. Release c26f3dc080e02101 replaces the earlier local staging package at artifacts/pages-release/ for /gurukool/. Both builds, audit and packaging passed; all 1,256 unit and 79 production portal tests passed. Portable HTML: 5,836,469 bytes (2,664,469 gzip); hosted: 5,840,909 bytes (2,666,055 gzip). See STATEMENT_PAPER_ROLLOUT.md for visual/output evidence. No push or Pages publication was performed for this follow-up; the published exact-ruling release above remains the last verified live release.

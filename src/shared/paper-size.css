@@ -46,7 +46,16 @@
 .mg-worksheet[data-paper-size="statement"] .mg-ws-namedate span { overflow-wrap:anywhere; }
 .mg-worksheet[data-paper-size="statement"] .mg-ws-typelabel { white-space:normal; }
 .mg-worksheet[data-paper-size="statement"] .mg-answer-list { columns:1; }
-.mg-worksheet[data-paper-size="statement"] .mg-cell { font-size:calc(18px * var(--mg-cell-font-scale)); }
+.mg-worksheet[data-paper-size="statement"] { --mg-statement-font:18px; --mg-statement-shape-width:42px; --mg-statement-shape-height:34px; }
+.mg-worksheet[data-paper-size="statement"].mg-games-2 { --mg-statement-font:16px; --mg-statement-shape-width:36px; --mg-statement-shape-height:28px; }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 { --mg-statement-font:13px; --mg-statement-shape-width:26px; --mg-statement-shape-height:22px; }
+.mg-worksheet[data-paper-size="statement"] .mg-cell { font-size:calc(var(--mg-statement-font) * var(--mg-cell-font-scale)); }
+.mg-worksheet[data-paper-size="statement"] .mg-game .frac-shape-svg { width:var(--mg-statement-shape-width); height:var(--mg-statement-shape-height); }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 .mg-fraction-operation { width:96%; }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 .mg-bingo .mg-cell { font-size:calc(11px * var(--mg-cell-font-scale)); }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 .mg-snake .mg-cell { font-size:calc(11px * var(--mg-cell-font-scale)); }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 .mg-cell-ref { font-size:7px; }
+
 .mg-worksheet[data-paper-size="statement"] .mg-call-grid { flex:none; }
 .wp-puzzle-block[data-paper-size="statement"] { padding:24px; }
 .wp-puzzle-block[data-paper-size="statement"] .wp-puzzle-header { grid-template-columns:1fr 1fr; font-size:12px; }
@@ -99,3 +108,8 @@
 .mg-snake-page[data-paper-size="statement"] .mg-path-label { position:absolute; bottom:3px; font-size:7px; line-height:1; font-weight:700; }
 .mg-snake-page[data-paper-size="statement"] .snake-start .mg-path-label { left:4px; color:#166534; }
 .mg-snake-page[data-paper-size="statement"] .snake-finish .mg-path-label { right:4px; color:#991b1b; }
+
+/* Compact the boards, not the physical page; Letter geometry stays unchanged. */
+.mg-worksheet[data-paper-size="statement"]:is(.mg-games-2,.mg-games-4) .mg-cell { padding:2px; }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 .mg-tictactoe { --mg-statement-font:14px; --mg-statement-shape-width:36px; --mg-statement-shape-height:28px; }
+.mg-worksheet[data-paper-size="statement"].mg-games-4 .mg-bingo .mg-cell:not([data-answer]) { font-size:calc(9px * var(--mg-cell-font-scale)); }

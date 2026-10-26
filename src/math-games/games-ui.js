@@ -46,7 +46,7 @@ export function buildMathGamesUI(container) {
         </div>
       </div>
       <div class="mg-body tool-body">
-        <div class="mg-settings-pane tool-settings no-print">${paperSizeControl('mgPaperSize','Statement prints one game per page. Select Letter for multi-game sheets.')}
+        <div class="mg-settings-pane tool-settings no-print">${paperSizeControl('mgPaperSize','Statement supports 1, 2 or 4 games per page. Use fewer games for larger writing spaces.')}
           <div class="mg-settings-section">
             <div class="mg-section-title">Game</div>
             <div class="mg-field"><label for="mgGame">Type</label><select class="tb-select" id="mgGame"><option value="tictactoe">Tic-Tac-Toe</option><option value="bingo">Bingo</option><option value="match">Match</option><option value="snake">Snake</option></select></div>
@@ -110,8 +110,8 @@ export function buildMathGamesUI(container) {
 
   function readState() {
     const small=container.querySelector('#mgPaperSize').value==='statement';
-    for(const option of els.gamesPerPage.options)option.disabled=small && option.value!=='1';
-    if(small)els.gamesPerPage.value='1';
+    for(const option of els.gamesPerPage.options)option.disabled=small && Number(option.value)>4;
+    if(small && Number(els.gamesPerPage.value)>4)els.gamesPerPage.value='4';
     return normalizeGameState({
       gameCategory: els.game.value,
       mathDomain: els.domain.value,
@@ -191,7 +191,8 @@ export function buildMathGamesUI(container) {
     paginateRows(els.preview,'.mg-answer-list');
     paginateRows(els.preview,'.mg-call-grid');
     els.status.className = 'tb-status status-msg success';
-    els.status.innerHTML = `<i class="fas fa-check-circle"></i> ${result.pages.length} page${result.pages.length === 1 ? '' : 's'}`;
+    const pageCount=els.preview.children.length;
+    els.status.innerHTML = `<i class="fas fa-check-circle"></i> ${pageCount} page${pageCount === 1 ? '' : 's'}`;
   }
 
   function reset() {
