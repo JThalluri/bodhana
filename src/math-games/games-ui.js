@@ -241,7 +241,8 @@ function renderPage(pageData, state, pageNumber) {
 }
 
 function pageHeader(title, pageNumber) {
-  return `<div class="mg-ws-header"><div class="mg-ws-namedate"><span>Name: ____________________________________</span><span>Date: ________________</span></div><div class="mg-ws-typelabel">${title} | Page ${pageNumber}</div></div>`;
+  const nameLine = document.getElementById('mgPaperSize').value === 'statement' ? '__________________' : '____________________________________';
+  return `<div class="mg-ws-header"><div class="mg-ws-namedate"><span>Name: ${nameLine}</span><span>Date: ________________</span></div><div class="mg-ws-typelabel">${title} | Page ${pageNumber}</div></div>`;
 }
 
 function gameTitle(state) {
@@ -256,6 +257,13 @@ function renderGame(game, state) {
   if (game.category === 'match') node.innerHTML = game.cells.map((cell, idx) => `<div class="mg-cell" data-answer="${cell.answer}" data-pair-id="${cell.pairId}"><span class="mg-cell-ref">${cellRef(idx, 4)}</span>${cell.display === 'shape' ? fractionShapeSVG(cell.fraction, { shapePreference: 'grid', cap: 16, preserveDenominator: true }) : cell.answer}</div>`).join('');
   if (game.category === 'snake') node.innerHTML = game.cells.map((cell, idx) => `<div class="mg-cell ${idx === 0 ? 'snake-start' : ''} ${idx === game.cells.length - 1 ? 'snake-finish' : ''}" data-answer="${cell.answer}">${renderFractionCell(cell, state)}</div>`).join('');
   if (game.category === 'tictactoe') node.innerHTML = game.cells.map(cell => `<div class="mg-cell"${cell.answer ? ` data-answer="${cell.answer}"` : ''}>${cell.kind === 'arithmetic' ? renderArithmeticCell(cell) : renderFractionCell(cell, state)}</div>`).join('');
+  if (game.category === 'snake' && document.getElementById('mgPaperSize').value === 'statement') {
+    for (const [selector,text] of [['.snake-start','START'],['.snake-finish','FINISH']]) {
+      const label = document.createElement('span');
+      label.className = 'mg-path-label'; label.textContent = text;
+      node.querySelector(selector).append(label);
+    }
+  }
   return node;
 }
 

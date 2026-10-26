@@ -92,3 +92,10 @@
 .paper-fit-warning[hidden] { display:none; }
 
 .mg-worksheet[data-paper-continuation="true"] .mg-ws-typelabel::after { content:" (continued)"; }
+
+/* Keep Snake directions in the content flow, outside its writable cells. */
+.mg-snake-page[data-paper-size="statement"] .mg-snake-instructions { position:static; writing-mode:horizontal-tb; transform:none; flex:none; font-size:10px; line-height:1.4; text-transform:none; margin-bottom:8px; }
+.mg-snake-page[data-paper-size="statement"] .snake-start::after, .mg-snake-page[data-paper-size="statement"] .snake-finish::after { content:none; }
+.mg-snake-page[data-paper-size="statement"] .mg-path-label { position:absolute; bottom:3px; font-size:7px; line-height:1; font-weight:700; }
+.mg-snake-page[data-paper-size="statement"] .snake-start .mg-path-label { left:4px; color:#166534; }
+.mg-snake-page[data-paper-size="statement"] .snake-finish .mg-path-label { right:4px; color:#991b1b; }
