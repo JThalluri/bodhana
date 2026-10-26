@@ -32,10 +32,11 @@ export function buildWordPracticeModel(state, geo) {
       const count=Math.max(...cells.map(c=>c.length));
       const rules=practice?Math.min(5,Math.max(1,Number(p.lines)||1)):0;
       // Keep normal word+practice blocks together. Unusually tall blocks continue on the next page.
-      const blockH=count*textLH+pad*2+(practice?gap+rules*lineStep:0);
+      // Padding is counted once; a gap between ruling rows is not a trailing gap.
+      const blockH=count*textLH+pad+(practice?gap+rules*lineH+(rules-1)*(lineStep-lineH):0);
       if(blockH<=geo.availHN && y>0 && y+blockH>geo.availHN){if(pages.length===MAX_PAGES){truncated=true;break;}pages.push({rows:[]});y=0;}
-      for(let k=0;k<count;k++)if(!place({kind:'words',cells:cells.map(c=>c[k]||''),underline:!practice && k===count-1},textLH+ (k===0?pad:0)+(k===count-1?pad:0)))break outer;
-      for(let k=0;k<rules;k++)if(!place({kind:'ruling',lineH, gap:k===0?gap:0},lineStep+(k===0?gap:0)))break outer;
+      for(let k=0;k<count;k++)if(!place({kind:'words',cells:cells.map(c=>c[k]||''),underline:!practice && k===count-1},textLH+(k===0?pad:0)))break outer;
+      for(let k=0;k<rules;k++)if(!place({kind:'ruling',lineH, gap:k===0?gap:0},lineH+(k<rules-1?lineStep-lineH:0)+(k===0?gap:0)))break outer;
     }
   }
   if(truncated)warnings.push(`Content exceeds ${MAX_PAGES} pages. Shorten the word list before printing.`);

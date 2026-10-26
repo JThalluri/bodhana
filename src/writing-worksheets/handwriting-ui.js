@@ -122,7 +122,7 @@ function markup() {
             <div id="hwWordPracticeSection" hidden>
               ${sel('wordPractice.mode', 'Content', [['practice','Practice lines'],['words','Words only']])}
               ${sel('wordPractice.lines', 'Practice lines', [['1','1 per word'],['2','2 per word'],['3','3 per word'],['4','4 per word'],['5','5 per word'],['all','Full page (no words)']])}
-              ${num('wordPractice.rowPaddingPx', 'Row padding px', {min:0,max:30,step:1})}
+              ${num('wordPractice.rowPaddingPx', 'Row gap px', {min:0,max:30,step:1})}
               ${num('wordPractice.lineGapPx', 'Gap to lines px', {min:0,max:30,step:1})}
             </div>
             <div class="ws-field">
@@ -151,13 +151,13 @@ function markup() {
           <div class="ws-settings-section">
             <div class="ws-section-title hw-section-title-row">
               <span>Content</span>
-              <button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="hwClearContent" aria-label="Clear worksheet content">Clear</button>
               <span class="hw-info-icon" id="hwContentHint" role="img" aria-label="Content help" tabindex="0" title=""></span>
             </div>
             <div class="ws-field hw-wide hw-stack" id="hwRefTitleRow">
-              <div class="ws-content-heading"><label for="hw-refTitle">Box title</label><button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="hwClearTitle" aria-label="Clear box title">Clear</button></div>
+              <div class="ws-content-heading"><label for="hw-refTitle">Box title</label><button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="hwClearTitle" aria-label="Clear box title">Clear title</button></div>
               <textarea class="hw-text hw-ref-title-input" id="hw-refTitle" data-path="refTitle" maxlength="120" rows="3"></textarea>
             </div>
+            <div class="ws-content-heading"><label for="hw-userContentText" id="hwContentLabel">Practice text</label><button type="button" class="btn btn-ghost btn-sm ws-clear-content" id="hwClearContent" aria-label="Clear worksheet content">Clear text</button></div>
             <textarea aria-label="Worksheet content" id="hw-userContentText" data-path="userContentText" class="ws-textarea hw-textarea"
               placeholder="One item or sentence per line."></textarea>
             <p class="hw-hint" id="hwBlankPracticeHint" hidden>Full-page ruling does not show words. You can still edit or clear them here; choose 1–5 practice lines to show the words.</p>
@@ -413,6 +413,8 @@ export function buildHandwritingUI(container, onTypeChange) {
     const wp = fmt === 'word_practice';
     const seyes = g.gridType === 'seyes_french';
     $('#hwWordPracticeSection').hidden = !wp;
+    $('#hwContentLabel').textContent = wp ? 'Words' : 'Practice text';
+    $('#hwClearContent').textContent = wp ? 'Clear words' : 'Clear text';
     setDisabled('wordPractice.lines', state.wordPractice.mode !== 'practice');
     setDisabled('wordPractice.lineGapPx', state.wordPractice.mode !== 'practice' || state.wordPractice.lines === 'all');
     const seyesOption = $('[data-path="geometry.gridType"] option[value="seyes_french"]');
