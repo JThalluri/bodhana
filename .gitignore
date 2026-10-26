@@ -14,3 +14,6 @@ dist-hosted/
 artifacts/
 test-results/
 playwright-report/
+
+# Local Workbench browser reports
+tests/workbench/playwright-report/
