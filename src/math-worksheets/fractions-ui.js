@@ -1,3 +1,5 @@
+import {measurePaperPages} from '../shared/paper-measurement.js';
+import { paperSizeControl, applyPaperSize } from '../shared/paper-size.js';
 import {
   FRACTION_PRESETS,
   FRACTION_TYPES,
@@ -51,7 +53,7 @@ export function buildFractionsUI(container) {
         </div>
       </div>
       <div class="frac-body tool-body">
-        <div class="frac-settings-pane tool-settings no-print">
+        <div class="frac-settings-pane tool-settings no-print">${paperSizeControl('fracPaperSize')}
           <div class="frac-settings-section">
             <div class="frac-section-title">Fractions Type</div>
             <div class="frac-field">
@@ -236,7 +238,7 @@ export function buildFractionsUI(container) {
   }
 
   function newPage(state, title, pageNumber) {
-    const page = document.createElement('div');
+    const page = applyPaperSize(document.createElement('div'), container.querySelector('#fracPaperSize').value);
     page.className = `frac-worksheet frac-font-${state.fontSize} frac-layout-${layoutModeFor(state)}`;
     page.innerHTML = `
       <div class="frac-ws-header">
@@ -276,6 +278,9 @@ export function buildFractionsUI(container) {
   }
 
   function renderWorksheet() {
+    return container.querySelector('#fracPaperSize').value === 'statement' ? measurePaperPages(els.preview,renderMeasuredPages) : renderMeasuredPages();
+  }
+  function renderMeasuredPages() {
     const result = generateFractionQuestions(readState(), TOPICS);
     const state = result.state;
     writeState(state);
@@ -315,7 +320,18 @@ export function buildFractionsUI(container) {
       }
     }
 
-    if (state.includeAnswers && answers.length) {
+    if (state.includeAnswers && answers.length && container.querySelector('#fracPaperSize').value === 'statement') {
+      let grid, content;
+      const nextKey = () => {
+        const shell = newPage(state, 'Answer Key', els.preview.children.length + 1);
+        els.preview.append(shell.page);content=shell.content;
+        const key=answerKeyNode([]);content.append(key);grid=key.querySelector('.frac-answer-key-grid');
+      };
+      nextKey();
+      answers.forEach((entry,index)=>{const row=document.createElement('div');row.innerHTML=(index+1)+') '+entry.answer;grid.append(row);
+        if(overflows(content)){row.remove();nextKey();grid.append(row);}
+      });
+    } else if (state.includeAnswers && answers.length) {
       const key = answerKeyNode(answers);
       const lastContent = els.preview.lastElementChild?.querySelector('.frac-ws-content');
       lastContent?.appendChild(key);
@@ -351,6 +367,7 @@ export function buildFractionsUI(container) {
     els.subType, els.shape, els.mode, els.denomMode, els.opAdd, els.opSub,
     els.opMul, els.opDiv, els.topic, els.currency, els.pages, els.fontSize, els.workspace, els.answers,
   ].forEach(el => on(el, 'change', updateConditional));
+  on(container.querySelector('#fracPaperSize'), 'change', renderWorksheet);
   on(els.generate, 'click', renderWorksheet);
   on(els.print, 'click', printWorksheet);
   on(els.export, 'click', () => exportWorksheetPdf({ filenameBase: `fractions_${els.subType.value}` }));

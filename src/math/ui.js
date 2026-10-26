@@ -1,3 +1,4 @@
+import { paperSizeControl } from '../shared/paper-size.js';
 import { generate, DEFAULTS } from './generator.js';
 import { renderPapers } from './renderer.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
@@ -39,7 +40,7 @@ export function buildUI(container) {
       <div class="math-body tool-body">
 
       <!-- Left: settings pane -->
-      <div class="math-settings-pane tool-settings no-print">
+      <div class="math-settings-pane tool-settings no-print">${paperSizeControl('mathPaperSize')}
 
         <div class="math-settings-section">
           <div class="math-section-title">Operations &amp; Ranges</div>
@@ -208,7 +209,7 @@ function runGenerate() {
     status.className = 'tb-status status-msg success';
     status.innerHTML = `<i class="fas fa-check-circle"></i> ${combined.length} unique &middot; ${paperCount} &times; ${questionCount}`;
   }
-  out.innerHTML = renderPapers(papers, questionCount);
+  out.innerHTML = renderPapers(papers, questionCount, document.getElementById('mathPaperSize').value);
 }
 
 function runReset() {
@@ -234,6 +235,7 @@ function runReset() {
 }
 
 function wireEvents() {
+  document.getElementById('mathPaperSize').addEventListener('change', runGenerate);
   document.getElementById('mathGenerateBtn')?.addEventListener('click', runGenerate);
   document.getElementById('mathPrintBtn')?.addEventListener('click', printWorksheet);
   document.getElementById('mathExportBtn')?.addEventListener('click', () => exportWorksheetPdf({ filenameBase: 'arithmetic_tests' }));

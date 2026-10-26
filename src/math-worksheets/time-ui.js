@@ -1,3 +1,5 @@
+import {measurePaperPages} from '../shared/paper-measurement.js';
+import { paperSizeControl, applyPaperSize } from '../shared/paper-size.js';
 import { TIME_TYPES, createTimeGenerator, normalizeTimeState, timeArithmeticProfile, timePool } from './time-generator.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
@@ -24,7 +26,7 @@ export function buildTimeUI(container) {
         <button class="btn btn-ghost btn-sm" id="timeReset"><i class="fas fa-undo-alt"></i> Reset</button>
       </div><div class="tool-secondary-actions"><span class="tool-theme-slot">${themeToggleMarkup()}</span></div></div>
     </div>
-    <div class="frac-body tool-body"><div class="frac-settings-pane tool-settings no-print">
+    <div class="frac-body tool-body"><div class="frac-settings-pane tool-settings no-print">${paperSizeControl('timePaperSize')}
       <div class="frac-settings-section"><div class="frac-section-title">Time Problems Type</div>
         ${select('SubType', 'Worksheet', TIME_TYPES)}
       </div>
@@ -44,7 +46,8 @@ export function buildTimeUI(container) {
       <div class="frac-settings-section"><div class="frac-section-title">Reproducibility</div><div class="frac-field"><label for="timeSeed">Random seed</label><input class="frac-text-input" id="timeSeed" type="text" placeholder="optional"></div></div>
     </div><div class="frac-preview-pane tool-preview"><div class="tool-preview-scroll"><div id="timeWorksheetsContainer" class="tool-pages"></div></div></div><div class="tool-info-pane" aria-hidden="true"></div></div>
   </div>`;
-  const el = id => container.querySelector(`#time${id}`);
+  const previewHost = container.querySelector('#timeWorksheetsContainer');
+  const el = id => id === 'WorksheetsContainer' ? previewHost : container.querySelector(`#time${id}`);
   const on = (id, event, fn) => {
     el(id).addEventListener(event, fn);
     listeners.push([el(id), event, fn]);
@@ -73,7 +76,7 @@ export function buildTimeUI(container) {
     el('MinDifference').step = step;
   }
   function newPage(state, title, number, key = false) {
-    const page = document.createElement('div');
+    const page = applyPaperSize(document.createElement('div'), container.querySelector('#timePaperSize').value);
     page.className = `frac-worksheet time-worksheet frac-font-${state.fontSize}${key ? ' time-key-page' : ''}`;
     const header = document.createElement('div');
     header.className = 'frac-ws-header';
@@ -86,6 +89,9 @@ export function buildTimeUI(container) {
   }
   const fits = (content, node) => node.getBoundingClientRect().bottom <= content.getBoundingClientRect().bottom - 4;
   function generate() {
+    return container.querySelector('#timePaperSize').value === 'statement' ? measurePaperPages(el('WorksheetsContainer'),renderMeasuredPages) : renderMeasuredPages();
+  }
+  function renderMeasuredPages() {
     conditional();
     const generator = createTimeGenerator(read());
     const state = generator.state;
@@ -153,6 +159,7 @@ export function buildTimeUI(container) {
       preview.classList.remove('frac-measuring');
     }
   }
+  on('PaperSize', 'change', generate);
   on('Generate', 'click', generate);
   on('Print', 'click', printWorksheet);
   on('Export', 'click', () => exportWorksheetPdf({ filenameBase: `time_${el('SubType').value}` }));

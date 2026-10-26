@@ -1,0 +1,94 @@
+.paper-size-field { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.paper-size-field > label { font-size:var(--text-sm); flex:1 0 64px; }
+.paper-size-field > select { flex:1 1 160px; min-width:0; max-width:100%; }
+.paper-size-note { flex-basis:100%; margin:0; font-size:var(--text-xs); color:var(--text-muted); }
+.paper-size-note:empty { display:none; }
+/* Physical dimensions come from the shared registry, never a page-content transform. */
+[data-paper-size="statement"] { box-sizing:border-box; }
+.pv-worksheet[data-paper-size="statement"], .frac-worksheet[data-paper-size="statement"], .phx-page[data-paper-size="statement"] { padding:24px; }
+[data-paper-size="statement"] .pv-ws-header, [data-paper-size="statement"] .frac-ws-header { flex-direction:column; align-items:stretch; gap:6px; }
+[data-paper-size="statement"] .pv-ws-namedate, [data-paper-size="statement"] .frac-ws-namedate { display:flex; flex-wrap:wrap; gap:6px 12px; }
+[data-paper-size="statement"] .pv-ws-typelabel, [data-paper-size="statement"] .frac-ws-typelabel { white-space:normal; }
+.frac-worksheet[data-paper-size="statement"] .frac-ws-content { grid-template-columns:1fr; }
+.frac-worksheet[data-paper-size="statement"] .frac-answer-key-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.pv-worksheet[data-paper-size="statement"] .pv-hint-puzzle { max-width:100%; }
+.pv-key-page[data-paper-size="statement"] .pv-ws-content { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; gap:8px; }
+[data-paper-size="statement"] .phx-page-header { flex-direction:column; align-items:stretch; gap:8px; margin-bottom:14px; }
+[data-paper-size="statement"] .phx-name-blank { width:1.5in; }
+[data-paper-size="statement"] .phx-date-blank { width:1in; }
+[data-paper-size="statement"] .phx-word-row { flex-direction:column; align-items:flex-start; flex-shrink:0; gap:8px; }
+[data-paper-size="statement"] .phx-word-label { min-width:0; max-width:100%; overflow-wrap:anywhere; }
+[data-paper-size="statement"] .phx-elkonin-row, [data-paper-size="statement"] .phx-or-boxes { flex-wrap:wrap; }
+[data-paper-size="statement"] .phx-word-list { flex:none; }
+[data-paper-size="statement"] .phx-syllable-box { max-width:100%; overflow-wrap:anywhere; }
+.paper-page[data-paper-size="statement"]:not(.phx-page) { padding:24px; }
+.paper-page[data-paper-size="statement"] .paper-header { display:grid; grid-template-columns:1fr 1fr; font-size:12px; min-height:0; gap:6px; flex:none; padding-bottom:8px; margin-bottom:12px; }
+.paper-page[data-paper-size="statement"] .paper-header .underline-sm { width:100px; height:16px; }
+.paper-page[data-paper-size="statement"] .paper-header .underline-vsm { width:64px; height:16px; }
+.paper-page[data-paper-size="statement"] .paper-header .score-underline { width:40px; height:16px; }
+.paper-page[data-paper-size="statement"] .paper-header .header-var { font-size:12px; text-align:right; }
+.paper-page[data-paper-size="statement"] .paper-table { flex:none; height:auto; }
+.paper-page[data-paper-size="statement"] .paper-table td { width:50%; padding:2px 4px; }
+.paper-page[data-paper-size="statement"] .paper-table tr { height:40px; max-height:none; }
+.paper-page[data-paper-size="statement"] .question { font-size:20px; line-height:1.4; gap:3px; }
+.paper-page[data-paper-size="statement"] .q-num { min-width:26px; font-size:20px; }
+.paper-page[data-paper-size="statement"] .q-expr { font-size:20px; }
+.paper-page[data-paper-size="statement"] .q-line { width:40px; margin-left:3px; border-bottom-width:2px; flex-shrink:0; }
+.sdk-puzzle-page[data-paper-size="statement"], .mp-puzzle-page[data-paper-size="statement"], .mg-worksheet[data-paper-size="statement"] { padding:24px; }
+[data-paper-size="statement"] .sdk-header, [data-paper-size="statement"] .mp-header { flex-wrap:wrap; gap:8px; font-size:12px; }
+[data-paper-size="statement"] .sdk-underline-lg, [data-paper-size="statement"] .mp-underline-lg { width:110px; }
+[data-paper-size="statement"] .sdk-underline-md, [data-paper-size="statement"] .mp-underline-md { width:70px; }
+[data-paper-size="statement"] .sdk-header-meta, [data-paper-size="statement"] .mp-header-var { font-size:12px; }
+.mp-puzzle-page[data-paper-size="statement"] .mp-grid-table { --mp-cell-size:var(--mp-statement-cell) !important; border-spacing:0; background:white; border:none; }
+.mp-puzzle-page[data-paper-size="statement"] .mp-grid-wrap { overflow:visible; max-width:100%; }
+.mg-worksheet[data-paper-size="statement"] .mg-ws-header { flex-direction:column; align-items:stretch; gap:6px; }
+.mg-worksheet[data-paper-size="statement"] .mg-ws-namedate { display:grid; grid-template-columns:1fr 1fr; font-size:11px; gap:8px; }
+.mg-worksheet[data-paper-size="statement"] .mg-ws-namedate span { overflow-wrap:anywhere; }
+.mg-worksheet[data-paper-size="statement"] .mg-ws-typelabel { white-space:normal; }
+.mg-worksheet[data-paper-size="statement"] .mg-answer-list { columns:1; }
+.mg-worksheet[data-paper-size="statement"] .mg-cell { font-size:calc(18px * var(--mg-cell-font-scale)); }
+.mg-worksheet[data-paper-size="statement"] .mg-call-grid { flex:none; }
+.wp-puzzle-block[data-paper-size="statement"] { padding:24px; }
+.wp-puzzle-block[data-paper-size="statement"] .wp-puzzle-header { grid-template-columns:1fr 1fr; font-size:12px; }
+.wp-puzzle-block[data-paper-size="statement"] .wp-puzzle-header .wp-field:last-child { grid-column:1 / -1; }
+.wp-puzzle-block[data-paper-size="statement"] .wp-word-grid { grid-template-columns:repeat(3,minmax(0,1fr)); font-size:14px; }
+.wp-puzzle-block[data-paper-size="statement"] .wp-word-item { white-space:normal; overflow:visible; overflow-wrap:anywhere; padding:3px; }
+.wp-puzzle-block[data-paper-size="statement"] .wp-jumble-row { flex-direction:column; align-items:flex-start; flex-shrink:0; gap:6px; }
+.wp-puzzle-block[data-paper-size="statement"] .wp-jumble-boxes { flex-wrap:wrap; }
+.paper-continuation { font-size:12px; margin:4px 0; }
+.mp-puzzle-page[data-paper-size="statement"] .mp-cell { font-size:calc(var(--mp-statement-cell) * .52) !important; }
+/* Certificate reflow: preserve the landscape adapter and artwork, use smaller native text/layout. */
+.award-cert-page[data-paper-size="statement"] .cert-asset-tree { width:3.5in; height:3.5in; left:-.4in; }
+.award-cert-page[data-paper-size="statement"] .cert-asset-watermark { width:5in; }
+.award-cert-page[data-paper-size="statement"] .cert-content-layout { inset:.3in .3in .35in 2in; }
+.award-cert-page[data-paper-size="statement"] .cert-logo-main { width:1.7in; margin-bottom:.12in; }
+.award-cert-page[data-paper-size="statement"] .cert-title { font-size:24pt; }
+.award-cert-page[data-paper-size="statement"] .cert-title::after { margin-top:.08in; }
+.award-cert-page[data-paper-size="statement"] .cert-presented { margin-top:.1in; font-size:9pt; }
+.award-cert-page[data-paper-size="statement"] .cert-name { font-size:28pt; margin-top:.08in; }
+.award-cert-page[data-paper-size="statement"] .cert-note-wrap { min-height:.65in; padding:.12in 0; }
+.award-cert-page[data-paper-size="statement"] .cert-note { font-size:11pt; line-height:1.4; }
+.award-cert-page[data-paper-size="statement"] .cert-footer { gap:.3in; padding:0 .15in; margin-top:.1in; }
+.award-cert-page[data-paper-size="statement"] .cert-sign-value { font-size:10pt; }
+
+.pv-hint-worksheet[data-paper-size="statement"] .pv-ws-content { display:block; }
+.pv-hint-worksheet[data-paper-size="statement"] .pv-hint-puzzle { margin-bottom:12px; }
+.pv-worksheet[data-paper-size="statement"] .pv-chart { width:100%; table-layout:fixed; }
+.pv-worksheet[data-paper-size="statement"] .pv-chart th, .pv-worksheet[data-paper-size="statement"] .pv-chart td { min-width:0; padding:4px 2px; overflow-wrap:anywhere; }
+
+.pv-worksheet[data-paper-size="statement"] .pv-skip-table { width:100%; table-layout:fixed; font-size:16px; }
+.pv-worksheet[data-paper-size="statement"] .pv-skip-table td { padding:6px 3px; min-width:0; }
+.pv-worksheet[data-paper-size="statement"] .pv-skip-table .pv-blank { width:90%; min-width:0; }
+[data-paper-size="statement"] .phx-grapheme-row { flex-wrap:wrap; max-width:100%; }
+
+/* Output adapters must not reintroduce their historical Letter-only enlargement. */
+.sdk-puzzle-page[data-paper-size="statement"] .sdk-header, .mp-puzzle-page[data-paper-size="statement"] .mp-header { font-size:12px !important; }
+.sdk-puzzle-page[data-paper-size="statement"] .sdk-underline-lg, .mp-puzzle-page[data-paper-size="statement"] .mp-underline-lg { width:110px !important; }
+.sdk-puzzle-page[data-paper-size="statement"] .sdk-underline-md, .mp-puzzle-page[data-paper-size="statement"] .mp-underline-md { width:70px !important; }
+.sdk-puzzle-page[data-paper-size="statement"]:not(.sdk-tile-page) .sdk-grid-wrap { --sdk-cell-size:44px !important; --sdk-font-size:20px !important; }
+.sdk-puzzle-page[data-paper-size="statement"] .sdk-tile { --sdk-cell-size:32px !important; --sdk-font-size:18px !important; }
+
+.paper-fit-warning { max-width:32rem; font-size:var(--text-xs); white-space:normal; color:var(--text-primary); }
+.paper-fit-warning[hidden] { display:none; }
+
+.mg-worksheet[data-paper-continuation="true"] .mg-ws-typelabel::after { content:" (continued)"; }

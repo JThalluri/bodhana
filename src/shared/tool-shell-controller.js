@@ -1,3 +1,5 @@
+import './paper-size.css';
+import { initPaperFitGuard } from './paper-fit-guard.js';
 import { initSettingsPersistence } from './settings-persistence.js';
 import { openOverlay, closeOverlay } from './modal.js';
 import { initPreviewFit } from './preview-fit.js';
@@ -10,6 +12,9 @@ export function initToolShell(container, key) {
   const header = root.querySelector('.tool-header-main');
   const settings = root.querySelector('.tool-settings');
   const body = root.querySelector('.tool-body');
+  const paper = settings.querySelector(':scope > .paper-size-field');
+  // Keep the family's primary type control first.
+  if (paper === settings.firstElementChild && paper.nextElementSibling) paper.nextElementSibling.after(paper);
   // Keep a tab strip and its panels in their own row. Shared controls/notices
   // belong outside that row, otherwise they can squeeze the panels to zero.
   const tabs = settings.querySelector(':scope > [role="tablist"]');
@@ -44,5 +49,6 @@ export function initToolShell(container, key) {
   compact.addEventListener('change', resize);
   const fitCleanup = initPreviewFit(root, controls);
   const settingsCleanup = initSettingsPersistence(root, key);
-  return () => { settingsCleanup(); closeOverlay(); if (tabsRow) { tabsRow.replaceWith(...tabsRow.childNodes); delete settings.dataset.tabbedSettings; } compact.removeEventListener('change', resize); fitCleanup(); contentCleanup(); controls.remove(); close.remove(); root.removeEventListener('show-guide', showGuide); };
+  const paperCleanup = initPaperFitGuard(root);
+  return () => { paperCleanup(); settingsCleanup(); closeOverlay(); if (tabsRow) { tabsRow.replaceWith(...tabsRow.childNodes); delete settings.dataset.tabbedSettings; } compact.removeEventListener('change', resize); fitCleanup(); contentCleanup(); controls.remove(); close.remove(); root.removeEventListener('show-guide', showGuide); };
 }

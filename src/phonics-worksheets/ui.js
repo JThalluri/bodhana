@@ -1,3 +1,5 @@
+import {paperSizeControl, applyPaperSize} from '../shared/paper-size.js';
+import {paginateRows} from '../shared/paper-pagination.js';
 import { buildSoundGuide } from '../phonics/core/soundGuide.mjs';
 import { lookupExceptionForWord } from '../phonics/PhonicsEngine.mjs';
 import { ANALYSIS_REVISION } from '../phonics/PhonicsEngine.mjs';
@@ -156,6 +158,9 @@ function renderPreview() {
   }
 
   container.innerHTML = renderSheet(sheetData, { showSolutions: state.showSolutions, wordsPerPage: state.wordsPerPage });
+  const stock=document.getElementById('phxPaperSize')?.value || 'letter';
+  [...container.children].forEach(page=>applyPaperSize(page,stock));
+  paginateRows(container,'.phx-word-list');
 }
 
 // ── Word selection list ───────────────────────────────────────────────────────
@@ -350,7 +355,7 @@ export function buildPhonicsWorksheetsUI(container) {
                     <span class="toggle-track"></span>
                   </span>
                 </label>
-                <div class="phx-field-row">
+                ${paperSizeControl('phxPaperSize','Words per page is a maximum; tall word rows continue onto another page.')}<div class="phx-field-row">
                   <label for="phxWordsPerPage">Words per page</label>
                   <input class="tb-num" type="number" id="phxWordsPerPage"
                     min="1" max="30" value="${DEFAULT_WORDS_PER_PAGE}">
@@ -486,6 +491,7 @@ export function buildPhonicsWorksheetsUI(container) {
 }
 
 function wireEvents(container) {
+  container.querySelector('#phxPaperSize').addEventListener('change',renderPreview);
   const refresh=document.createElement('button'); refresh.className='btn btn-ghost btn-sm'; refresh.textContent='Refresh analysis';
   refresh.title='Re-analyze loaded words using current phonics rules; keep word selection, order and common-word flags.';
   container.querySelector('[data-panel="source"]').append(refresh);

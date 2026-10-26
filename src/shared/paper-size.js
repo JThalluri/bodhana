@@ -9,7 +9,8 @@ export function paperSize(id='letter', landscape=false) {
   return {...p,widthIn,heightIn,widthPx:widthIn*96,heightPx:heightIn*96,widthPt:widthIn*72,heightPt:heightIn*72,cssSize:`${widthIn}in ${heightIn}in`};
 }
 export function paperForPage(page) {
-  return paperSize(page?.dataset.paperSize, page?.matches('.award-cert-page.is-landscape') || false);
+  const orientation = page?.dataset.paperOrientation;
+  return paperSize(page?.dataset.paperSize, orientation ? orientation === 'landscape' : page?.matches('.award-cert-page.is-landscape') || false);
 }
 /** One print job has one physical stock; reject accidental mixed-size output. */
 export function paperForPages(pages) {
@@ -18,3 +19,15 @@ export function paperForPages(pages) {
   return p;
 }
 export const paperSizeOptions = () => Object.values(PAPER_SIZES).map(p=>[p.id,p.label]);
+
+/** Shared native stock selector. Keep IDs stable for device preferences. */
+export function paperSizeControl(id, note='') {
+  return '<div class="paper-size-field"><label for="'+id+'">Paper size</label><select class="tb-select" data-paper-size-select id="'+id+'">'+paperSizeOptions().map(([v,label])=>'<option value="'+v+'">'+label+'</option>').join('')+'</select><p class="paper-size-note" role="status">'+note+'</p></div>';
+}
+export function applyPaperSize(page, id, landscape=false) {
+  const p=paperSize(id,landscape);page.dataset.paperSize=p.id;
+  page.dataset.paperOrientation=landscape?'landscape':'portrait';
+  for(const key of ['width','minWidth'])page.style[key]=p.widthIn+'in';
+  for(const key of ['height','minHeight'])page.style[key]=p.heightIn+'in';
+  return page;
+}

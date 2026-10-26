@@ -1,3 +1,5 @@
+import {measurePaperPages} from '../shared/paper-measurement.js';
+import { paperSizeControl, applyPaperSize } from '../shared/paper-size.js';
 import { MONEY_TYPES, arithmeticLimit, createMoneyGenerator, moneyPool, normalizeMoneyState } from './money-generator.js';
 import { themeToggleMarkup } from '../shared/shell-ui.js';
 import { printWorksheet } from '../shared/print.js';
@@ -25,7 +27,7 @@ export function buildMoneyUI(container) {
         <button class="btn btn-ghost btn-sm" id="moneyReset"><i class="fas fa-undo-alt"></i> Reset</button>
       </div><div class="tool-secondary-actions"><span class="tool-theme-slot">${themeToggleMarkup()}</span></div></div>
     </div>
-    <div class="frac-body tool-body"><div class="frac-settings-pane tool-settings no-print">
+    <div class="frac-body tool-body"><div class="frac-settings-pane tool-settings no-print">${paperSizeControl('moneyPaperSize')}
       <div class="frac-settings-section"><div class="frac-section-title">Money Counting Type</div>
         ${select('SubType', 'Worksheet', MONEY_TYPES)}
         ${select('Currency', 'Currency', { inr: 'Indian Rupee (INR)', usd: 'US Dollar (USD)' })}
@@ -46,7 +48,8 @@ export function buildMoneyUI(container) {
       <div class="frac-settings-section"><div class="frac-section-title">Reproducibility</div><div class="frac-field"><label for="moneySeed">Random seed</label><input class="frac-text-input" id="moneySeed" type="text" placeholder="optional"></div></div>
     </div><div class="frac-preview-pane tool-preview"><div class="tool-preview-scroll"><div id="moneyWorksheetsContainer" class="tool-pages"></div></div></div><div class="tool-info-pane" aria-hidden="true"></div></div>
   </div>`;
-  const el = id => container.querySelector(`#money${id}`);
+  const previewHost = container.querySelector('#moneyWorksheetsContainer');
+  const el = id => id === 'WorksheetsContainer' ? previewHost : container.querySelector(`#money${id}`);
   const on = (id, event, fn) => {
     el(id).addEventListener(event, fn);
     listeners.push([el(id), event, fn]);
@@ -76,7 +79,7 @@ export function buildMoneyUI(container) {
     el('MinDifference').max = (arithmeticLimit(state) - 1) / 100;
   }
   function newPage(state, title, number, key = false) {
-    const page = document.createElement('div');
+    const page = applyPaperSize(document.createElement('div'), container.querySelector('#moneyPaperSize').value);
     page.className = `frac-worksheet money-worksheet frac-font-${state.fontSize}${key ? ' money-key-page' : ''}`;
     const header = document.createElement('div');
     header.className = 'frac-ws-header';
@@ -91,6 +94,9 @@ export function buildMoneyUI(container) {
     return node.getBoundingClientRect().bottom <= content.getBoundingClientRect().bottom - 4;
   }
   function generate() {
+    return container.querySelector('#moneyPaperSize').value === 'statement' ? measurePaperPages(el('WorksheetsContainer'),renderMeasuredPages) : renderMeasuredPages();
+  }
+  function renderMeasuredPages() {
     conditional();
     const generator = createMoneyGenerator(read());
     const state = generator.state;
@@ -158,6 +164,7 @@ export function buildMoneyUI(container) {
       preview.classList.remove('frac-measuring');
     }
   }
+  on('PaperSize', 'change', generate);
   on('Generate', 'click', generate);
   on('Print', 'click', printWorksheet);
   on('Export', 'click', () => exportWorksheetPdf({ filenameBase: `money_${el('SubType').value}_${el('Currency').value}` }));

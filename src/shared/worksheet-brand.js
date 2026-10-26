@@ -35,5 +35,9 @@ export function brandWatermarkStyles() {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
+    [data-paper-size="statement"] > .${WORKSHEET_BRAND_WATERMARK_CLASS} {
+      top: 0.04in !important;
+      font-size: 12pt !important;
+    }
   `;
 }

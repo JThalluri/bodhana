@@ -1,3 +1,5 @@
+import {measurePaperPages} from '../shared/paper-measurement.js';
+import { paperSizeControl, applyPaperSize } from '../shared/paper-size.js';
 import {
   setSeed, TYPE_GENERATORS, TYPE_NAMES,
 } from './pv-generator.js';
@@ -53,7 +55,7 @@ export function buildPlaceValueUI(container) {
       <div class="pv-body tool-body">
 
         <!-- Left: settings pane -->
-        <div class="pv-settings-pane tool-settings no-print">
+        <div class="pv-settings-pane tool-settings no-print">${paperSizeControl('pvPaperSize')}
 
           <div class="pv-settings-section tool-type-section">
             <div class="pv-section-title">Place Value Type</div>
@@ -327,8 +329,10 @@ export function buildPlaceValueUI(container) {
    * flexible remainder, so its box is exactly the space left after the header.
    */
   function newPage(state, titleHTML, typeLabel) {
-    const page = document.createElement('div');
+    const page = applyPaperSize(document.createElement('div'), container.querySelector('#pvPaperSize').value);
     page.className = 'pv-worksheet';
+    if(state.type==='type11')page.classList.add('pv-hint-worksheet');
+    if (page.dataset.paperSize === 'statement' && /Answer Key/.test(titleHTML)) page.classList.add('pv-key-page');
     page.style.fontFamily = state.fontFamily;
     page.style.fontSize = state.fontSize;
     page.innerHTML = `
@@ -421,6 +425,9 @@ export function buildPlaceValueUI(container) {
   // ── Generate worksheets ──────────────────────────────────────────────────────
 
   function generate() {
+    return container.querySelector('#pvPaperSize').value === 'statement' ? measurePaperPages(preview,renderMeasuredPages) : renderMeasuredPages();
+  }
+  function renderMeasuredPages() {
     const state = readState();
     setSeed(state.randomSeed);
 
@@ -447,10 +454,9 @@ export function buildPlaceValueUI(container) {
         : `<span class="pv-name-line">Worksheet${label} — continued</span>`;
 
       if (state.type === 'type11') {
-        const { page, content } = newPage(state, makeTitle(0), typeLabel);
-        page.classList.add('pv-hint-worksheet');
-        content.appendChild(hintPuzzleGridNode(gen, state, answerRows));
-        preview.appendChild(page);
+        const grid=hintPuzzleGridNode(gen,state,answerRows);
+        if(container.querySelector('#pvPaperSize').value==='statement') flowIntoPages(preview,state,[...grid.children],makeTitle,typeLabel);
+        else {const {page,content}=newPage(state,makeTitle(0),typeLabel);page.classList.add('pv-hint-worksheet');content.append(grid);preview.append(page);}
         allAnswers.push({ label, answerRows });
         continue;
       }
@@ -472,7 +478,7 @@ export function buildPlaceValueUI(container) {
 
       // Answer key at the bottom: try to tuck it onto the last page, and only
       // spill to a fresh page when it genuinely does not fit.
-      if (state.includeAnswerKey && state.answerKeyPlacement === 'bottom') {
+      if (state.includeAnswerKey && state.answerKeyPlacement === 'bottom' && container.querySelector('#pvPaperSize').value !== 'statement') {
         const key = document.createElement('div');
         key.className = 'pv-answer-key';
         key.innerHTML = `
@@ -494,13 +500,13 @@ export function buildPlaceValueUI(container) {
     }
 
     // Separate answer key pages, flowed the same way so long keys break cleanly.
-    if (state.type !== 'type11' && state.includeAnswerKey && state.answerKeyPlacement === 'separate') {
+    if (state.includeAnswerKey && ((state.type !== 'type11' && state.answerKeyPlacement === 'separate') || container.querySelector('#pvPaperSize').value === 'statement')) {
       for (const { label, answerRows } of allAnswers) {
         const grid = document.createElement('div');
         grid.className = 'pv-answer-key-grid';
         grid.innerHTML = answerRows.join('');
         flowIntoPages(
-          preview, state, [grid],
+          preview, state, container.querySelector('#pvPaperSize').value === 'statement' ? [...grid.children] : [grid],
           () => `<span class="pv-name-line">Answer Key – Worksheet${label}</span>`,
           typeLabel);
       }
@@ -517,6 +523,7 @@ export function buildPlaceValueUI(container) {
   on(includeDecEl, 'change', updateConditional);
   on(includeAKEl, 'change', updateConditional);
 
+  on(container.querySelector('#pvPaperSize'), 'change', generate);
   on(generateBtn, 'click', generate);
   on(printBtn, 'click', printWorksheet);
   on(exportBtn, 'click', () => exportWorksheetPdf({ filenameBase: TYPE_NAMES[typeEl.value] ?? 'place_value' }));
