@@ -1,0 +1,4 @@
+# Keep constructs cache identity stable across Windows and Unix checkouts.
+constructs/*.yaml text eol=lf
+constructs/fixtures/*.yaml text eol=lf
+src/phonics/generated/*.json text eol=lf
