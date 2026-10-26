@@ -3,9 +3,14 @@
 // plus the agreed additions: Nunito as a font option, letter spacing and
 // tracing opacity (see docs/DECISIONS.md).
 
+export const WORD_PRACTICE_MARGINS = {
+  leftMarginInch: 0.25, rightMarginInch: 0.25,
+  topMarginInch: 0.25, bottomMarginInch: 0.25,
+};
+
 export const DEFAULT_STATE = {
   paperSize: 'letter',
-  wordPractice: {mode:'practice', lines:'1', rowPaddingPx:4, lineGapPx:3},
+  wordPractice: {mode:'practice', lines:'1', rowPaddingPx:4, lineGapPx:3, margins:{...WORD_PRACTICE_MARGINS}},
   activeTier: 'tier3',            // 'tier1' | 'tier2' | 'tier3' | 'tier4' | 'tier5'
   exerciseFormat: 'top_box',      // 'alternating' | 'top_box' | 'jumbled' | 'word_practice'
   userContentText: 'apple banana carrot dates elderberry fig',

@@ -5,7 +5,7 @@ for(const [target,url] of [['portable',pathToFileURL(process.cwd()+'/dist/index.
  await page.locator('#wsTypeSelect').selectOption('handwriting');await expect(page.locator('[data-persistence-ready]')).toHaveAttribute('data-persistence-ready','true');
  await page.locator('#hw-exerciseFormat').selectOption('word_practice');await page.locator('#hw-paperSize').selectOption('statement');
  await page.locator('.hw-stab[data-tab="content"]').click();await page.locator('#hw-userContentText').fill('create separate granular pristine');
- await page.locator('.hw-stab[data-tab="layout"]').click();for(const name of ['left','right','top','bottom'])await page.locator(`[data-path="layout.${name}MarginInch"]`).fill('.25');
+ await page.locator('.hw-stab[data-tab="layout"]').click();for(const name of ['left','right','top','bottom'])await expect(page.locator(`[data-path="layout.${name}MarginInch"]`)).toHaveValue('0.25');
  await expect(page.locator('.hw-word-practice')).toHaveCount(1);await expect.poll(()=>page.locator('.hw-word-practice').evaluate(el=>[el.offsetWidth,el.offsetHeight])).toEqual([528,816]);
  await expect(page.locator('.hw-practice-word')).toHaveText(['create','separate','granular','pristine']);
  await page.screenshot({path:`artifacts/${target}-word-practice-desktop.png`});

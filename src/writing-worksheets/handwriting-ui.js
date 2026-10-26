@@ -380,9 +380,15 @@ export function buildHandwritingUI(container, onTypeChange) {
     renderWordSelection();
   }
 
+  // Word Practice owns its quarter-inch defaults; other formats retain their margins.
+  function controlPath(path) {
+    return state.exerciseFormat === 'word_practice' && /^layout\.(left|right|top|bottom)MarginInch$/.test(path)
+      ? path.replace('layout.', 'wordPractice.margins.') : path;
+  }
+
   function syncControls() {
     for (const el of bound) {
-      const v = getPath(state, el.dataset.path);
+      const v = getPath(state, controlPath(el.dataset.path));
       if (el.type === 'checkbox') el.checked = !!v;
       else if (el.dataset.type === 'number') el.value = el.dataset.path === 'geometry.lineHeightInch' ? +Number(v).toFixed(4) : v;
       else el.value = v ?? '';
@@ -497,7 +503,7 @@ export function buildHandwritingUI(container, onTypeChange) {
       const prevDefault = REF_TITLE_DEFAULTS[state.exerciseFormat];
       if (state.refTitle === prevDefault) state.refTitle = REF_TITLE_DEFAULTS[value];
     }
-    setPath(state, path, value);
+    setPath(state, controlPath(path), value);
 
     if (path === 'geometry.gridType') {
       const g = state.geometry;
@@ -620,7 +626,7 @@ export function buildHandwritingUI(container, onTypeChange) {
     restore: saved => {
       if (!saved.state?.geometry || !Array.isArray(saved.dictionary?.allWords)) return;
       const defaults = freshState();
-      state = {...defaults,...saved.state,wordPractice:{...defaults.wordPractice,...saved.state.wordPractice}}; seed = saved.seed;
+      state = {...defaults,...saved.state,wordPractice:{...defaults.wordPractice,...saved.state.wordPractice,margins:{...defaults.wordPractice.margins,...saved.state.wordPractice?.margins}}}; seed = saved.seed;
       Object.assign(dictionary,saved.dictionary,{appendedWords:new Set(saved.dictionary.appendedWords)});
       $('#hwWordSearch').value = dictionary.search;
       updateDictionaryStatus(dictionary.allWords.length+' words loaded (saved)','info');

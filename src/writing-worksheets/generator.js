@@ -4,7 +4,7 @@ import { buildWordPracticeModel } from './word-practice.js';
 // Turns state into a pure page model (no DOM), which the renderer converts to
 // HTML. All geometry is in CSS px at 96 dpi for the selected shared paper stock.
 
-import { clamp } from './state.js';
+import { clamp, WORD_PRACTICE_MARGINS } from './state.js';
 import { fontMetrics, measureText, wrapText } from './typography.js';
 
 export const PX_PER_IN = 96;
@@ -87,7 +87,9 @@ export function parseSentences(text) {
 export function computeGeometry(state) {
   const g = state.geometry;
   const t = state.typography;
-  const l = state.layout;
+  const l = state.exerciseFormat === 'word_practice'
+    ? {...state.layout, ...WORD_PRACTICE_MARGINS, ...state.wordPractice?.margins}
+    : state.layout;
   const paper = paperSize(state.paperSize);
   const isSeyes = g.gridType === 'seyes_french';
 
